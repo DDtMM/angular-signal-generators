@@ -1,34 +1,72 @@
-import { Signal, signal, effect, WritableSignal } from '@angular/core';
-import { ComputationOrSignal, toSignal } from '../internal/signal-like';
+import { Signal, signal, effect, inject, DestroyRef, Injector, assertInInjectionContext } from '@angular/core';
+import { ComputationOrSignal, coerceSignal } from '../internal/signal-coercion';
 
-export function debounceSignal<T>(src: ComputationOrSignal<T>, dueTime: number | ComputationOrSignal<number>): Signal<T | undefined>
-export function debounceSignal<T>(src: ComputationOrSignal<T>, dueTime: number | ComputationOrSignal<number>, initialValue: T): Signal<T>
-export function debounceSignal<T>(src: ComputationOrSignal<T>, dueTime: number | ComputationOrSignal<number>, initialValue?: T): Signal<T | typeof initialValue> {
-  const output = signal<T | typeof initialValue>(initialValue);
-  const srcSignal = toSignal(src);
-  if (typeof dueTime === 'number') {
-    debounceSignalNumberDueTime(srcSignal, dueTime, output);
+const enum DebounceSignalState {
+  Resting,
+  Running
+}
+export interface DebounceSignalOptions<T> {
+  defaultValue?: T;
+  /** pass injector if this is not created in Injection Context */
+  injector?: Injector;
+}
+
+export function debounceSignal<T>(srcSignal: ComputationOrSignal<T>,
+  dueTimeGenerator: number | ComputationOrSignal<number>,
+  options: DebounceSignalOptions<T>): Signal<T | undefined> {
+
+  const output = signal<T | undefined>(undefined);
+  const src = coerceSignal(srcSignal);
+  let state = DebounceSignalState.Resting;
+  let lastSignalTime = Number.MAX_SAFE_INTEGER;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
+  let getRemainingTime: () => number;
+
+  !options?.injector && assertInInjectionContext(debounceSignal);
+  const cleanupRef = options?.injector?.get(DestroyRef) ?? inject(DestroyRef);
+
+  if (typeof dueTimeGenerator === 'number') {
+    getRemainingTime = () => dueTimeGenerator - (performance.now() - lastSignalTime);
   }
   else {
-    debounceSignalComputationOrSignalDueTime(srcSignal, dueTime, output);
+    const dueTimeSignal = coerceSignal(dueTimeGenerator);
+    getRemainingTime = () => dueTimeSignal() - (performance.now() - lastSignalTime);
+    effect(() => {
+      if (state === DebounceSignalState.Running) {
+        checkTimerState(); // update timer if running.
+      }
+      dueTimeSignal();
+    });
   }
+
+  effect(() => {
+    lastSignalTime = performance.now();
+    if (state === DebounceSignalState.Resting) {
+      timerStart();
+    }
+    src(); // I wish there was a better way to listen for an update.
+  });
+
+  function checkTimerState(): void {
+    if (getRemainingTime() <= 0) {
+      state = DebounceSignalState.Resting;
+      output.set(src());
+    } else {
+      timerStart();
+    }
+  }
+
+  /** Start the timer, clearing the old timer if it was running. */
+  function timerStart(): void {
+    clearTimeout(timeoutId);
+    state = DebounceSignalState.Running;
+    timeoutId = setTimeout(checkTimerState, getRemainingTime());
+  }
+
+  cleanupRef.onDestroy(() => {
+    clearTimeout(timeoutId);
+    state = DebounceSignalState.Resting;
+  });
+
   return output;
 }
-
-function debounceSignalNumberDueTime<T>(src: Signal<T>, dueTime: number, output: WritableSignal<T>): void {
-  effect((onCleanup) => {
-    const value = src();
-    const timeoutId = setTimeout(() => output.set(value), dueTime);
-    onCleanup(() => clearTimeout(timeoutId));
-  });
-}
-
-function debounceSignalComputationOrSignalDueTime<T>(src: Signal<T>, dueTime: ComputationOrSignal<number>, output: WritableSignal<T>): void {
-  const dueTimeSignal = toSignal(dueTime);
-  effect((onCleanup) => {
-    const value = src();
-    const timeoutId = setTimeout(() => output.set(value), dueTimeSignal());
-    onCleanup(() => clearTimeout(timeoutId));
-  });
-}
-

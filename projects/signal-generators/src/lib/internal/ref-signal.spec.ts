@@ -1,7 +1,8 @@
-import { RefSignal } from './ref-signal';
+import { isSignal, signal } from '@angular/core';
+import { refSignal } from './ref-signal';
 
-describe('RefSignal', () => {
-  it('should create an instance', () => {
-    expect(new RefSignal()).toBeTruthy();
+describe('refSignal', () => {
+  it('should create a signal', () => {
+    expect(isSignal(refSignal(signal(1)))).toBeTruthy();
   });
 });

@@ -1,8 +1,8 @@
 import { CreateComputedOptions, Signal, computed } from '@angular/core';
-import { ComputationOrSignal, toSignal } from '../internal/signal-like';
+import { ComputationOrSignal, coerceSignal } from '../internal/signal-coercion';
 
 
 export function selectSignal<T, U>(src: ComputationOrSignal<T>, selector: (x: T) => U, options?: CreateComputedOptions<U>): Signal<U> {
-  const srcSignal = toSignal(src);
+  const srcSignal = coerceSignal(src);
   return computed(() => selector(srcSignal()), options);
 }

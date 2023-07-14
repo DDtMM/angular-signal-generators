@@ -1,5 +1,5 @@
 import { Signal, computed } from '@angular/core';
-import { ComputationOrSignal, toSignal } from '../internal/signal-like';
+import { ComputationOrSignal, coerceSignal } from '../internal/signal-coercion';
 
 export interface PairwiseSignalOptions<T> {
   initialValue: T;
@@ -14,7 +14,7 @@ export function pairwiseSignal<T>(src: ComputationOrSignal<T>, options?: Pairwis
     hasPriorValue = true;
     priorValue = options.initialValue;
   }
-  const srcSignal = toSignal(src);
+  const srcSignal = coerceSignal(src);
   const output = computed<[T, T] | undefined>(() => {
     const currentValue = srcSignal();
     let result: [T, T] | undefined;

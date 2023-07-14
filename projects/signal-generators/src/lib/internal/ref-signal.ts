@@ -5,5 +5,5 @@ export interface RefValue<T> {
 }
 /** Makes sure a reference to the latest value is always returned. */
 export function refSignal<T>(src: Signal<T>): Signal<RefValue<T>> {
-  return computed(() => ({ ref: src() }));
+  return computed(() => ({ ref: src() }), { equal: () => false });
 }
