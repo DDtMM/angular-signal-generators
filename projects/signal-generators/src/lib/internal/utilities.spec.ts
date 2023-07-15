@@ -1,7 +1,7 @@
-import { Utilities } from './utilities';
+import { hasKey } from './utilities';
 
-describe('Utilities', () => {
+describe('hasKey', () => {
   it('should create an instance', () => {
-    expect(new Utilities()).toBeTruthy();
+    expect(hasKey).toBeTruthy();
   });
 });

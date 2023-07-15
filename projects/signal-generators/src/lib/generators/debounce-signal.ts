@@ -1,5 +1,6 @@
-import { Signal, signal, effect, inject, DestroyRef, Injector, assertInInjectionContext } from '@angular/core';
-import { ComputationOrSignal, coerceSignal } from '../internal/signal-coercion';
+import { Injector, Signal, effect, signal } from '@angular/core';
+import { SignalInput, coerceSignal } from '../internal/signal-coercion';
+import { getDestroyRef } from '../internal/utilities';
 
 const enum DebounceSignalState {
   Resting,
@@ -11,8 +12,8 @@ export interface DebounceSignalOptions<T> {
   injector?: Injector;
 }
 
-export function debounceSignal<T>(srcSignal: ComputationOrSignal<T>,
-  dueTimeGenerator: number | ComputationOrSignal<number>,
+export function debounceSignal<T>(srcSignal: SignalInput<T>,
+  dueTimeSource: number | SignalInput<number>,
   options: DebounceSignalOptions<T>): Signal<T | undefined> {
 
   const output = signal<T | undefined>(undefined);
@@ -22,14 +23,13 @@ export function debounceSignal<T>(srcSignal: ComputationOrSignal<T>,
   let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
   let getRemainingTime: () => number;
 
-  !options?.injector && assertInInjectionContext(debounceSignal);
-  const cleanupRef = options?.injector?.get(DestroyRef) ?? inject(DestroyRef);
+  const destroyRef = getDestroyRef(debounceSignal, options?.injector);
 
-  if (typeof dueTimeGenerator === 'number') {
-    getRemainingTime = () => dueTimeGenerator - (performance.now() - lastSignalTime);
+  if (typeof dueTimeSource === 'number') {
+    getRemainingTime = () => dueTimeSource - (performance.now() - lastSignalTime);
   }
   else {
-    const dueTimeSignal = coerceSignal(dueTimeGenerator);
+    const dueTimeSignal = coerceSignal(dueTimeSource);
     getRemainingTime = () => dueTimeSignal() - (performance.now() - lastSignalTime);
     effect(() => {
       if (state === DebounceSignalState.Running) {
@@ -44,7 +44,7 @@ export function debounceSignal<T>(srcSignal: ComputationOrSignal<T>,
     if (state === DebounceSignalState.Resting) {
       timerStart();
     }
-    src(); // I wish there was a better way to listen for an update.
+    src(); // I wish there was a better way to listen for an update like by a watch function.
   });
 
   function checkTimerState(): void {
@@ -63,7 +63,7 @@ export function debounceSignal<T>(srcSignal: ComputationOrSignal<T>,
     timeoutId = setTimeout(checkTimerState, getRemainingTime());
   }
 
-  cleanupRef.onDestroy(() => {
+  destroyRef.onDestroy(() => {
     clearTimeout(timeoutId);
     state = DebounceSignalState.Resting;
   });

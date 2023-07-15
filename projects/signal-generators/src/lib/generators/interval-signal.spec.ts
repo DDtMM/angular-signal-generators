@@ -1,7 +1,7 @@
-import { IntervalSignal } from './interval-signal';
+import { intervalSignal } from './interval-signal';
 
-describe('IntervalSignal', () => {
+describe('intervalSignal', () => {
   it('should create an instance', () => {
-    expect(new IntervalSignal()).toBeTruthy();
+    expect(intervalSignal).toBeTruthy();
   });
 });

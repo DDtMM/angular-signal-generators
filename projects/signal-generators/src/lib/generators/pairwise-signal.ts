@@ -1,13 +1,13 @@
 import { Signal, computed } from '@angular/core';
-import { ComputationOrSignal, coerceSignal } from '../internal/signal-coercion';
+import { SignalInput, coerceSignal } from '../internal/signal-coercion';
 
 export interface PairwiseSignalOptions<T> {
   initialValue: T;
 }
 
-export function pairwiseSignal<T>(src: ComputationOrSignal<T>): Signal<[prior: T, current: T] | undefined>
-export function pairwiseSignal<T>(src: ComputationOrSignal<T>, options: PairwiseSignalOptions<T>): Signal<[prior: T, current: T]>
-export function pairwiseSignal<T>(src: ComputationOrSignal<T>, options?: PairwiseSignalOptions<T>): Signal<[prior: T | undefined, current: T] | undefined> {
+export function pairwiseSignal<T>(src: SignalInput<T>): Signal<[prior: T, current: T] | undefined>
+export function pairwiseSignal<T>(src: SignalInput<T>, options: PairwiseSignalOptions<T>): Signal<[prior: T, current: T]>
+export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalOptions<T>): Signal<[prior: T | undefined, current: T] | undefined> {
   let hasPriorValue = false;
   let priorValue: T;
   if (options !== undefined) {

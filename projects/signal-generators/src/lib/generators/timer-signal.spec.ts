@@ -1,7 +1,7 @@
-import { TimerSignal } from './timer-signal';
+import { timerSignal } from './timer-signal';
 
-describe('TimerSignal', () => {
+describe('timerSignal', () => {
   it('should create an instance', () => {
-    expect(new TimerSignal()).toBeTruthy();
+    expect(timerSignal).toBeTruthy();
   });
 });

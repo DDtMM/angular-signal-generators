@@ -1,7 +1,7 @@
-import { PairwiseSignal } from './pairwise-signal';
+import { pairwiseSignal } from './pairwise-signal';
 
-describe('PairwiseSignal', () => {
+describe('pairwiseSignal', () => {
   it('should create an instance', () => {
-    expect(new PairwiseSignal()).toBeTruthy();
+    expect(pairwiseSignal).toBeTruthy();
   });
 });

@@ -1,7 +1,7 @@
-import { DebounceSignal } from './debounce-signal';
+import { debounceSignal } from './debounce-signal';
 
-describe('DebounceSignal', () => {
+describe('debounceSignal', () => {
   it('should create an instance', () => {
-    expect(new DebounceSignal()).toBeTruthy();
+    expect(debounceSignal).toBeTruthy();
   });
 });
