@@ -43,6 +43,6 @@ export class ScratchpadComponent {
   readonly debounced = debounceSignal(this.textValue, this.rangeSignal, {});
   readonly debounced2 = debounceSignal(this.doubler, this.rangeSignal, {});
   cancel() {
-    this.secondCounter.cancel();
+    this.secondCounter.pause();
   }
 }

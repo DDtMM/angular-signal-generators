@@ -33,7 +33,7 @@ export function debounceSignal<T>(srcSignal: SignalInput<T>,
     getRemainingTime = () => dueTimeSignal() - (performance.now() - lastSignalTime);
     effect(() => {
       if (state === DebounceSignalState.Running) {
-        checkTimerState(); // update timer if running.
+        timerStart(); // update timer if running.
       }
       dueTimeSignal();
     });

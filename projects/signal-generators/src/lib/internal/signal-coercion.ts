@@ -1,4 +1,4 @@
-import { Injector, Signal, computed, isSignal, signal } from '@angular/core';
+import { Injector, Signal, computed, isSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { hasKey } from './utilities';
 
@@ -10,11 +10,6 @@ type SignalLike<T> = Signal<T> | (() => T);
 
 /** Could be a function used in a computed, a type compatible with toSignal, or just a signal. */
 export type SignalInput<T> = SignalLike<T> | ToSignalInput<T>;
-
-/** Determines if an object is ToSignalInput by looking for subscribe property */
-function isToSignalInput<T>(obj: SignalInput<T>): obj is ToSignalInput<T> {
-  return typeof (obj as Partial<ToSignalInput<T>>)?.subscribe === 'function';
-}
 
 export interface CoerceSignalOptions<T> {
   /** This is only used if toSignal is needed to convert to a signal.  If not passed it as assumed the source is sync. */
@@ -41,6 +36,10 @@ export interface CoerceSignalOptions<T> {
  * const coercedFunction = coerceSignal(functionInput);
  * const coercedImmediate = coerceSignal(immediateInput);
  * const coercedDelayed = coerceSignal(delayedInput, { initialValue: 0 });
+ *
+ * effect(() => {
+ *   console.log(coercedSignal, coercedFunction, coercedImmediate, coercedDelayed);
+ * });
  * ```
  */
 export function coerceSignal<T>(source: SignalInput<T>, options?: CoerceSignalOptions<T>): Signal<T> {
@@ -53,4 +52,24 @@ export function coerceSignal<T>(source: SignalInput<T>, options?: CoerceSignalOp
       : toSignal(source, { injector: options?.injector, requireSync: true })
   }
   return computed(source);
+}
+
+/**
+ * Tests if an object is valid for coerceSignal.
+ *
+ * @param obj Any type of a value can be checked.
+ */
+export function isSignalInput(obj: unknown): obj is SignalInput<unknown> {
+  return (obj != null) && (typeof obj === 'function' || isToSignalInput(obj));
+}
+
+/**
+ * Determines if an object is a parameter for toSignalInput by looking for subscribe property.
+ * It does this by seeing if there is a subscribe function.
+ * If toSignal's implementation changes, then this needs to be reviewed.
+ *
+ * @param obj Any type of a value can be checked.
+ */
+function isToSignalInput<T>(obj: unknown): obj is ToSignalInput<T> {
+  return typeof (obj as Partial<ToSignalInput<T>>)?.subscribe === 'function';
 }
