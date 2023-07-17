@@ -2,6 +2,11 @@ import { Injector, Signal, effect, signal } from '@angular/core';
 import { SignalInput, coerceSignal } from '../internal/signal-coercion';
 import { getDestroyRef } from '../internal/utilities';
 
+
+interface DurationGetter {
+  get duration(): number;
+}
+
 export interface TimerSignalOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
@@ -20,6 +25,7 @@ export interface TimerSignal extends Signal<number> {
   /** Resumes the timer if paused using the remaining time when paused. */
   resume(): void;
 }
+
 /**
  * Creates a signal that acts either a timer or interval.
  * Emitting increasing numbers for each iteration, starting with an initial 0.
@@ -40,38 +46,72 @@ export interface TimerSignal extends Signal<number> {
  * @param intervalTime An optional constant or {@link SignalInput} that emits how long until the timer is due after the initial time was emitted.
  * @param options An optional object that affects behavior of the signal.
  */
-export function timerSignal(initialTime: TimeSource,
-  intervalTime?: TimeSource, options?: TimerSignalOptions): TimerSignal {
-
-  const destroyRef = getDestroyRef(timerSignal, options?.injector);
-
-  /** Retrieves the remaining time from durationSource */
-
+export function timerSignal(initialTime: TimeSource,  intervalTime?: TimeSource, options?: TimerSignalOptions): TimerSignal {
+  /** Tracks the time the signal last emitted.  Can be overwritten if the last time needs to be faked. */
   let lastCompleteTime = performance.now();
+
+  /** The signal that will be returned. */
   const output = signal(0);
+
+  /** When paused, tracks the time still remaining. */
   let remainingTimeAtPause = 0;
+
+  /** The current status of timer.  Starts as running because this is a signal and has to emit initially. */
   let status = TimerState.Running;
+
+  /** The id from the last call of setTimeout. */
   let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
+
   /** Function to be called after a timer has been completed. */
   let timerComplete: () => void = timerInitialComplete;
 
-  let currentDurationSource = durationSourceFactory(initialTime);
+  /** Initially the is this comes from initialTime, and can change to intervalTime. */
+  let currentDurationSource = durationGetterFactory(initialTime);
+
   // the interval duration has to be initialized at the start.
-  const intervalDurationSource = intervalTime !== undefined ? durationSourceFactory(intervalTime) : undefined;
+  const intervalDurationSource = intervalTime !== undefined ? durationGetterFactory(intervalTime) : undefined;
 
-  destroyRef.onDestroy(destroy);
+  // setup cleanup actions.
+  getDestroyRef(timerSignal, options?.injector).onDestroy(destroy);
 
-  return Object.assign(output, {
-    pause: pause.bind(output),
-    restart: restart.bind(output),
-    resume: resume.bind(output)
-  });
+  // return timer signal
+  return createTimerSignal(output);
 
+  /** Clears the last timeout and sets the state as destroyed. */
   function destroy(): void {
     clearTimeout(timeoutId);
     status = TimerState.Destroyed;
   }
 
+  /** Assigns timer functions to the signal. */
+  function createTimerSignal(sourceSignal: Signal<number>): TimerSignal {
+    return Object.assign(sourceSignal, {
+      pause: pause.bind(sourceSignal),
+      restart: restart.bind(sourceSignal),
+      resume: resume.bind(sourceSignal)
+    });
+  }
+
+  /** Converts timeSource into a durationGetter and sets up what's necessary if duration comes from a signal. */
+  function durationGetterFactory(timeSource: TimeSource): DurationGetter {
+    if (typeof timeSource === 'number') {
+      return { duration: timeSource };
+    }
+    else {
+      const durationSignal = coerceSignal(timeSource);
+      effect(() => {
+        // timer needs to update every time durationSignal changes.
+        // instead of restarting the timer we could keep track if this is an increase and therefore there is no need to start the timer.
+        timerStart();
+        durationSignal();
+      });
+      return {
+        get duration(): number { return durationSignal(); }
+      };
+    }
+  }
+
+  /** Retrieves the remaining time from durationSource */
   function getRemainingTime(): number {
     return currentDurationSource.duration - (performance.now() - lastCompleteTime);
   }
@@ -85,7 +125,7 @@ export function timerSignal(initialTime: TimeSource,
     }
   }
 
-  /** Restarts the timer. */
+  /** Restarts the timer as long as it isn't destroyed. */
   function restart(): void {
     if (status !== TimerState.Destroyed) {
       status = TimerState.Running;
@@ -145,26 +185,5 @@ export function timerSignal(initialTime: TimeSource,
     }
   }
 
-  interface DurationSource {
-    get duration(): number;
-  }
-
-  function durationSourceFactory(timeSource: TimeSource): DurationSource {
-    if (typeof timeSource === 'number') {
-      return { duration: timeSource };
-    }
-    else {
-      const durationSignal = coerceSignal(timeSource);
-      effect(() => {
-        // timer needs to update every time durationSignal changes.
-        // instead of restarting the timer we could keep track if this is an increase and therefore there is no need to start the timer.
-        timerStart();
-        durationSignal();
-      });
-      return {
-        get duration(): number { return durationSignal(); }
-      };
-    }
-  }
 }
 
