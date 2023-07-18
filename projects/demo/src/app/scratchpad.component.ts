@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { intervalSignal } from 'projects/signal-generators/src/lib/generators/interval-signal';
 import { debounceSignal } from 'projects/signal-generators/src/lib/generators/debounce-signal';
+import { timerSignal } from 'projects/signal-generators/src/lib/generators/timer-signal';
 
 @Component({
   selector: 'app-scratchpad',
@@ -31,6 +32,9 @@ import { debounceSignal } from 'projects/signal-generators/src/lib/generators/de
 <div>
   {{debounced2()}}
 </div>
+<div>
+  Timer should be 1: {{timer()}}
+</div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -42,6 +46,7 @@ export class ScratchpadComponent {
   readonly rangeSignal = signal(1000);
   readonly debounced = debounceSignal(this.textValue, this.rangeSignal, {});
   readonly debounced2 = debounceSignal(this.doubler, this.rangeSignal, {});
+  readonly timer = timerSignal(1000);
   cancel() {
     this.secondCounter.pause();
   }

@@ -71,6 +71,10 @@ export function timerSignal(initialTime: TimeSource,  intervalTime?: TimeSource,
   // the interval duration has to be initialized at the start.
   const intervalDurationSource = intervalTime !== undefined ? durationGetterFactory(intervalTime) : undefined;
 
+  // the timer will automatically start if a time Source was a signal because of the effect,
+  // but if the initial time wasn't a signal it needs to start.
+  timerStart();
+
   // setup cleanup actions.
   getDestroyRef(timerSignal, options?.injector).onDestroy(destroy);
 
@@ -111,9 +115,13 @@ export function timerSignal(initialTime: TimeSource,  intervalTime?: TimeSource,
     }
   }
 
+  /** returns current ticks.  Performance.now() didn't work with testing and I'm not sure it was needed. */
+  function getNow(): number {
+    return new Date().getTime(); // performance.now()
+  }
   /** Retrieves the remaining time from durationSource */
   function getRemainingTime(): number {
-    return currentDurationSource.duration - (performance.now() - lastCompleteTime);
+    return currentDurationSource.duration - (getNow() - lastCompleteTime);
   }
 
   /** Pauses the timer. */
@@ -155,9 +163,7 @@ export function timerSignal(initialTime: TimeSource,  intervalTime?: TimeSource,
 
   /** This is the initial timer complete function which will switch to interval mode. */
   function timerInitialComplete(): void {
-    console.log('initial complete');
     const remainingTime = getRemainingTime();
-    console.log(remainingTime);
     if (remainingTime <= 0) {
       lastCompleteTime = performance.now() + remainingTime;
       timerComplete = timerIntervalComplete;
