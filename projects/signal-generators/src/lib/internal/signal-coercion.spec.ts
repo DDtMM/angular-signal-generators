@@ -1,9 +1,9 @@
 import { Injector, isSignal, signal } from '@angular/core';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
+import { MockRender } from 'ng-mocks';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { coerceSignal } from './signal-coercion';
 
-fdescribe('coerceSignal', () => {
+describe('coerceSignal', () => {
 
   it('should return the original source if it is a Signal', () => {
     const source = signal(generateValue());
