@@ -1,7 +1,7 @@
 import { Injector, signal } from '@angular/core';
 import { pairwiseSignal } from './pairwise-signal';
 import { MockedComponentFixture, MockRender } from 'ng-mocks';
-
+import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 describe('pairwiseSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
   let injector: Injector;
@@ -12,20 +12,27 @@ describe('pairwiseSignal', () => {
   });
 
   it('initially returns undefined when no initialValue is set', () => {
-    const source = signal(1);
-    const pairs = pairwiseSignal(source);
+    const source = autoDetectChangesSignal(fixture, 1);
+    const pairs = pairwiseSignal(source, { injector });
     expect(pairs()).toEqual(undefined);
   });
 
-  fit('returns the last and second to last item after each emission', () => {
-    const source = signal(1);
-    const pairs = pairwiseSignal(source);
-    // expect(pairs()).toEqual(undefined);
+  it('initially returns [signalValue, initial] when initialValue is set', () => {
+    const source = autoDetectChangesSignal(fixture, 1);
+    const pairs = pairwiseSignal(source, { initialValue: 0, injector });
+    expect(pairs()).toEqual([0, 1]);
+  });
+
+  it('returns the last and second to last item after each emission', () => {
+    const source = autoDetectChangesSignal(fixture, 1);
+    const pairs = pairwiseSignal(source, { injector });
+    expect(pairs()).toEqual(undefined);
+    source.set(2);
+    expect(pairs()).toEqual([1, 2]);
+    source.set(3);
+    expect(pairs()).toEqual([2, 3]);
     source.set(5);
-    source.set(11);
-    console.log('before checking pairs value')
-    expect(pairs()).toEqual([1, 5]);
-    source.set(14);
-    expect(pairs()).toEqual([5, 14]);
+    source.set(8);
+    expect(pairs()).toEqual([5, 8]);
   });
 });
