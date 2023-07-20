@@ -1,7 +1,7 @@
 import { Injector, Signal, WritableSignal, signal } from '@angular/core';
-import { discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { TimerSignal, timerSignal } from './timer-signal';
+import { TimeSource, TimerSignal, timerSignal } from './timer-signal';
 
 describe('timerSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -14,40 +14,28 @@ describe('timerSignal', () => {
 
   describe('as a timer', () => {
 
-    it('emits once after specified time.', fakeAsync(() => {
-      const timer = timerSignal(1000, undefined, { injector });
+    it('emits once after specified time.', testTimer(100, undefined, (timer) => {
       tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [ 2000, 1 ]]);
     }));
 
     describe('with a number for timerSource parameter', () => {
-      it('sets a timer for the timerSource amount', fakeAsync(() => {
-        const timer = timerSignal(1000, undefined, { injector });
+      it('sets a timer for the timerSource amount', testTimer(100, undefined, (timer) => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ]]);
       }));
     });
 
     describe('with a signal for timerSource parameter', () => {
-      /** because timerSignal uses setTimeout it needs to be inside fakeAsync */
-      function arrange() {
-        const timerDurationSignal = signal(1000);
-        const timer = timerSignal(timerDurationSignal, undefined, { injector });
-        return { timerDurationSignal, timer };
-      };
-
-      it('sets a timer for the timerSource amount', fakeAsync(() => {
-        const { timer } = arrange();
+      it('sets a timer for the timerSource amount', testTimer(signal(1000), undefined, (timer) => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ]]);
       }));
 
-      it('increases due time if signal increases', fakeAsync(() => {
-        const { timerDurationSignal, timer } = arrange();
+      it('increases due time if signal increases', testTimer(signal(1000), undefined, (timer, timerDurationSignal) => {
         tickAndAssertSignalValue(timer, [[ 500, 0 ]]);
         setSignal(fixture, timerDurationSignal, 1500);
         tickAndAssertSignalValue(timer, [[ 500, 0 ], [ 500, 1 ]]);
       }));
 
-      it('decreases due time if signal decreases', fakeAsync(() => {
-        const { timerDurationSignal, timer } = arrange();
+      it('decreases due time if signal decreases', testTimer(signal(1000), undefined, (timer, timerDurationSignal) => {
         tickAndAssertSignalValue(timer, [[ 500, 0 ]]);
         setSignal(fixture, timerDurationSignal, 500);
         tickAndAssertSignalValue(timer, [[ 1, 1 ]]);
@@ -55,83 +43,91 @@ describe('timerSignal', () => {
     });
 
     describe('#restart', () => {
-      it('increments value after initial timer was complete.', fakeAsync(() => {
-        const timer = timerSignal(1000, undefined, { injector });
+      it('resets signal value', testTimer(1000, undefined, (timer) => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ]]);
         timer.restart();
-        tickAndAssertSignalValue(timer, [[ 1000, 2 ]]);
+        tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ]]);
       }));
 
-      it('does not increment value if called before initial timer was complete.', fakeAsync(() => {
-        const timer = timerSignal(1000, undefined, { injector });
+      it('interrupts an existing timer.', testTimer(1000, undefined, (timer) => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 500, 0 ]]);
         timer.restart();
-        tickAndAssertSignalValue(timer, [[ 1000, 1 ]]);
+        tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ]]);
       }));
     });
 
-    describe('#pause and #resume', () => {
-      it('prevents emission over time', fakeAsync(() => {
-        const timer = timerSignal(1000, undefined, { injector });
+    describe('pause and resume', () => {
+      it('#pause prevents emissions over time', testTimer(1000, undefined, (timer) => {
         tickAndAssertSignalValue(timer, [[ 500, 0 ]]);
         timer.pause();
         tickAndAssertSignalValue(timer, [[ 5000, 0 ]]);
       }));
 
-      it('continues after resume', fakeAsync(() => {
-        const timer = timerSignal(1000, undefined, { injector });
-        tickAndAssertSignalValue(timer, [[ 500, 0 ]]);
+      it('#resume continues emissions', testTimer(1000, undefined, (timer) => {
+        tickAndAssertSignalValue(timer, [[ 999, 0 ]]);
         timer.pause();
         tickAndAssertSignalValue(timer, [[ 5000, 0 ]]);
         timer.resume();
-        tickAndAssertSignalValue(timer, [[ 500, 1 ]]);
+        tickAndAssertSignalValue(timer, [[ 1, 1 ]]);
       }));
     });
   });
 
-  fdescribe('as an interval', () => {
-    it('emits continuously after timerTime is complete', fakeAsync(() => {
-      const timer = timerSignal(1000, 500, { injector });
+  describe('as an interval', () => {
+    it('emits continuously after timerTime is complete', testTimer(1000, 500, (timer) => {
       tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
-      timer.pause();
     }));
 
     describe('with a number for intervalSource parameter', () => {
-      it('sets an interval for the intervalSource amount', fakeAsync(() => {
-        const timer = timerSignal(1000, 500, { injector });
+      it('sets an interval for the intervalSource amount', testTimer(1000, 500, (timer) => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
-        timer.pause();
       }));
     });
 
     describe('with a signal for intervalSource parameter', () => {
-      /** because timerSignal uses setTimeout it needs to be inside fakeAsync */
-      function arrange() {
-        const intervalDurationSignal = signal(500);
-        const timer = timerSignal(1000, intervalDurationSignal, { injector });
-        return { intervalDurationSignal, timer };
-      };
-
-      it('sets a timer for the timerSource amount', fakeAsync(() => {
-        const { timer } = arrange();
+      it('sets a timer for the timerSource amount', testTimer(1000, signal(500), (timer) => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
-        timer.pause();
       }));
 
-      it('increases due time if signal increases', fakeAsync(() => {
-        const { intervalDurationSignal, timer } = arrange();
-        tickAndAssertSignalValue(timer, [[ 1000, 0 ], [500, 1], [250, 1]]);
+      it('increases due time if signal increases', testTimer(1000, signal(500), (timer, _, intervalDurationSignal) => {
+        tickAndAssertSignalValue(timer, [[ 1750, 2]]);
         setSignal(fixture, intervalDurationSignal, 750);
-        tickAndAssertSignalValue(timer, [[ 500, 2 ], [ 750, 3 ], [750, 4]]);
-        timer.pause();
+        tickAndAssertSignalValue(timer, [[ 500, 3 ], [ 750, 4 ], [750, 5]]);
       }));
 
-      it('decreases due time if signal decreases', fakeAsync(() => {
-        const { intervalDurationSignal, timer } = arrange();
-        tickAndAssertSignalValue(timer, [[ 1000, 0 ], [500, 1], [250, 1]]);
+      it('decreases due time if signal decreases', testTimer(1000, signal(500), (timer, _, intervalDurationSignal) => {
+        tickAndAssertSignalValue(timer, [[ 1750, 2]]);
         setSignal(fixture, intervalDurationSignal, 250);
-        tickAndAssertSignalValue(timer, [[ 1, 2 ], [ 250, 3 ], [250, 4]]);
+        tickAndAssertSignalValue(timer, [[ 0, 3 ], [ 250, 4 ], [250, 5]]);
+      }));
+    });
+
+    describe('#restart', () => {
+      it('resets signal value and begins from initial timer', testTimer(1000, 500, (timer) => {
+        tickAndAssertSignalValue(timer, [[ 1750, 2]]);
+        timer.restart();
+        tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [500, 2]]);
+      }));
+
+      it('interrupts an existing interval.', testTimer(1000, 500, (timer) => {
+        tickAndAssertSignalValue(timer, [[ 1750, 2]]);
+        timer.restart();
+        tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [500, 2]]);
+      }));
+    });
+    describe('#pause and #resume', () => {
+      it('#pause prevents emissions over time', testTimer(1000, 500, (timer) => {
+        tickAndAssertSignalValue(timer, [[ 2000, 3 ]]);
         timer.pause();
+        tickAndAssertSignalValue(timer, [[ 5000, 3 ]]);
+      }));
+
+      it('#resume continues emissions', testTimer(1000, 500, (timer) => {
+        tickAndAssertSignalValue(timer, [[ 2000, 3 ]]);
+        timer.pause();
+        tickAndAssertSignalValue(timer, [[ 5000, 3 ]]);
+        timer.resume();
+        tickAndAssertSignalValue(timer, [[ 500, 4 ]]);
       }));
     });
   });
@@ -141,12 +137,26 @@ describe('timerSignal', () => {
     fixture.detectChanges();
   }
 
+  /** sets up the test inside fakeAsync and pauses the timer at the end to avoid error message. */
+  function testTimer<T extends TimeSource, U extends TimeSource | undefined>(timerTime: T, intervalTime: U,
+    assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): any {
+
+    return fakeAsync(() => {
+      const timer = timerSignal(timerTime, intervalTime, { injector });
+      assertion(timer, timerTime, intervalTime);
+      timer.pause();
+    });
+  }
   /** It is a pretty common pattern in these tests to tick, and then expect a signal value */
-  function tickAndAssertSignalValue<T>(source: Signal<T>, pattern: [tickValue: number, expectedValue: T][]): void {
-    for (const [tickValue, expectedValue] of pattern) {
+  function tickAndAssertSignalValue<T, U extends Signal<T> >(source: U, pattern: [tickValue: number, expectedValue: T][]): U {
+    // instead of having expect in loop, store them all and have one assertion at the end.
+    const results: T[] = [];
+    for (const [tickValue] of pattern) {
       tick(tickValue);
-      expect(source()).toBe(expectedValue);
+      results.push(source());
     }
+    expect(results).toEqual(pattern.map(x => x[1]));
+    return source;
   }
 });
 

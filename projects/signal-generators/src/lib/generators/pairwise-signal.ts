@@ -14,9 +14,11 @@ export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalO
     hasPriorValue = true;
     priorValue = options.initialValue;
   }
+  // need to use effect to track value
   const srcSignal = coerceSignal(src);
   const output = computed<[T, T] | undefined>(() => {
     const currentValue = srcSignal();
+    console.log('currentValue', currentValue, hasPriorValue);
     let result: [T, T] | undefined;
     if (hasPriorValue) {
       result = [priorValue, currentValue];
@@ -27,6 +29,6 @@ export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalO
     }
     priorValue = currentValue;
     return result;
-  }, { equal: () => !hasPriorValue });
+  }, {  equal: () => !hasPriorValue });
   return output;
 }

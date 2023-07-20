@@ -104,7 +104,7 @@ export function timerSignal(timerTime: TimeSource,  intervalTime?: TimeSource, o
       return { duration: timeSource };
     }
     else {
-      const durationSignal = coerceSignal(timeSource);
+      const durationSignal = coerceSignal(timeSource, { injector: options?.injector });
       effect(() => {
         // timer needs to update every time durationSignal changes.
         // instead of restarting the timer we could keep track if this is an increase and therefore there is no need to start the timer.
@@ -136,6 +136,7 @@ export function timerSignal(timerTime: TimeSource,  intervalTime?: TimeSource, o
     if (status !== TimerState.Destroyed) {
       status = TimerState.Running;
       lastCompleteTime = Date.now();
+      output.set(0);
       switchToTimerMode();
     }
   }
@@ -144,7 +145,7 @@ export function timerSignal(timerTime: TimeSource,  intervalTime?: TimeSource, o
   function resume(): void {
     if (status === TimerState.Paused) {
       status = TimerState.Running;
-      lastCompleteTime = Date.now() - remainingTimeAtPause;
+      lastCompleteTime = Date.now() - (durationGetter.duration - remainingTimeAtPause); // if duration is adjusted by a signal then this is a problem.
       timerStart();
     }
   }
