@@ -1,5 +1,6 @@
 import { Injector, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { SignalInput, coerceSignal } from '../internal/signal-coercion';
+import { hasKey } from '../internal/utilities';
 
 export interface PairwiseSignalOptions<T> {
   /** The value to put in the first results prior value.  Prevents undefined result from being returned initially */
@@ -13,16 +14,14 @@ interface PairwiseSignalOptionsWithInitialValue<T> extends PairwiseSignalOptions
   initialValue: T;
 }
 
-type PairwiseSignalOptionsWithoutInitialValue<T> = Omit<PairwiseSignalOptions<T>, 'initialValue'>;
-
-export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalOptionsWithoutInitialValue<T>): Signal<[prior: T, current: T] | undefined>
 export function pairwiseSignal<T>(src: SignalInput<T>, options: PairwiseSignalOptionsWithInitialValue<T>): Signal<[prior: T, current: T]>
+export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalOptions<T>): Signal<[prior: T, current: T] | undefined>
 export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalOptions<T>): Signal<[prior: T, current: T] | undefined> {
   let output: WritableSignal<[T, T] | undefined>;
   const srcSignal = coerceSignal(src);
   let currentValue = srcSignal();
 
-  if (options?.initialValue) {
+  if (hasKey(options, 'initialValue')) {
     output = signal([options.initialValue, currentValue]);
   }
   else {

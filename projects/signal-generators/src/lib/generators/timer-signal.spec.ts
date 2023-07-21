@@ -1,4 +1,4 @@
-import { Injector, Signal, WritableSignal, signal } from '@angular/core';
+import { Injector, Signal, signal } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { TimeSource, TimerSignal, timerSignal } from './timer-signal';
@@ -31,13 +31,15 @@ describe('timerSignal', () => {
 
       it('increases due time if signal increases', testTimer(signal(1000), undefined, (timer, timerDurationSignal) => {
         tickAndAssertSignalValue(timer, [[ 500, 0 ]]);
-        setSignal(fixture, timerDurationSignal, 1500);
+        timerDurationSignal.set(1500);
+        fixture.detectChanges();
         tickAndAssertSignalValue(timer, [[ 500, 0 ], [ 500, 1 ]]);
       }));
 
       it('decreases due time if signal decreases', testTimer(signal(1000), undefined, (timer, timerDurationSignal) => {
         tickAndAssertSignalValue(timer, [[ 500, 0 ]]);
-        setSignal(fixture, timerDurationSignal, 500);
+        timerDurationSignal.set(500);
+        fixture.detectChanges();
         tickAndAssertSignalValue(timer, [[ 1, 1 ]]);
       }));
     });
@@ -89,15 +91,18 @@ describe('timerSignal', () => {
         tickAndAssertSignalValue(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
       }));
 
+
       it('increases due time if signal increases', testTimer(1000, signal(500), (timer, _, intervalDurationSignal) => {
         tickAndAssertSignalValue(timer, [[ 1750, 2]]);
-        setSignal(fixture, intervalDurationSignal, 750);
+        intervalDurationSignal.set(750);
+        fixture.detectChanges();
         tickAndAssertSignalValue(timer, [[ 500, 3 ], [ 750, 4 ], [750, 5]]);
       }));
 
       it('decreases due time if signal decreases', testTimer(1000, signal(500), (timer, _, intervalDurationSignal) => {
         tickAndAssertSignalValue(timer, [[ 1750, 2]]);
-        setSignal(fixture, intervalDurationSignal, 250);
+        intervalDurationSignal.set(250);
+        fixture.detectChanges();
         tickAndAssertSignalValue(timer, [[ 0, 3 ], [ 250, 4 ], [250, 5]]);
       }));
     });
@@ -131,11 +136,7 @@ describe('timerSignal', () => {
       }));
     });
   });
-  /** Sets the signal value and calls detect changes. */
-  function setSignal<T>(fixture: MockedComponentFixture<unknown, unknown>, target: WritableSignal<T>, value: T): void {
-    target.set(value);
-    fixture.detectChanges();
-  }
+
 
   /** sets up the test inside fakeAsync and pauses the timer at the end to avoid error message. */
   function testTimer<T extends TimeSource, U extends TimeSource | undefined>(timerTime: T, intervalTime: U,

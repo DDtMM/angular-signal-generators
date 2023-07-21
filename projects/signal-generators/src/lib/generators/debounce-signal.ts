@@ -1,6 +1,7 @@
 import { Injector, Signal, effect, signal } from '@angular/core';
 import { SignalInput, coerceSignal } from '../internal/signal-coercion';
 import { getDestroyRef } from '../internal/utilities';
+import { TimeSource } from './timer-signal';
 
 const enum DebounceSignalState {
   Resting,
@@ -13,7 +14,7 @@ export interface DebounceSignalOptions<T> {
 }
 
 export function debounceSignal<T>(srcSignal: SignalInput<T>,
-  dueTimeSource: number | SignalInput<number>,
+  dueTimeSource: TimeSource,
   options: DebounceSignalOptions<T>): Signal<T | undefined> {
 
   const output = signal<T | undefined>(undefined);
