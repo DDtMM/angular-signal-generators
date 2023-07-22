@@ -3,6 +3,7 @@ import { MockedComponentFixture, MockRender } from 'ng-mocks';
 import { debounceSignal } from './debounce-signal';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
+import { SignalInput } from '../internal/signal-coercion';
 
 describe('debounceSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -22,6 +23,7 @@ describe('debounceSignal', () => {
   it('should not change value until time of last source change equals debounce time', fakeAsync(() => {
     const originalValue = 1;
     const source = signal(originalValue);
+    const x: SignalInput<number> = source;
     const debounced = debounceSignal(source, 500, { injector });
     tickAndAssertValue(debounced, [[100, originalValue]]);
     source.set(2);
@@ -43,4 +45,21 @@ describe('debounceSignal', () => {
     fixture.detectChanges();
     tickAndAssertValue(debounced, [[500, originalValue], [4500, source()]]);
   }));
+
+  describe('when created from writable overload', () => {
+    it('#set should be debounced', fakeAsync(() => {
+      const debounced = debounceSignal('x', 500, { injector });
+      tickAndAssertValue(debounced, [[100, 'x']]);
+      debounced.set('z');
+      fixture.detectChanges();
+      tickAndAssertValue(debounced, [[499, 'x'], [1, 'z']]);
+    }));
+    it('#update should be debounced', fakeAsync(() => {
+      const debounced = debounceSignal('x', 500, { injector });
+      tickAndAssertValue(debounced, [[100, 'x']]);
+      debounced.update((x) => x + 'z');
+      fixture.detectChanges();
+      tickAndAssertValue(debounced, [[499, 'x'], [1, 'xz']]);
+    }));
+  });
 });

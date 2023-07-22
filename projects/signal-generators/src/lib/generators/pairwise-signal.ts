@@ -14,6 +14,7 @@ interface PairwiseSignalOptionsWithInitialValue<T> extends PairwiseSignalOptions
   initialValue: T;
 }
 
+/** This isn't going to work, unless we're okay with possibly missing values.  Computed might be better than effect. */
 export function pairwiseSignal<T>(src: SignalInput<T>, options: PairwiseSignalOptionsWithInitialValue<T>): Signal<[prior: T, current: T]>
 export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalOptions<T>): Signal<[prior: T, current: T] | undefined>
 export function pairwiseSignal<T>(src: SignalInput<T>, options?: PairwiseSignalOptions<T>): Signal<[prior: T, current: T] | undefined> {
