@@ -5,6 +5,7 @@ export function getDestroyRef(fn: Function, injector?: Injector | null | undefin
   if (injector) {
     return injector.get(DestroyRef);
   }
+
   assertInInjectionContext(fn);
   return inject(DestroyRef);
 }

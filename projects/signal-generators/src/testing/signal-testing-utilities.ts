@@ -29,3 +29,4 @@ export function autoDetectChangesSignal<T>(fixture: ComponentFixture<unknown>, i
     return isSignal(value) && 'mutate' in value && 'set' in value && 'update' in value;
   }
 }
+

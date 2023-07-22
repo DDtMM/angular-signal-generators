@@ -1,73 +1,31 @@
-import { Injector, Signal, effect, signal } from '@angular/core';
+import { Injector, Signal, computed, effect, signal, untracked } from '@angular/core';
 import { SignalInput, coerceSignal } from '../internal/signal-coercion';
 import { getDestroyRef } from '../internal/utilities';
-import { TimeSource } from './timer-signal';
+import { ValueSource, valueSourceGetValueFactory, watchValueSourceFn } from '../internal/values-source';
+import { TimerInternal } from '../internal/timer-internal';
 
-const enum DebounceSignalState {
-  Resting,
-  Running
-}
-export interface DebounceSignalOptions<T> {
-  defaultValue?: T;
+export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
 }
 
+/**
+ * TODO: Instead of making this use another signal, have it return a writable signal.
+ */
 export function debounceSignal<T>(srcSignal: SignalInput<T>,
-  dueTimeSource: TimeSource,
-  options: DebounceSignalOptions<T>): Signal<T | undefined> {
+  debounceTime: ValueSource<number>,
+  options?: DebounceSignalOptions): Signal<T | undefined> {
 
-  const output = signal<T | undefined>(undefined);
-  const src = coerceSignal(srcSignal);
-  let state = DebounceSignalState.Resting;
-  let lastSignalTime = Number.MAX_SAFE_INTEGER;
-  let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
-  let getRemainingTime: () => number;
-
-  const destroyRef = getDestroyRef(debounceSignal, options?.injector);
-
-  if (typeof dueTimeSource === 'number') {
-    getRemainingTime = () => dueTimeSource - (performance.now() - lastSignalTime);
-  }
-  else {
-    const dueTimeSignal = coerceSignal(dueTimeSource);
-    getRemainingTime = () => dueTimeSignal() - (performance.now() - lastSignalTime);
-    effect(() => {
-      if (state === DebounceSignalState.Running) {
-        timerStart(); // update timer if running.
-      }
-      dueTimeSignal();
-    });
-  }
-
+  const timerTimeFn = valueSourceGetValueFactory(debounceTime);
+  const source = coerceSignal(srcSignal, options);
+  const output = signal(source());
+  const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => output.set(source()) });
+  // setup cleanup actions.
+  getDestroyRef(debounceSignal, options?.injector).onDestroy(() => timer.destroy());
+  watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, options?.injector);
   effect(() => {
-    lastSignalTime = performance.now();
-    if (state === DebounceSignalState.Resting) {
-      timerStart();
-    }
-    src(); // I wish there was a better way to listen for an update like by a watch function.
-  });
-
-  function checkTimerState(): void {
-    if (getRemainingTime() <= 0) {
-      state = DebounceSignalState.Resting;
-      output.set(src());
-    } else {
-      timerStart();
-    }
-  }
-
-  /** Start the timer, clearing the old timer if it was running. */
-  function timerStart(): void {
-    clearTimeout(timeoutId);
-    state = DebounceSignalState.Running;
-    timeoutId = setTimeout(checkTimerState, getRemainingTime());
-  }
-
-  destroyRef.onDestroy(() => {
-    clearTimeout(timeoutId);
-    state = DebounceSignalState.Resting;
-  });
-
+    source(); // wish there was a better way to watch the value.
+    timer.start();
+  }, options)
   return output;
 }

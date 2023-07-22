@@ -1,47 +1,68 @@
-enum TimerStatus { Destroyed, Paused, Running, Stopped };
+/** The status of the timer. */
+export enum TimerStatus { Destroyed, Paused, Running, Stopped };
 
-interface TimerInternalOptions {
+/** Options for the timer */
+export interface TimerInternalOptions {
+  /** Callback to call when timer ticks. */
+  callback?: (tickCount: number) => void;
+  /** If true, will immediately start time. */
   runAtStart?: boolean;
 }
 
+/** Unique properties for the mode the timer is in. */
 interface TimerInternalRunner {
   onTickComplete: () => void;
   dueTime: number;
 }
 
+/** A general timer. */
 export class TimerInternal {
-
-  status = TimerStatus.Stopped;
-
-  /** Gets or set intervalTime if this was started with an interval.  Will throw if not initally passed an interval. */
-  get intervalTime() { 
+  /** Gets or set intervalTime if this was started with an interval.  Will throw if not initially passed an interval. */
+  get intervalTime() {
     TimerInternal.assertHasIntervalRunner(this);
     return this.intervalRunner!.dueTime;
   }
-  set intervalTime(value: number) { 
+  set intervalTime(value: number) {
     TimerInternal.assertHasIntervalRunner(this);
-    this.updateRunnerDueTime(value, this.intervalRunner!); 
+    this.updateRunnerDueTime(value, this.intervalRunner!);
   }
+
+  /** Gets the number of ticks since start. */
+  get ticks(): number { return this.tickCount; }
 
   /** Gets or sets the timeoutTime. */
   get timeoutTime() { return this.timeoutRunner.dueTime; }
   set timeoutTime(value: number) { this.updateRunnerDueTime(value, this.timeoutRunner); }
 
-  private internalCount = 0;
-  private intervalRunner?: TimerInternalRunner;
+  /** Readonly status of the timer. */
+  get timerStatus() { return this.status; }
+
+  /** Called when the timer completes. */
+  private readonly callback: (tickCount: number) => void;
+  /** The runner that is used in intervalMode */
+  private readonly intervalRunner?: TimerInternalRunner;
+  /** The time the last tick completed.  Doesn't have to be the actual last time. */
   private lastCompleteTime = Date.now();
+  /** When paused, stores what time was remaining. */
   private remainingTimeAtPause = 0;
+  /** The currently active runner.  Initially timeout, and then switches to interval. */
   private runner: TimerInternalRunner;
+  /** The current status of timer. */
+  private status = TimerStatus.Stopped;
+  /** The runner that is used in timeout mode. */
   private readonly timeoutRunner: TimerInternalRunner;
+  /** The count of ticks */
+  private tickCount = 0;
+  /** The id of the last timeout. */
   private timeoutId?: ReturnType<typeof setTimeout>;
 
   /**
    * passing only timeoutTime will have this behave like a timeout.
    * passing intervalTime will have this first execute timeoutTime then intervalTime.
    */
-  constructor(private callback: (count: number) => void, 
-    timeoutTime: number, 
-    intervalTime?: number, 
+  constructor(
+    timeoutTime: number,
+    intervalTime?: number,
     options?: TimerInternalOptions) {
 
     this.runner = this.timeoutRunner = {
@@ -55,7 +76,7 @@ export class TimerInternal {
         onTickComplete: this.tickStart.bind(this)// loop
       };
     }
-
+    this.callback = options?.callback ?? (() => {});
     if (options?.runAtStart) {
       this.status = TimerStatus.Running;
       this.tickStart();
@@ -82,7 +103,7 @@ export class TimerInternal {
     if (this.status === TimerStatus.Paused) {
       this.status = TimerStatus.Running;
       // if duration is adjusted by a signal then this is a problem.
-      this.lastCompleteTime = Date.now() - (this.runner.dueTime - this.remainingTimeAtPause); 
+      this.lastCompleteTime = Date.now() - (this.runner.dueTime - this.remainingTimeAtPause);
       this.tickStart();
     }
   }
@@ -91,7 +112,7 @@ export class TimerInternal {
   start(): void {
     if (this.status !== TimerStatus.Destroyed) {
       this.status = TimerStatus.Running;
-      this.internalCount = 0;
+      this.tickCount = 0;
       this.runner = this.timeoutRunner;
       this.lastCompleteTime = Date.now();
       this.tickStart();
@@ -122,10 +143,10 @@ export class TimerInternal {
     }
   }
 
-  /** 
+  /**
    * Handles when a tick is complete.
    * If for some reason there is remaining time, it will restart the tick.
-   * Otherwise it will increase the internalCount, execute the callback, update the completed, 
+   * Otherwise it will increase the internalCount, execute the callback, update the completed,
    *   and call the current runner's onTickComplete method so that it handles the next step.
    */
   private tickComplete(): void {
@@ -134,8 +155,9 @@ export class TimerInternal {
       this.tickStart();
     }
     else {
-      ++this.internalCount;
-      this.callback(this.internalCount);
+
+      ++this.tickCount;
+      this.callback(this.tickCount);
       this.lastCompleteTime = Date.now() + this.getRemainingTime();
       this.runner.onTickComplete();
     }
@@ -145,7 +167,7 @@ export class TimerInternal {
   private tickStart(): void {
     clearTimeout(this.timeoutId);
     if (this.status === TimerStatus.Running) {
-      this.timeoutId = setTimeout(this.tickComplete.bind(this), this.runner.dueTime);
+      this.timeoutId = setTimeout(this.tickComplete.bind(this), this.getRemainingTime());
     }
   }
 
