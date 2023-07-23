@@ -1,5 +1,5 @@
 /** The status of the timer. */
-export enum TimerStatus { Destroyed, Paused, Running, Stopped };
+export enum TimerStatus { Destroyed, Paused, Running, Stopped }
 
 /** Options for the timer */
 export interface TimerInternalOptions {
@@ -20,10 +20,12 @@ export class TimerInternal {
   /** Gets or set intervalTime if this was started with an interval.  Will throw if not initially passed an interval. */
   get intervalTime() {
     TimerInternal.assertHasIntervalRunner(this);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.intervalRunner!.dueTime;
   }
   set intervalTime(value: number) {
     TimerInternal.assertHasIntervalRunner(this);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.updateRunnerDueTime(value, this.intervalRunner!);
   }
 
@@ -76,7 +78,7 @@ export class TimerInternal {
         onTickComplete: this.tickStart.bind(this)// loop
       };
     }
-    this.callback = options?.callback ?? (() => {});
+    this.callback = options?.callback ?? (() => undefined);
     if (options?.runAtStart) {
       this.status = TimerStatus.Running;
       this.tickStart();

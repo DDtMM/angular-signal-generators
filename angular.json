@@ -33,6 +33,14 @@
               "zone.js/testing"
             ]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/signal-generators/src/**/*.ts"
+            ]
+          }
         }
       }
     },

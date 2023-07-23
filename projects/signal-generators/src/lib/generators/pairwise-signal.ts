@@ -1,6 +1,7 @@
-import { Injector, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
-import { SignalInput, coerceSignal } from '../internal/signal-coercion';
+import { Injector, Signal, WritableSignal, effect, signal } from '@angular/core';
+import { coerceSignal } from '../internal/signal-coercion';
 import { hasKey } from '../internal/utilities';
+import { SignalInput } from '../signal-input';
 
 export interface PairwiseSignalOptions<T> {
   /** The value to put in the first results prior value.  Prevents undefined result from being returned initially */

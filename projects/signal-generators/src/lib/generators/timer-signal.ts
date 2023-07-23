@@ -1,8 +1,7 @@
-import { Injector, Signal, WritableSignal, effect, isSignal, signal } from '@angular/core';
-import { SignalInput, coerceSignal } from '../internal/signal-coercion';
-import { getDestroyRef } from '../internal/utilities';
+import { Injector, Signal, WritableSignal, signal } from '@angular/core';
 import { TimerInternal } from '../internal/timer-internal';
-import { ValueSource, valueSourceGetValueFactory, watchValueSourceFn } from '../internal/values-source';
+import { getDestroyRef } from '../internal/utilities';
+import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
 export interface TimerSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -40,8 +39,8 @@ export interface TimerSignal extends Signal<number> {
  */
 export function timerSignal(timerTime: ValueSource<number>,  intervalTime?: ValueSource<number>, options?: TimerSignalOptions): TimerSignal {
   // To make thinks easy to access values, make TimeSources functions.
-  const timerTimeFn = valueSourceGetValueFactory(timerTime);
-  const intervalTimeFn = intervalTime !== undefined ? valueSourceGetValueFactory(intervalTime) : undefined;
+  const timerTimeFn = createGetValueFn(timerTime);
+  const intervalTimeFn = intervalTime !== undefined ? createGetValueFn(intervalTime) : undefined;
   /** The signal that will be returned. */
   const output = signal(0);
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), { callback: (x) => output.set(x), runAtStart: true });

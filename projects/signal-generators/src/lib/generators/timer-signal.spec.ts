@@ -3,7 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
 import { TimerSignal, timerSignal } from './timer-signal';
-import { ValueSource } from '../internal/values-source';
+import { ValueSource } from '../value-source';
 
 describe('timerSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -142,7 +142,7 @@ describe('timerSignal', () => {
 
   /** sets up the test inside fakeAsync and pauses the timer at the end to avoid error message. */
   function testTimer<T extends ValueSource<number>, U extends ValueSource<number> | undefined>(timerTime: T, intervalTime: U,
-    assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): any {
+    assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): jasmine.ImplementationCallback {
 
     return fakeAsync(() => {
       const timer = timerSignal(timerTime, intervalTime, { injector });

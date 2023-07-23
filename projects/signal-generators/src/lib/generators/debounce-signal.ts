@@ -1,8 +1,9 @@
-import { Injector, Signal, WritableSignal, computed, effect, signal, untracked } from '@angular/core';
-import { SignalInput, coerceSignal, isSignalInput } from '../internal/signal-coercion';
-import { getDestroyRef } from '../internal/utilities';
-import { ValueSource, valueSourceGetValueFactory, watchValueSourceFn } from '../internal/values-source';
+import { Injector, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
+import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
+import { getDestroyRef } from '../internal/utilities';
+import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+import { SignalInput, isSignalInput } from '../signal-input';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -50,7 +51,7 @@ export function debounceSignal<T>(initialValue: T, debounceTime: ValueSource<num
  * Creates either a writable signal whose values are debounced, or a signal who returns debounced values of another signal.
  */
 export function debounceSignal<T>(
-  initialValueOrSource: T | SignalInput<T>,
+  initialValueOrSource: ValueSource<T>,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions): Signal<T> | UpdatableSignal<T> {
 
@@ -64,7 +65,7 @@ function createSignalDebounce<T>(source: SignalInput<T>,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions): Signal<T> {
 
-  const timerTimeFn = valueSourceGetValueFactory(debounceTime);
+  const timerTimeFn = createGetValueFn(debounceTime);
   const srcSignal = coerceSignal(source, options);
   const output = signal(srcSignal());
   const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => output.set(srcSignal()) });

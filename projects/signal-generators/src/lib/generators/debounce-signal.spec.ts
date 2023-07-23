@@ -1,9 +1,9 @@
 import { Injector, signal } from '@angular/core';
 import { MockedComponentFixture, MockRender } from 'ng-mocks';
 import { debounceSignal } from './debounce-signal';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { fakeAsync } from '@angular/core/testing';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
-import { SignalInput } from '../internal/signal-coercion';
+
 
 describe('debounceSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -23,7 +23,6 @@ describe('debounceSignal', () => {
   it('should not change value until time of last source change equals debounce time', fakeAsync(() => {
     const originalValue = 1;
     const source = signal(originalValue);
-    const x: SignalInput<number> = source;
     const debounced = debounceSignal(source, 500, { injector });
     tickAndAssertValue(debounced, [[100, originalValue]]);
     source.set(2);
