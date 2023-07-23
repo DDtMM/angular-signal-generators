@@ -10,5 +10,14 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
+  "bugs": {
+    "url": "https://github.com/DDtMM/angular-signal-generators/issues"
+  },
+  "homepage":  "https://github.com/DDtMM/angular-signal-generators",
+  "keywords": ["angular", "signals"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DDtMM/angular-signal-generators.git"
+  },
   "sideEffects": false
 }

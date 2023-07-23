@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { debounceSignal } from 'signal-generators';
+import { debounceSignal } from 'projects/signal-generators/src/public-api';
 
 
 @Component({
