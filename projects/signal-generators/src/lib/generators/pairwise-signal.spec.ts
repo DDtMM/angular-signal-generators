@@ -1,7 +1,8 @@
-import { Injector, signal } from '@angular/core';
-import { pairwiseSignal } from './pairwise-signal';
-import { MockedComponentFixture, MockRender } from 'ng-mocks';
+import { Injector } from '@angular/core';
+import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { pairwiseSignal } from './pairwise-signal';
+
 describe('pairwiseSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
   let injector: Injector;

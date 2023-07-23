@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { intervalSignal } from 'projects/signal-generators/src/lib/generators/interval-signal';
-import { debounceSignal } from 'projects/signal-generators/src/lib/generators/debounce-signal';
-import { timerSignal } from 'projects/signal-generators/src/lib/generators/timer-signal';
+import { debounceSignal, timerSignal } from 'projects/signal-generators/src/public-api';
+
 
 @Component({
   selector: 'app-scratchpad',
@@ -40,7 +39,7 @@ import { timerSignal } from 'projects/signal-generators/src/lib/generators/timer
 })
 export class ScratchpadComponent {
   readonly doubler = computed(() => this.secondCounter() * 2);
-  readonly secondCounter = intervalSignal(1000);
+  readonly secondCounter = timerSignal(1000, 1000);
 
   readonly textValue = signal('XTY');
   readonly rangeSignal = signal(1000);

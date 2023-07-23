@@ -1,6 +1,6 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { TimerInternal, TimerInternalOptions, TimerStatus } from './timer-internal';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
+import { TimerInternal, TimerInternalOptions, TimerStatus } from './timer-internal';
 
 describe('timerInternal', () => {
   it('should create an instance', () => {
@@ -88,7 +88,7 @@ describe('timerInternal', () => {
     tickAndAssertTimerValue(timer, [[ 750, 5 ]]);
   }));
   it('calls callback after each tick', fakeAsync(() => {
-    const callbackSpy = jasmine.createSpy('callback', (_: number) => {});
+    const callbackSpy = jasmine.createSpy('callback', (x: number) => x);
     const timer = new TimerInternal(1000, 500, { runAtStart: true , callback: callbackSpy });
     tick(3000);
     expect(callbackSpy).toHaveBeenCalledTimes(5);
@@ -100,7 +100,7 @@ describe('timerInternal', () => {
     timerTime: N,
     intervalTime: N | undefined,
     options: TimerInternalOptions | undefined,
-    assertion: (timer: TimerInternal, timerTime: number, intervalTime: number | undefined) => void): any {
+    assertion: (timer: TimerInternal, timerTime: number, intervalTime: number | undefined) => void): jasmine.ImplementationCallback {
 
     return fakeAsync(() => {
       const timer = new TimerInternal(timerTime, intervalTime, options);

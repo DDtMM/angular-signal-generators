@@ -3,9 +3,9 @@ module.exports = {
   content: [
     'projects/demo/src/**/*.{html,ts}'
   ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: ["light", "dark", "garden"],
+  }
 }
 

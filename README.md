@@ -33,6 +33,10 @@ setTimeout(() => console.log(directDebounce(), 1000); // updated
 * **mutate(mutator)** - Starts the debounce timer and will update the value when the mutator completes.
 * **set(value)** - Starts the debounce timer and will update the value when the timer completes.
 
+### sequenceSignal
+
+Sequence Signal coming soon.
+
 ### timerSignal
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".

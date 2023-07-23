@@ -1,6 +1,7 @@
 import { DestroyRef, Injector, assertInInjectionContext, inject } from '@angular/core';
 
 /** Gets the DestroyRef either using the passed injector or inject function. */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function getDestroyRef(fn: Function, injector?: Injector | null | undefined): DestroyRef {
   if (injector) {
     return injector.get(DestroyRef);

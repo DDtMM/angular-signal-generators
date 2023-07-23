@@ -1,6 +1,5 @@
 import { WritableSignal, isSignal, signal } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
-import { hasKey } from '../lib/internal/utilities';
 
 /** Wraps the signals to call detectChanges after every mutate, set, or update. */
 export function autoDetectChangesSignal<T>(fixture: ComponentFixture<unknown>, initialValue: T | WritableSignal<T>): WritableSignal<T> {

@@ -1,18 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterLink, RouterOutlet],
   template: `
-<nav class="flex items-center justify-between flex-wrap bg-blue-500 py-5 px-3">
-  <div class="flex items-center flex-shrink-0 text-white mr-6">
-    <span class="font-semibold text-xl tracking-tight">Angular Signal Generators</span>
-  </div>
+<nav class="navbar bg-primary">
+  <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" [routerLink]="['/']">Angular Signal Generators</a>
 </nav>
-<div class="p-3">
+<div class="p-4">
   <router-outlet></router-outlet>
 </div>
   `,
