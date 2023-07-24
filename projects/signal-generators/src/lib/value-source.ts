@@ -9,9 +9,9 @@ export type ValueSource<T> = T | SignalInput<T>;
 export type ValueSourceGetValueFn<T> = Signal<T> | (() => T);
 
 /** Creates a function that retrieves the current value from a valueSource */
-export function createGetValueFn<T>(valueSrc: ValueSource<T>): ValueSourceGetValueFn<T> {
+export function createGetValueFn<T>(valueSrc: ValueSource<T>, injector?: Injector): ValueSourceGetValueFn<T> {
   return isSignalInput(valueSrc)
-    ? coerceSignal(valueSrc)
+    ? coerceSignal(valueSrc, { injector })
     : () => valueSrc;
 }
 /**

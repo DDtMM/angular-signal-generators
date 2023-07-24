@@ -65,7 +65,7 @@ function createSignalDebounce<T>(source: SignalInput<T>,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions): Signal<T> {
 
-  const timerTimeFn = createGetValueFn(debounceTime);
+  const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
   const srcSignal = coerceSignal(source, options);
   const output = signal(srcSignal());
   const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => output.set(srcSignal()) });

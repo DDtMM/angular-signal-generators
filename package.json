@@ -4,11 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:signal-generators": "ng build signal-generators",
+    "build:signal-generators": "ng build signal-generators & npx cp ./README.md ./dist/signal-generators & npx cp ./LICENSE ./dist/signal-generators",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test-coverage": "ng test --no-watch --code-coverage",
-    "lint": "ng lint signal-generators"
+    "lint": "ng lint signal-generators",
+    "xxx": "npx cp ./README.md ./dist/signal-generators"
   },
   "private": true,
   "dependencies": {
@@ -37,6 +38,7 @@
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "autoprefixer": "^10.4.14",
+    "cp": "^0.2.0",
     "daisyui": "^3.3.1",
     "eslint": "^8.44.0",
     "jasmine-core": "~4.6.0",
