@@ -1,74 +1,58 @@
-import { Injector, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
-import { coerceSignal } from '../internal/signal-coercion';
-import { hasKey } from '../internal/utilities';
-import { SignalInput } from '../signal-input';
+import { Injector, WritableSignal, signal } from '@angular/core';
 import { ValueSource, createGetValueFn } from '../value-source';
-import { ValueSourceGetValueFn } from 'signal-generators';
 
-export interface SequenceSignalOptions<T> {
-  /** The value to put in the first.  If not provided the first element in sequence will be used. */
-  initialValue?: T;
-  /** pass injector if this is not created in Injection Context */
+export interface SequenceSignalOptions {
+  /** If true, then the sequence will not loop and restart needs to be called. */
+  disableAutoReset?: boolean;
+  /** injector should only be necessary if outside injector context and ValueSource is observable. */
   injector?: Injector;
 }
 
 export interface SequenceSignal<T> extends WritableSignal<T> {
-  /** Updates the signal to the next item in sequence. */
+  /** Updates the signal to the next item in sequence.  If at end and autoRestart is not disabled, then it will return to start. */
   next: () => void;
-  /** Updates the signal to the previous item in sequence. */
-  previous: () => void;
-  /** Updates the signal to the first
-   *  item in sequence. */
+  /** Updates the signal to the first item in sequence. */
   reset: () => void;
 }
 
-export interface SequenceSignalState<T> extends WritableSignal<T> {
-  action: string;
-  index: number;
-  items: T[];
-  value: T;
-}
-/**
- * A writable signal that can be traversed with methods.
- */
-export function sequenceSignal<T>(sequence: ValueSource<T[]>, options?: SequenceSignalOptions<T>) {
-  const sequenceItemsInternalFn = createGetValueFn(sequence, options?.injector);
-  const sequenceItemsFn = computed(() => {
-    const items = sequenceItemsInternalFn();
-    assertHasSequenceItems(items);
-    return items;
-  })
-  const initialItems = sequenceItemsFn();
-  const state = signal<SequenceSignalState<T>>({ action: 'init', index: 0, items: initialItems, value: options?.initialValue ?? initialItems[0] });
-}
+export function sequenceSignal<T>(sequence: ValueSource<Iterable<T>>, options: SequenceSignalOptions = {}): SequenceSignal<T> {
+  const sequenceItemsInternalFn = createGetValueFn(sequence, options.injector);
+  let iterator = sequenceItemsInternalFn()[Symbol.iterator]();
+  const output = signal(getFirstValue());
 
-function assertHasSequenceItems<T>(sequenceItems: T[]): boolean {
-  if (sequenceItems.length === 0) {
-    throw new Error('There are no items in sequence.');
+  function getFirstValue(): T {
+    const result = iterator.next();
+    if (result.done) {
+      throw new Error('Sequence must return elements');
+    }
+    return result.value;
   }
-  return true;
-}
+  function updateValue(): void {
+    let result = iterator.next();
 
-/** Assigns timer functions to the signal. */
-function bindSignalFunctions<T>(state: SequenceSignalState<T>, output: WritableSignal<T>, sequenceItemsFn: ValueSourceGetValueFn<T[]>): SequenceSignal<T> {
+    if (result.done) {
+      // try returning to start.
+      if (options.disableAutoReset) {
+        return;
+      }
+      iterator = sequenceItemsInternalFn()[Symbol.iterator]();
+      result = iterator.next();
+      // new iterator has no result so we can't update Value
+      if (result.done) {
+        return;
+      }
+    }
+
+    output.set(result.value);
+  }
   return Object.assign(output, {
-    next: () => updateRelativeValue(1),
-    previous: () => updateRelativeValue(-1),
+    next: () => { updateValue(); },
     reset: () => {
-      const items = sequenceItemsFn();
-      assertHasSequenceItems(items);
-      return items[0];
+      iterator = sequenceItemsInternalFn()[Symbol.iterator]();
+      const result = iterator.next();
+      if (!result.done) {
+        output.set(result.value);
+      }
     }
   });
-
-
-  function updateRelativeValue(relativeIndex: number): void {
-    state.update(value => {
-      const items = sequenceItemsFn();
-      assertHasSequenceItems(items);
-      const currentIndex = items.indexOf(value);
-      const nextIndex = (currentIndex + relativeIndex) % length;
-      return items[nextIndex];
-    });
-  }
 }
