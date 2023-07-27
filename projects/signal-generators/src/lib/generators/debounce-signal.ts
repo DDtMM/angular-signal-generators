@@ -86,9 +86,10 @@ function createDebouncedSignal<T>(initialValue: T,
 
   const source = signal(initialValue);
   const output = createSignalDebounce(source, debounceTime, options);
+  const computedWrapper = computed(() => output()); // this is necessary because we can't rebind on set.
   // unfortunately mutate didn't work because it changed the underlying value immediately.
-  return Object.assign(computed(() => output()), {
-    asReadonly: () => output,
+  return Object.assign(computedWrapper, {
+    asReadonly: () => computedWrapper,
     //mutate: source.mutate.bind(source),
     set: source.set.bind(source),
     update: source.update.bind(source)
