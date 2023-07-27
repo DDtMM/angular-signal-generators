@@ -39,8 +39,8 @@ export interface TimerSignal extends Signal<number> {
  */
 export function timerSignal(timerTime: ValueSource<number>,  intervalTime?: ValueSource<number>, options?: TimerSignalOptions): TimerSignal {
   // To make thinks easy to access values, make TimeSources functions.
-  const timerTimeFn = createGetValueFn(timerTime);
-  const intervalTimeFn = intervalTime !== undefined ? createGetValueFn(intervalTime) : undefined;
+  const timerTimeFn = createGetValueFn(timerTime, options?.injector);
+  const intervalTimeFn = intervalTime !== undefined ? createGetValueFn(intervalTime, options?.injector) : undefined;
   /** The signal that will be returned. */
   const output = signal(0);
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), { callback: (x) => output.set(x), runAtStart: true });
@@ -63,7 +63,5 @@ export function timerSignal(timerTime: ValueSource<number>,  intervalTime?: Valu
       resume: timer.resume.bind(timer)
     });
   }
-
-
 }
 

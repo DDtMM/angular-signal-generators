@@ -60,5 +60,10 @@ describe('debounceSignal', () => {
       fixture.detectChanges();
       tickAndAssertValue(debounced, [[499, 'x'], [1, 'xz']]);
     }));
+    it('asReadonly just returns itself', () => {
+      const debounced = debounceSignal('x', 500, { injector });
+      const asReadonlyResult = debounced.asReadonly();
+      expect(asReadonlyResult).toBe(debounced);
+    });
   });
 });

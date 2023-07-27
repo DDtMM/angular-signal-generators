@@ -65,7 +65,7 @@ function createSignalDebounce<T>(source: SignalInput<T>,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions): Signal<T> {
 
-  const timerTimeFn = createGetValueFn(debounceTime);
+  const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
   const srcSignal = coerceSignal(source, options);
   const output = signal(srcSignal());
   const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => output.set(srcSignal()) });
@@ -86,9 +86,10 @@ function createDebouncedSignal<T>(initialValue: T,
 
   const source = signal(initialValue);
   const output = createSignalDebounce(source, debounceTime, options);
+  const computedWrapper = computed(() => output()); // this is necessary because we can't rebind on set.
   // unfortunately mutate didn't work because it changed the underlying value immediately.
-  return Object.assign(computed(() => output()), {
-    asReadonly: () => output,
+  return Object.assign(computedWrapper, {
+    asReadonly: () => computedWrapper,
     //mutate: source.mutate.bind(source),
     set: source.set.bind(source),
     update: source.update.bind(source)
