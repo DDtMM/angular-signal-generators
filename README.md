@@ -35,8 +35,40 @@ setTimeout(() => console.log(directDebounce(), 1000); // updated
 
 ### sequenceSignal
 
-Sequence Signal coming soon.
+The Sequence Signal is useful for situations where you want to easily cycle between options.  For example, if you want to toggle between true/false or a list of sizes.  These are still writable signals so you can manually override the current value.
 
+There is also a special option to pass a cursor, which is similar to an iterator, but can be reset.  There will probably be more functionality added later.
+
+ ```ts
+ const boolSeq = sequenceSignal([true, false]);
+ console.log(boolSeq()); // true
+ boolSeq.next();
+ console.log(boolSeq()); // false
+ boolSeq.next();
+ console.log(boolSeq()); // true
+
+const fibonacci = sequenceSignal((() => { // closure just for example
+let values = [1, 2];
+return {
+  next: (relativeChange: number) => {
+    // there's probably a smarter way to do this.
+    for (let i = 0; i < relativeChange; i++) {
+      values = [values[1], values[0] + values[1]];
+    }
+    for (let i = relativeChange; i < 0; i++) {
+      values = [Math.max(1, values[1] - values[0]), Math.max(values[0], 2)];
+    }
+    return { hasValue: true, value: values[0] };
+  },
+  reset: () => values = [1, 2]
+};
+})());
+console.log(fibonacci()); // 1
+fibonacci.next(3);
+console.log(fibonacci()); // 5
+fibonacci.next(-1);
+console.log(fibonacci()); // 3
+```
 ### timerSignal
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
@@ -93,4 +125,4 @@ All signal generators have an options parameter that accept injector.  This is e
 
 
 ## Issues or Ideas?
-Please add an issue if you have a problem.
+I'm just adding signals as I run into real life problems.  Please add an issue if you have an idea or run into a technical difficulty.

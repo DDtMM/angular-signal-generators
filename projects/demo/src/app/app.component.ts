@@ -9,6 +9,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   template: `
 <nav class="navbar bg-primary">
   <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" [routerLink]="['/']">Angular Signal Generators</a>
+  <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" href="https://github.com/DDtMM/angular-signal-generators">Github</a>
 </nav>
 <div class="p-4">
   <router-outlet></router-outlet>
