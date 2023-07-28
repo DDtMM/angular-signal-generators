@@ -92,13 +92,13 @@ This is very similar to rxjs's *timer* operator.  It will be have like setTimeou
 
 ```ts
 // a simple counter:
-const secondCounter = timer(1000, 1000);
+const secondCounter = timerSignal(1000, 1000);
 const message = computed(() => `Time elapsed: ${secondCounter()}`);
 effect(() => console.log(message()));
 
 // do something after an amount of time:
 const explosionTime = signal(10000);
-const explode = timer(explosionTime());
+const explode = timerSignal(explosionTime());
 const explosionHandler = effect(() => {
   if (explode() === 1) {
     console.log('BOOM!');
