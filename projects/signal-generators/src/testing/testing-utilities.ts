@@ -6,7 +6,6 @@ export function tickAndAssertValue<T>(selector: () => T, pattern: [elapsedMs: nu
   const results: T[] = [];
   for (const [elapsedMs] of pattern) {
     tick(elapsedMs);
-    console.log(`after tick ${elapsedMs} ${selector()}`);
     results.push(selector());
   }
   expect(results).toEqual(pattern.map(x => x[1]));
