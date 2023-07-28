@@ -1,6 +1,19 @@
 # Angular Signal Generators
 
 Angular Signal Generators are purpose built signals meant to simplify common tasks encountered in Components.
+Check out the [demos](https://ddtmm.github.io/angular-signal-generators/) for a better idea on how they can be used.
+
+## Installation
+
+```
+npm install @ddtmm/angular-signal-generators
+```
+
+You can import the signals from `'@ddtmm/angular-signal-generators`.
+
+```ts
+import { debounceSignal, sequenceSignal, timerSignal } from '@ddtmm/angular-signal-generators';
+```
 
 ## Generators
 
@@ -69,6 +82,10 @@ console.log(fibonacci()); // 5
 fibonacci.next(-1);
 console.log(fibonacci()); // 3
 ```
+#### Methods
+* **next(relativeChange?: number)** - Goes to the next element in the sequence.
+* **reset()** - Resets the sequence, emitting the first element.
+
 ### timerSignal
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
