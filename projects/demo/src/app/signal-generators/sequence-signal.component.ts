@@ -50,5 +50,4 @@ export class SequenceSignalComponent {
   fibonacciStepSize = 1;
 
   readonly trueFalseToggle = sequenceSignal([true, false]);
-
 }

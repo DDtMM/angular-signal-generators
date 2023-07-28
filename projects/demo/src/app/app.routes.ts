@@ -11,5 +11,5 @@ export const routes: Routes = [
   { path: 'sequence-signal', component: SequenceSignalComponent },
   { path: 'scratchpad', component: ScratchpadComponent },
   { path: 'timer-signal', component: TimerSignalComponent },
-
+  { path: '**', redirectTo: '' }
 ];
