@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:docs": "ng build demo --base-href /angular-signal-generators",
+    "build:docs": "ng build demo --base-href /angular-signal-generators/",
     "build:signal-generators": "ng build signal-generators & npx cp ./README.md ./dist/signal-generators & npx cp ./LICENSE ./dist/signal-generators",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
