@@ -67,6 +67,12 @@ describe('sequenceSignal', () => {
       sequence.reset();
       expect(sequence()).toEqual(source[0]);
     });
+    it('#next(0) will move to next if manually moved to not started position.', () => {
+      const sequence = sequenceSignal(source);
+      sequence.next(-1);
+      sequence.next(0);
+      expect(sequence()).toEqual(source[0]);
+    });
   });
 
   describe('when signal passed as first parameter', () => {
@@ -87,7 +93,7 @@ describe('sequenceSignal', () => {
       expect(sequence()).toBe(nextArray[0]);
     });
 
-    it('will not throw an error if the next sequence source.', () => {
+    it('will not throw an error if the next sequence is empty.', () => {
       const sourceArray = [Math.random(), 1 + Math.random(), 2 + Math.random()];
       const sourceSignal = signal(sourceArray);
       const nextArray: number[] = [];

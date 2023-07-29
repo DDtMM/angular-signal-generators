@@ -37,7 +37,7 @@ function isCursor<T>(obj: Cursor<T> | ArrayLike<T>): obj is Cursor<T> {
 class ArrayCursor<T> implements Cursor<T> {
   private index = -1;
 
-  constructor(private data: ArrayLike<T>, private autoReset: boolean = false) {}
+  constructor(private data: ArrayLike<T>, private autoReset: boolean) {}
   next(relativeChange = 1): CursorResult<T> {
 
     if (this.data.length === 0) {

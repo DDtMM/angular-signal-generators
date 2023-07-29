@@ -29,17 +29,19 @@ userInput.set('updated');
 setTimeout(() => console.log(`${userInput()}, ${debouncedInput}`), 500); // updated, original
 setTimeout(() => console.log(`${userInput()}, ${debouncedInput}`), 1000); // updated, updated
 
+// create a signal that is debounced every time it is set.
 const directDebounce = debounceSignal('original', 1000);
 directDebounce.set('updated');
 setTimeout(() => console.log(directDebounce(), 500); // original
 setTimeout(() => console.log(directDebounce(), 1000); // updated
 
+// allow debounce time to be changed by another signal.
 const debounceTime = signal(1000);
 const variableDebounce = debounceSignal('original', debounceTime);
 variableDebounce.set('updated');
 setTimeout(() => debounceTime.set(2000), 500);
-setTimeout(() => console.log(directDebounce(), 1000); // original
-setTimeout(() => console.log(directDebounce(), 1000); // updated
+setTimeout(() => console.log(variableDebounce(), 1000); // original
+setTimeout(() => console.log(variableDebounce(), 1000); // updated
 ```
 
 #### Methods (if second overload is used)

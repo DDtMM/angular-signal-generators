@@ -11,7 +11,9 @@ describe('timerInternal', () => {
       tickAndAssertTimerValue(timer, [[0, 0], [ 1000, 1 ], [ 2000, 1 ]]);
       expect(timer.timerStatus === TimerStatus.Stopped);
     }));
-
+    it('#get timerTime should return current timeout Timer', testTimer(1000, undefined, { runAtStart: true }, (timer) => {
+      expect(timer.timeoutTime).toBe(1000);
+    }));
     it('should increase due time when setting timeoutTime with a higher value', testTimer(1000, undefined, { runAtStart: true }, (timer) => {
       tickAndAssertTimerValue(timer, [[ 500, 0 ]]);
       timer.timeoutTime = 2000;
@@ -44,6 +46,10 @@ describe('timerInternal', () => {
   describe('as an interval', () => {
     it('emits continuously after timeoutTime is complete', testTimer(1000, 500, { runAtStart: true }, (timer) => {
       tickAndAssertTimerValue(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
+    }));
+
+    it('#get intervalTime returns current intervalTime', testTimer(1000, 500, { runAtStart: true }, (timer) => {
+      expect(timer.intervalTime).toBe(500);
     }));
 
     it('should increase due time when setting intervalTime with a higher value', testTimer(1000, 500, { runAtStart: true }, (timer) => {

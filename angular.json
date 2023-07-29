@@ -27,6 +27,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "codeCoverageExclude": ["projects/signal-generators/src/testing/**"],
             "tsConfig": "projects/signal-generators/tsconfig.spec.json",
             "polyfills": [
               "zone.js",

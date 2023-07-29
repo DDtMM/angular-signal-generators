@@ -1,9 +1,10 @@
-import { Injector, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
+import { Injector, Signal, WritableSignal, effect, signal } from '@angular/core';
 import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
-import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+import { wrapSignal } from '../internal/wrap-signal';
 import { SignalInput, isSignalInput } from '../signal-input';
+import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -85,13 +86,12 @@ function createDebouncedSignal<T>(initialValue: T,
   options?: DebounceSignalOptions): UpdatableSignal<T> {
 
   const source = signal(initialValue);
-  const output = createSignalDebounce(source, debounceTime, options);
-  const computedWrapper = computed(() => output()); // this is necessary because we can't rebind on set.
+  const debounced = createSignalDebounce(source, debounceTime, options);
   // unfortunately mutate didn't work because it changed the underlying value immediately.
-  return Object.assign(computedWrapper, {
-    asReadonly: () => computedWrapper,
+  return wrapSignal(debounced, (wrapper) => ({
+    asReadonly: () => wrapper,
     //mutate: source.mutate.bind(source),
     set: source.set.bind(source),
     update: source.update.bind(source)
-  });
+  }));
 }

@@ -1,4 +1,5 @@
 import { Signal, computed, isSignal, signal } from '@angular/core';
+import { wrapSignal } from './wrap-signal';
 
 export interface RefValue<T> {
   readonly ref: T;
@@ -21,13 +22,13 @@ export function refSignal<T>(initialValueOrSignal: T | Signal<T>): RefSignal<T> 
     return computed(() => ({ ref: initialValueOrSignal() }), { equal: () => false });
   }
   const innerSignal = signal<RefValue<T>>({ ref: initialValueOrSignal });
-  return Object.assign(innerSignal, {
-    asReadonly: () => innerSignal,
+  return wrapSignal(innerSignal, outer => ({
+    asReadonly: () => outer,
     mutate: (mutatorFn: (value: T) => void) => innerSignal.update(({ ref }) => {
       mutatorFn(ref);
       return { ref };
     }),
     set: (value: T) => innerSignal.set({ ref: value }),
     update: (updateFn: (value: T) => T) => innerSignal.update(x => ({ ref: updateFn(x.ref) }))
-  })
+  }));
 }
