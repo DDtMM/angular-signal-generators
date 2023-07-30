@@ -87,6 +87,15 @@ function createDebouncedSignal<T>(initialValue: T,
 
   const source = signal(initialValue);
   const debounced = createSignalDebounce(source, debounceTime, options);
+
+  // There has to be a way to make wrapSignal unnecessary.
+  // const { set, update } = source;
+  // return Object.assign(debounced, {
+  //   asReadonly: () => debounced,
+  //   //mutate: source.mutate.bind(source),
+  //   set: (value: T) => set.call(source, value),
+  //   update: (updateFn: (value: T) => T) => update.call(source, updateFn)
+  // });
   // unfortunately mutate didn't work because it changed the underlying value immediately.
   return wrapSignal(debounced, (wrapper) => ({
     asReadonly: () => wrapper,
