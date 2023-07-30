@@ -13,7 +13,7 @@ export type SignalInput<T> = (() => T) | ToSignalInput<T> | Signal<T>;
  * @param obj Any type of a value can be checked.
  */
 export function isSignalInput(obj: unknown): obj is SignalInput<unknown> {
-  return (obj != null) && (typeof obj === 'function' || isToSignalInput(obj));
+  return (obj != null) && (typeof obj === 'function' && obj.length === 0 || isToSignalInput(obj));
 }
 
 /**

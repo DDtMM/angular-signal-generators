@@ -44,9 +44,39 @@ setTimeout(() => console.log(variableDebounce(), 1000); // original
 setTimeout(() => console.log(variableDebounce(), 1000); // updated
 ```
 
-#### Methods (if second overload is used)
+#### Members (if second overload is used)
 * **mutate(mutator)** - Starts the debounce timer and will update the value when the mutator completes.
 * **set(value)** - Starts the debounce timer and will update the value when the timer completes.
+
+### mapSignal
+
+Creates a signal whose input value is immediately mapped to a different value based on a selector.
+The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+
+```ts
+const addOne = mapSignal(1, x => x + 1);
+console.log(addOne()); // 2
+
+const addOnePlusOne = mapSignal(1, x => x + addOne());
+console.log(addOnePlusOne()); // 3
+
+addOne.set(2);
+console.log(addOnePlusOne()); // 3 - no change because the selector is not reactive.
+addOnePlusOne.set(2)
+console.log(addOnePlusOne()); // 5 = 2 + (2 + 1)
+
+const addOnePlusOneTracked = mapSignal(1, x => x + addOne(), { trackSelector: true });
+console.log(addOnePlusOneTracked); // 4
+addOne.set(3);
+console.log(addOnePlusOneTracked); // 5
+```
+
+#### Members
+* asReadonly() - Returns the output signal as a readonly.
+* input: Contains the values that are input to the signal.
+* mutate(mutatorFn: (value: TIn) => void) - Same as writable signal mutate, only the selector is applied after.
+* set(value: TIn) - Same as writable signal set, only the selector is applied after.
+* update(updateFn: (value: TIn) => TIn) - Same as writable signal set, only the selector is applied after.
 
 ### sequenceSignal
 
@@ -84,7 +114,7 @@ console.log(fibonacci()); // 5
 fibonacci.next(-1);
 console.log(fibonacci()); // 3
 ```
-#### Methods
+#### Members
 * **next(relativeChange?: number)** - Goes to the next element in the sequence.
 * **reset()** - Resets the sequence, emitting the first element.
 
@@ -112,7 +142,7 @@ const explosionHandler = effect(() => {
 setTimeout(() => explosionTime.set(1000));
 ```
 
-#### Methods
+#### Members
 * **pause()** - Pauses the timer.
 * **resume()** - Resume after pause.  Does nothing otherwise.
 * **restart()** - Restarts the timer from 0.
@@ -120,7 +150,7 @@ setTimeout(() => explosionTime.set(1000));
 ## Conventions
 
 ### SignalInput and ValueSource
-Every method accepts either a **SignalInput&lt;T&gt;** or **ValueSource&lt;T&gt;**.
+Many arguments are of type **SignalInput&lt;T&gt;** or **ValueSource&lt;T&gt;**.
 
 *SignalInput* can be either something that can be either converted to a signal with *toSignal*, a function that can be passed to *computed* or a regular old *signal*.  The purpose of this is to make things just a bit more convenient.
 

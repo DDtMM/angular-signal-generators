@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HighlightModule } from 'ngx-highlightjs';
 import { debounceSignal } from 'projects/signal-generators/src/public-api';
 
 
 @Component({
   selector: 'app-debounce-signal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HighlightModule],
   template: `
 <h2>Debounce Signal</h2>
 <p>
@@ -36,6 +37,13 @@ and one where it has a <i>set</i> and <i>update</i> method and the change of the
     <input class="range" type="range" min="0" max="10000" [ngModel]="debounceTime()" (ngModelChange)="debounceTime.set($event)" />
   </div>
 </div>
+<div>
+  <h2>Examples</h2>
+  <h3>A Debounced Signal</h3>
+  <pre><code [highlight]="standaloneSignalExample" [languages]="['typescript']"></code></pre>
+  <h3>Debouncing Another Signal</h3>
+  <pre><code [highlight]="fromSourceSignalExample" [languages]="['typescript']"></code></pre>
+</div>
 
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -46,4 +54,19 @@ export class DebounceSignalComponent {
   readonly inputTextDebounced = debounceSignal(this.inputText, this.debounceTime);
   readonly directDebounced = debounceSignal('', this.debounceTime);
 
+  readonly standaloneSignalExample = `
+const directDebounce = debounceSignal('original', 1000);
+directDebounce.set('updated');
+setTimeout(() => console.log(directDebounce(), 500); // original
+setTimeout(() => console.log(directDebounce(), 1000); // updated
+  `.trim();
+
+  readonly fromSourceSignalExample = `
+const original = signal('unchanged');
+const debounced = debounceSignal(original, 500);
+
+original.set('changed');
+console.log(original(), debounced()) // changed, unchanged
+setTimeout(() => console.log(original(), debounced()), 500) // changed, changed.
+`.trim();
 }
