@@ -1,49 +1,87 @@
 import { Signal, ValueEqualityFn, computed, signal } from '@angular/core';
 
-interface MapSignalOptions<TOut>  {
+export interface MapSignalOptions<TOut>  {
   /**
-   * If true, then the selector should be put inside a computed signal.
+   * An equal function put on the selector result.
+   * This won't behave quite the same if the signal is tracked.
+   * This is because the equality function will only work on emitted values for tracked values based om how computed works.
+   * For untracked, it's always run after each change.
+   */
+  equal?: ValueEqualityFn<TOut>;
+  /**
+   * If true, then the selector should be put inside a computed signal so that any changes to
+   * signal inside of it will update the MapSignal's value.
    * Otherwise it will only run when the signal is changed by a method.
    */
-  computed?: boolean;
-  equal?: ValueEqualityFn<TOut>;
+  trackSelector?: boolean;
 }
 
-interface MapSignal<TIn, TOut> extends Signal<TOut> {
+/** A signal that is updated with TIn, but emits TOut due to a selector specified at creation. */
+export interface MapSignal<TIn, TOut> extends Signal<TOut> {
+  /** Returns the output signal as a readonly. */
   asReadonly(): Signal<TOut>;
+  /** Contains the values that are input to the signal. */
+  input: Signal<TIn>;
   mutate(mutatorFn: (value: TIn) => void): void;
   set(value: TIn): void;
   update(updateFn: (value: TIn) => TIn): void;
 }
 
+/**
+ * Creates a signal whose input value is immediately mapped to a different value based on a selector.
+ * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * @param initialValue The initial value that will be run
+ * @param selector A selector that is run after the value of the signal is changed.
+ * @param options Can see equality function or if the selector should be tracked inside a computed signal.
+ * @returns A MapSignal
+ * @example
+ * ```ts
+ * const addOne = mapSignal(1, x => x + 1);
+ * console.log(addOne()); // 2
+ *
+ * const addOnePlusOne = mapSignal(1, x => x + addOne());
+ * console.log(addOnePlusOne()); // 3
+ *
+ * addOne.set(2);
+ * console.log(addOnePlusOne()); // 3 - no change because the selector is not reactive.
+ * addOnePlusOne.set(2)
+ * console.log(addOnePlusOne()); // 5 = 2 + (2 + 1)
+ *
+ * const addOnePlusOneTracked = mapSignal(1, x => x + addOne(), { trackSelector: true });
+ * console.log(addOnePlusOneTracked); // 4
+ * addOne.set(3);
+ * console.log(addOnePlusOneTracked); // 5
+ * ```
+ */
 export function mapSignal<TIn, TOut>(initialValue: TIn, selector: (x:TIn) => TOut, options: MapSignalOptions<TOut> = {}): MapSignal<TIn, TOut> {
-  if (options.computed) {
-    const valueSource = signal<TIn>(initialValue);
-    const output = computed(() => selector(valueSource()), { equal: options.equal });
+  const input = signal<TIn>(initialValue);
+  if (options.trackSelector) {
+    const output = computed(() => selector(input()), { equal: options.equal });
     return Object.assign(output, {
       asReadonly: () => output,
-      mutate: valueSource.mutate.bind(valueSource),
-      set: valueSource.set.bind(valueSource),
-      update: valueSource.update.bind(valueSource)
+      input,
+      mutate: input.mutate.bind(input),
+      set: input.set.bind(input),
+      update: input.update.bind(input)
     });
   }
 
-  let lastInput = initialValue;
   const output = signal<TOut>(selector(initialValue));
   const setFn = setterFactory()
   return Object.assign(output, {
     asReadonly: () => output,
+    input,
     mutate: (mutatorFn: (value: TIn) => void) => {
-      mutatorFn(lastInput);
-      setFn(selector(lastInput));
+      input.mutate(mutatorFn);
+      setFn(selector(input()));
     },
     set: (value: TIn) => {
-      lastInput = value;
-      setFn(selector(lastInput));
+      input.set(value);
+      setFn(selector(input()));
     },
     update: (updateFn: (value: TIn) => TIn) => {
-      lastInput = updateFn(lastInput);
-      setFn(selector(lastInput));
+      input.update(updateFn);
+      setFn(selector(input()));
     }
   });
   /** creates a setter function that is different depending on options. */
@@ -54,7 +92,7 @@ export function mapSignal<TIn, TOut>(initialValue: TIn, selector: (x:TIn) => TOu
       return (value: TOut) => originalSetFn.call(output, value);
     }
     return (value: TOut) => {
-        if (!equalFn(value, output())) {
+        if (!equalFn(output(), value)) {
           originalSetFn.call(output, value);
         }
       };

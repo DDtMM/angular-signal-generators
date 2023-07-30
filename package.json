@@ -8,7 +8,7 @@
     "build:signal-generators": "ng build signal-generators & npx cpy ./README.md ./dist/signal-generators & npx cpy ./LICENSE ./dist/signal-generators",
     "watch": "ng build --watch --configuration development ",
     "test": "ng test",
-    "test-coverage": "ng test --code-coverage --no-watch",
+    "test-coverage": "ng test --code-coverage",
     "lint": "ng lint signal-generators"
   },
   "private": true,

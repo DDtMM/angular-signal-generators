@@ -33,7 +33,7 @@ export type UpdatableSignal<T> = Signal<T> & Omit<WritableSignal<T>, 'mutate'>;
  */
 export function debounceSignal<T>(source: SignalInput<T>, debounceTime: ValueSource<number>, options?: DebounceSignalOptions): Signal<T>
 /**
- * Creates a signal whose changes are debounced after the initial signal of course.
+ * Creates a signal whose changes are debounced after a period of time from when the signal was updated.
  * @param initialValue The initial value like a regular signal.
  * @param debounceTime The time from last change before the value is emitted.  Can be signal like.
  * @param options Options for the signal.
@@ -88,7 +88,7 @@ function createDebouncedSignal<T>(initialValue: T,
   const source = signal(initialValue);
   const debounced = createSignalDebounce(source, debounceTime, options);
 
-  // There has to be a way to make wrapSignal unnecessary.
+  // There has to be a way to make wrapSignal unnecessary, but below didn't work.
   // const { set, update } = source;
   // return Object.assign(debounced, {
   //   asReadonly: () => debounced,
