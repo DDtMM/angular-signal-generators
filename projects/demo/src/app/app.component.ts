@@ -11,7 +11,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
   template: `
 <nav class="navbar bg-primary">
   <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" [routerLink]="['/']">Angular Signal Generators</a>
-  <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" href="/api">API Docs</a>
+  <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" href="./api">API Docs</a>
   <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" href="https://github.com/DDtMM/angular-signal-generators">
     <fa-icon [icon]="faGithub" />
     Github
