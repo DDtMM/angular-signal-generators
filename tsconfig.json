@@ -33,5 +33,10 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
+  },
+  "typedocOptions": {
+    "entryPoints": ["projects/signal-generators/src/public-api.ts"],
+    "out": "projects/demo/src/api",
+    "sourceLinkTemplate": "https://github.com/DDtMM/angular-signal-generators/{path}?at={gitRevision}#line={line}",
   }
 }
