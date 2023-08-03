@@ -7,6 +7,9 @@ export type ToSignalInput<T> = Parameters<typeof toSignal<T>>[0]
 /** Could be a function used in a computed, a type compatible with {@link toSignal}, or just a signal. */
 export type SignalInput<T> = (() => T) | ToSignalInput<T> | Signal<T>;
 
+/** The emitted value of a SignalInput */
+export type SignalInputValue<T extends SignalInput<unknown>> = T extends SignalInput<infer R> ? R : never;
+
 /**
  * Tests if an object is valid for coerceSignal.
  *
