@@ -35,7 +35,10 @@
     "strictTemplates": true
   },
   "typedocOptions": {
+    "categorizeByGroup": true,
     "entryPoints": ["projects/signal-generators/src/public-api.ts"],
+    "groupOrder": ["Functions", "*"],
+    "requiredToBeDocumented": ["Function"],
     "out": "projects/demo/src/api",
     "sourceLinkTemplate": "https://github.com/DDtMM/angular-signal-generators/{path}?at={gitRevision}#line={line}",
   }

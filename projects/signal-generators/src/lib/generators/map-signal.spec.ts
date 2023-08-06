@@ -1,6 +1,7 @@
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { mapSignal } from './map-signal';
+import { WritableSignal, signal } from '@angular/core';
 
 describe('mapSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -9,7 +10,36 @@ describe('mapSignal', () => {
     fixture = MockRender();
   });
 
-  describe('when selector is not tracked', () => {
+  it('throws if not enough parameters are passed', () => {
+    expect(() => (mapSignal as unknown as (x: number) => void)(1)).toThrow();
+  })
+
+  describe('when passed signals', () => {
+    let signal1: WritableSignal<number>;
+    let signal2: WritableSignal<number>;
+    beforeEach(() => {
+      signal1 = autoDetectChangesSignal(fixture, signal(3));
+      signal2 = autoDetectChangesSignal(fixture, signal(5));
+    })
+    it('initially returns mapped value', () => {
+      const source = mapSignal(signal1, signal2, ([a, b]) => a * b + 1);
+      expect(source()).toBe(16);
+    });
+    it('respects options.equal value', () => {
+      const source = mapSignal(signal1, signal2, ([a, b]) => a * b, { equal: (_, b: number) => b % 2 === 1 });
+      expect(source()).toBe(15); // this is a little dodgy, equal won't run if it doesn't think the signal is being listened to.
+      signal1.set(5);
+      expect(source()).toBe(15); // this should NOT change because of silly equal function.
+      signal1.set(6);
+      expect(source()).toBe(30);
+    });
+    it('updates when an input signal changes', () => {
+      const source = mapSignal(signal1, signal2, ([a, b]) => a * b + 1);
+      signal1.set(10);
+      expect(source()).toBe(51);
+    });
+  });
+  describe('when passed a value', () => {
     it('initially returns mapped value', () => {
       const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3));
       expect(source()).toBe(3);
@@ -38,21 +68,7 @@ describe('mapSignal', () => {
       expect(source()).toBe(18);
     });
     it('respects options.equal value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + 1, { equal: (_, b) =>  b % 2 === 0 }));
-      source.set(3);
-      expect(source()).toBe(2); // this should NOT change because of silly equal function.
-      source.set(4);
-      expect(source()).toBe(5);
-    });
-  });
-
-  describe('when selector is tracked', () => {
-    it('initially returns mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3, { trackSelector: true }));
-      expect(source()).toBe(3);
-    });
-    it('respects options.equal value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + 1, { equal: (_, b) => b % 2 === 0, trackSelector: true }));
+      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + 1, { equal: (_, b) => b % 2 === 0 }));
       source(); // this is a little dodgy, equal won't run if it doesn't think the signal is being listened to.
       source.set(3);
       expect(source()).toBe(2); // this should NOT change because of silly equal function.
@@ -61,34 +77,9 @@ describe('mapSignal', () => {
     });
     it('changes value when signal inside selector changes value', () => {
       const selectorValue = autoDetectChangesSignal(fixture, 1);
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + selectorValue(), { trackSelector: true  }));
+      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + selectorValue()));
       selectorValue.set(5);
       expect(source()).toBe(6);
     });
-    it('#asReadonly returns itself', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3, { trackSelector: true }));
-      expect(source.asReadonly()).toBe(source);
-    });
-    it('#input returns signal containing input value', () => {
-      const source = mapSignal(1, (x) => x * 3, { trackSelector: true });
-      expect(source.input()).toBe(1);
-    });
-    it('#mutate sets signal to mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal({ value: 1 }, (x) => ( { value: x.value * 3 }), { trackSelector: true }));
-      source.mutate((x) => x.value = 2);
-      fixture.detectChanges(); // because an inner selector signal is used, the change is missed due to the reference.
-      expect(source()).toEqual({ value: 6 });
-    });
-    it('#set sets signal to mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3, { trackSelector: true }));
-      source.set(2);
-      expect(source()).toBe(6);
-    });
-    it('#update sets signal to mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3, { trackSelector: true }));
-      source.update((x) => x + 5);
-      expect(source()).toBe(18);
-    });
   });
-
 });

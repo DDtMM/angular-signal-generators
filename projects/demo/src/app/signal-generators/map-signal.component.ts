@@ -13,6 +13,7 @@ import { mapSignal } from 'projects/signal-generators/src/lib/generators/map-sig
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
   The selector function can include signals, and can automatically update with the <b>trackSelector</b> option.
+  <a class="link" href="/api/functions/mapSignal.html">API Docs</a>
 </p>
 <div class="inline-block">
   <div class="grid grid-cols-2 gap-4 shrink">
@@ -35,8 +36,8 @@ import { mapSignal } from 'projects/signal-generators/src/lib/generators/map-sig
 export class MapSignalComponent {
   readonly trackedSelectorExample = `
 multiplier = signal(2);
-inputVal = mapSignal(1, x => x * this.multiplier(), { trackSelector: true });
+inputVal = mapSignal(1, x => x * this.multiplier());
   `.trim();
   readonly multiplier = signal(2);
-  readonly inputVal = mapSignal(1, x => x * this.multiplier(), { trackSelector: true });
+  readonly inputVal = mapSignal(1, x => x * this.multiplier());
 }
