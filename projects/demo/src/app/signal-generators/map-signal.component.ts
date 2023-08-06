@@ -35,8 +35,8 @@ import { mapSignal } from 'projects/signal-generators/src/lib/generators/map-sig
 export class MapSignalComponent {
   readonly trackedSelectorExample = `
 multiplier = signal(2);
-inputVal = mapSignal(1, x => x * this.multiplier(), { trackSelector: true });
+inputVal = mapSignal(1, x => x * this.multiplier());
   `.trim();
   readonly multiplier = signal(2);
-  readonly inputVal = mapSignal(1, x => x * this.multiplier(), { trackSelector: true });
+  readonly inputVal = mapSignal(1, x => x * this.multiplier());
 }
