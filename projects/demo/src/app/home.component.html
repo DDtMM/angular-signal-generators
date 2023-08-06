@@ -11,8 +11,29 @@
 </p>
 <h2>Demos</h2>
 <ul>
-  <li><a class="link" routerLink="/debounce-signal">debounceSignal</a></li>
-  <li><a class="link" routerLink="/map-signal">mapSignal</a></li>
-  <li><a class="link" routerLink="/sequence-signal">sequenceSignal</a></li>
-  <li><a class="link" routerLink="/timer-signal">timerSignal</a></li>
+  <li>
+    <h3><a class="link" routerLink="/debounce-signal">debounceSignal</a></h3>
+    <p>
+      Creates a signal whose value isn't changed until it a certain has passed since the last update.
+    </p>
+  </li>
+  <li>
+    <h3><a class="link" routerLink="/map-signal">mapSignal</a></h3>
+    <p>
+      Creates a signal whose input value is immediately mapped to a different value based on a selector.
+      Either a value or multiple signals can be passed and used in the selector function.
+    </p>
+  </li>
+  <li>
+    <h3><a class="link" routerLink="/sequence-signal">sequenceSignal</a></h3>
+    <p>
+      The Sequence Signal is useful for situations where you want to easily cycle between options.
+    </p>
+  </li>
+  <li>
+    <h3><a class="link" routerLink="/timer-signal">timerSignal</a></h3>
+    <p>
+      Creates a signal that emits based on a timer or interval.
+    </p>
+  </li>
 </ul>

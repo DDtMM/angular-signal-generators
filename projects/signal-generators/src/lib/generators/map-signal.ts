@@ -1,15 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injector, Signal, ValueEqualityFn, computed, signal } from '@angular/core';
 import { SignalInputValue, SignalInput, SignalInputSignal, isSignalInput } from '../signal-input';
 import { coerceSignal } from '../internal/signal-coercion';
 
 export interface MapSignalOptions<R>  {
-  /**
-   * An equal function put on the selector result.
-   * This won't behave quite the same if the signal is tracked.
-   * This is because the equality function will only work on emitted values for tracked values based om how computed works.
-   * For untracked, it's always run after each change.
-   */
+  /** An equal function put on the selector result. */
   equal?: ValueEqualityFn<R>;
   /** This is only used if toSignal is needed to convert to a signal OR to get destroyedRef. */
   injector?: Injector;
@@ -32,19 +26,19 @@ export type FromSignalValues<T extends FromSignalTupleType> = { [I in keyof T]: 
 export type FromSignalSelector<T extends FromSignalTupleType, R> = (x: FromSignalValues<T>) => R;
 /** Extracts the signal value in a signal input type */
 type FromSignalInputSignals<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputSignal<T[I]> };
-type FromSignalParameters<T extends FromSignalTupleType, R> = readonly [
-  ...inputs: T,
-  selector: FromSignalSelector<T, R>
-];
+/** The function parameters if signals are being passed without options. */
+type FromSignalParameters<T extends FromSignalTupleType, R> = readonly [ ...inputs: T, selector: FromSignalSelector<T, R> ];
+/** The function parameters if signals are being passed with options.  Using an optional tuple member produced weird results. */
 type FromSignalParametersWithOptions<T extends FromSignalTupleType, R> = readonly [
   ...inputs: T,
   selector: FromSignalSelector<T, R>,
   options: MapSignalOptions<R>
 ];
+/** The function parameters if a value is passed.  This definition is only needed to simplify the implementation function.*/
 type FromValueParameters<T, R> = readonly [initialValue: T, selector: (x:T) => R, options?: MapSignalOptions<R> ];
 /**
  * Creates a signal whose input value is immediately mapped to a different value based on a selector.
- * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * The selector can contain signals and will react to changes in those signals.
  * @typeParam T The type of the initial value
  * @typeParam R The type of the value output by the selector function
  * @param initialValue The initial value that will be run

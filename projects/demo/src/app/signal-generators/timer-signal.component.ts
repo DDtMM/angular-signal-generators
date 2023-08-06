@@ -14,6 +14,7 @@ import { timerSignal, TimerSignal } from 'projects/signal-generators/src/public-
   This is very similar to rxjs's <i>timer</i> operator.
   It will be have like setTimeout or interval depending on the parameters passed.
   The value of the timer is incremented after every "tick".
+  <a class="link" href="/api/functions/timerSignal.html">API Docs</a>
 </p>
 <div class="flex flex-col w-full sm:flex-row items-center">
   <div class="flex-none">
