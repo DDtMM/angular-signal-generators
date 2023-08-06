@@ -24,11 +24,12 @@ export interface MapSignal<TIn, TOut> extends Signal<TOut> {
   set(value: TIn): void;
   update(updateFn: (value: TIn) => TIn): void;
 }
-type FromSignalTupleType<T = unknown> = readonly SignalInput<T>[];
+/** Used for when one or more signals passed as parameters */
+export type FromSignalTupleType<T = unknown> = readonly SignalInput<T>[];
 /** Extracts the values from a tuple of signal and converts them into a tuple of their own. */
-type FromSignalValues<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputValue<T[I]> };
+export type FromSignalValues<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputValue<T[I]> };
 /** Creates a selector function type that uses the tuple of values as parameters */
-type FromSignalSelector<T extends FromSignalTupleType, R> = (x: FromSignalValues<T>) => R;
+export type FromSignalSelector<T extends FromSignalTupleType, R> = (x: FromSignalValues<T>) => R;
 /** Extracts the signal value in a signal input type */
 type FromSignalInputSignals<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputSignal<T[I]> };
 type FromSignalParameters<T extends FromSignalTupleType, R> = readonly [
@@ -44,6 +45,8 @@ type FromValueParameters<T, R> = readonly [initialValue: T, selector: (x:T) => R
 /**
  * Creates a signal whose input value is immediately mapped to a different value based on a selector.
  * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * @typeParam T The type of the initial value
+ * @typeParam R The type of the value output by the selector function
  * @param initialValue The initial value that will be run
  * @param selector A selector that is run after the value of the signal is changed.
  * @param options Can see equality function or if the selector or injector since this uses a computed function.
@@ -72,6 +75,8 @@ export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?:
  * Creates a signal from one or more signals that are mapped using the selector function.
  * This is slightly different
  * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * @typeParam T The type of the signal tuple portion of params.
+ * @typeParam R The type of the value output by the selector function
  * @param params One or more signals, then the selector.
  * @returns A readonly signal emitting the selector value
  * @example
@@ -79,10 +84,10 @@ export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?:
  * const num1 = signal(0);
  * const num2 = signal(1);
  * const num3 = signal(2);
- * const mapped = mapSignal(num1, num2, num3, ([a, b]) => a + b);
+ * const mapped = mapSignal(num1, num2, num3, ([a, b, c]) => a + b + c);
  * console.log(mapped()); // 3
  * num1.set(5);
- * console.log(mapped()); // 8
+ * console.log(mapped()); // 7
  * ```
  */
 export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R>): Signal<R>
@@ -90,6 +95,8 @@ export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSigna
  * Creates a signal from one or more signals that are mapped using the selector function.
  * This is slightly different
  * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * @typeParam T The type of the signal tuple portion of params.
+ * @typeParam R The type of the value output by the selector function
  * @param params One or more signals, then the selector, then optional options.
  * @returns A readonly signal emitting the selector value
  * @example
@@ -97,10 +104,10 @@ export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSigna
  * const num1 = signal(0);
  * const num2 = signal(1);
  * const num3 = signal(2);
- * const mapped = mapSignal(num1, num2, num3, ([a, b]) => a + b);
+ * const mapped = mapSignal(num1, num2, num3, ([a, b, c]) => a + b + c, { equals: (a, b) => false });
  * console.log(mapped()); // 3
  * num1.set(5);
- * console.log(mapped()); // 8
+ * console.log(mapped()); // 7
  * ```
  */
 export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSignalParametersWithOptions<T, R>): Signal<R>

@@ -3,7 +3,7 @@ import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities'
 import { mapSignal } from './map-signal';
 import { WritableSignal, signal } from '@angular/core';
 
-fdescribe('mapSignal', () => {
+describe('mapSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
 
   beforeEach(() => {

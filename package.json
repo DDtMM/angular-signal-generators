@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "build:api-docs": "npx typedoc",
     "build:docs": "npx typedoc && ng build demo --base-href /angular-signal-generators/ & npx cpy ./docs/index.html ./ --rename 404.html",
     "build:signal-generators": "ng build signal-generators & npx cpy ./README.md ./dist/signal-generators & npx cpy ./LICENSE ./dist/signal-generators",
     "watch": "ng build --watch --configuration development ",
