@@ -58,7 +58,7 @@ addOne.set(2);
 console.log(addOnePlusOne()); // 4
 
 const okayThen = mapSignal(addOne, addOnePlusOne, ([a, b]) => `${a} + ${b} = ${a + b}`);
-console.log(okayThen()); 3 + 4 = 7
+console.log(okayThen()); // 3 + 4 = 7
 ```
 ### sequenceSignal
 

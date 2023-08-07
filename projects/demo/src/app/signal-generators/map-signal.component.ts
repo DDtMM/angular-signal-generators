@@ -13,7 +13,7 @@ import { mapSignal } from 'projects/signal-generators/src/lib/generators/map-sig
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
   The selector function can include signals, and can automatically update with the <b>trackSelector</b> option.
-  <a class="link" href="/api/functions/mapSignal.html">API Docs</a>
+  <a class="link" href="./api/functions/mapSignal.html">API Docs</a>
 </p>
 <div class="inline-block">
   <div class="grid grid-cols-2 gap-4 shrink">

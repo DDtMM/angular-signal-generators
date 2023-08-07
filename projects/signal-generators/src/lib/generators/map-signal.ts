@@ -52,16 +52,6 @@ type FromValueParameters<T, R> = readonly [initialValue: T, selector: (x:T) => R
  *
  * const addOnePlusOne = mapSignal(1, x => x + addOne());
  * console.log(addOnePlusOne()); // 3
- *
- * addOne.set(2);
- * console.log(addOnePlusOne()); // 3 - no change because the selector is not reactive.
- * addOnePlusOne.set(2)
- * console.log(addOnePlusOne()); // 5 = 2 + (2 + 1)
- *
- * const addOnePlusOneTracked = mapSignal(1, x => x + addOne(), { trackSelector: true });
- * console.log(addOnePlusOneTracked); // 4
- * addOne.set(3);
- * console.log(addOnePlusOneTracked); // 5
  * ```
  */
 export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?: MapSignalOptions<R>): MapSignal<T, R>
@@ -81,7 +71,7 @@ export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?:
  * const mapped = mapSignal(num1, num2, num3, ([a, b, c]) => a + b + c);
  * console.log(mapped()); // 3
  * num1.set(5);
- * console.log(mapped()); // 7
+ * console.log(mapped()); // 8
  * ```
  */
 export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R>): Signal<R>
@@ -101,7 +91,7 @@ export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSigna
  * const mapped = mapSignal(num1, num2, num3, ([a, b, c]) => a + b + c, { equals: (a, b) => false });
  * console.log(mapped()); // 3
  * num1.set(5);
- * console.log(mapped()); // 7
+ * console.log(mapped()); // 8
  * ```
  */
 export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSignalParametersWithOptions<T, R>): Signal<R>

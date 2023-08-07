@@ -15,7 +15,7 @@ import { debounceSignal } from 'projects/signal-generators/src/public-api';
 This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,
 and one where it has a <i>set</i> and <i>update</i> method and the change of the value occurs after debounce time elapses.
-<a class="link" href="/api/functions/debounceSignal.html">API Docs</a>
+<a class="link" href="./api/functions/debounceSignal.html">API Docs</a>
 </p>
 <div class="flex flex-col w-full sm:flex-row">
   <div class="flex flex-grow card bg-secondary rounded-box place-items-center">
