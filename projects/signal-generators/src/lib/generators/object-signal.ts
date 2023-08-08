@@ -3,39 +3,36 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { WritableSignal, isSignal, signal } from '@angular/core';
 
+export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
+export type MethodKeyStrict<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K };
+export type MethodKeys<T> = readonly MethodKey<T>[];
+export type UpdaterKeys<T> = readonly (keyof { [K in keyof T as T[K] extends () => T ? K : never] : K })[];
 
-export type MethodKeys<T> = keyof { [K in keyof T]: T[K] extends () => unknown ? K : never };
-export type UpdaterKeys<T> = keyof { [K in keyof T]: T[K] extends () => T ? K : never };
 
-type BoundMethods<T, K extends MethodKeys<T>> = { [Key in K]: T[Key] extends () => unknown ? (x: Parameters<T[Key]>) => void : never }
+type BoundMethods<T, K extends keyof T> =
+  { [Key in K]: T[Key] extends (...args: any[]) => unknown ? (...args: Parameters<T[Key]>) => void : never };
 
-export function objectSignal<T, M extends MethodKeys<T>, U extends UpdaterKeys<T>>(
+export function objectSignal<T, M extends MethodKeys<T>>(
   valueSource: T | WritableSignal<T>,
-  mutators: readonly M[] | null | undefined,
-  updaters: readonly U[] = []):
-  WritableSignal<T> & BoundMethods<T, M | U> {
+  mutators: readonly [...M]):
+  WritableSignal<T> & BoundMethods<T, typeof mutators[number]> {
 
   let value: T;
   let output: WritableSignal<T>;
   if (isSignal(valueSource)) {
-    value = valueSource();
-    output = valueSource;
+    output = valueSource as WritableSignal<T>;
+    value = output();
   }
   else {
     value = valueSource;
     output = signal(valueSource);
   }
-  // const mutatorBinds: BoundMethods<T, M> = [];
-  // const updaterBinds: BoundMethods<T, U> = [];
-  // const mutatorBinds: BoundMethods<T, M> =
-  //   (mutators ?? []).reduce((acc, cur) => {
-  //     return {
-  //       ...acc,
-  //       [cur]: (...params: Parameters<T[typeof cur]>) => output.mutate(x => x[cur])
-  //     };
-  //   }, {} as BoundMethods<T, M> )
+  if (!mutators) {
+    return output as any;
+  }
+  const mutatorFns = mutators.reduce((acc, cur) =>
+    ({ ...acc, [cur]: (...args: any) => output.mutate(x => (x[cur] as any)(...args)) })
+    , {} as BoundMethods<T, M[number]>)
 
-  // return Object.assign(output, { ...mutatorBinds, ...updaterBinds });
-  return output as any;
+  return Object.assign(output, { ...mutatorFns });
 }
-
