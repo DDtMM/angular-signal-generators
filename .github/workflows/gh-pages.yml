@@ -39,7 +39,7 @@ jobs:
           steps.cache-nodemodules.outputs.cache-hit != 'true' # if cache hits the skip this step.
         run: npm ci 
       - name: Build Demo site
-        run: npm run ng build demo --base-href /angular-signal-generators/ & npx cpy ./docs/index.html ./ --rename 404.html
+        run: npx ng build demo --base-href /angular-signal-generators/ & npx cpy ./docs/index.html ./ --rename 404.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
