@@ -14,4 +14,10 @@ describe('wrapSignal', () => {
     const value = wrapSignal(signal(1), (wrapper) => ({ getWrapper: () => wrapper }));
     expect(value.getWrapper()).toBe(value);
   });
+  it('changes its value when the source signal value changes', () => {
+    const source = signal(1);
+    const value = wrapSignal(source, { test: () => 'res'});
+    source.set(2);
+    expect(value()).toBe(2);
+  });
 });

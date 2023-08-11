@@ -2,7 +2,6 @@ import { Injector, Signal, WritableSignal, effect, signal } from '@angular/core'
 import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
-import { wrapSignal } from '../internal/wrap-signal';
 import { SignalInput, isSignalInput } from '../signal-input';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
@@ -69,7 +68,8 @@ function createSignalDebounce<T>(source: SignalInput<T>,
   const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
   const srcSignal = coerceSignal(source, options);
   const output = signal(srcSignal());
-  const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => output.set(srcSignal()) });
+  const set = output.set; // in case this gets by createDebouncedSignal.
+  const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => set.call(output, srcSignal()) });
   // setup cleanup actions.
   getDestroyRef(createSignalDebounce, options?.injector).onDestroy(() => timer.destroy());
   watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, options?.injector);
@@ -88,19 +88,11 @@ function createDebouncedSignal<T>(initialValue: T,
   const source = signal(initialValue);
   const debounced = createSignalDebounce(source, debounceTime, options);
 
-  // There has to be a way to make wrapSignal unnecessary, but below didn't work.
-  // const { set, update } = source;
-  // return Object.assign(debounced, {
-  //   asReadonly: () => debounced,
-  //   //mutate: source.mutate.bind(source),
-  //   set: (value: T) => set.call(source, value),
-  //   update: (updateFn: (value: T) => T) => update.call(source, updateFn)
-  // });
-  // unfortunately mutate didn't work because it changed the underlying value immediately.
-  return wrapSignal(debounced, (wrapper) => ({
-    asReadonly: () => wrapper,
+  return Object.assign(debounced, {
+    asReadonly: () => debounced,
+    // unfortunately mutate didn't work because it changed the underlying value immediately.
     //mutate: source.mutate.bind(source),
-    set: source.set.bind(source),
-    update: source.update.bind(source)
-  }));
+    set: (value: T) => source.set(value), // set.call(source, value),
+    update: (updateFn: (value: T) => T) => source.update(updateFn)
+  });
 }
