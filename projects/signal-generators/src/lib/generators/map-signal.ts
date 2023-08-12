@@ -23,7 +23,7 @@ export type FromSignalTupleType<T = unknown> = readonly SignalInput<T>[];
 /** Extracts the values from a tuple of signal and converts them into a tuple of their own. */
 export type FromSignalValues<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputValue<T[I]> };
 /** Creates a selector function type that uses the tuple of values as parameters */
-export type FromSignalSelector<T extends FromSignalTupleType, R> = (x: FromSignalValues<T>) => R;
+export type FromSignalSelector<T extends FromSignalTupleType, R> = (...x: FromSignalValues<T>) => R;
 /** Extracts the signal value in a signal input type */
 type FromSignalInputSignals<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputSignal<T[I]> };
 /** The function parameters if signals are being passed without options. */
@@ -57,8 +57,7 @@ type FromValueParameters<T, R> = readonly [initialValue: T, selector: (x:T) => R
 export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?: MapSignalOptions<R>): MapSignal<T, R>
 /**
  * Creates a signal from one or more signals that are mapped using the selector function.
- * This is slightly different
- * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * This is slightly different from compute as all values will be recalculated even if logic in the selector only uses some.
  * @typeParam T The type of the signal tuple portion of params.
  * @typeParam R The type of the value output by the selector function
  * @param params One or more signals, then the selector.
@@ -68,17 +67,16 @@ export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?:
  * const num1 = signal(0);
  * const num2 = signal(1);
  * const num3 = signal(2);
- * const mapped = mapSignal(num1, num2, num3, ([a, b, c]) => a + b + c);
+ * const mapped = mapSignal(num1, num2, num3, (a, b, c) => a + b + c);
  * console.log(mapped()); // 3
  * num1.set(5);
  * console.log(mapped()); // 8
  * ```
  */
-export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R>): Signal<R>
+export function mapSignal<const T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R>): Signal<R>
 /**
  * Creates a signal from one or more signals that are mapped using the selector function.
- * This is slightly different
- * The selector can contain signals, and when **trackSelector** is *true* in **options**, will react to changes in those signals.
+ * This is slightly different from compute as all values will be recalculated even if logic in the selector only uses some.
  * @typeParam T The type of the signal tuple portion of params.
  * @typeParam R The type of the value output by the selector function
  * @param params One or more signals, then the selector, then optional options.
@@ -88,14 +86,14 @@ export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSigna
  * const num1 = signal(0);
  * const num2 = signal(1);
  * const num3 = signal(2);
- * const mapped = mapSignal(num1, num2, num3, ([a, b, c]) => a + b + c, { equals: (a, b) => false });
+ * const mapped = mapSignal(num1, num2, num3, (a, b, c) => a + b + c, { equals: (a, b) => false });
  * console.log(mapped()); // 3
  * num1.set(5);
  * console.log(mapped()); // 8
  * ```
  */
-export function mapSignal<T extends FromSignalTupleType, R>(...params: FromSignalParametersWithOptions<T, R>): Signal<R>
-export function mapSignal<T, R, TTpl extends T extends FromSignalTupleType ? T : never, TVal extends T extends FromSignalTupleType ? never : T>(
+export function mapSignal<const T extends FromSignalTupleType, R>(...params: FromSignalParametersWithOptions<T, R>): Signal<R>
+export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType ? T : never, TVal extends T extends FromSignalTupleType ? never : T>(
   ...params: FromSignalParameters<TTpl, R> | FromSignalParametersWithOptions<TTpl, R> | FromValueParameters<TVal, R>):
   Signal<R> | MapSignal<TVal, R> {
 
@@ -130,7 +128,7 @@ function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options
 function mapSignalFromSignal<T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R> | FromSignalParametersWithOptions<T, R>): Signal<R> {
   const { inputs, options, selector } = destructureParams();
 
-  return computed(() => selector(inputs.map(x => x()) as FromSignalValues<T>), options);
+  return computed(() => selector(...inputs.map(x => x()) as FromSignalValues<T>), options);
 
   function destructureParams(): { inputs: FromSignalInputSignals<T>, selector: FromSignalSelector<T, R>, options: MapSignalOptions<R>} {
     let options: MapSignalOptions<R>;

@@ -1,7 +1,7 @@
 <h1>Angular Signal Generators</h1>
 <p>
   Angular Signal Generators are purpose built signals meant to simplify common tasks encountered in Components.
-  They work like vanilla signals, but they have extra capabilities built in to help accomplish specific tasks.
+  They work like vanilla signals, but they have extra capabilities built in to help extend a signal's functionality.
 </p>
 <p>
   You can install these from npm
@@ -12,26 +12,32 @@
 <h2>Demos</h2>
 <ul>
   <li>
-    <h3><a class="link" routerLink="/debounce-signal">debounceSignal</a></h3>
+    <h3><a class="link" routerLink="/debounce-signal">Debounce Signal</a></h3>
     <p>
       Creates a signal whose value isn't changed until it a certain has passed since the last update.
     </p>
   </li>
   <li>
-    <h3><a class="link" routerLink="/map-signal">mapSignal</a></h3>
+    <h3><a class="link" routerLink="/lift-signal">Lift Signal</a></h3>
+    <p>
+      "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
+    </p>
+  </li>
+  <li>
+    <h3><a class="link" routerLink="/map-signal">Map Signal</a></h3>
     <p>
       Creates a signal whose input value is immediately mapped to a different value based on a selector.
       Either a value or multiple signals can be passed and used in the selector function.
     </p>
   </li>
   <li>
-    <h3><a class="link" routerLink="/sequence-signal">sequenceSignal</a></h3>
+    <h3><a class="link" routerLink="/sequence-signal">Sequence Signal</a></h3>
     <p>
       The Sequence Signal is useful for situations where you want to easily cycle between options.
     </p>
   </li>
   <li>
-    <h3><a class="link" routerLink="/timer-signal">timerSignal</a></h3>
+    <h3><a class="link" routerLink="/timer-signal">Timer Signal</a></h3>
     <p>
       Creates a signal that emits based on a timer or interval.
     </p>

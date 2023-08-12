@@ -22,11 +22,17 @@ describe('mapSignal', () => {
       signal2 = autoDetectChangesSignal(fixture, signal(5));
     })
     it('initially returns mapped value', () => {
-      const source = mapSignal(signal1, signal2, ([a, b]) => a * b + 1);
+      const source = mapSignal(signal1, signal2, (a, b) => a * b + 1);
       expect(source()).toBe(16);
     });
+    it('can be mapped from signals of different types.', () => {
+      const textSignal = signal('The value of a + b is: ');
+      const source = mapSignal(signal1, signal2, textSignal, (a, b, text) => `${text}${a + b}`);
+      signal1.set(10);
+      expect(source()).toBe(`The value of a + b is: 15`);
+    });
     it('respects options.equal value', () => {
-      const source = mapSignal(signal1, signal2, ([a, b]) => a * b, { equal: (_, b: number) => b % 2 === 1 });
+      const source = mapSignal(signal1, signal2, (a, b) => a * b, { equal: (_, b: number) => b % 2 === 1 });
       expect(source()).toBe(15); // this is a little dodgy, equal won't run if it doesn't think the signal is being listened to.
       signal1.set(5);
       expect(source()).toBe(15); // this should NOT change because of silly equal function.
@@ -34,7 +40,7 @@ describe('mapSignal', () => {
       expect(source()).toBe(30);
     });
     it('updates when an input signal changes', () => {
-      const source = mapSignal(signal1, signal2, ([a, b]) => a * b + 1);
+      const source = mapSignal(signal1, signal2, (a, b) => a * b + 1);
       signal1.set(10);
       expect(source()).toBe(51);
     });

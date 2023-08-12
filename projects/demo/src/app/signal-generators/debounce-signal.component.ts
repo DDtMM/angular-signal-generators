@@ -3,19 +3,19 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { debounceSignal } from 'projects/signal-generators/src/public-api';
+import { SignalHeaderComponent } from './signal-header.component';
 
 
 @Component({
   selector: 'app-debounce-signal',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighlightModule],
+  imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
   template: `
-<h2>Debounce Signal</h2>
+<app-signal-header name="Debounce Signal" apiPath="./api/functions/debounceSignal.html" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,
 and one where it has a <i>set</i> and <i>update</i> method and the change of the value occurs after debounce time elapses.
-<a class="link" href="./api/functions/debounceSignal.html">API Docs</a>
 </p>
 <div class="flex flex-col w-full sm:flex-row">
   <div class="flex flex-grow card bg-secondary rounded-box place-items-center">
