@@ -9,117 +9,62 @@ Check out the [demos](https://ddtmm.github.io/angular-signal-generators/) for a 
 npm install @ddtmm/angular-signal-generators
 ```
 
-You can import the signals from `'@ddtmm/angular-signal-generators`.
+## Usage
+You can import the signals from `'@ddtmm/angular-signal-generators`.  The signals are used just like ordinary functions. 
 
 ```ts
-import { debounceSignal, sequenceSignal, timerSignal } from '@ddtmm/angular-signal-generators';
+import { debounceSignal, liftSignal, timerSignal } from '@ddtmm/angular-signal-generators';
+
+@Component({
+  selector: 'app-signal-demo',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+<div>{{secondsSinceStart()}}</div>
+<div>
+  <input type="text" [ngModel]="debounced()" (ngModelChange)="debounced.set($event)" />
+  {{debounced()}}
+</div>
+<div>
+  <button type="button" (click)="liftedArray.push(secondsSinceStart())">
+    Add Element
+  </button> 
+  {{liftedArray | json}}
+</div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class SignalDemoComponent {
+  readonly debounced = debounceSignal('type in me', 1000);
+  readonly liftedArray = liftSignal([0], ['push']);
+  readonly secondsSinceStart = timerSignal(1000, 1000);
+}
 ```
 
-## Generators
+## Signal Generators
 
 ### debounceSignal
 
 This is very similar to rxjs's *debounce* operator.  This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal, and one where it has a *set* and *update* method and the change of the value occurs after debounce time elapses.
 
-```ts
-const userInput = signal('original');
-const debouncedInput = debounceSignal(userInput, 1000);
+### liftSignal
 
-userInput.set('updated');
-setTimeout(() => console.log(`${userInput()}, ${debouncedInput}`), 500); // updated, original
-setTimeout(() => console.log(`${userInput()}, ${debouncedInput}`), 1000); // updated, updated
-
-// create a signal that is debounced every time it is set.
-const directDebounce = debounceSignal('original', 1000);
-directDebounce.set('updated');
-setTimeout(() => console.log(directDebounce(), 500); // original
-setTimeout(() => console.log(directDebounce(), 1000); // updated
-
-// allow debounce time to be changed by another signal.
-const debounceTime = signal(1000);
-const variableDebounce = debounceSignal('original', debounceTime);
-variableDebounce.set('updated');
-setTimeout(() => debounceTime.set(2000), 500);
-setTimeout(() => console.log(variableDebounce(), 1000); // original
-setTimeout(() => console.log(variableDebounce(), 1000); // updated
-```
+"Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.  The lifted methods should be those appropriate for mutating or updating the value.  For example, lifting `Array.push` will add a method called *push* to the signal.  Calling the *push* method will internally call `signal.mutate()` with a function that executes the push.
 
 ### mapSignal
 
 Creates a signal whose input value is immediately mapped to a different value based on a selector.
 Either a value or multiple signals can be passed and used in the selector function.
 
-```ts
-const addOne = mapSignal(1, x => x + 1);
-console.log(addOne()); // 2
-
-const addOnePlusOne = mapSignal(1, x => x + addOne());
-addOne.set(2);
-console.log(addOnePlusOne()); // 4
-
-const okayThen = mapSignal(addOne, addOnePlusOne, ([a, b]) => `${a} + ${b} = ${a + b}`);
-console.log(okayThen()); 3 + 4 = 7
-```
 ### sequenceSignal
 
 The Sequence Signal is useful for situations where you want to easily cycle between options.  For example, if you want to toggle between true/false or a list of sizes.  These are still writable signals so you can manually override the current value.
 
 There is also a special option to pass a cursor, which is similar to an iterator, but can be reset.  There will probably be more functionality added later.
 
- ```ts
- const boolSeq = sequenceSignal([true, false]);
- console.log(boolSeq()); // true
- boolSeq.next();
- console.log(boolSeq()); // false
- boolSeq.next();
- console.log(boolSeq()); // true
-
-const fibonacci = sequenceSignal((() => { // closure just for example
-let values = [1, 2];
-return {
-  next: (relativeChange: number) => {
-    // there's probably a smarter way to do this.
-    for (let i = 0; i < relativeChange; i++) {
-      values = [values[1], values[0] + values[1]];
-    }
-    for (let i = relativeChange; i < 0; i++) {
-      values = [Math.max(1, values[1] - values[0]), Math.max(values[0], 2)];
-    }
-    return { hasValue: true, value: values[0] };
-  },
-  reset: () => values = [1, 2]
-};
-})());
-console.log(fibonacci()); // 1
-fibonacci.next(3);
-console.log(fibonacci()); // 5
-fibonacci.next(-1);
-console.log(fibonacci()); // 3
-```
-
 ### timerSignal
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
-
-```ts
-// a simple counter:
-const secondCounter = timerSignal(1000, 1000);
-const message = computed(() => `Time elapsed: ${secondCounter()}`);
-effect(() => console.log(message()));
-
-// do something after an amount of time:
-const explosionTime = signal(10000);
-const explode = timerSignal(explosionTime());
-const explosionHandler = effect(() => {
-  if (explode() === 1) {
-    console.log('BOOM!');
-    secondCounter.pause();
-  }
-});
-
-// add an extra second before explosion.
-setTimeout(() => explosionTime.set(1000));
-```
 
 ## Conventions
 

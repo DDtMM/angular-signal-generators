@@ -37,15 +37,18 @@ jobs:
       - name: Install Dependencies
         if:
           steps.cache-nodemodules.outputs.cache-hit != 'true' # if cache hits the skip this step.
-        run: npm ci 
+        run: npm ci
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
+      - name: Add api docs to demo site
+        run: npx typedoc --out dist/demo/api
       - name: Make 404 page from Index.
-        run: npx cpy ./docs/index.html ./ --rename 404.html
+        run: npx cpy ./dist/demo/index.html ./ --rename 404.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./docs
+          path: ./dist/demo
+
 
   # Deployment job
   deploy:

@@ -41,5 +41,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# package output
+# package output (don't know if this is still needed)
 ./ddtmm-angular-signal-generators-*.tgz
+# api in demo project will get built during deploy
+/projects/demo/src/api/

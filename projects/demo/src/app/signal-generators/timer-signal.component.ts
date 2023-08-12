@@ -2,19 +2,20 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { timerSignal, TimerSignal } from 'projects/signal-generators/src/public-api';
+import { SignalHeaderComponent } from './signal-header.component';
 
 
 @Component({
   selector: 'app-timer-signal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SignalHeaderComponent],
   template: `
-<h2>Timer Signal</h2>
+<app-signal-header name="Timer Signal" apiPath="./api/functions/timerSignal.html" />
 <p>
   This is very similar to rxjs's <i>timer</i> operator.
   It will be have like setTimeout or interval depending on the parameters passed.
   The value of the timer is incremented after every "tick".
-  <a class="link" href="/api/functions/timerSignal.html">API Docs</a>
+  <a class="link" href="./api/functions/timerSignal.html">API Docs</a>
 </p>
 <div class="flex flex-col w-full sm:flex-row items-center">
   <div class="flex-none">
@@ -50,7 +51,6 @@ import { timerSignal, TimerSignal } from 'projects/signal-generators/src/public-
     <div>{{executions()}}</div>
   </div>
 </div>
-
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
