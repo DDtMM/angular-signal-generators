@@ -29,7 +29,7 @@ import { debounceSignal, liftSignal, timerSignal } from '@ddtmm/angular-signal-g
   <button type="button" (click)="liftedArray.push(secondsSinceStart())">
     Add Element
   </button> 
-  {{liftedArray | json}}
+  {{liftedArray() | json}}
 </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
