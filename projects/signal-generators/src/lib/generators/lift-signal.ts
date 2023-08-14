@@ -2,8 +2,8 @@
 import { Signal, WritableSignal, isSignal, signal } from '@angular/core';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
-type UpdaterKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => T ? K : never] : K } & keyof T;
+export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
+export type UpdaterKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => T ? K : never] : K } & keyof T;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 type MethodParameters<T, K extends MethodKey<T> | UpdaterKey<T>> = T[K] extends ( ...args: infer P ) => unknown ? P : never;
 type MethodKeyFn<T, K extends MethodKey<T>> = T[K] extends ( ...args: infer P ) => infer R ? (...args: P) => R : never;

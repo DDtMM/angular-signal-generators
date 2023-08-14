@@ -40,8 +40,6 @@ jobs:
         run: npm ci
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
-      - name: Build signal generators for docs
-        run: npx build signal-generators
       - name: Add api docs to demo site
         run: npx typedoc --out dist/demo/api
       - name: Make 404 page from Index.
