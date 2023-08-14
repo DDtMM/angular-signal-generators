@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
-import { mapSignal } from 'projects/signal-generators/src/lib/generators/map-signal';
+import { mapSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from './signal-header.component';
 
 @Component({
