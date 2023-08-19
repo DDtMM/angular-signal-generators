@@ -4,6 +4,7 @@ import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
 import { TimerSignal, timerSignal } from './timer-signal';
 import { ValueSource } from '../value-source';
+import { setupGeneralSignalTests } from './general-signal-tests.spec';
 
 describe('timerSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -13,6 +14,8 @@ describe('timerSignal', () => {
     fixture = MockRender();
     injector = fixture.componentRef.injector;
   });
+
+  setupGeneralSignalTests(() => timerSignal(500, undefined, { injector }));
 
   describe('as a timer', () => {
 

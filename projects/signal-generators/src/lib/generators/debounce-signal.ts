@@ -2,8 +2,9 @@ import { Injector, Signal, WritableSignal, effect, signal } from '@angular/core'
 import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
-import { SignalInput, isSignalInput } from '../signal-input';
+import { SignalInput } from '../signal-input';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+import { isSignalInput } from '../internal/signal-input-utilities';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */

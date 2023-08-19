@@ -4,6 +4,7 @@ import { debounceSignal } from './debounce-signal';
 import { fakeAsync } from '@angular/core/testing';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { setupGeneralSignalTests } from './general-signal-tests.spec';
 
 
 describe('debounceSignal', () => {
@@ -14,6 +15,8 @@ describe('debounceSignal', () => {
     fixture = MockRender();
     injector = fixture.componentRef.injector;
   });
+
+  setupGeneralSignalTests(() => debounceSignal(1, 500, { injector }));
 
   it('initially shows the source value', fakeAsync(() => {
     const source = signal(1);

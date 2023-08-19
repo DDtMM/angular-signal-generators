@@ -1,12 +1,14 @@
 import { Injector, Signal, effect, isSignal } from '@angular/core';
 import { coerceSignal } from './internal/signal-coercion';
-import { SignalInput, isSignalInput } from './signal-input';
+import { isSignalInput } from './internal/signal-input-utilities';
+import { SignalInput } from './signal-input';
 
 /** A constant value or a value that is a SignalInput */
 export type ValueSource<T> = T | SignalInput<T>;
 
 /** A function that returns a value.  Could be a signal or just a regular function. */
 export type ValueSourceGetValueFn<T> = Signal<T> | (() => T);
+
 
 /** Creates a function that retrieves the current value from a valueSource */
 export function createGetValueFn<T>(valueSrc: ValueSource<T>, injector?: Injector): ValueSourceGetValueFn<T> {

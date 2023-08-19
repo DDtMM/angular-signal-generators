@@ -2,6 +2,7 @@ import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { mapSignal } from './map-signal';
 import { WritableSignal, signal } from '@angular/core';
+import { setupGeneralSignalTests } from './general-signal-tests.spec';
 
 describe('mapSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -9,6 +10,8 @@ describe('mapSignal', () => {
   beforeEach(() => {
     fixture = MockRender();
   });
+
+  setupGeneralSignalTests(() => mapSignal(1, (x) => x + 1));
 
   it('throws if not enough parameters are passed', () => {
     expect(() => (mapSignal as unknown as (x: number) => void)(1)).toThrow();
@@ -20,7 +23,7 @@ describe('mapSignal', () => {
     beforeEach(() => {
       signal1 = autoDetectChangesSignal(fixture, signal(3));
       signal2 = autoDetectChangesSignal(fixture, signal(5));
-    })
+    });
     it('initially returns mapped value', () => {
       const source = mapSignal(signal1, signal2, (a, b) => a * b + 1);
       expect(source()).toBe(16);

@@ -1,5 +1,7 @@
 
-import { Signal, WritableSignal, isSignal, signal } from '@angular/core';
+import { Signal, WritableSignal, signal } from '@angular/core';
+import { coerceSignal } from '../internal/signal-coercion';
+import { isSignalInput } from '../internal/signal-input-utilities';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
@@ -39,7 +41,9 @@ export function liftSignal<T extends NonNullable<unknown>,
   updaters?: U):
   WritableSignal<T> & BoundMethods<T, M> & BoundMethods<T, U> {
 
-  const output: WritableSignal<T> = isSignal(valueSource) ? valueSource : signal(valueSource);
+  const output = isSignalInput(valueSource)
+    ? coerceSignal(valueSource as WritableSignal<T>)
+    : signal(valueSource);
 
   const boundMethods: Partial<BoundMethodsStrict<T, NonNullable<M>> & BoundMethodsStrict<T, NonNullable<U>>> = {};
 
@@ -53,4 +57,3 @@ export function liftSignal<T extends NonNullable<unknown>,
 
   return Object.assign(output, boundMethods as BoundMethods<T, M> & BoundMethods<T, U>);
 }
-
