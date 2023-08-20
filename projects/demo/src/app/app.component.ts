@@ -55,6 +55,7 @@ export class AppComponent {
 
   readonly generatorLinks = [
     { label: 'Debounce Signal', path: '/debounce-signal' },
+    { label: 'Extend Signal', path: '/extend-signal' },
     { label: 'Lift Signal', path: '/lift-signal' },
     { label: 'Map Signal', path: '/map-signal' },
     { label: 'Sequence Signal', path: '/sequence-signal' },

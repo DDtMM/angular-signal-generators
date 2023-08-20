@@ -5,10 +5,12 @@ import { DebounceSignalComponent } from './signal-generators/debounce-signal.com
 import { SequenceSignalComponent } from './signal-generators/sequence-signal.component';
 import { MapSignalComponent } from './signal-generators/map-signal.component';
 import { LiftSignalComponent } from './signal-generators/lift-signal.component';
+import { ExtendSignalComponent } from './signal-generators/extend-signal.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'debounce-signal', component: DebounceSignalComponent },
+  { path: 'extend-signal', component: ExtendSignalComponent },
   { path: 'lift-signal', component: LiftSignalComponent },
   { path: 'map-signal', component: MapSignalComponent },
   { path: 'sequence-signal', component: SequenceSignalComponent },

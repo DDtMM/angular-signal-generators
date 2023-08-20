@@ -20,7 +20,7 @@ export type UpdatableSignal<T> = Signal<T> & Omit<WritableSignal<T>, 'mutate'>;
  * @param source The signal like object whose values are debounced.
  * @param debounceTime The time from last change before the value is emitted.  Can be signal like.
  * @param options Options for the signal.
- * * @example
+ * @example
  * ```ts
  * const original = signal('unchanged');
  * const debounced = debounceSignal(original, 500);

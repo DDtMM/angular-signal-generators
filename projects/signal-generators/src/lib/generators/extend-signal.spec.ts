@@ -32,7 +32,6 @@ describe('extendSignal', () => {
     it('should safely change the signature of set', () => {
       const source = extendSignal({ value: 2 }, { mutate: (proxy, value: string) => proxy.mutate(x => x.value += value.length)});
       source.mutate('four');
-
       expect(source()).toEqual({ value: 6 });
     })
     it('should safely change the signature of set', () => {

@@ -1,30 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Signal } from '@angular/core';
-import { SignalProxy } from '../signal-proxy';
+import { Signal, computed, untracked } from '@angular/core';
+import { SignalFunction, SignalFunctions, SignalProxy } from '../signal-proxy';
 
 
 /**
- * Creates a signal-like object that has all of the functions copied from the signal,
- * and returns the source's value when called like a function
+ * Creates a computed signal that wraps the internal signal and then adds the original function.
+ * This signal will NOT be reactive, and is only intended for situations where it needs to match a signal's signature.
+ * The only guarantee is that the functions are copied.  If a property is added to a signal it is ignored.
  */
 export function toSignalProxy<S extends Signal<any>>(source: S): SignalProxy<S> {
-  const methods = getMethods(source);
-  return methods.reduce((acc, cur) => {
-    acc[cur] = source[cur];
+  const methods = getMethodKeys(source).reduce((acc, cur) => {
+    // typings here need to be fixed.
+    acc[cur] = (source[cur] as SignalFunction<S, typeof cur>).bind(source) as SignalFunction<S, typeof cur>;
     return acc;
-  }, (() => source()) as SignalProxy<S>);
-}
+  }, {} as SignalFunctions<S>);
+  return Object.assign(computed(() => untracked(source)), methods);
 
-function getMethods<S extends Signal<unknown>>(obj: S): readonly (keyof SignalProxy<S>)[] {
-  const result: (keyof SignalProxy<S>)[] = [];
-  for (const key in obj) {
-    if (isMethodKey(obj, key)) {
-      result.push(key);
+  function getMethodKeys<S extends Signal<unknown>>(obj: S): readonly (keyof SignalFunctions<S>)[] {
+    const result: (keyof SignalFunctions<S>)[] = [];
+
+    for (const key in obj) {
+      if (isMethodKey(key)) {
+        result.push(key);
+      }
+    }
+    return result;
+
+    function isMethodKey(key: keyof S): key is keyof SignalFunctions<S> {
+      return (typeof obj[key] === 'function');
     }
   }
-  return result;
-}
 
-function isMethodKey<S extends Signal<unknown>>(obj: S, key: keyof S): key is keyof SignalProxy<S> {
-  return (typeof obj[key] === 'function');
 }
