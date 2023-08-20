@@ -1,6 +1,7 @@
 import { computed, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { isSignalInput, isToSignalInput } from './signal-input';
+import { isSignalInput, isToSignalInput } from './signal-input-utilities';
+
 
 describe('isSignalInput', () => {
   [

@@ -1,13 +1,13 @@
-import { isSignal, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { refSignal } from './ref-signal';
+import { setupGeneralSignalTests } from '../generators/general-signal-tests.spec';
 
 describe('refSignal', () => {
+  setupGeneralSignalTests(() => refSignal(1));
+
   describe('when initial value is value', () => {
     it('is the initially the value passed in the constructor', () => {
       expect(refSignal(1)()).toEqual({ ref: 1 });
-    });
-    it('passes isSignal function', () => {
-      expect(isSignal(refSignal(1))).toBeTrue();
     });
     it('#asReadonly returns itself', () => {
       const value = refSignal([1]);

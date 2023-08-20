@@ -1,7 +1,9 @@
 import { signal } from '@angular/core';
 import { liftSignal } from './lift-signal';
+import { setupGeneralSignalTests } from './general-signal-tests.spec';
 
 describe('liftSignal', () => {
+  setupGeneralSignalTests(() => liftSignal([1, 2, 3], []));
 
   it('initially returns the initial value', () => {
     const src = liftSignal([1, 2, 3], []);

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { sequenceSignal } from 'projects/signal-generators/src/lib/generators/sequence-signal';
+import { sequenceSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from './signal-header.component';
 
 

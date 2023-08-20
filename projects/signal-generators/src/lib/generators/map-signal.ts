@@ -1,6 +1,7 @@
 import { Injector, Signal, ValueEqualityFn, computed, signal } from '@angular/core';
-import { SignalInputValue, SignalInput, SignalInputSignal, isSignalInput } from '../signal-input';
+import { SignalInputValue, SignalInput, SignalInputSignal } from '../signal-input';
 import { coerceSignal } from '../internal/signal-coercion';
+import { isSignalInput } from '../internal/signal-input-utilities';
 
 export interface MapSignalOptions<R>  {
   /** An equal function put on the selector result. */

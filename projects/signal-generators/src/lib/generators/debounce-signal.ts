@@ -2,8 +2,9 @@ import { Injector, Signal, WritableSignal, effect, signal } from '@angular/core'
 import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
-import { SignalInput, isSignalInput } from '../signal-input';
+import { SignalInput } from '../signal-input';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+import { isSignalInput } from '../internal/signal-input-utilities';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -19,7 +20,7 @@ export type UpdatableSignal<T> = Signal<T> & Omit<WritableSignal<T>, 'mutate'>;
  * @param source The signal like object whose values are debounced.
  * @param debounceTime The time from last change before the value is emitted.  Can be signal like.
  * @param options Options for the signal.
- * * @example
+ * @example
  * ```ts
  * const original = signal('unchanged');
  * const debounced = debounceSignal(original, 500);

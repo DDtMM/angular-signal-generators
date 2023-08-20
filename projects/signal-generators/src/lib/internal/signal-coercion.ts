@@ -1,7 +1,8 @@
-import { Injector, Signal, computed, isSignal } from '@angular/core';
+import { Injector, computed, isSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { SignalInput, isToSignalInput } from '../signal-input';
+import { SignalInput, SignalInputSignal } from '../signal-input';
 import { hasKey } from './utilities';
+import { isToSignalInput } from './signal-input-utilities';
 
 export interface CoerceSignalOptions<T> {
   /** This is only used if toSignal is needed to convert to a signal.  If not passed it as assumed the source is sync. */
@@ -34,16 +35,16 @@ export interface CoerceSignalOptions<T> {
  * });
  * ```
  */
-export function coerceSignal<T>(source: SignalInput<T>, options?: CoerceSignalOptions<T>): Signal<T> {
+export function coerceSignal<T, S extends SignalInput<T>>(source: S, options?: CoerceSignalOptions<T>): SignalInputSignal<S> {
   if (isSignal(source)) {
-    return source;
+    return source as SignalInputSignal<S>;
   }
   else if (isToSignalInput(source)) {
     return (options && hasKey(options, 'initialValue'))
-      ? toSignal(source, options)
-      : toSignal(source, { injector: options?.injector, requireSync: true })
+      ? toSignal(source, options) as SignalInputSignal<S>
+      : toSignal(source, { injector: options?.injector, requireSync: true }) as SignalInputSignal<S>;
   }
-  return computed(source);
+  return computed(source) as SignalInputSignal<S> ;
 }
 
 

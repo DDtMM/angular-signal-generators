@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
-import { liftSignal } from 'projects/signal-generators/src/lib/generators/lift-signal';
+import { liftSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from './signal-header.component';
 
 @Component({
@@ -16,7 +16,6 @@ import { SignalHeaderComponent } from './signal-header.component';
   The lifted methods should be those appropriate for mutating or updating the value.
   For example, lifting <b>Array.push</b> will add a method called <i>push</i> to the signal.
   Calling the <i>push</i> method will internally call <b>signal.mutate()</b> with a function that executes the push.
-  <a class="link" href="./api/functions/liftSignal.html">API Docs</a>
 </p>
 <div class="join pr-3">
   <button type="button" class="btn btn-primary join-item" (click)="numbers.push(randomNumber())">Push</button>
@@ -30,13 +29,13 @@ import { SignalHeaderComponent } from './signal-header.component';
 </div>
 <div>
   <h2>Example</h2>
-  <pre><code [highlight]="trackedSelectorExample" [languages]="['typescript']"></code></pre>
+  <pre><code [highlight]="example" [languages]="['typescript']"></code></pre>
 </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LiftSignalComponent {
-  readonly trackedSelectorExample = `
+  readonly example = `
 numbers = liftSignal([this.randomNumber(), this.randomNumber(), this.randomNumber()], ['push', 'pop'], ['concat']);
 randomNumber(): number { return Math.floor(Math.random() * 100); }
 doSomething() {
