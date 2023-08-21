@@ -2,7 +2,7 @@ import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { mapSignal } from './map-signal';
 import { WritableSignal, signal } from '@angular/core';
-import { setupGeneralSignalTests } from './general-signal-tests.spec';
+import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
 
 describe('mapSignal', () => {
   let fixture: MockedComponentFixture<void, void>;

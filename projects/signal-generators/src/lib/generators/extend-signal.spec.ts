@@ -1,6 +1,6 @@
 import { computed, signal } from '@angular/core';
 import { extendSignal } from './extend-signal';
-import { setupGeneralSignalTests } from './general-signal-tests.spec';
+import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
 
 describe('extendSignal', () => {
   setupGeneralSignalTests(() => extendSignal(1, { dummy: () => undefined}));

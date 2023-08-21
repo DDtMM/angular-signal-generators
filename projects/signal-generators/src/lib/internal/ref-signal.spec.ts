@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { refSignal } from './ref-signal';
-import { setupGeneralSignalTests } from '../generators/general-signal-tests.spec';
+import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
 
 describe('refSignal', () => {
   setupGeneralSignalTests(() => refSignal(1));

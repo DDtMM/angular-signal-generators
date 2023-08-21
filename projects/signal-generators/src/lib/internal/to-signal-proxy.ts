@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Signal, computed, untracked } from '@angular/core';
 import { SignalFunction, SignalFunctions, SignalProxy } from '../signal-proxy';
+import { isMethodKey } from './utilities';
 
 
 /**
@@ -20,15 +21,11 @@ export function toSignalProxy<S extends Signal<any>>(source: S): SignalProxy<S> 
     const result: (keyof SignalFunctions<S>)[] = [];
 
     for (const key in obj) {
-      if (isMethodKey(key)) {
+      if (isMethodKey(obj as SignalFunctions<S>, key)) {
         result.push(key);
       }
     }
     return result;
-
-    function isMethodKey(key: keyof S): key is keyof SignalFunctions<S> {
-      return (typeof obj[key] === 'function');
-    }
   }
 
 }

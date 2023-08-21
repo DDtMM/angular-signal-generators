@@ -4,7 +4,7 @@ import { debounceSignal } from './debounce-signal';
 import { fakeAsync } from '@angular/core/testing';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
-import { setupGeneralSignalTests } from './general-signal-tests.spec';
+import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
 
 
 describe('debounceSignal', () => {

@@ -27,9 +27,9 @@ export type OutputMethods<M extends Record<string, ProxyMethod<ValueSourceSignal
 /**
  * extendSignal allows additional functions added to a Signal or value converted to a WritableSignal.
 
- * @param valueSource Either a plain old value, or a WritableSignal that will have functions added to it.
+ * @param valueSource Either a plain old value or a signal that will have functions added to it.
  * @param methods A literal of functions to be added.  Each function will have a first parameter that is a signal proxy,
- * which could be the original signal, or if there is a conflict with the method names, an object that.
+ * which could be the original signal, or if there is a conflict with the method names, an object that is similar to the original.
  * This is so the definition of the signal can change on the outside, but the original implementation is still available.
  * @returns a signal with new functions added to it.
  * @example
