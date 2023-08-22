@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { getDestroyRef, hasKey } from './utilities';
+import { getDestroyRef, hasKey, isMethodKey } from './utilities';
 
 describe('hasKey', () => {
   type Something = { keyX?: number };
@@ -8,6 +8,13 @@ describe('hasKey', () => {
   it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBeFalse());
   it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBeFalse());
 });
+
+describe('isMethodKey', () => {
+  const srcObj = { method: () => 1, notMethod: 1 };
+  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBeTrue());
+  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBeFalse());
+  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBeFalse());
+})
 
 describe('getDestroyRef', () => {
   it('throws when no injector is passed and not in injector context', () => {

@@ -4,12 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:api-docs-for-demo-project": "npx typedoc --out projects/demo/src/api",
-    "build:demo": "ng build demo --base-href /angular-signal-generators/ & npx typedoc --out dist/demo/api  & npx cpy ./dist/demo/index.html ./ --rename 404.html",
+    "build:demo": "ng build demo --base-href /angular-signal-generators/ & ng test signal-generators --code-coverage true --watch false & npx cpy coverage/ dist/demo/coverage & npx typedoc --out dist/demo/api  & npx cpy ./dist/demo/index.html ./ --rename 404.html",
     "build:signal-generators": "ng build signal-generators & npx cpy ./README.md ./dist/signal-generators & npx cpy ./LICENSE ./dist/signal-generators",
+    "demo:add-current-api-docs": "npx typedoc --out projects/demo/src/api",
+    "demo:add-current-code-coverage": "ng test signal-generators --code-coverage true --watch false & npx cpy coverage/ projects/demo/src/coverage",
     "watch": "ng build --watch --configuration development ",
-    "test": "ng test",
-    "test-coverage": "ng test --code-coverage",
+    "test": "ng test signal-generators",
+    "test-coverage": "ng test signal-generators --code-coverage",
     "lint": "ng lint signal-generators"
   },
   "private": true,

@@ -23,6 +23,6 @@ export function hasKey<T extends object>(obj: T | null | undefined, key: keyof T
 
 /** Detects if a key is a key of an object's method */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isMethodKey<T extends object>(obj: T, key: unknown): key is keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T {
-  return (typeof obj[key as keyof T] === 'function');
+export function isMethodKey<T extends object>(obj: T | null | undefined, key: unknown): key is keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T {
+  return obj != null && (typeof obj[key as keyof T] === 'function');
 }

@@ -40,6 +40,10 @@ jobs:
         run: npm ci
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
+      - name: Build Coverage
+        run: npx ng test signal-generators --code-coverage true --watch false
+      - name: Copy coverage to demo site
+        run: npx cpy ./coverage/ ./dist/demo/coverage
       - name: Add api docs to demo site
         run: npx typedoc --out dist/demo/api
       - name: Make 404 page from Index.
