@@ -28,26 +28,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: User Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
+
       - name: Install Dependencies
         if:
           steps.cache-nodemodules.outputs.cache-hit != 'true' # if cache hits the skip this step.
         run: npm ci
+
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
+
+      # The readme is used in the apidocs, so make sure coverage is correct.
       - name: Build Coverage
         run: npx ng test signal-generators --code-coverage true --watch false
-      - name: Copy coverage to demo site
-        run: npx cpy ./coverage/ ./dist/demo/coverage
+
+      - name: Update coverage on readme
+        run: npx istanbul-badges-readme --coverageDir=\"./coverage/signal-generators\"
+
       - name: Add api docs to demo site
         run: npx typedoc --out dist/demo/api
+
+      # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
       - name: Make 404 page from Index.
         run: npx cpy ./dist/demo/index.html ./ --rename 404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
