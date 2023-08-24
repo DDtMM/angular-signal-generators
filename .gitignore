@@ -43,5 +43,5 @@ Thumbs.db
 
 # package output (don't know if this is still needed)
 ./ddtmm-angular-signal-generators-*.tgz
-# api in demo project will get built during deploy
+# ignore built content in demo project
 /projects/demo/src/api/

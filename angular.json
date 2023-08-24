@@ -32,7 +32,8 @@
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ]
+            ],
+            "karmaConfig": "projects/signal-generators/karma.conf.js"
           }
         },
         "lint": {

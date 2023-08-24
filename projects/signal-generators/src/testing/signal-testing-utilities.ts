@@ -1,32 +1,31 @@
 import { Signal, WritableSignal, isSignal, signal } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
+import { isMethodKey } from '../lib/internal/utilities';
 
-type PartialWritableSignal<T> = Signal<T> & Partial<WritableSignal<T>>;
+/** Adds fixture.detectChanges after every method call of a signal. */
+export function autoDetectChangesSignal<T, S extends Signal<T>>(fixture: ComponentFixture<unknown>, source: S): S
+/** Creates a writable signal that has fixture.detectChanges run after every method call. */
+export function autoDetectChangesSignal<T>(fixture: ComponentFixture<unknown>, source: T): WritableSignal<T>
+export function autoDetectChangesSignal<T, S extends Signal<T>>(fixture: ComponentFixture<unknown>, source: S | T): S | WritableSignal<T> {
 
-/** Wraps the signals to call detectChanges after every mutate, set, or update. */
-export function autoDetectChangesSignal<T, U extends PartialWritableSignal<T>>(fixture: ComponentFixture<unknown>, signal: U): U
-export function autoDetectChangesSignal<T>(fixture: ComponentFixture<unknown>, initialValue: T): WritableSignal<T>
-export function autoDetectChangesSignal<T>(fixture: ComponentFixture<unknown>, initialValue: T | PartialWritableSignal<T>): PartialWritableSignal<T> {
-  const output = isPartialWritableSignal(initialValue) ? initialValue : signal(initialValue);
-  const { mutate: originalMutate, set: originalSet, update: originalUpdate } = output;
+  const output = isSignal(source) ? source : signal(source);
 
-  Object.assign(output, {
-    mutate: originalMutate ? addDetectChangesToFunction(originalMutate) : undefined,
-    set: originalSet ? addDetectChangesToFunction(originalSet) : undefined,
-    update: originalUpdate ? addDetectChangesToFunction(originalUpdate) : undefined
-  });
+  for (const key in output) {
+    if (isMethodKey(output, key)) {
+      Object.assign(output, {
+        [key]: addDetectChangesToFunction(output[key] as () => void)
+      });
+    }
+  }
+
   return output;
 
   /** This will wrap autoDetectChanges after the function call. */
   function addDetectChangesToFunction <TArgs extends unknown[], TOut>(fn: (...args: TArgs) => TOut) {
     return (...args: TArgs) => {
-      fn.apply(output, args);
+      const res = fn.apply(source, args);
       fixture.detectChanges();
+      return res;
     }
   }
-
-  function isPartialWritableSignal<T>(value: T | PartialWritableSignal<T>): value is PartialWritableSignal<T> {
-    return isSignal(value) && ('mutate' in value || 'set' in value || 'update' in value);
-  }
 }
-

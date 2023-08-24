@@ -1,5 +1,5 @@
 import { Signal, isSignal } from '@angular/core';
-import { isSignalInput } from '../internal/signal-input-utilities';
+import { isSignalInput } from '../lib/internal/signal-input-utilities';
 
 /** These tests should be run on every signal created. */
 export function setupGeneralSignalTests(signalFactory: () => Signal<unknown>): void {

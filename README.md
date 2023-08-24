@@ -3,6 +3,10 @@
 Angular Signal Generators are purpose built signals meant to simplify common tasks encountered in Components.
 Check out the [demos](https://ddtmm.github.io/angular-signal-generators/) for a better idea on how they can be used.
 
+| Statements                  | Branches                | Functions                 | Lines             |
+| --------------------------- | ----------------------- | ------------------------- | ----------------- |
+| ![Statements](https://img.shields.io/badge/statements-100%25-brightgreen.svg?style=flat) | ![Branches](https://img.shields.io/badge/branches-100%25-brightgreen.svg?style=flat) | ![Functions](https://img.shields.io/badge/functions-100%25-brightgreen.svg?style=flat) | ![Lines](https://img.shields.io/badge/lines-100%25-brightgreen.svg?style=flat) |
+
 ## Installation
 
 ```
@@ -46,6 +50,10 @@ export class SignalDemoComponent {
 ### debounceSignal
 
 This is very similar to rxjs's *debounce* operator.  This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal, and one where it has a *set* and *update* method and the change of the value occurs after debounce time elapses.
+
+### extendSignal
+
+Adds new methods to a signal - even hiding the existing methods if desired.  It does this by passing the original signal or a "proxy" as the first parameter of the new method.  This first parameter is obscured from the consumer so that it appears to be a normal method.
 
 ### liftSignal
 

@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { liftSignal } from './lift-signal';
-import { setupGeneralSignalTests } from './general-signal-tests.spec';
+import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
 
 describe('liftSignal', () => {
   setupGeneralSignalTests(() => liftSignal([1, 2, 3], []));
@@ -28,6 +28,6 @@ describe('liftSignal', () => {
       src.filter(x => x === 2);
       expect(src()).toEqual([2]);
     });
-  })
+  });
 
 });
