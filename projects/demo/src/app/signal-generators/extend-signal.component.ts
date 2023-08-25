@@ -17,11 +17,11 @@ import { SignalHeaderComponent } from './signal-header.component';
   When implementing a new method, a proxy of the original signal will be passed (this could be the original signal if no method hiding occurs).
 
 </p>
-<div class="flex flex-row">
-  <div>
+<div class="flex flex-row flex-wrap -m-2">
+  <div class="m-2">
     <input class="input" class="input input-bordered" type="text" [(ngModel)]="inputText" placeholder="Say something" />
   </div>
-  <div class="join pl-3">
+  <div class="m-2 join">
     <button type="button" class="btn btn-primary join-item" (click)="voice.whisper(inputText)">Whisper</button>
     <button type="button" class="btn btn-primary join-item" (click)="voice.yell(inputText)">Yell</button>
     <button type="button" class="btn btn-primary join-item" (click)="voice.clear()">Clear</button>

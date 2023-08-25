@@ -1,4 +1,4 @@
-# Angular Signal Generators
+# <img src="https://raw.githubusercontent.com/DDtMM/angular-signal-generators/main/projects/demo/src/assets/gitkeepangular-signal-generators-logo.png" alt="Angular Signal Generators Logo" width="64" height="64" style="width: 64px; height: 64px" /> Angular Signal Generators
 
 Angular Signal Generators are purpose built signals meant to simplify common tasks encountered in Components.
 Check out the [demos](https://ddtmm.github.io/angular-signal-generators/) for a better idea on how they can be used.

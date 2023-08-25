@@ -35,7 +35,12 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
       </ul>
     </div>
     <ul class="menu menu-horizontal flex-nowrap py-0 px-1">
-      <li><a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" [routerLink]="['/']">Angular Signal Generators</a></li>
+      <li>
+        <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case" [routerLink]="['/']">
+        <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-8 w-8 -my-2" />
+          Angular Signal Generators
+        </a>
+      </li>
       <li><a class="btn btn-primary font-semibold text-xl tracking-tight normal-case hidden md:inline-block" href="./api/index.html">API Docs</a></li>
       <li><a class="btn btn-primary font-semibold text-xl tracking-tight normal-case hidden md:inline-block" href="https://github.com/DDtMM/angular-signal-generators">
         <fa-icon [icon]="faGithub" />

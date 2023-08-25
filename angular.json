@@ -98,6 +98,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo/src/favicon.ico",
+              "projects/demo/src/assets",
               { "glob": "404.md", "input": "projects/demo/src/", "output": "/" },
               { "glob": "**/*.*", "input": "projects/demo/src/api/", "output": "api/" }
             ],
