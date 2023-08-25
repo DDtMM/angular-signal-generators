@@ -19,5 +19,6 @@
     "type": "git",
     "url": "https://github.com/DDtMM/angular-signal-generators.git"
   },
+  "author": "Daniel Gimenez <mixmoose@mixmoose.com>",
   "sideEffects": false
 }
