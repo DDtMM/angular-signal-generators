@@ -15,7 +15,11 @@ import { SignalHeaderComponent } from './signal-header.component';
   Extends a signal by adding new methods directly to the signal.
   The original signal's methods can even be hidden.
   When implementing a new method, a proxy of the original signal will be passed (this could be the original signal if no method hiding occurs).
-
+</p>
+<p>
+  This is essentially just a wrapper for <code class="inline p-1">Object.assign</code>.
+  The advantage over <code class="inline p-1">assign</code> is that this allows you to hide the original implementation of the source signal's methods.
+  For example, you can have a set method that multiplies a value and uses the original set to actually set the signal's value.
 </p>
 <div class="flex flex-row flex-wrap -m-2">
   <div class="m-2">

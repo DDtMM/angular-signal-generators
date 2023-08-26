@@ -1,4 +1,4 @@
-import { Injector, Signal, WritableSignal, effect, signal } from '@angular/core';
+import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal } from '@angular/core';
 import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
@@ -12,7 +12,7 @@ export interface DebounceSignalOptions {
 }
 
 /** Almost a writable signal, except that mutate is not supported. */
-export type UpdatableSignal<T> = Signal<T> & Omit<WritableSignal<T>, 'mutate'>;
+export type UpdatableSignal<T> = Signal<T> & Omit<WritableSignal<T>, 'mutate'>; // Omit removes the function signature of the Signal
 
 /**
  * Creates a signal which emits the debounced changes from another signal.
@@ -47,22 +47,22 @@ export function debounceSignal<T>(source: SignalInput<T>, debounceTime: ValueSou
  * setTimeout(() => console.log(debounced()), 500) // changed
  * ```
  */
-export function debounceSignal<T>(initialValue: T, debounceTime: ValueSource<number>, options?: DebounceSignalOptions): UpdatableSignal<T>
+export function debounceSignal<T>(initialValue: T, debounceTime: ValueSource<number>, options?: DebounceSignalOptions & CreateSignalOptions<T>): UpdatableSignal<T>
 /**
  * Creates either a writable signal whose values are debounced, or a signal who returns debounced values of another signal.
  */
 export function debounceSignal<T>(
   initialValueOrSource: ValueSource<T>,
   debounceTime: ValueSource<number>,
-  options?: DebounceSignalOptions): Signal<T> | UpdatableSignal<T> {
+  options?: DebounceSignalOptions & CreateSignalOptions<T>): Signal<T> | UpdatableSignal<T> {
 
   return isSignalInput(initialValueOrSource)
-    ? createSignalDebounce(initialValueOrSource, debounceTime, options)
-    : createDebouncedSignal(initialValueOrSource, debounceTime, options)
+    ? createFromSignal(initialValueOrSource, debounceTime, options)
+    : createFromValue(initialValueOrSource, debounceTime, options)
 }
 
 /** Creates a signal that debounces the srcSignal the given debounceTime. */
-function createSignalDebounce<T>(source: SignalInput<T>,
+function createFromSignal<T>(source: SignalInput<T>,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions): Signal<T> {
 
@@ -72,7 +72,7 @@ function createSignalDebounce<T>(source: SignalInput<T>,
   const set = output.set; // in case this gets by createDebouncedSignal.
   const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => set.call(output, srcSignal()) });
   // setup cleanup actions.
-  getDestroyRef(createSignalDebounce, options?.injector).onDestroy(() => timer.destroy());
+  getDestroyRef(createFromSignal, options?.injector).onDestroy(() => timer.destroy());
   watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, options?.injector);
   effect(() => {
     srcSignal(); // wish there was a better way to watch the value.
@@ -82,12 +82,12 @@ function createSignalDebounce<T>(source: SignalInput<T>,
 }
 
 /** Creates a writeable signal that updates after a certain amount of time. */
-function createDebouncedSignal<T>(initialValue: T,
+function createFromValue<T>(initialValue: T,
   debounceTime: ValueSource<number>,
-  options?: DebounceSignalOptions): UpdatableSignal<T> {
+  options?: DebounceSignalOptions & CreateSignalOptions<T>): UpdatableSignal<T> {
 
-  const source = signal(initialValue);
-  const debounced = createSignalDebounce(source, debounceTime, options);
+  const source = signal(initialValue, options);
+  const debounced = createFromSignal(source, debounceTime, options);
 
   return Object.assign(debounced, {
     asReadonly: () => debounced,

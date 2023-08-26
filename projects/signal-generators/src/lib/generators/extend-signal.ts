@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injector, Signal, WritableSignal, signal } from '@angular/core';
+import { Injector, Signal, ValueEqualityFn, WritableSignal, signal } from '@angular/core';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { toSignalProxy } from '../internal/to-signal-proxy';
@@ -7,9 +7,11 @@ import { SignalInput } from '../signal-input';
 import { SignalProxy } from '../signal-proxy';
 import { ValueSource } from '../value-source';
 
-export interface ExtendSignalOptions {
-    /** This is only used if a signal is created from an observable. */
-    injector?: Injector;
+export interface ExtendSignalOptions<T> {
+  /** This is only used if a writable signal is created from a value */
+  equal?: ValueEqualityFn<T>;
+  /** This is only used if a signal is created from an observable. */
+  injector?: Injector;
 }
 
 export type ValueSourceSignal<V extends ValueSource<any>> =
@@ -45,12 +47,12 @@ export type OutputMethods<M extends Record<string, ProxyMethod<ValueSourceSignal
 export function extendSignal<T, V extends ValueSource<T>, const M extends Record<string, ProxyMethod<ValueSourceSignal<V>>>> (
   valueSource: V,
   methods: M,
-  options: ExtendSignalOptions = {}):
+  options: ExtendSignalOptions<T> = {}):
   Signal<T> & Omit<ValueSourceSignal<V>, keyof M> & OutputMethods<M> {
 
   const output = isSignalInput(valueSource)
     ? coerceSignal(valueSource, options) as ValueSourceSignal<V>
-    : signal(valueSource) as ValueSourceSignal<V>;
+    : signal(valueSource as T, options) as ValueSourceSignal<V>;
   // create proxy only there is overlap.
   const proxy = Object.keys(methods).some(x => x in output) ? toSignalProxy(output) : output as SignalProxy<ValueSourceSignal<V>>;
 
