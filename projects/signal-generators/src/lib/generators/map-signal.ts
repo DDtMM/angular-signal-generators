@@ -28,7 +28,7 @@ export type FromSignalSelector<T extends FromSignalTupleType, R> = (...x: FromSi
 /** Extracts the signal value in a signal input type */
 type FromSignalInputSignals<T extends FromSignalTupleType> = { [I in keyof T]: SignalInputSignal<T[I]> };
 /** The function parameters if signals are being passed without options. */
-type FromSignalParameters<T extends FromSignalTupleType, R> = readonly [ ...inputs: T, selector: FromSignalSelector<T, R> ];
+type FromSignalParameters<T extends FromSignalTupleType, R> = readonly [ ...inputs: T, selector: FromSignalSelector<T, R>];
 /** The function parameters if signals are being passed with options.  Using an optional tuple member produced weird results. */
 type FromSignalParametersWithOptions<T extends FromSignalTupleType, R> = readonly [
   ...inputs: T,
@@ -74,26 +74,7 @@ export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?:
  * console.log(mapped()); // 8
  * ```
  */
-export function mapSignal<const T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R>): Signal<R>
-/**
- * Creates a signal from one or more signals that are mapped using the selector function.
- * This is slightly different from compute as all values will be recalculated even if logic in the selector only uses some.
- * @typeParam T The type of the signal tuple portion of params.
- * @typeParam R The type of the value output by the selector function
- * @param params One or more signals, then the selector, then optional options.
- * @returns A readonly signal emitting the selector value
- * @example
- * ```ts
- * const num1 = signal(0);
- * const num2 = signal(1);
- * const num3 = signal(2);
- * const mapped = mapSignal(num1, num2, num3, (a, b, c) => a + b + c, { equals: (a, b) => false });
- * console.log(mapped()); // 3
- * num1.set(5);
- * console.log(mapped()); // 8
- * ```
- */
-export function mapSignal<const T extends FromSignalTupleType, R>(...params: FromSignalParametersWithOptions<T, R>): Signal<R>
+export function mapSignal<const T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R> | FromSignalParametersWithOptions<T, R>): Signal<R>
 export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType ? T : never, TVal extends T extends FromSignalTupleType ? never : T>(
   ...params: FromSignalParameters<TTpl, R> | FromSignalParametersWithOptions<TTpl, R> | FromValueParameters<TVal, R>):
   Signal<R> | MapSignal<TVal, R> {
