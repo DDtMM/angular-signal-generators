@@ -23,7 +23,7 @@ export function autoDetectChangesSignal<T, S extends Signal<T>>(fixture: Compone
   /** This will wrap autoDetectChanges after the function call. */
   function addDetectChangesToFunction <TArgs extends unknown[], TOut>(fn: (...args: TArgs) => TOut) {
     return (...args: TArgs) => {
-      const res = fn.apply(source, args);
+      const res = fn.apply(output, args);
       fixture.detectChanges();
       return res;
     }

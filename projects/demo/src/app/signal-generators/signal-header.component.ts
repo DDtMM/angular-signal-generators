@@ -16,5 +16,4 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 export class SignalHeaderComponent {
   @Input() apiPath?: string;
   @Input() name?: string;
-
 }

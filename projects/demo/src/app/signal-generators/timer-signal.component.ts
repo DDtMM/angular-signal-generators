@@ -17,6 +17,7 @@ import { SignalHeaderComponent } from './signal-header.component';
   The value of the timer is incremented after every "tick".
   <a class="link" href="./api/functions/timerSignal.html">API Docs</a>
 </p>
+<h3>Demo</h3>
 <div class="flex flex-col w-full sm:flex-row items-center">
   <div class="flex-none">
     <div class="join pr-3">

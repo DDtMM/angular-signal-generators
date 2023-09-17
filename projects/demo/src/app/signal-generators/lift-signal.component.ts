@@ -17,6 +17,7 @@ import { SignalHeaderComponent } from './signal-header.component';
   For example, lifting <b>Array.push</b> will add a method called <i>push</i> to the signal.
   Calling the <i>push</i> method will internally call <b>signal.mutate()</b> with a function that executes the push.
 </p>
+<h3>Demo</h3>
 <div class="join pr-3">
   <button type="button" class="btn btn-primary join-item" (click)="numbers.push(randomNumber())">Push</button>
   <button type="button" class="btn btn-primary join-item" (click)="numbers.pop()">Pop</button>
@@ -28,7 +29,7 @@ import { SignalHeaderComponent } from './signal-header.component';
   {{numbers() | json}}
 </div>
 <div>
-  <h2>Example</h2>
+  <h3>Example</h3>
   <pre><code [highlight]="example" [languages]="['typescript']"></code></pre>
 </div>
   `,
