@@ -25,15 +25,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:jest",
           "options": {
-            "codeCoverageExclude": ["projects/signal-generators/src/testing/**"],
+            "exclude": ["projects/signal-generators/src/testing/**"],
             "tsConfig": "projects/signal-generators/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "karmaConfig": "projects/signal-generators/karma.conf.js"
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         },
         "lint": {
@@ -150,25 +146,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "demo:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "projects/demo/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/demo/src/favicon.ico",
-              "projects/demo/src/assets"
-            ],
-            "styles": [
-              "projects/demo/src/styles.scss"
-            ],
-            "scripts": []
           }
         }
       }

@@ -4,16 +4,16 @@ import { getDestroyRef, hasKey, isMethodKey } from './utilities';
 
 describe('hasKey', () => {
   type Something = { keyX?: number };
-  it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBeTrue());
-  it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBeFalse());
-  it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBeFalse());
+  it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBe(true));
+  it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBe(false));
+  it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBe(false));
 });
 
 describe('isMethodKey', () => {
   const srcObj = { method: () => 1, notMethod: 1 };
-  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBeTrue());
-  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBeFalse());
-  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBeFalse());
+  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBe(true));
+  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBe(false));
+  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBe(false));
 })
 
 describe('getDestroyRef', () => {

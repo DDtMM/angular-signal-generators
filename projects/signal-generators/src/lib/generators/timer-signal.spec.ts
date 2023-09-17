@@ -145,7 +145,7 @@ describe('timerSignal', () => {
 
   /** sets up the test inside fakeAsync and pauses the timer at the end to avoid error message. */
   function testTimer<T extends ValueSource<number>, U extends ValueSource<number> | undefined>(timerTime: T, intervalTime: U,
-    assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): jasmine.ImplementationCallback {
+    assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): jest.ProvidesCallback {
 
     return fakeAsync(() => {
       const timer = timerSignal(timerTime, intervalTime, { injector });

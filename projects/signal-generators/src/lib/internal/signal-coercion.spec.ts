@@ -15,7 +15,7 @@ describe('coerceSignal', () => {
     const originalValue = generateValue();
     const innerSignal = signal(originalValue);
     const coerced = coerceSignal(() => innerSignal() - 5);
-    it('should return a new signal', () => expect(isSignal(coerced)).toBeTrue());
+    it('should return a new signal', () => expect(isSignal(coerced)).toBe(true));
     it('and that signal should produce the expected value', () => expect(coerced() + 5).toBe(innerSignal()));
     it('and produce expected value when the source signal(s) change', () => {
       innerSignal.set(originalValue - 10);

@@ -94,7 +94,7 @@ describe('timerInternal', () => {
     tickAndAssertTimerValue(timer, [[ 750, 5 ]]);
   }));
   it('calls callback after each tick', fakeAsync(() => {
-    const callbackSpy = jasmine.createSpy('callback', (x: number) => x);
+    const callbackSpy = jest.fn((x: number) => x);
     const timer = new TimerInternal(1000, 500, { runAtStart: true , callback: callbackSpy });
     tick(3000);
     expect(callbackSpy).toHaveBeenCalledTimes(5);
@@ -106,7 +106,7 @@ describe('timerInternal', () => {
     timerTime: N,
     intervalTime: N | undefined,
     options: TimerInternalOptions | undefined,
-    assertion: (timer: TimerInternal, timerTime: number, intervalTime: number | undefined) => void): jasmine.ImplementationCallback {
+    assertion: (timer: TimerInternal, timerTime: number, intervalTime: number | undefined) => void): jest.ProvidesCallback {
 
     return fakeAsync(() => {
       const timer = new TimerInternal(timerTime, intervalTime, options);
