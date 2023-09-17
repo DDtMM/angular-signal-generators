@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HighlightModule } from 'ngx-highlightjs';
 import { extendSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from './signal-header.component';
+import { ExampleCodeComponent } from '../example-code.component';
 
 @Component({
   selector: 'app-lift-signal',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
+  imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
 <app-signal-header name="Extend Signal" apiPath="./api/functions/extendSignal.html" />
 <p>
@@ -21,6 +21,7 @@ import { SignalHeaderComponent } from './signal-header.component';
   The advantage over <code class="inline p-1">assign</code> is that this allows you to hide the original implementation of the source signal's methods.
   For example, you can have a set method that multiplies a value and uses the original set to actually set the signal's value.
 </p>
+<h3>Demo</h3>
 <div class="flex flex-row flex-wrap -m-2">
   <div class="m-2">
     <input class="input" class="input input-bordered" type="text" [(ngModel)]="inputText" placeholder="Say something" />
@@ -36,20 +37,20 @@ import { SignalHeaderComponent } from './signal-header.component';
   {{voice() | json}}
 </div>
 <div>
-  <h2>Example</h2>
-  <pre><code [highlight]="example" [languages]="['typescript']"></code></pre>
+  <h3>Example</h3>
+  <app-example-code><pre>
+readonly voice = extendSignal('hello', {{ '{' }}
+  clear: (s) => s.set(''),
+  whisper: (s, text) => s.set(\`(\${{ '{' }} text.toLowerCase() })\`),
+  yell: (s, text: string) => s.set(\`\${{ '{' }} text.toUpperCase() }!!!\`)
+});
+  </pre></app-example-code>
 </div>
+
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExtendSignalComponent {
-  readonly example = `
-readonly voice = extendSignal('hello', {
-  clear: (s) => s.set(''),
-  whisper: (s, text) => s.set(\`(\${text.toLowerCase()})\`),
-  yell: (s, text: string) => s.set(\`\${text.toUpperCase()}!!!\`)
-});
-  `.trim();
 
   inputText = '';
 

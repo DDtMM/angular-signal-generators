@@ -18,7 +18,7 @@ import { SignalHeaderComponent } from './signal-header.component';
 <div>
   <button type="button" class="btn btn-primary" (click)="trueFalseToggle.next()">TOGGLE ME - {{trueFalseToggle()}}</button>
 </div>
-<h3>fibonacci sequence</h3>
+<h3>Demo: Fibonacci sequence</h3>
 <div class="flex flex-row items-center">
   <div class="flex flex-col text-center px-3">
     <div class="label">Value</div>
