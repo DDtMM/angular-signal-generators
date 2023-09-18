@@ -5,7 +5,7 @@ import { isSignalInput } from '../internal/signal-input-utilities';
 import { toSignalProxy } from '../internal/to-signal-proxy';
 import { SignalInput } from '../signal-input';
 import { SignalProxy } from '../signal-proxy';
-import { ValueSource } from '../value-source';
+import { ValueSource, ValueSourceValue } from '../value-source';
 
 export interface ExtendSignalOptions<T> {
   /** This is only used if a writable signal is created from a value */
@@ -21,7 +21,7 @@ export type ValueSourceSignal<V extends ValueSource<any>> =
 
 export type ProxyMethod<S extends Signal<any>> = (p: SignalProxy<S>, ...args: any) => void;
 
-type OutputMethod<P extends ProxyMethod<ValueSourceSignal<any>>> = P extends (p: any, ...args: infer A) => infer R ? (...args: A) => R : never;
+export type OutputMethod<P extends ProxyMethod<ValueSourceSignal<any>>> = P extends (p: any, ...args: infer A) => infer R ? (...args: A) => R : never;
 
 export type OutputMethods<M extends Record<string, ProxyMethod<ValueSourceSignal<any>>>> = {
   [K in keyof M]: OutputMethod<M[K]> }
@@ -48,7 +48,7 @@ export function extendSignal<T, V extends ValueSource<T>, const M extends Record
   valueSource: V,
   methods: M,
   options: ExtendSignalOptions<T> = {}):
-  Signal<T> & Omit<ValueSourceSignal<V>, keyof M> & OutputMethods<M> {
+  Signal<ValueSourceValue<V>> & Omit<ValueSourceSignal<V>, keyof M> & OutputMethods<M> {
 
   const output = isSignalInput(valueSource)
     ? coerceSignal(valueSource, options) as ValueSourceSignal<V>
@@ -63,6 +63,6 @@ export function extendSignal<T, V extends ValueSource<T>, const M extends Record
   }, {} as OutputMethods<M>)
 
 
-  return Object.assign(output, assignMethods) as (Signal<T> & ValueSourceSignal<V> & OutputMethods<M>);
+  return Object.assign(output, assignMethods) as (Signal<ValueSourceValue<V>> & ValueSourceSignal<V> & OutputMethods<M>);
 }
 

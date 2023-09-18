@@ -8,5 +8,5 @@ export * from './lib/generators/map-signal';
 export * from './lib/generators/sequence-signal';
 export * from './lib/generators/timer-signal';
 export * from './lib/signal-input';
-export { SignalProxy } from './lib/signal-proxy';
-export { ValueSource }  from './lib/value-source';
+export { SignalFunction, SignalFunctions, SignalProxy } from './lib/signal-proxy';
+export { ValueSource, ValueSourceValue }  from './lib/value-source';
