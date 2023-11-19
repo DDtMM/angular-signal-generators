@@ -15,7 +15,8 @@ import { SignalHeaderComponent } from './signal-header.component';
   "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
   The lifted methods should be those appropriate for mutating or updating the value.
   For example, lifting <b>Array.push</b> will add a method called <i>push</i> to the signal.
-  Calling the <i>push</i> method will internally call <b>signal.mutate()</b> with a function that executes the push.
+  Calling the <i>push</i> method will internally call <b>signal.update()</b>
+  with a function that executes the push and returns the updated signal.
 </p>
 <h3>Demo</h3>
 <div class="join pr-3">

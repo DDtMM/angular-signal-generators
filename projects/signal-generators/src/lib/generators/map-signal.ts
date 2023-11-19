@@ -15,7 +15,6 @@ export interface MapSignal<TIn, TOut> extends Signal<TOut> {
   asReadonly(): Signal<TOut>;
   /** Contains the values that are input to the signal. */
   input: Signal<TIn>;
-  mutate(mutatorFn: (value: TIn) => void): void;
   set(value: TIn): void;
   update(updateFn: (value: TIn) => TIn): void;
 }
@@ -100,7 +99,6 @@ function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options
   return Object.assign(output, {
     asReadonly: () => output,
     input,
-    mutate: input.mutate.bind(input),
     set: input.set.bind(input),
     update: input.update.bind(input)
   });

@@ -31,11 +31,6 @@ describe('extendSignal', () => {
   });
   describe('can overwrite signal methods', () => {
     it('should safely change the signature of set', () => {
-      const source = extendSignal({ value: 2 }, { mutate: (proxy, value: string) => proxy.mutate(x => x.value += value.length)});
-      source.mutate('four');
-      expect(source()).toEqual({ value: 6 });
-    })
-    it('should safely change the signature of set', () => {
       const source = extendSignal(2, { set: (proxy, value: string) => proxy.set(value.length)});
       source.set('four');
       expect(source()).toEqual(4);
@@ -59,11 +54,6 @@ describe('extendSignal', () => {
   it('should update when proxy.update is used by extended function', () => {
     const source = extendSignal({ value: 2 }, { updateMe: (proxy) => proxy.update(x => ({ value: x.value + 4 }))});
     source.updateMe();
-    expect(source()).toEqual({ value: 6 });
-  });
-  it('should mutate when proxy.mutate is used by extended function', () => {
-    const source = extendSignal({ value: 2 }, { mutateMe: (proxy) => proxy.mutate(x => x.value += 4 ) });
-    source.mutateMe();
     expect(source()).toEqual({ value: 6 });
   });
 });

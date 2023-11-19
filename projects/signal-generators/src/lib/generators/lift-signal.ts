@@ -27,8 +27,8 @@ export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[] 
  * console.log(awesomeArray()); //[2, 4];
  * ```
  * @param valueSource Either a value or a Writable signal.
- * @param mutators A tuple that contains the names that will modify the signal's value directly and are appropriate for signal.mutate.
- * @param updaters A tuple that contains the names that will return T and are therefore appropriate for signal.update.
+ * @param mutators A tuple that contains the names that will modify the signal's value directly.
+ * @param updaters A tuple that contains the names that will return T.
  * @typeParam T the type of the signal's value as well as the type where the functions are lifted from.
  * @typeParam M A tuple that contains the names of methods appropriate for mutating.
  * @typeParam U A tuple that contains the names of methods appropriate for updating.
@@ -48,7 +48,10 @@ export function liftSignal<T extends NonNullable<unknown>,
   const boundMethods: Partial<BoundMethodsStrict<T, NonNullable<M>> & BoundMethodsStrict<T, NonNullable<U>>> = {};
 
   mutators?.forEach((cur) => {
-    boundMethods[cur] = (...args) => output.mutate(x => (x[cur] as MethodKeyFn<typeof x, typeof cur>)(...args));
+    boundMethods[cur] = (...args) => output.update(x => {
+      (x[cur] as MethodKeyFn<typeof x, typeof cur>)(...args);
+      return x;
+    });
   });
 
   updaters?.forEach((cur) => {
