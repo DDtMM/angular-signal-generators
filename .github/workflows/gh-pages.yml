@@ -40,7 +40,7 @@ jobs:
       - name: Install Dependencies
         if:
           steps.cache-nodemodules.outputs.cache-hit != 'true' # if cache hits the skip this step.
-        run: npm ci
+        run: npm ci --force
 
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
