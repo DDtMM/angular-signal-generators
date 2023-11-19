@@ -45,3 +45,6 @@ Thumbs.db
 ./ddtmm-angular-signal-generators-*.tgz
 # ignore built content in demo project
 /projects/demo/src/api/
+
+.nx/
+.nx/cache/
