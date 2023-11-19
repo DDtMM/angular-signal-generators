@@ -1,0 +1,407 @@
+{
+  "version": "6.0",
+  "nxVersion": "17.1.2",
+  "deps": {
+    "@angular/animations": "^17.0.3",
+    "@angular/common": "^17.0.3",
+    "@angular/compiler": "^17.0.3",
+    "@angular/core": "^17.0.3",
+    "@angular/forms": "^17.0.3",
+    "@angular/platform-browser": "^17.0.3",
+    "@angular/platform-browser-dynamic": "^17.0.3",
+    "@angular/router": "^17.0.3",
+    "@fortawesome/angular-fontawesome": "^0.14.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-brands-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "easings.net": "^1.0.3",
+    "ngx-highlightjs": "^10.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.14.2",
+    "@angular-devkit/build-angular": "^17.0.1",
+    "@angular-eslint/builder": "^17.1.0",
+    "@angular-eslint/eslint-plugin": "^17.1.0",
+    "@angular-eslint/eslint-plugin-template": "^17.1.0",
+    "@angular-eslint/schematics": "^17.1.0",
+    "@angular-eslint/template-parser": "^17.1.0",
+    "@angular/cli": "^17.0.1",
+    "@angular/compiler-cli": "^17.0.3",
+    "@types/jasmine": "~5.1.2",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "autoprefixer": "^10.4.16",
+    "cpy-cli": "^5.0.0",
+    "daisyui": "^4.4.2",
+    "eslint": "^8.54.0",
+    "istanbul-badges-readme": "^1.8.5",
+    "jasmine-core": "~5.1.1",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-mocks": "^14.12.0",
+    "ng-packagr": "^17.0.1",
+    "postcss": "^8.4.31",
+    "sonicware-tdt": "^20.0.0",
+    "tailwindcss": "^3.3.5",
+    "typedoc": "^0.25.3",
+    "typescript": "~5.2.2"
+  },
+  "pathMappings": {
+    "signal-generators": [
+      "dist/signal-generators"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {},
+    "nonProjectFiles": [
+      {
+        "file": ".editorconfig",
+        "hash": "1954053217729222799"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "503749874363187542"
+      },
+      {
+        "file": ".github/workflows/gh-pages.yml",
+        "hash": "4051160553598315817"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "13684390656771735299"
+      },
+      {
+        "file": ".vscode/extensions.json",
+        "hash": "11934160580685414355"
+      },
+      {
+        "file": ".vscode/launch.json",
+        "hash": "17406702432687230417"
+      },
+      {
+        "file": ".vscode/settings.json",
+        "hash": "7578524882481750751"
+      },
+      {
+        "file": ".vscode/tasks.json",
+        "hash": "10093397977228577162"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "8592628381341037543"
+      },
+      {
+        "file": "README.md",
+        "hash": "16001334311820306801"
+      },
+      {
+        "file": "angular.json",
+        "hash": "6837122049541910033"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "4617552581563013511"
+      },
+      {
+        "file": "package.json",
+        "hash": "13353385642643167090"
+      },
+      {
+        "file": "projects/demo/src/404.md",
+        "hash": "2282302200106457330"
+      },
+      {
+        "file": "projects/demo/src/app/app.component.ts",
+        "hash": "2270106520903731236"
+      },
+      {
+        "file": "projects/demo/src/app/app.config.ts",
+        "hash": "2759460798462192681"
+      },
+      {
+        "file": "projects/demo/src/app/app.routes.ts",
+        "hash": "3802470335709100022"
+      },
+      {
+        "file": "projects/demo/src/app/example-code.component.ts",
+        "hash": "17179162861498373164"
+      },
+      {
+        "file": "projects/demo/src/app/home.component.html",
+        "hash": "13521678774325145521"
+      },
+      {
+        "file": "projects/demo/src/app/home.component.ts",
+        "hash": "6042346012600782645"
+      },
+      {
+        "file": "projects/demo/src/app/scratchpad.component.ts",
+        "hash": "7926395783903153739"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/debounce-signal.component.ts",
+        "hash": "13333817826953470682"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/extend-signal.component.ts",
+        "hash": "15142969407175752414"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/lift-signal.component.ts",
+        "hash": "8093225694586076514"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/map-signal.component.ts",
+        "hash": "4278339524987059753"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/sequence-signal.component.ts",
+        "hash": "4661655374391103594"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/signal-header.component.ts",
+        "hash": "6092916387766328418"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/timer-signal.component.ts",
+        "hash": "14320436899603127989"
+      },
+      {
+        "file": "projects/demo/src/app/signal-generators/tween-signal.component.ts",
+        "hash": "14866697429266439364"
+      },
+      {
+        "file": "projects/demo/src/assets/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "projects/demo/src/assets/angular-signal-generators-logo.png",
+        "hash": "5995587877245534942"
+      },
+      {
+        "file": "projects/demo/src/favicon.ico",
+        "hash": "3464744996580215640"
+      },
+      {
+        "file": "projects/demo/src/index.html",
+        "hash": "5570246936888327979"
+      },
+      {
+        "file": "projects/demo/src/main.ts",
+        "hash": "4169901790405087765"
+      },
+      {
+        "file": "projects/demo/src/styles.scss",
+        "hash": "1516183875966469544"
+      },
+      {
+        "file": "projects/demo/tsconfig.app.json",
+        "hash": "5927361027902362554"
+      },
+      {
+        "file": "projects/demo/tsconfig.spec.json",
+        "hash": "13338856497352866793"
+      },
+      {
+        "file": "projects/signal-generators/.eslintrc.json",
+        "hash": "503749874363187542"
+      },
+      {
+        "file": "projects/signal-generators/karma.conf.js",
+        "hash": "12863737754606576526"
+      },
+      {
+        "file": "projects/signal-generators/ng-package.json",
+        "hash": "12127555665865216583"
+      },
+      {
+        "file": "projects/signal-generators/package.json",
+        "hash": "4804129899637928254"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/debounce-signal.spec.ts",
+        "hash": "5417846037921661046"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/debounce-signal.ts",
+        "hash": "9995357520568045190"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/extend-signal.spec.ts",
+        "hash": "1583091882603343133"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/extend-signal.ts",
+        "hash": "18241391730191572982"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/lift-signal.spec.ts",
+        "hash": "978487926016501899"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/lift-signal.ts",
+        "hash": "9575175590724219738"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/map-signal.spec.ts",
+        "hash": "13090754768791016998"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/map-signal.ts",
+        "hash": "9416934295932024418"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/pairwise-signal.spec.ts",
+        "hash": "4960879960603606428"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/pairwise-signal.ts",
+        "hash": "4471364056433155685"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/sequence-signal.spec.ts",
+        "hash": "5229497342072363831"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/sequence-signal.ts",
+        "hash": "8462620636619989356"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/timer-signal.spec.ts",
+        "hash": "13582353140052079495"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/timer-signal.ts",
+        "hash": "10322211328721562002"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/tween-signal.spec.ts",
+        "hash": "1721812075982092528"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/generators/tween-signal.ts",
+        "hash": "8549659932887757343"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/animations.spec.ts",
+        "hash": "16182070908819896150"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/animations.ts",
+        "hash": "458731462188683351"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/ref-signal.spec.ts",
+        "hash": "1281075905708906061"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/ref-signal.ts",
+        "hash": "608879700739095762"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/signal-coercion.spec.ts",
+        "hash": "3074684005259916820"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/signal-coercion.ts",
+        "hash": "13471282001236481531"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/signal-input-utilities.spec.ts",
+        "hash": "9335577062951924630"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/signal-input-utilities.ts",
+        "hash": "14760186987508031233"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/timer-internal.spec.ts",
+        "hash": "12389939080347554106"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/timer-internal.ts",
+        "hash": "926246935322023129"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/to-signal-proxy.spec.ts",
+        "hash": "11071241037030365258"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/to-signal-proxy.ts",
+        "hash": "15096730406558673137"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/utilities.spec.ts",
+        "hash": "17350779579517687284"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/utilities.ts",
+        "hash": "4419285525526186562"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/value-source-utilities.ts",
+        "hash": "5106191798752470024"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/wrap-signal.spec.ts",
+        "hash": "7317875561571664614"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/internal/wrap-signal.ts",
+        "hash": "3261248363590764856"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/signal-input.ts",
+        "hash": "791721990295348245"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/signal-proxy.ts",
+        "hash": "2964491923681658818"
+      },
+      {
+        "file": "projects/signal-generators/src/lib/value-source.ts",
+        "hash": "17332494673108448042"
+      },
+      {
+        "file": "projects/signal-generators/src/public-api.ts",
+        "hash": "15139696010965181463"
+      },
+      {
+        "file": "projects/signal-generators/src/testing/general-signal-tests.spec.ts",
+        "hash": "9996183473312204682"
+      },
+      {
+        "file": "projects/signal-generators/src/testing/signal-testing-utilities.ts",
+        "hash": "15038763311474891378"
+      },
+      {
+        "file": "projects/signal-generators/src/testing/testing-utilities.ts",
+        "hash": "13994771680421237294"
+      },
+      {
+        "file": "projects/signal-generators/tsconfig.lib.json",
+        "hash": "13510875285750125499"
+      },
+      {
+        "file": "projects/signal-generators/tsconfig.lib.prod.json",
+        "hash": "6958467553555132988"
+      },
+      {
+        "file": "projects/signal-generators/tsconfig.spec.json",
+        "hash": "6187331034101419811"
+      },
+      {
+        "file": "tailwind.config.js",
+        "hash": "12756848538805261698"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "4690234821898917310"
+      }
+    ]
+  }
+}
