@@ -1,5 +1,7 @@
 import { SignalInput, ToSignalInput } from '../signal-input';
 
+export function isSignalInput<T>(obj: SignalInput<T> | T): obj is SignalInput<T>
+export function isSignalInput(obj: unknown): obj is SignalInput<unknown>
 /**
  * Tests if an object is valid for coerceSignal.
  *
@@ -8,7 +10,6 @@ import { SignalInput, ToSignalInput } from '../signal-input';
 export function isSignalInput(obj: unknown): obj is SignalInput<unknown> {
   return (obj != null) && (typeof obj === 'function' && obj.length === 0 || isToSignalInput(obj));
 }
-
 
 export function isToSignalInput<T>(obj: SignalInput<T>): obj is ToSignalInput<T>
 export function isToSignalInput(obj: unknown): obj is ToSignalInput<unknown>

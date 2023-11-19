@@ -26,6 +26,7 @@ describe('extendSignal', () => {
     const source = extendSignal(computed(() => 5), {
       label: (proxy, text: string) => `${text} ${proxy()}`
     });
+    expect(source()).toEqual(5);
     expect(source.label('The value is')).toEqual('The value is 5');
   });
   describe('can overwrite signal methods', () => {
