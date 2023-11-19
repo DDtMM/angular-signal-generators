@@ -61,11 +61,6 @@ describe('mapSignal', () => {
       const source = mapSignal(1, (x) => x * 3);
       expect(source.input()).toBe(1);
     });
-    it('#mutate sets signal to mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal({ value: 1 }, (x) => ( { value: x.value * 3 })));
-      source.mutate((x) => x.value = 2);
-      expect(source()).toEqual({ value: 6 });
-    });
     it('#set sets signal to mapped value', () => {
       const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3));
       source.set(2);

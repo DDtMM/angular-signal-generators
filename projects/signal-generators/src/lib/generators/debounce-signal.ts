@@ -11,8 +11,8 @@ export interface DebounceSignalOptions {
   injector?: Injector;
 }
 
-/** Almost a writable signal, except that mutate is not supported. */
-export type UpdatableSignal<T> = Signal<T> & Omit<WritableSignal<T>, 'mutate'>; // Omit removes the function signature of the Signal
+/** Almost a writable signal, but restricted to set, update, or asReadonly. */
+export type UpdatableSignal<T> = Signal<T> & Pick<WritableSignal<T>, 'set' | 'update' | 'asReadonly'>;
 
 /**
  * Creates a signal which emits the debounced changes from another signal.
@@ -91,8 +91,6 @@ function createFromValue<T>(initialValue: T,
 
   return Object.assign(debounced, {
     asReadonly: () => debounced,
-    // unfortunately mutate didn't work because it changed the underlying value immediately.
-    //mutate: source.mutate.bind(source),
     set: (value: T) => source.set(value), // set.call(source, value),
     update: (updateFn: (value: T) => T) => source.update(updateFn)
   });

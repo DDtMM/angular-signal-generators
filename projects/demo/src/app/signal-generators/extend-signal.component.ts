@@ -41,9 +41,9 @@ import { ExampleCodeComponent } from '../example-code.component';
   <app-example-code><pre>
 readonly voice = extendSignal('hello', {{ '{' }}
   clear: (s) => s.set(''),
-  whisper: (s, text) => s.set(\`(\${{ '{' }} text.toLowerCase() })\`),
-  yell: (s, text: string) => s.set(\`\${{ '{' }} text.toUpperCase() }!!!\`)
-});
+  whisper: (s, text) => s.set(\`(\${{ '{' }} text.toLowerCase() &#125;)\`),
+  yell: (s, text: string) => s.set(\`\${{ '{' }} text.toUpperCase() &#125;!!!\`)
+&#125;);
   </pre></app-example-code>
 </div>
 
