@@ -107,7 +107,6 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   const defaultEasing = easingOptionToFn(options?.easing);
   const defaultInterpolateFactoryFn = options?.interpolator ?? createInterpolator(output() as TweenNumericValues);
 
-
   let delayTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
   let instanceId = 0;
 
@@ -139,8 +138,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
         return; // another effect has occurred or not enough time elapsed.
       }
       previousTime = time;
-      const elapsed = time - start;
-      const progress = Math.max(0, Math.min(1, elapsed / duration));
+      const progress = Math.max(0, Math.min(1, (time - start) / duration));
       outputSet.call(output, interpolate(easing(progress)));
       if (progress < 1) {
         requestAnimationFrame(step);
@@ -150,14 +148,12 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     onCleanup(() => instanceId++);
   }, options);
 
-
   return output;
 
+  /** Creates an interpolator of a TweenNumericValues type. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function createInterpolator<T extends TweenNumericValues>(currentValue: T): InterpolateFactoryFn<any> {
-    function interpolateNumber(a: number, b: number, progress: number): number {
-      return a * (1 - progress) + b * progress;
-    }
+
     if (typeof currentValue === 'number') {
       return (a: number, b: number) => (progress: number) => interpolateNumber(a, b, progress);
     }
@@ -170,6 +166,10 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
         acc[cur[0]] = interpolateNumber(a[cur[0]] ?? cur[1], cur[1], progress);
         return acc;
       }, {} as typeof b);
+
+    function interpolateNumber(a: number, b: number, progress: number): number {
+      return a * (1 - progress) + b * progress;
+    }
   }
 
   /** Gets an easing function, returning a dummy one if easingOpt is undefined. */

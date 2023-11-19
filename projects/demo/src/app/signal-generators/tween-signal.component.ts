@@ -84,9 +84,6 @@ setSomeNumber(): void {
   this.someNumber.set(100);
 }
 `
-  constructor() {
-    //this.stringInterpolationTween.
-  }
 }
 
 function stringInterpolationFactory(a: string, b: string): InterpolateStepFn<string> {
