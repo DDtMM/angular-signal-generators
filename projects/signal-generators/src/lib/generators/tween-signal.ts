@@ -42,7 +42,7 @@ export interface TweenSignalOptions<T> extends TweenOptions<T> {
 export type TweenNumericValues = number | number[] | Record<string | number | symbol, number>;
 /** Same as regular TweenSignal options, but interpolator is not required. */
 export type TweenNumericSignalOptions<T extends TweenNumericValues> = Omit<TweenSignalOptions<T>, 'interpolator'> & Partial<Pick<TweenSignalOptions<T>, 'interpolator'>>;
-/** Like a writable a signal, but without mutate. */
+/** Like a writable a signal, but with options. */
 export interface TweenSignal<T> extends Signal<T> {
   /** Sets the value of signal with optional options, */
   set(value: T, options?: TweenOptions<T>): void;
@@ -95,8 +95,6 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     const srcSignal = signal<[value: T, options: TweenOptions<T> | undefined]>([source as T, undefined]);
     signalValueGetter = srcSignal;
     Object.assign(output, {
-      // mutate doesn't make much sense
-      // mutate: (mutatorFn: (value: T) => void, options?: TweenOptions<T>) => srcSignal.mutate(([value]) => [mutatorFn(value), options]),
       set: (x: T, options?: TweenOptions<T>) => srcSignal.set([x, options]),
       update: (updateFn: (value: T) => T, options?: TweenOptions<T>) => srcSignal.update(([value]) => [updateFn(value), options])
     });
