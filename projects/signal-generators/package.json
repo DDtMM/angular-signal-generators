@@ -5,11 +5,11 @@
   "description": "Specialized Angular signals to help with frequently encountered situations.",
   "peerDependencies": {
     "@angular/common": ">=16.0.0",
-    "@angular/core": ">=16.0.0"
+    "@angular/core": ">=16.0.0",
+    "easings.net": "^1.0.3"
   },
   "dependencies": {
-    "tslib": "^2.3.0",
-    "easings.net": "^1.0.3"
+    "tslib": "^2.3.0"
   },
   "bugs": {
     "url": "https://github.com/DDtMM/angular-signal-generators/issues"
