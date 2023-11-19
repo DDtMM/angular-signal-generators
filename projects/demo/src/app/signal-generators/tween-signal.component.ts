@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { EASING_NAMES, EasingName, InterpolateStepFn, tweenSignal } from 'projects/signal-generators/src/public-api';
-import { sequenceSignal } from 'signal-generators';
+import { sequenceSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from './signal-header.component';
 
 
