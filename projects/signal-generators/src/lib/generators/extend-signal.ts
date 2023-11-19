@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injector, Signal, ValueEqualityFn, WritableSignal, signal } from '@angular/core';
-import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
+import { Injector, Signal, ValueEqualityFn } from '@angular/core';
 import { toSignalProxy } from '../internal/to-signal-proxy';
-import { SignalInput } from '../signal-input';
+import { ValueSourceSignal, valueSourceToSignal } from '../internal/value-source-utilities';
 import { SignalProxy } from '../signal-proxy';
 import { ValueSource, ValueSourceValue } from '../value-source';
 
@@ -14,17 +12,15 @@ export interface ExtendSignalOptions<T> {
   injector?: Injector;
 }
 
-export type ValueSourceSignal<V extends ValueSource<any>> =
-  V extends Signal<any> ? V
-    : V extends SignalInput<infer T> ? Signal<T>
-      : WritableSignal<V>;
-
+/* A method whose first argument is a SignalProxy. */
 export type ProxyMethod<S extends Signal<any>> = (p: SignalProxy<S>, ...args: any) => void;
 
-export type OutputMethod<P extends ProxyMethod<ValueSourceSignal<any>>> = P extends (p: any, ...args: infer A) => infer R ? (...args: A) => R : never;
+export type OutputMethod<P extends ProxyMethod<ValueSourceSignal<any>>> =
+  P extends (p: any, ...args: infer A) => infer R ? (...args: A) => R : never;
 
 export type OutputMethods<M extends Record<string, ProxyMethod<ValueSourceSignal<any>>>> = {
-  [K in keyof M]: OutputMethod<M[K]> }
+  [K in keyof M]: OutputMethod<M[K]>
+};
 
 /**
  * extendSignal allows additional functions added to a Signal or value converted to a WritableSignal.
@@ -50,11 +46,11 @@ export function extendSignal<T, V extends ValueSource<T>, const M extends Record
   options: ExtendSignalOptions<T> = {}):
   Signal<ValueSourceValue<V>> & Omit<ValueSourceSignal<V>, keyof M> & OutputMethods<M> {
 
-  const output = isSignalInput(valueSource)
-    ? coerceSignal(valueSource, options) as ValueSourceSignal<V>
-    : signal(valueSource as T, options) as ValueSourceSignal<V>;
-  // create proxy only there is overlap.
-  const proxy = Object.keys(methods).some(x => x in output) ? toSignalProxy(output) : output as SignalProxy<ValueSourceSignal<V>>;
+  const output: ValueSourceSignal<V> = valueSourceToSignal(valueSource, options);
+  // create proxy only there is overlap.  Overlap is found by checking if any keys are in our output signal.
+  const proxy = Object.keys(methods).some(x => x in output)
+    ? toSignalProxy(output)
+    : output as SignalProxy<ValueSourceSignal<V>>;
 
   const assignMethods = Object.keys(methods).reduce((acc, key: keyof typeof methods) => {
     const innerMethod = methods[key];

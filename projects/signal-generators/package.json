@@ -1,14 +1,15 @@
 {
   "name": "@ddtmm/angular-signal-generators",
-  "version": "0.16.10",
+  "version": "1.0.11",
   "license": "MIT",
   "description": "Specialized Angular signals to help with frequently encountered situations.",
   "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
+    "@angular/common": ">=16.0.0",
+    "@angular/core": ">=16.0.0"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "easings.net": "^1.0.3"
   },
   "bugs": {
     "url": "https://github.com/DDtMM/angular-signal-generators/issues"

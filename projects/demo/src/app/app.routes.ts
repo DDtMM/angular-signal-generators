@@ -6,6 +6,7 @@ import { SequenceSignalComponent } from './signal-generators/sequence-signal.com
 import { MapSignalComponent } from './signal-generators/map-signal.component';
 import { LiftSignalComponent } from './signal-generators/lift-signal.component';
 import { ExtendSignalComponent } from './signal-generators/extend-signal.component';
+import { TweenSignalComponent } from './signal-generators/tween-signal.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'map-signal', component: MapSignalComponent },
   { path: 'sequence-signal', component: SequenceSignalComponent },
   { path: 'timer-signal', component: TimerSignalComponent },
+  { path: 'tween-signal', component: TweenSignalComponent },
   { path: '**', redirectTo: '' }
 ];

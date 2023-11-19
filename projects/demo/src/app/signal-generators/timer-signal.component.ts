@@ -10,12 +10,12 @@ import { SignalHeaderComponent } from './signal-header.component';
   standalone: true,
   imports: [CommonModule, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Timer Signal" apiPath="./api/functions/timerSignal.html" />
+<!-- for some reason the API docs come out with -1 at the end -->
+<app-signal-header name="Timer Signal" apiPath="./api/functions/timerSignal-1.html" />
 <p>
   This is very similar to rxjs's <i>timer</i> operator.
   It will be have like setTimeout or interval depending on the parameters passed.
   The value of the timer is incremented after every "tick".
-  <a class="link" href="./api/functions/timerSignal.html">API Docs</a>
 </p>
 <h3>Demo</h3>
 <div class="flex flex-col w-full sm:flex-row items-center">

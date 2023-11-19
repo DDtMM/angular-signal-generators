@@ -74,6 +74,10 @@ There is also a special option to pass a cursor, which is similar to an iterator
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
 
+### tweenSignal
+
+This was directly inspired by Svelte's *tweened* function.  When the signal value is change, the observed value slowly morphs over time.  So if the original value was **1** and the next value was set to **5**, then the observed value will be something like *1*, *1.512*, *2.12*, *2.6553*, *3* over a set duration.
+
 ## Conventions
 
 ### SignalInput and ValueSource
