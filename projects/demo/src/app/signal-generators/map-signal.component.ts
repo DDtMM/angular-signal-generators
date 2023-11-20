@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { mapSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from './signal-header.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { ExampleCodeComponent } from '../example-code.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { ExampleCodeComponent } from '../example-code.component';
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Map Signal" apiPath="./api/functions/mapSignal.html" />
+<app-signal-header name="Map Signal" apiPath="./api/functions/mapSignal.html" [types]="['generator', 'signal']" />
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
   The selector function can include signals or can be mapped directly from an array of signals.

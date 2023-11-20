@@ -59,11 +59,12 @@ export class AppComponent {
   readonly faGithub = faGithub;
 
   readonly generatorLinks = [
-    { label: 'Debounce Signal', path: '/debounce-signal' },
-    { label: 'Extend Signal', path: '/extend-signal' },
-    { label: 'Lift Signal', path: '/lift-signal' },
-    { label: 'Map Signal', path: '/map-signal' },
-    { label: 'Sequence Signal', path: '/sequence-signal' },
-    { label: 'Timer Signal', path: '/timer-signal' },
+    { label: 'Debounce', path: '/debounce-signal' },
+    { label: 'Extend', path: '/extend-signal' },
+    { label: 'Lift', path: '/lift-signal' },
+    { label: 'Map', path: '/map-signal' },
+    { label: 'Sequence', path: '/sequence-signal' },
+    { label: 'Timer', path: '/timer-signal' },
+    { label: 'Tween', path: '/tween-signal' },
   ]
 }

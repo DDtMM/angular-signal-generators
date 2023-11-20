@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { EASING_NAMES, EasingName, InterpolateStepFn, tweenSignal } from 'projects/signal-generators/src/public-api';
 import { sequenceSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from './signal-header.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { SignalHeaderComponent } from './signal-header.component';
   imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
   template: `
 <!-- for some reason the API docs come out with -1 at the end -->
-<app-signal-header name="Tween Signal" apiPath="./api/functions/tweenSignal-1.html" />
+<app-signal-header name="Tween Signal" apiPath="./api/functions/tweenSignal-1.html" [types]="['generator', 'signal']" />
 <p>
   A very blatant ripoff of Svelte's Tweened function.
   This allows you to create engaging simple transition animations with just a signal.
