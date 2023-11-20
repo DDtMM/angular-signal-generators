@@ -3,9 +3,8 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HighlightModule } from 'ngx-highlightjs';
-import { debounceSignal, mapSignal } from 'projects/signal-generators/src/public-api';
+import { debounceSignal, mapSignal, sequenceSignal, timerSignal, tweenSignal } from 'projects/signal-generators/src/public-api';
 import { ExampleCodeComponent } from './example-code.component';
-import { sequenceSignal, timerSignal, tweenSignal } from 'signal-generators';
 import { SignalTypeBadgeComponent } from './controls/signal-type-badge.component';
 
 @Component({
