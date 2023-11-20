@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { extendSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from './signal-header.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { ExampleCodeComponent } from '../example-code.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { ExampleCodeComponent } from '../example-code.component';
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Extend Signal" apiPath="./api/functions/extendSignal.html" />
+<app-signal-header name="Extend Signal" apiPath="./api/functions/extendSignal.html" [types]="['generator', 'signal']" />
 <p>
   Extends a signal by adding new methods directly to the signal.
   The original signal's methods can even be hidden.

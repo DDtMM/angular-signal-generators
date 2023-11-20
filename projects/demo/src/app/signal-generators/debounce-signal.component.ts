@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { debounceSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from './signal-header.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { ExampleCodeComponent } from '../example-code.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { ExampleCodeComponent } from '../example-code.component';
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Debounce Signal" apiPath="./api/functions/debounceSignal.html" />
+<app-signal-header name="Debounce Signal" apiPath="./api/functions/debounceSignal.html" [types]="['generator', 'signal']" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,

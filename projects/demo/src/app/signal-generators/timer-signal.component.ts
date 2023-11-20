@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { timerSignal, TimerSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from './signal-header.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { SignalHeaderComponent } from './signal-header.component';
   imports: [CommonModule, FormsModule, SignalHeaderComponent],
   template: `
 <!-- for some reason the API docs come out with -1 at the end -->
-<app-signal-header name="Timer Signal" apiPath="./api/functions/timerSignal-1.html" />
+<app-signal-header name="Timer Signal" apiPath="./api/functions/timerSignal-1.html" [types]="['generator']" />
 <p>
   This is very similar to rxjs's <i>timer</i> operator.
   It will be have like setTimeout or interval depending on the parameters passed.

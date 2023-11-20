@@ -3,14 +3,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { liftSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from './signal-header.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 @Component({
   selector: 'app-lift-signal',
   standalone: true,
   imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Lift Signal" apiPath="./api/functions/liftSignal.html" />
+<app-signal-header name="Lift Signal" apiPath="./api/functions/liftSignal.html" [types]="['generator', 'signal']" />
 <p>
   "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
   The lifted methods should be those appropriate for mutating or updating the value.
