@@ -24,6 +24,10 @@ describe('mapSignal', () => {
       signal1 = autoDetectChangesSignal(fixture, signal(3));
       signal2 = autoDetectChangesSignal(fixture, signal(5));
     });
+    it('the typings are correct for a single signal', () => {
+      const source = mapSignal(signal1, (a) => a + 1);
+      expect(source()).toBe(4);
+    });
     it('initially returns mapped value', () => {
       const source = mapSignal(signal1, signal2, (a, b) => a * b + 1);
       expect(source()).toBe(16);

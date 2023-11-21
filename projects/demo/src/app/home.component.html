@@ -1,20 +1,20 @@
 <h1>Angular Signal Generators</h1>
-<div>
+<p>
   Angular Signal Generators are purpose built signals meant to simplify common tasks encountered in Components.
   They work like vanilla signals, but they have extra capabilities built in to help extend a signal's functionality.
   Most can be either used in a similar fashion to a writable signal, or be passed a reference to an existing signal to generate new values.
-</div>
-<div>
+</p>
+<p>
   You can install these from npm
   <code>
     npm install &#64;ddtmm/angular-signal-generators
   </code>
-</div>
+</p>
 <h2>Demos</h2>
 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/debounce-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/debounce-signal">
         <a class="link" routerLink="/debounce-signal">Debounce Signal</a>
         <app-signal-type-badge type="generator"/><app-signal-type-badge type="signal"/>
       </h3>
@@ -22,7 +22,7 @@
         Creates a signal whose value isn't changed until it a certain has passed since the last update.
       </div>
       <div class="divider">Example</div>
-      <div class="flex flex-col gap-3" (click)="$event.stopPropagation()">
+      <div class="flex flex-col gap-3">
         <div class="flex flex-row gap-3 items-baseline">
           <label>Input</label>
           <input type="text" class="input input-bordered input-sm grow" [ngModel]="debounced()" (ngModelChange)="debounced.set($event)" />
@@ -34,9 +34,9 @@
       </div>
     </div>
   </li>
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/extend-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/extend-signal">
         <a class="link" routerLink="/extend-signal">Extend Signal</a>
         <app-signal-type-badge type="generator"/><app-signal-type-badge type="signal"/>
       </h3>
@@ -53,9 +53,9 @@ console.log(calculator()); // 15;
 </pre></app-example-code>
     </div>
   </li>
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/lift-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/lift-signal">
         <a class="link" routerLink="/lift-signal">Lift Signal</a>
         <app-signal-type-badge type="generator"/><app-signal-type-badge type="signal"/>
       </h3>
@@ -70,9 +70,9 @@ console.log(liftedArray()); // [1, 2, 3, 4];
 </pre></app-example-code>
     </div>
   </li>
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/map-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/map-signal">
         <a class="link" routerLink="/map-signal">Map Signal</a>
         <app-signal-type-badge type="generator"/><app-signal-type-badge type="signal"/>
       </h3>
@@ -93,9 +93,9 @@ console.log(liftedArray()); // [1, 2, 3, 4];
       </div>
     </div>
   </li>
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/sequence-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/sequence-signal">
         <a class="link" routerLink="/sequence-signal">Sequence Signal</a>
         <app-signal-type-badge type="generator"/><app-signal-type-badge type="signal"/>
       </h3>
@@ -119,9 +119,9 @@ console.log(liftedArray()); // [1, 2, 3, 4];
       </div>
     </div>
   </li>
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/timer-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/timer-signal">
         <a class="link" routerLink="/timer-signal">Timer Signal</a>
         <app-signal-type-badge type="generator"/>
       </h3>
@@ -140,9 +140,9 @@ console.log(liftedArray()); // [1, 2, 3, 4];
       </div>
     </div>
   </li>
-  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg" routerLink="/tween-signal">
+  <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
     <div class="card-body">
-      <h3 class="card-title">
+      <h3 class="card-title cursor-pointer" routerLink="/tween-signal">
         <a class="link" routerLink="/tween-signal">Tween Signal</a>
         <app-signal-type-badge type="generator"/><app-signal-type-badge type="signal"/>
       </h3>
@@ -150,7 +150,7 @@ console.log(liftedArray()); // [1, 2, 3, 4];
         Tween animations that allow a signal to transform between values over a set duration.
       </div>
       <div class="divider">Example</div>
-      <input type="range" [value]="tweenExample()" min="0" max="100" />
+      <input type="range" class="range range-primary" [value]="tweenExample()" min="0" max="100" />
       <div class="flex flex-row gap-3 justify-center" (click)="$event.stopPropagation()">
         <div class="join pr-3">
           <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(0)">0%</button>
