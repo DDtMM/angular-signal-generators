@@ -51,7 +51,7 @@ const inputDebounced = debounceSignal('', 500);
 <div>
   <div>
     <label class="label" >Debounce Time: {{debounceTime()}}</label>
-    <input class="range" type="range" min="0" max="10000" [ngModel]="debounceTime()" (ngModelChange)="debounceTime.set($event)" />
+    <input class="range range-primary" type="range" min="0" max="10000" [ngModel]="debounceTime()" (ngModelChange)="debounceTime.set($event)" />
   </div>
 </div>
 <div>

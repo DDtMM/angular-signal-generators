@@ -9,10 +9,18 @@ export type SignalGeneratorType = 'signal' | 'generator';
   template: `
     @switch (type) {
       @case ('signal') {
-        <div class="badge bg-green-300" title="This can be passed a value to create an updatable signal.">S</div>
+        <div class="badge bg-green-300 tooltip"
+          data-tip="This can be passed a value to create an updatable signal."
+          aria-description="Badge indicating this can be passed a value to create an updatable signal.">
+          S
+        </div>
       }
       @case ('generator') {
-        <div class="badge bg-blue-300" title="This can be passed a signal, observable, or compute function to generate new values.">G</div>
+        <div class="badge bg-blue-300 tooltip"
+          data-tip="This can be passed a signal, observable, or compute function to generate new values."
+          aria-description="Badge indicating this can be passed a signal, observable, or compute function to generate new values.">
+          G
+        </div>
       }
     }
 

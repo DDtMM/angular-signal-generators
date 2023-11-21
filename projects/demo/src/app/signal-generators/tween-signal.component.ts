@@ -40,7 +40,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
     </div>
   </div>
   <div>
-    <input type="range" [value]="tweenSignalSimple()" min="0" max="100" />
+    <input class="range range-primary" type="range" [value]="tweenSignalSimple()" min="0" max="100" />
   </div>
 </div>
 <h3>Demo 2: Multiple numbers</h3>

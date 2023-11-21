@@ -41,15 +41,18 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
     </div>
   </div>
 </div>
-<div class="flex flex-col w-full sm:flex-row">
-  <div class="grid flex-grow h-16 card bg-secondary text-white rounded-box place-items-center">
-    <div>Ticks since Restart</div>
-    <div>{{timer()}}</div>
+<div class="flex flex-col w-full sm:flex-row gap-3">
+  <div class="flex-grow card card-compact  shadow-lg">
+    <div class="card-body flex flex-col items-center">
+      <div>Ticks since Restart</div>
+      <div>{{timer()}}</div>
+    </div>
   </div>
-  <div class="divider sm:divider-horizontal"></div>
-  <div class="grid flex-grow h-16 card bg-secondary text-white rounded-box place-items-center">
-    <div>Total Ticks</div>
-    <div>{{executions()}}</div>
+  <div class="flex-grow card card-compact shadow-lg rounded-box">
+    <div class="card-body flex flex-col items-center">
+      <div>Total Ticks</div>
+      <div>{{executions()}}</div>
+    </div>
   </div>
 </div>
   `,
