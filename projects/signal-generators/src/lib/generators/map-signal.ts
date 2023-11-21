@@ -36,25 +36,7 @@ type FromSignalParametersWithOptions<T extends FromSignalTupleType, R> = readonl
 ];
 /** The function parameters if a value is passed.  This definition is only needed to simplify the implementation function.*/
 type FromValueParameters<T, R> = readonly [initialValue: T, selector: (x:T) => R, options?: MapSignalOptions<R> ];
-/**
- * Creates a signal whose input value is immediately mapped to a different value based on a selector.
- * The selector can contain signals and will react to changes in those signals.
- * @typeParam T The type of the initial value
- * @typeParam R The type of the value output by the selector function
- * @param initialValue The initial value that will be run
- * @param selector A selector that is run after the value of the signal is changed.
- * @param options Can see equality function or if the selector or injector since this uses a computed function.
- * @returns A writable signal whose output value is mapped with the selector.
- * @example
- * ```ts
- * const addOne = mapSignal(1, x => x + 1);
- * console.log(addOne()); // 2
- *
- * const addOnePlusOne = mapSignal(1, x => x + addOne());
- * console.log(addOnePlusOne()); // 3
- * ```
- */
-export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?: MapSignalOptions<R>): MapSignal<T, R>
+
 /**
  * Creates a signal from one or more signals that are mapped using the selector function.
  * This is slightly different from compute as all values will be recalculated even if logic in the selector only uses some.
@@ -74,6 +56,25 @@ export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?:
  * ```
  */
 export function mapSignal<const T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R> | FromSignalParametersWithOptions<T, R>): Signal<R>
+/**
+ * Creates a signal whose input value is immediately mapped to a different value based on a selector.
+ * The selector can contain signals and will react to changes in those signals.
+ * @typeParam T The type of the initial value
+ * @typeParam R The type of the value output by the selector function
+ * @param initialValue The initial value that will be run
+ * @param selector A selector that is run after the value of the signal is changed.
+ * @param options Can see equality function or if the selector or injector since this uses a computed function.
+ * @returns A writable signal whose output value is mapped with the selector.
+ * @example
+ * ```ts
+ * const addOne = mapSignal(1, x => x + 1);
+ * console.log(addOne()); // 2
+ *
+ * const addOnePlusOne = mapSignal(1, x => x + addOne());
+ * console.log(addOnePlusOne()); // 3
+ * ```
+ */
+export function mapSignal<T, R>(initialValue: T, selector: (x:T) => R, options?: MapSignalOptions<R>): MapSignal<T, R>
 export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType ? T : never, TVal extends T extends FromSignalTupleType ? never : T>(
   ...params: FromSignalParameters<TTpl, R> | FromSignalParametersWithOptions<TTpl, R> | FromValueParameters<TVal, R>):
   Signal<R> | MapSignal<TVal, R> {

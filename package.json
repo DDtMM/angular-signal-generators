@@ -11,7 +11,8 @@
     "test": "ng test signal-generators --code-coverage true",
     "test-coverage": "ng test signal-generators --code-coverage true --watch false",
     "generate-coverage-badge": "npx istanbul-badges-readme --coverageDir=\"./coverage/signal-generators\"",
-    "lint": "ng lint signal-generators"
+    "lint": "ng lint signal-generators",
+    "patch-16x-signal-generators-project": "git checkout --patch 16.x folder1/update.txt"
   },
   "private": true,
   "dependencies": {
