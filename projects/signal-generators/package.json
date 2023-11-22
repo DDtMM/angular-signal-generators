@@ -8,8 +8,8 @@
     "@angular/core": ">=16.0.0"
   },
   "dependencies": {
-    "tslib": "^2.3.0",
-    "easings.net": "^1.0.3"
+    "easings.net": "^1.0.3",
+    "tslib": "^2.3.0"
   },
   "bugs": {
     "url": "https://github.com/DDtMM/angular-signal-generators/issues"
