@@ -3,5 +3,8 @@
   "dest": "../../dist/signal-generators",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": [
+    "easings.net"
+  ]
 }
