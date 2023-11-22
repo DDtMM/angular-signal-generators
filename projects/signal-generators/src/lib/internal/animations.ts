@@ -16,7 +16,7 @@ export function getEasingFn(easingName: EasingName): (x: number) => number {
 
 /** Gets a function for requesting animation frames.  Either requestAnimationFrame or a setTimeout approximating 30 fps. */
 export function getRequestAnimationFrame(): AnimationFrameFn {
-  return window.requestAnimationFrame
+  return window?.requestAnimationFrame
     ?? ((callback: (timeStamp: number) => void) => setTimeout(() => callback(Date.now()), 33));
 }
 
