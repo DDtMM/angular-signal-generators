@@ -1,14 +1,14 @@
 {
   "name": "@ddtmm/angular-signal-generators",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "MIT",
   "description": "Specialized Angular signals to help with frequently encountered situations.",
   "peerDependencies": {
     "@angular/common": ">=16.0.0",
-    "@angular/core": ">=16.0.0",
-    "easings.net": "^1.0.3"
+    "@angular/core": ">=16.0.0"
   },
   "dependencies": {
+    "easings.net": "^1.0.3",
     "tslib": "^2.3.0"
   },
   "bugs": {
