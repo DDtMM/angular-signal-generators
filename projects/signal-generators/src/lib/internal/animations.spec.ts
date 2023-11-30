@@ -1,5 +1,5 @@
 import { fakeAsync, flush } from '@angular/core/testing';
-import { AnimationFrameFn, EASING_NAMES, getRequestAnimationFrame, getEasingFn } from './animations';
+import { EASING_NAMES, getEasingFn, getRequestAnimationFrame } from './animations';
 
 describe('getEasingFn', () => {
 
@@ -16,7 +16,8 @@ describe('getRequestAnimationFrame', () => {
   it('returns window.requestAnimationFrame if set', () => {
     // replace requestAnimationFrame with custom function.
     const raf = window.requestAnimationFrame;
-    window.requestAnimationFrame = ((fn) => { fn(Date.now()); return  0; }) as AnimationFrameFn;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.requestAnimationFrame = ((fn: (x: number) => void) => { fn(Date.now()); return  0; }) as any;
     const getRafResult = getRequestAnimationFrame();
     expect(getRafResult).toBe(window.requestAnimationFrame);
 
@@ -30,7 +31,8 @@ describe('getRequestAnimationFrame', () => {
   it('uses timeout when window.requestAnimationFrame is missing', fakeAsync(() => {
     // replace requestAnimationFrame with undefined.
     const raf = window.requestAnimationFrame;
-    window.requestAnimationFrame = undefined as unknown as AnimationFrameFn;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.requestAnimationFrame = undefined as any;
     const getRafResult = getRequestAnimationFrame();
     expect(getRafResult).not.toBe(window.requestAnimationFrame);
 
