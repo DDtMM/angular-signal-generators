@@ -66,13 +66,13 @@ function filterSignalFromValue<T, O extends T>(initialValue: O, filterFn: (x: T)
   const setFn = internal.set;
 
   return Object.assign(internal, {
-    set: (x: T) => setConditionally(setFn, x, filterFn),
-    update: (signalUpdateFn: (x: T) => T) => setConditionally(setFn, signalUpdateFn(internal()), filterFn)
+    set: (x: T) => setConditionally(x),
+    update: (signalUpdateFn: (x: T) => T) => setConditionally(signalUpdateFn(internal()))
   });
 
-  function setConditionally<T, O extends T>(setter: (value: O) => void, value: T, filterFn: (x: T) => boolean): void {
+  function setConditionally(value: T): void {
     if (filterFn(value)) {
-      setter(value as O);
+      setFn.call(internal, value as O);
     }
   }
 }
