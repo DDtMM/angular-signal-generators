@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { debounceSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from '../controls/signal-header.component';
-import { ExampleCodeComponent } from '../example-code.component';
+import { ExampleCodeComponent } from '../controls/example-code.component';
 
 @Component({
   selector: 'app-debounce-signal',

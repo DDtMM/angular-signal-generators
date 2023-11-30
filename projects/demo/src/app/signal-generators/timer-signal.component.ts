@@ -45,13 +45,13 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   <div class="flex-grow card card-compact  shadow-lg">
     <div class="card-body flex flex-col items-center">
       <div>Ticks since Restart</div>
-      <div>{{timer()}}</div>
+      <div class="h-7 text-lg">{{timer()}}</div>
     </div>
   </div>
   <div class="flex-grow card card-compact shadow-lg rounded-box">
     <div class="card-body flex flex-col items-center">
       <div>Total Ticks</div>
-      <div>{{executions()}}</div>
+      <div class="h-7 text-lg">{{executions()}}</div>
     </div>
   </div>
 </div>

@@ -41,9 +41,11 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
       <li>
         <h2 class="menu-title">Signals</h2>
         <ul>
-          <li *ngFor="let l of generatorLinks">
-            <a [routerLink]="l.path">{{l.label}}</a>
-          </li>
+          @for (l of generatorLinks; track l) {
+            <li>
+              <a [routerLink]="l.path">{{l.label}}</a>
+            </li>
+          }
         </ul>
       </li>
     </ul>

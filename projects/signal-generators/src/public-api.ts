@@ -4,6 +4,7 @@
 export { EasingName, EASING_NAMES } from './lib/internal/animations';
 export * from './lib/generators/debounce-signal';
 export * from './lib/generators/extend-signal';
+export * from './lib/generators/filter-signal';
 export * from './lib/generators/lift-signal';
 export * from './lib/generators/map-signal';
 export * from './lib/generators/sequence-signal';
