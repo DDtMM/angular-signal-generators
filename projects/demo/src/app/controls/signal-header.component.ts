@@ -16,7 +16,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
       <app-signal-type-badge [type]="type"/>
     }
   </div>
-  <a *ngIf="apiPath" class="btn btn-sm btn-warning self-end" [href]="apiPath"><fa-icon  [icon]="faFile" /> API Docs</a>
+  @if (apiPath) {
+    <a class="btn btn-sm btn-warning self-end" [href]="apiPath"><fa-icon  [icon]="faFile" /> API Docs</a>
+  }
 </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

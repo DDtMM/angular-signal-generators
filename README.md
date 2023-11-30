@@ -55,6 +55,10 @@ This is very similar to rxjs's *debounce* operator.  This has two overloads - on
 
 Adds new methods to a signal - even hiding the existing methods if desired.  It does this by passing the original signal or a "proxy" as the first parameter of the new method.  This first parameter is obscured from the consumer so that it appears to be a normal method.
 
+### filterSignal
+
+Filters values from another signal or from values set on directly on the signal.  Can be used with guard functions.
+
 ### liftSignal
 
 "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.  The lifted methods should be those appropriate for mutating or updating the value.  For example, lifting `Array.push` will add a method called *push* to the signal.  Calling the *push* method will internally call `signal.mutate()` with a function that executes the push.

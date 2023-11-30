@@ -7,11 +7,13 @@ import { MapSignalComponent } from './signal-generators/map-signal.component';
 import { LiftSignalComponent } from './signal-generators/lift-signal.component';
 import { ExtendSignalComponent } from './signal-generators/extend-signal.component';
 import { TweenSignalComponent } from './signal-generators/tween-signal.component';
+import { FilterSignalComponent } from './signal-generators/filter-signal.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'debounce-signal', component: DebounceSignalComponent },
   { path: 'extend-signal', component: ExtendSignalComponent },
+  { path: 'filter-signal', component: FilterSignalComponent },
   { path: 'lift-signal', component: LiftSignalComponent },
   { path: 'map-signal', component: MapSignalComponent },
   { path: 'sequence-signal', component: SequenceSignalComponent },

@@ -5,6 +5,8 @@ import { HighlightModule } from 'ngx-highlightjs';
 /**
  * ngx-highlight-jxs only accepts code from a variable.  This be inline.  Though honestly it's a pain in the butt.
  * For one thing, the code has to be in a pre element.
+ *
+ * This works in a strange way where it takes the inner text projected into it and copies it to the highlight directive.
  */
 @Component({
   selector: 'app-example-code',
@@ -12,7 +14,7 @@ import { HighlightModule } from 'ngx-highlightjs';
   imports: [CommonModule, HighlightModule],
   preserveWhitespaces: true,
   template: `
-<pre class="h-full w-full"><code *ngIf="text" class="h-full w-full" [highlight]="text" [languages]="['typescript']"></code></pre>
+<pre class="h-full w-full">@if (text) {<code class="h-full w-full" [highlight]="text" [languages]="['typescript']"></code>}</pre>
 <div #contentWrapper class="hidden">
   <ng-content></ng-content>
 </div>
@@ -29,7 +31,6 @@ export class ExampleCodeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.text = this.content?.nativeElement?.innerText.trim();
-    console.log(this.content?.nativeElement?.innerHTML);
     this.cd.detectChanges();
   }
 }

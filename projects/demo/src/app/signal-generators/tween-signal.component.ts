@@ -27,7 +27,9 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 <div class="flex flex-row gap-3 items-center pt-3">
   <span>Easing Function for demos 1 and 2.</span>
   <select class="select select-primary select-sm" [ngModel]="easingFn()" (ngModelChange)="easingFn.set($event)">
-    <option *ngFor="let easing of easingNames" [value]="easing">{{easing}}</option>
+    @for (easing of easingNames; track easing) {
+      <option [value]="easing">{{easing}}</option>
+    }
   </select>
 </div>
 <h3>Demo 1: Simple number</h3>

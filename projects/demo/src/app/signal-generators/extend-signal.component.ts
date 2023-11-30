@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { extendSignal } from 'projects/signal-generators/src/public-api';
 import { SignalHeaderComponent } from '../controls/signal-header.component';
-import { ExampleCodeComponent } from '../example-code.component';
+import { ExampleCodeComponent } from '../controls/example-code.component';
 
 @Component({
-  selector: 'app-lift-signal',
+  selector: 'app-extend-signal',
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
