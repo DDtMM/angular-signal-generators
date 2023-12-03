@@ -1,9 +1,21 @@
 import { computed, signal } from '@angular/core';
 import { extendSignal } from './extend-signal';
-import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 
 describe('extendSignal', () => {
-  setupGeneralSignalTests(() => extendSignal(1, { dummy: () => undefined}));
+  setupTypeGuardTests(() => extendSignal(1, { dummy: () => undefined}));
+
+  describe('for computed and effects', () => {
+    setupComputedAndEffectTests(() => {
+      const sut = extendSignal(1, { andOne: (proxy) => proxy.update(y => y + 1) });
+      return [sut, () => { sut.andOne(); }];
+    }, null, 'from a value');
+    setupComputedAndEffectTests(() => {
+      const source = signal(1);
+      const sut = extendSignal(source, { andOne: () => source.update(y => y + 1) });
+      return [sut, () => { sut.andOne(); }];
+    }, null, 'from a signal');
+  })
 
   it('initially returns initial value from a value', () => {
     const source = extendSignal(1, { dummy: () => undefined});

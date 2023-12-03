@@ -1,8 +1,8 @@
-import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
+import { setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { refSignal } from './ref-signal';
 
 describe('refSignal', () => {
-  setupGeneralSignalTests(() => refSignal(1));
+  setupTypeGuardTests(() => refSignal(1));
 
   describe('when initial value is value', () => {
     it('is the initially the value passed in the constructor', () => {

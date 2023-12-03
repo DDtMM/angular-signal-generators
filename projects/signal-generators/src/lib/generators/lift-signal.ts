@@ -1,7 +1,6 @@
 
 import { Signal, WritableSignal, signal } from '@angular/core';
-import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
+import { SIGNAL } from '@angular/core/primitives/signals';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
@@ -18,7 +17,7 @@ export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[] 
  * Lifts methods from the signal's value to the signal itself.
  * @example
  * ```ts
- * const awesomeArray = liftSignal([1, 2, 3, 4], ['push', 'pop'], ['filter']);
+ * const awesomeArray = liftSignal([1, 2, 3, 4], ['filter'], ['push', 'pop']);
  * awesomeArray.push(5);
  * console.log(awesomeArray()); //[1, 2, 3, 4, 5];
  * awesomeArray.pop();
@@ -27,36 +26,44 @@ export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[] 
  * console.log(awesomeArray()); //[2, 4];
  * ```
  * @param valueSource Either a value or a Writable signal.
+ * @param updaters A tuple that contains the names that will return a new value.
  * @param mutators A tuple that contains the names that will modify the signal's value directly.
- * @param updaters A tuple that contains the names that will return T.
+ * To guarantee this will return a new value, structuredClone or object.assign is used to create a brand new object, so used with caution.
  * @typeParam T the type of the signal's value as well as the type where the functions are lifted from.
- * @typeParam M A tuple that contains the names of methods appropriate for mutating.
  * @typeParam U A tuple that contains the names of methods appropriate for updating.
+ * @typeParam M A tuple that contains the names of methods appropriate for mutating.
  */
 export function liftSignal<T extends NonNullable<unknown>,
-    const M extends readonly MethodKey<T>[] | null | undefined,
-    const U extends readonly UpdaterKey<T>[] | null | undefined = null>(
+    const U extends readonly UpdaterKey<T>[] | null | undefined,
+    const M extends readonly MethodKey<T>[] | null | undefined = null>(
   valueSource: Exclude<T, Signal<unknown>> | WritableSignal<T>,
-  mutators: M,
-  updaters?: U):
+  updaters: U,
+  mutators?: M
+  ):
   WritableSignal<T> & BoundMethods<T, M> & BoundMethods<T, U> {
 
-  const output = isSignalInput(valueSource)
-    ? coerceSignal(valueSource as WritableSignal<T>)
+  const output = SIGNAL in valueSource
+    ? valueSource
     : signal(valueSource);
 
   const boundMethods: Partial<BoundMethodsStrict<T, NonNullable<M>> & BoundMethodsStrict<T, NonNullable<U>>> = {};
 
-  mutators?.forEach((cur) => {
-    boundMethods[cur] = (...args) => output.update(x => {
-      (x[cur] as MethodKeyFn<typeof x, typeof cur>)(...args);
-      return x;
-    });
-  });
-
   updaters?.forEach((cur) => {
     boundMethods[cur] = (...args) => output.update(x => (x[cur] as UpdaterKeyFn<typeof x, typeof cur>)(...args));
   });
+
+  if (mutators) {
+    const cloneFn = Array.isArray(output())
+      ? (x: T) => structuredClone(x)
+      : (x: T) => Object.assign(Object.create(Object.getPrototypeOf(x)), x);
+    mutators?.forEach((cur) => {
+      boundMethods[cur] = (...args) => output.update(x => {
+        const cloned = cloneFn(x);
+        (cloned[cur] as MethodKeyFn<typeof x, typeof cur>)(...args);
+        return cloned;
+      });
+    });
+  }
 
   return Object.assign(output, boundMethods as BoundMethods<T, M> & BoundMethods<T, U>);
 }

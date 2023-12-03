@@ -1,7 +1,7 @@
 import { Injector, signal } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { tickAndAssertValue } from '../../testing/testing-utilities';
 import { tweenSignal } from './tween-signal';
@@ -16,9 +16,14 @@ describe('tweenSignal', () => {
     injector = fixture.componentRef.injector;
   });
 
-  setupGeneralSignalTests(() => tweenSignal(1,  { injector }));
+  setupTypeGuardTests(() => tweenSignal(1,  { injector }));
 
-  describe('when passed a number', () => {
+  describe('when passed a value', () => {
+    setupComputedAndEffectTests(() => {
+      const sut = tweenSignal(1, { injector,  duration: 500 });
+      return [sut, () => { sut.set(2); fixture.detectChanges(); tick(500); }];
+    }, () => fixture);
+
     it('initially returns the initial value', fakeAsync(() => {
       const sut = tweenSignal(5, { injector });
       expect(sut()).toBe(5);
@@ -136,12 +141,21 @@ describe('tweenSignal', () => {
     }));
   });
 
-  it('returns tweened values when passed a signal', fakeAsync(() => {
-    const source = autoDetectChangesSignal(fixture, signal(5));
-    const sut = autoDetectChangesSignal(fixture, tweenSignal(source, { injector, duration: 500 }));
-    source.set(9);
-    tickAndAssertValue(() => Math.round(sut()), [[0, 5], [250, 7], [250, 9]]);
-  }));
+  describe('when passed a signal', () => {
+    setupComputedAndEffectTests(() => {
+      const source = signal(1);
+      const sut = tweenSignal(source, { injector,  duration: 500 });
+      return [sut, () => { source.set(2); fixture.detectChanges(); tick(500); }];
+    }, () => fixture);
+
+    it('returns tweened values', fakeAsync(() => {
+      const source = autoDetectChangesSignal(fixture, signal(5));
+      const sut = autoDetectChangesSignal(fixture, tweenSignal(source, { injector, duration: 500 }));
+      source.set(9);
+      tickAndAssertValue(() => Math.round(sut()), [[0, 5], [250, 7], [250, 9]]);
+    }));
+  })
+
 
 
 });
