@@ -1,5 +1,8 @@
 import { Injector, WritableSignal, signal } from '@angular/core';
-import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+import { coerceSignal } from '../internal/signal-coercion';
+import { isSignalInput } from '../internal/signal-input-utilities';
+import { ValueSource } from '../value-source';
+import { SignalInput } from '../signal-input';
 
 const NO_ELEMENTS = 'Sequence contains no elements.';
 
@@ -71,7 +74,7 @@ class ArrayCursor<T> implements Cursor<T> {
 export interface SequenceSignalOptions {
   /** If true, then the sequence will not loop and restart needs to be called. */
   disableAutoReset?: boolean;
-  /** injector should only be necessary if outside injector context and sequence is SignalLike. */
+  /** injector should only be necessary if passing in an observable outside injector context. */
   injector?: Injector;
 }
 
@@ -124,28 +127,50 @@ export interface SequenceSignal<T> extends WritableSignal<T> {
  * ```
  */
 export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>>, options: SequenceSignalOptions = {}): SequenceSignal<T> {
-  const sequenceItemsInternalFn = createGetValueFn(sequence, options.injector);
-  let cursor = getCursor(sequenceItemsInternalFn());
-  const output = signal(getFirstValue(cursor));
+  const sequenceCursorGetter = isSignalInput(sequence)
+    ? createCursorGetterFromSignalInput(sequence)
+    : createCursorGetterFromValue(sequence)
 
-  watchValueSourceFn(sequenceItemsInternalFn, x => cursor = getCursor(x), options.injector);
+  const output = signal(getFirstValue(sequenceCursorGetter()));
 
   return Object.assign(output, {
     next: (relativeChange = 1) => {
-      const res = cursor.next(relativeChange);
+      const res = sequenceCursorGetter().next(relativeChange);
       if (res.hasValue) {
         output.set(res.value);
       }
     },
     reset: () => {
-      cursor.reset();
-      const res = cursor.next();
+      sequenceCursorGetter().reset();
+      const res = sequenceCursorGetter().next();
       if (res.hasValue) {
         output.set(res.value);
       }
     }
   });
 
+  /**
+   * Creates function that gets the current cursor from a SignalInput.
+   * This is done in lieu of using an effect.
+   */
+  function createCursorGetterFromSignalInput(inputSource: SignalInput<ArrayLike<T> | Cursor<T>>): () => Cursor<T> {
+    const sequenceSignal = coerceSignal(inputSource, options);
+    let lastSequence = sequenceSignal();
+    let cachedCursor = getCursor(lastSequence);
+    return () => {
+      const currentSequence = sequenceSignal();
+      if (currentSequence !== lastSequence) {
+        lastSequence = currentSequence;
+        cachedCursor = getCursor(lastSequence);
+      }
+      return cachedCursor;
+    };
+  }
+   /** Creates function that gets a cached cursor from a value.  */
+   function createCursorGetterFromValue(value: ArrayLike<T> | Cursor<T>): () => Cursor<T> {
+    const cursor = getCursor(value);
+    return () => cursor;
+  }
   /** This used to do more. */
   function getCursor(data: ArrayLike<T> | Cursor<T>): Cursor<T> {
     return isCursor(data) ? data : new ArrayCursor(data, !options.disableAutoReset);
@@ -159,4 +184,6 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
     }
     return res.value;
   }
+
+
 }

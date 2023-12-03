@@ -61,13 +61,13 @@ console.log(calculator()); // 15;
     </div>
   </app-home-box>
 
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/life-signal" name="Lift Signal">
+  <app-home-box [badgeTypes]="['generator', 'signal']" link="/lift-signal" name="Lift Signal">
     <div>
       "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
     </div>
     <div class="divider">Example</div>
     <app-example-code><pre>
-const liftedArray = liftSignal([1, 2, 3], ['push']);
+const liftedArray = liftSignal([1, 2, 3], null, ['push']);
 liftedArray.push(4)
 console.log(liftedArray()); // [1, 2, 3, 4];
 </pre></app-example-code>

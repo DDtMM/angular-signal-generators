@@ -1,12 +1,11 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })),
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
