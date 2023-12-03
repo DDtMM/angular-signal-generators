@@ -1,6 +1,4 @@
-
-import { Signal, WritableSignal, signal } from '@angular/core';
-import { SIGNAL } from '@angular/core/primitives/signals';
+import { Signal, WritableSignal, isSignal, signal } from '@angular/core';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
@@ -42,7 +40,7 @@ export function liftSignal<T extends NonNullable<unknown>,
   ):
   WritableSignal<T> & BoundMethods<T, M> & BoundMethods<T, U> {
 
-  const output = SIGNAL in valueSource
+  const output = isSignal(valueSource)
     ? valueSource
     : signal(valueSource);
 
