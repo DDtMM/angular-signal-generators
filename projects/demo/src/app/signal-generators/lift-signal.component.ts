@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { liftSignal } from 'projects/signal-generators/src/public-api';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { SignalHeaderComponent } from '../controls/signal-header.component';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-lift-signal',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
+  imports: [CommonModule, HighlightModule, FaIconComponent, SignalHeaderComponent],
   template: `
 <app-signal-header name="Lift Signal" apiPath="./api/functions/liftSignal.html" [types]="['generator', 'signal']" />
 <p>
@@ -18,6 +19,17 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   Calling the <i>push</i> method will internally call <b>signal.update()</b>
   with a function that executes the push and returns the updated signal.
 </p>
+<div role="alert" class="alert alert-warning">
+  <fa-icon [icon]="faTriangleExclamation" class="text-info" />
+  <div>
+    <div> <b>Warning</b></div>
+    <div>
+      Signals and mutation don't mix.
+      In order for mutators to work, objects are cloned
+      either with <i>Object.Assign</i> or <i>structuredClone</i> so that a new object is actually created with every call.
+    </div>
+  </div>
+</div>
 <h3>Demo</h3>
 <div class="join pr-3">
   <button type="button" class="btn btn-primary join-item" (click)="numbers.push(randomNumber())">Push</button>
@@ -38,13 +50,14 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 })
 export class LiftSignalComponent {
   readonly example = `
-numbers = liftSignal([this.randomNumber(), this.randomNumber(), this.randomNumber()], ['push', 'pop'], ['concat']);
+numbers = liftSignal([this.randomNumber(), this.randomNumber(), this.randomNumber()], ['concat'], ['push', 'pop']);
 randomNumber(): number { return Math.floor(Math.random() * 100); }
 doSomething() {
   this.numbers.push(randomNumber());
 }
   `.trim();
-  readonly numbers = liftSignal([this.randomNumber(), this.randomNumber(), this.randomNumber()], ['push', 'pop', 'shift'], ['concat']);
+  readonly faTriangleExclamation = faTriangleExclamation;
+  readonly numbers = liftSignal([this.randomNumber(), this.randomNumber(), this.randomNumber()], ['concat'], ['push', 'pop', 'shift']);
 
   randomNumber(): number { return Math.floor(Math.random() * 100); }
 }

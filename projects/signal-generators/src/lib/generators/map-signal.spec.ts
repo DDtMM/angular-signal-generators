@@ -2,7 +2,7 @@ import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { mapSignal } from './map-signal';
 import { WritableSignal, signal } from '@angular/core';
-import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 
 describe('mapSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -11,7 +11,7 @@ describe('mapSignal', () => {
     fixture = MockRender();
   });
 
-  setupGeneralSignalTests(() => mapSignal(1, (x) => x + 1));
+  setupTypeGuardTests(() => mapSignal(1, (x) => x + 1));
 
   it('throws if not enough parameters are passed', () => {
     expect(() => (mapSignal as unknown as (x: number) => void)(1)).toThrow();
@@ -24,6 +24,11 @@ describe('mapSignal', () => {
       signal1 = autoDetectChangesSignal(fixture, signal(3));
       signal2 = autoDetectChangesSignal(fixture, signal(5));
     });
+    setupComputedAndEffectTests(() => {
+      const source = signal(1);
+      const sut = mapSignal(source, x => x + 1);
+      return [sut, () => { source.set(2) }];
+    }, () => fixture);
     it('the typings are correct for a single signal', () => {
       const source = mapSignal(signal1, (a) => a + 1);
       expect(source()).toBe(4);
@@ -53,6 +58,10 @@ describe('mapSignal', () => {
     });
   });
   describe('when passed a value', () => {
+    setupComputedAndEffectTests(() => {
+      const sut = mapSignal(1, x => x + 1);
+      return [sut, () => { sut.set(2) }];
+    }, () => fixture);
     it('initially returns mapped value', () => {
       const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3));
       expect(source()).toBe(3);

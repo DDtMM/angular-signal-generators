@@ -37,10 +37,10 @@ export interface TimerSignal extends Signal<number> {
  * @param intervalTime An optional constant or {@link SignalInput} that emits how long until the timer is due after the initial time was emitted.
  * @param options An optional object that affects behavior of the signal.
  */
-export function timerSignal(timerTime: ValueSource<number>,  intervalTime?: ValueSource<number>, options?: TimerSignalOptions): TimerSignal {
+export function timerSignal(timerTime: ValueSource<number>, intervalTime?: ValueSource<number> | null, options?: TimerSignalOptions): TimerSignal {
   // To make thinks easy to access values, make TimeSources functions.
   const timerTimeFn = createGetValueFn(timerTime, options?.injector);
-  const intervalTimeFn = intervalTime !== undefined ? createGetValueFn(intervalTime, options?.injector) : undefined;
+  const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, options?.injector) : undefined;
   /** The signal that will be returned. */
   const output = signal(0);
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), { callback: (x) => output.set(x), runAtStart: true });

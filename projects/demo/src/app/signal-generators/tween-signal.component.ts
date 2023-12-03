@@ -15,10 +15,10 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 <!-- for some reason the API docs come out with -1 at the end -->
 <app-signal-header name="Tween Signal" apiPath="./api/functions/tweenSignal-1.html" [types]="['generator', 'signal']" />
 <p>
-  A very blatant ripoff of Svelte's Tweened function.
-  This allows you to create engaging simple transition animations with just a signal.
+  This function is heavily inspired by Svelte's <i>tweened</i> function.
+  It allows you to create engaging simple transition animations with just a signal.
   By default this can automatically tween between a number, array of numbers, or Record of numbers.
-  You can also pass an interpolation function to tween between objects of any type!
+  You can also pass an interpolation function to tween between objects of any type.
 </p>
 <div>
   <h3>Example</h3>

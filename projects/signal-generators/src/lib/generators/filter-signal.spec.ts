@@ -1,5 +1,5 @@
 import { MockedComponentFixture, MockRender } from 'ng-mocks';
-import { setupGeneralSignalTests } from '../../testing/general-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { filterSignal } from './filter-signal';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { signal } from '@angular/core';
@@ -11,10 +11,16 @@ describe('filterSignal', () => {
     fixture = MockRender();
   });
 
-  setupGeneralSignalTests(() => filterSignal<number>(1, x => x < 5));
+  setupTypeGuardTests(() => filterSignal<number>(1, x => x < 5));
 
 
   describe('from value', () => {
+    setupComputedAndEffectTests(() => {
+      const sut = filterSignal<number>(1, x => x < 5);
+      return [sut, () => sut.set(2)];
+    }, () => fixture);
+
+
     it('filters values based on a boolean condition', () => {
       const sut = filterSignal<number>(1, x => x < 5);
       expect(sut()).toBe(1);
@@ -46,6 +52,12 @@ describe('filterSignal', () => {
   });
 
   describe('from signal', () => {
+    setupComputedAndEffectTests(() => {
+      const source = signal(1);
+      const sut = filterSignal<number>(source, x => x < 5);
+      return [sut, () => source.set(2)];
+    }, () => fixture);
+
     it('filters values based on a boolean condition', () => {
       const source = autoDetectChangesSignal(fixture, signal(1));
       const sut = filterSignal<number>(source, x => x < 5);
