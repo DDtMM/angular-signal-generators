@@ -9,7 +9,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'app-lift-signal',
   standalone: true,
-  imports: [CommonModule, HighlightModule, FaIconComponent, SignalHeaderComponent],
+  imports: [CommonModule, FaIconComponent, HighlightModule, SignalHeaderComponent],
   template: `
 <app-signal-header name="Lift Signal" apiPath="./api/functions/liftSignal.html" [types]="['generator', 'signal']" />
 <p>
