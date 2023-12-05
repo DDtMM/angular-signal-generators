@@ -34,6 +34,8 @@ export function filterSignal<O>(initialValue: O, filterFn: (x: O) => boolean, op
 /**
  * Filters values from another signal or from values set on directly on the signal.
  * Some overloads allow for a guard function which will change the type of the signal's output value.
+ * WARNING: When using signals as a source of values there are cases where changes can be skipped.
+ * This can occur when multiple changes occur before changeDetection and if the signal is not consumed in between changes.
  * @example
  * ```ts
  * const nonNegative = filterSignal<number>(0, x => x >= 0);
@@ -84,7 +86,8 @@ function filterSignalFromSignal<O>(source: SignalInput<O>, filterFn: (x: O) => b
 function filterSignalFromSignal<T, O extends T>(source: SignalInput<O>, filterFn: (x: T) => boolean, options?: FilterSignalOptions<O> & Omit<Partial<FilterSignalOptionsWithValue<O>>, 'equal'>): Signal<O | undefined> {
   const sourceSignal = coerceSignal(source, options);
   let validValue = !filterFn(sourceSignal()) ? options?.initialValidValue : sourceSignal();
-  return computed(() => {
+
+  const output = computed(() => {
     const currentValue = sourceSignal();
     if (filterFn(currentValue)) {
       validValue = currentValue;
@@ -92,5 +95,6 @@ function filterSignalFromSignal<T, O extends T>(source: SignalInput<O>, filterFn
     return validValue;
   }, options);
 
+  return output;
 }
 
