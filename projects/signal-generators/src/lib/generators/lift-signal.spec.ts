@@ -22,10 +22,15 @@ describe('liftSignal', () => {
   setupTypeGuardTests(() => liftSignal([1, 2, 3], []));
 
   it('initially returns the initial value', () => {
-    const src = liftSignal([1, 2, 3], []);
-    expect(src()).toEqual([1, 2, 3]);
+    const sut = liftSignal([1, 2, 3], []);
+    expect(sut()).toEqual([1, 2, 3]);
   });
 
+  it('should use custom clone function when passed in options', () => {
+    const sut = liftSignal(new DummyClass(1), null, ['double', 'triple'], { cloneFn: (x) => new DummyClass(x.value * -1)});
+    sut.double();
+    expect(sut()).toEqual(new DummyClass(-2));
+  });
   [
     { factory: () => new DummyClass(5), label: 'object' },
     { factory: () => signal(new DummyClass(5)), label: 'object signal' }
@@ -37,11 +42,11 @@ describe('liftSignal', () => {
       });
 
       it(`adds methods from a passed ${label} that mutate the value when called`, () => {
-        const src = liftSignal(factory(), null, ['double', 'triple']);
-        src.double()
-        expect(src()).toEqual(new DummyClass(10));
-        src.triple()
-        expect(src()).toEqual(new DummyClass(30));
+        const sut = liftSignal(factory(), null, ['double', 'triple']);
+        sut.double()
+        expect(sut()).toEqual(new DummyClass(10));
+        sut.triple()
+        expect(sut()).toEqual(new DummyClass(30));
       });
     });
     describe('updaters', () => {
@@ -52,9 +57,9 @@ describe('liftSignal', () => {
       });
 
       it(`adds methods from a passed ${label} that update the value when called`, () => {
-        const src = liftSignal(factory(), ['getQuad']);
-        src.getQuad();
-        expect(src()).toEqual(new DummyClass(20));
+        const sut = liftSignal(factory(), ['getQuad']);
+        sut.getQuad();
+        expect(sut()).toEqual(new DummyClass(20));
       });
     });
 
@@ -71,15 +76,15 @@ describe('liftSignal', () => {
       });
 
       it(`adds methods from a passed ${label} that mutate the value when called`, () => {
-        const src = liftSignal(factory(), ['concat'], ['push', 'pop', 'shift']);
-        src.push(4);
-        expect(src()).toEqual([1, 2, 3, 4]);
-        src.pop();
-        expect(src()).toEqual([1, 2, 3]);
-        src.shift();
-        expect(src()).toEqual([2, 3]);
-        src.concat([4, 5]);
-        expect(src()).toEqual([2, 3, 4, 5]);
+        const sut = liftSignal(factory(), ['concat'], ['push', 'pop', 'shift']);
+        sut.push(4);
+        expect(sut()).toEqual([1, 2, 3, 4]);
+        sut.pop();
+        expect(sut()).toEqual([1, 2, 3]);
+        sut.shift();
+        expect(sut()).toEqual([2, 3]);
+        sut.concat([4, 5]);
+        expect(sut()).toEqual([2, 3, 4, 5]);
       });
     });
     describe('updaters', () => {
@@ -89,9 +94,9 @@ describe('liftSignal', () => {
       });
 
       it(`adds methods from a passed ${label} that update the value when called`, () => {
-        const src = liftSignal(factory(), ['filter']);
-        src.filter(x => x === 2);
-        expect(src()).toEqual([2]);
+        const sut = liftSignal(factory(), ['filter']);
+        sut.filter(x => x === 2);
+        expect(sut()).toEqual([2]);
       });
     });
 

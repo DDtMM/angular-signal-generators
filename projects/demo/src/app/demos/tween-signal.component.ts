@@ -13,7 +13,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
   template: `
 <!-- for some reason the API docs come out with -1 at the end -->
-<app-signal-header name="Tween Signal" apiPath="./api/functions/tweenSignal-1.html" [types]="['generator', 'signal']" />
+<app-signal-header fnName="tweenSignal" />
 <p>
   This function is heavily inspired by Svelte's <i>tweened</i> function.
   It allows you to create engaging simple transition animations with just a signal.

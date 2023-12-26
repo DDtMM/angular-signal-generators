@@ -10,7 +10,7 @@ import { ExampleCodeComponent } from '../controls/example-code.component';
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Debounce Signal" apiPath="./api/functions/debounceSignal.html" [types]="['generator', 'signal']" />
+<app-signal-header fnName="debounceSignal" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,

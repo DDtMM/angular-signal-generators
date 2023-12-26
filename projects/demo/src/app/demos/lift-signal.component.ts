@@ -11,7 +11,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   standalone: true,
   imports: [CommonModule, FaIconComponent, HighlightModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Lift Signal" apiPath="./api/functions/liftSignal.html" [types]="['generator', 'signal']" />
+<app-signal-header fnName="liftSignal"/>
 <p>
   "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
   The lifted methods should be those appropriate for mutating or updating the value.
@@ -27,6 +27,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
       Signals and mutation don't mix.
       In order for mutators to work, objects are cloned
       either with <i>Object.Assign</i> or <i>structuredClone</i> so that a new object is actually created with every call.
+      A new clone method can be specified if a more specific method is required.
     </div>
   </div>
 </div>

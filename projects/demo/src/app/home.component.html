@@ -10,138 +10,27 @@
     npm install &#64;ddtmm/angular-signal-generators
   </code>
 </p>
+<p>
+  To learn more about how these signals are created, or some dos or don'ts when creating your own,
+  please check out the following articles:
+</p>
+<ul class="list-inside list-disc indent-2">
+  <li>
+    <a href="https://blog.stackademic.com/crafting-custom-angular-signals-7ef83b2e751f" class="link italic">
+      Crafting Custom Angular Signals
+    </a>
+  </li>
+  <li>
+    <a href="https://blog.stackademic.com/experiments-in-angular-signals-six-techniques-that-sizzle-or-fizzle-119692b451ab"
+      class="link italic">
+      Experiments in Angular Signals: Six Techniques that Sizzle or Fizzle
+    </a>
+  </li>
+</ul>
+<div class="divider"></div>
 <h2>Demos</h2>
 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/debounce-signal" name="Debounce Signal">
-    <div>
-      Creates a signal whose value isn't changed until it a certain has passed since the last update.
-    </div>
-    <div class="divider">Example</div>
-    <div class="flex flex-col gap-3">
-      <div class="flex flex-row gap-3 items-baseline">
-        <label>Input</label>
-        <input type="text" class="input input-bordered input-sm grow" [ngModel]="debounced()" (ngModelChange)="debounced.set($event)" />
-      </div>
-      <div class="flex flex-row gap-3  leading-8">
-        <span>Debounced</span>
-        <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{debounced()}}</span>
-      </div>
-    </div>
-  </app-home-box>
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/extend-signal" name="Extend Signal">
-    <div>
-      Adds new methods to an existing signal.
-    </div>
-    <div class="divider">Example</div>
-    <app-example-code><pre>
-const calculator = extendSignal(5, &lbrace;
-multiply: (s, multi) => s.update(x => x * multi);
-&rbrace;);
-calculator.multiply(3);
-console.log(calculator()); // 15;
-</pre></app-example-code>
-  </app-home-box>
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/filter-signal" name="Filter Signal">
-    <div>
-      Filters values from another signal or from values set on directly on the signal.
-    </div>
-    <div class="divider">Example</div>
-    <div class="flex flex-col gap-3">
-      <div class="flex flex-row gap-3 items-baseline">
-        <label>Input</label>
-        <input type="text" class="input input-bordered input-sm grow" [ngModel]="filtered()" (ngModelChange)="filtered.set($event)" />
-      </div>
-      <div class="flex flex-row gap-3  leading-8">
-        <span>Filtered</span>
-        <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{filtered()}}</span>
-      </div>
-    </div>
-  </app-home-box>
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/lift-signal" name="Lift Signal">
-    <div>
-      "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
-    </div>
-    <div class="divider">Example</div>
-    <app-example-code><pre>
-const liftedArray = liftSignal([1, 2, 3], null, ['push']);
-liftedArray.push(4)
-console.log(liftedArray()); // [1, 2, 3, 4];
-</pre></app-example-code>
-  </app-home-box>
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/map-signal" name="Map Signal">
-    <div>
-      Creates a signal whose input value is immediately mapped to a different value based on a selector.
-      Either a value or multiple signals can be passed and used in the selector function.
-    </div>
-    <div class="divider">Example</div>
-    <div class="flex flex-col gap-3" (click)="$event.stopPropagation()">
-      <div class="flex flex-row gap-3 items-baseline">
-        <label>Input</label>
-        <input type="number" class="input input-bordered input-sm grow" [ngModel]="mapSource()" (ngModelChange)="mapSource.set($event)" />
-      </div>
-      <div class="flex flex-row gap-3  leading-8">
-        <span>Doubled</span>
-        <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{mapDoubled()}}</span>
-      </div>
-    </div>
-  </app-home-box>
-
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/sequence-signal" name="Sequence Signal">
-    <div>
-      The Sequence Signal is useful for situations where you want to easily cycle between options.
-    </div>
-    <div class="divider">Example</div>
-    <div class="flex flex-row gap-3" (click)="$event.stopPropagation()">
-      <div class="flex flex-col gap-1">
-        <div class="flex flex-row items-center gap-3">
-          <input type="radio" class="radio checked:bg-blue-500" value="a" [ngModel]="sequenceChoices()" /> Choice A
-        </div>
-        <div class="flex flex-row items-center gap-3">
-          <input type="radio" class="radio checked:bg-blue-500" value="b" [ngModel]="sequenceChoices()" /> Choice B
-        </div>
-        <div class="flex flex-row items-center gap-3">
-          <input type="radio" class="radio checked:bg-blue-500" value="c" [ngModel]="sequenceChoices()" /> Choice C
-        </div>
-      </div>
-      <button type="button" class="btn btn-primary" (click)="sequenceChoices.next()">Next Choice</button>
-    </div>
-  </app-home-box>
-
-  <app-home-box [badgeTypes]="['generator']" link="/timer-signal" name="Timer Signal">
-    <div>
-      Creates a signal that emits based on a timer or interval.
-    </div>
-    <div class="divider">Example</div>
-    <div class="flex flex-col gap-3 items-center">
-      <div>Time since start</div>
-      <div>{{timerExample()}}</div>
-    </div>
-    <div class="flex flex-row gap-3 justify-center" (click)="$event.stopPropagation()">
-      <button type="button" class="btn btn-primary" (click)="timerExample.pause()">Pause</button>
-      <button type="button" class="btn btn-primary" (click)="timerExample.resume()">Resume</button>
-      <button type="button" class="btn btn-primary" (click)="timerExample.restart()">Restart</button>
-    </div>
-  </app-home-box>
-
-  <app-home-box [badgeTypes]="['generator', 'signal']" link="/tween-signal" name="Tween Signal">
-    <div>
-      Tween animations that allow a signal to transform between values over a set duration.
-    </div>
-    <div class="divider">Example</div>
-    <input type="range" class="range range-primary" [value]="tweenExample()" min="0" max="100" />
-    <div class="flex flex-row gap-3 justify-center" (click)="$event.stopPropagation()">
-      <div class="join pr-3">
-        <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(0)">0%</button>
-        <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(50)">50%</button>
-        <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(100)">100%</button>
-      </div>
-    </div>
-  </app-home-box>
-
+  @for (l of demos; track l.fnName) {
+    <ng-container *ngComponentOutlet="l.component" class="contents" />
+  }
 </ul>

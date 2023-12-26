@@ -10,7 +10,7 @@ import { ExampleCodeComponent } from '../controls/example-code.component';
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Map Signal" apiPath="./api/functions/mapSignal.html" [types]="['generator', 'signal']" />
+<app-signal-header fnName="mapSignal" />
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
   The selector function can include signals or can be mapped directly from an array of signals.

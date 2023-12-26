@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { DEMO_CONFIGURATIONS } from './demo-configuration';
 
 @Component({
   selector: 'app-root',
@@ -41,9 +42,9 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
       <li>
         <h2 class="menu-title">Signals</h2>
         <ul>
-          @for (l of generatorLinks; track l) {
+          @for (l of demos; track l) {
             <li>
-              <a [routerLink]="l.path">{{l.label}}</a>
+              <a [routerLink]="l.route">{{l.name}}</a>
             </li>
           }
         </ul>
@@ -60,13 +61,5 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 export class AppComponent {
   readonly faGithub = faGithub;
 
-  readonly generatorLinks = [
-    { label: 'Debounce', path: '/debounce-signal' },
-    { label: 'Extend', path: '/extend-signal' },
-    { label: 'Lift', path: '/lift-signal' },
-    { label: 'Map', path: '/map-signal' },
-    { label: 'Sequence', path: '/sequence-signal' },
-    { label: 'Timer', path: '/timer-signal' },
-    { label: 'Tween', path: '/tween-signal' },
-  ]
+  readonly demos = DEMO_CONFIGURATIONS;
 }

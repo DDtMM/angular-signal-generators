@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { extendSignal } from 'projects/signal-generators/src/public-api';
-import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { ExampleCodeComponent } from '../controls/example-code.component';
+import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 @Component({
   selector: 'app-extend-signal',
   standalone: true,
-  imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
+  imports: [CommonModule, ExampleCodeComponent, FaIconComponent, FormsModule, SignalHeaderComponent],
   template: `
-<app-signal-header name="Extend Signal" apiPath="./api/functions/extendSignal.html" [types]="['generator', 'signal']" />
+<app-signal-header fnName="extendSignal" />
 <p>
   Extends a signal by adding new methods directly to the signal.
   The original signal's methods can even be hidden.
@@ -18,9 +19,15 @@ import { ExampleCodeComponent } from '../controls/example-code.component';
 </p>
 <p>
   This is essentially just a wrapper for <code class="inline p-1">Object.assign</code>.
-  The advantage over <code class="inline p-1">assign</code> is that this allows you to hide the original implementation of the source signal's methods.
+  The <span class="italic">only</span> advantage over <code class="inline p-1">assign</code> is
+    this allows you to hide the original implementation of the source signal's methods.
   For example, you can have a set method that multiplies a value and uses the original set to actually set the signal's value.
 </p>
+<p>
+  If changing how a signal's original methods work isn't something you need, then just use
+  <code class="inline p-1">Object.assign</code> or assign the functions directly.
+</p>
+
 <h3>Demo</h3>
 <div class="flex flex-row flex-wrap -m-2">
   <div class="m-2">
@@ -51,7 +58,6 @@ readonly voice = extendSignal('hello', {{ '{' }}
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExtendSignalComponent {
-
   inputText = '';
 
   readonly voice = extendSignal('hello', {
