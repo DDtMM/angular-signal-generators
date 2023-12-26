@@ -1,7 +1,17 @@
+import { Signal, ValueEqualityFn, WritableSignal, isSignal, signal } from '@angular/core';
 
-import { Signal, WritableSignal, isSignal, signal } from '@angular/core';
-
-
+export interface LiftSignalOptions<T> {
+  /**
+   * Because signals only place nice with mutable objects, all mutations work by first cloning.
+   * There is a default clone function present, but if there are problems with it, you can provide your own.
+   */
+  cloneFn?: (source: T) => T;
+  /**
+   * Custom equality function.
+   * Only used if a value and not a writable signal is passed as the first argument.
+   */
+  equal?: ValueEqualityFn<T>;
+}
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
 export type UpdaterKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => T ? K : never] : K } & keyof T;
@@ -9,9 +19,7 @@ export type UpdaterKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[
 type MethodParameters<T, K extends MethodKey<T> | UpdaterKey<T>> = T[K] extends ( ...args: infer P ) => unknown ? P : never;
 type MethodKeyFn<T, K extends MethodKey<T>> = T[K] extends ( ...args: infer P ) => infer R ? (...args: P) => R : never;
 type UpdaterKeyFn<T, K extends UpdaterKey<T>> = T[K] extends ( ...args: infer P ) => T ? (...args: P) => T : never;
-type BoundMethodsStrict<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[]> = { [Key in K[number]]: (...args: MethodParameters<T, Key>) => void };
-export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[] | null | undefined> =
-  (K extends NonNullable<K> ? BoundMethodsStrict<T, NonNullable<K>> : Record<string, never>);
+export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[]> = { [Key in K[number]]: (...args: MethodParameters<T, Key>) => void };
 
 /**
  * Lifts methods from the signal's value to the signal itself.
@@ -38,25 +46,24 @@ export function liftSignal<T extends NonNullable<unknown>,
     const M extends readonly MethodKey<T>[] | null | undefined = null>(
   valueSource: Exclude<T, Signal<unknown>> | WritableSignal<T>,
   updaters: U,
-  mutators?: M
+  mutators?: M,
+  options?: LiftSignalOptions<T>
   ):
-  WritableSignal<T> & BoundMethods<T, M> & BoundMethods<T, U> {
+  WritableSignal<T> & BoundMethods<T, NonNullable<M>> & BoundMethods<T, NonNullable<U>> {
 
   const output = isSignal(valueSource)
     ? valueSource
-    : signal(valueSource);
+    : signal(valueSource, options);
 
-  const boundMethods: Partial<BoundMethodsStrict<T, NonNullable<M>> & BoundMethodsStrict<T, NonNullable<U>>> = {};
+  const boundMethods = {} as BoundMethods<T, NonNullable<M>> & BoundMethods<T, NonNullable<U>>;
 
   updaters?.forEach((cur) => {
     boundMethods[cur] = (...args) => output.update(x => (x[cur] as UpdaterKeyFn<typeof x, typeof cur>)(...args));
   });
 
   if (mutators) {
-    const cloneFn = Array.isArray(output())
-      ? (x: T) => structuredClone(x)
-      : (x: T) => Object.assign(Object.create(Object.getPrototypeOf(x)), x);
-    mutators?.forEach((cur) => {
+    const cloneFn = options?.cloneFn ?? cloneFnFactory(output());
+    mutators.forEach((cur) => {
       boundMethods[cur] = (...args) => output.update(x => {
         const cloned = cloneFn(x);
         (cloned[cur] as MethodKeyFn<typeof x, typeof cur>)(...args);
@@ -65,5 +72,12 @@ export function liftSignal<T extends NonNullable<unknown>,
     });
   }
 
-  return Object.assign(output, boundMethods as BoundMethods<T, M> & BoundMethods<T, U>);
+  return Object.assign(output, boundMethods);
+}
+
+/** Creates a cloning function based on the sample object. */
+function cloneFnFactory<T>(sample: T): (source: T) => T {
+  return Array.isArray(sample)
+    ? (x: T) => structuredClone(x)
+    : (x: T) => Object.assign(Object.create(Object.getPrototypeOf(x)), x);
 }

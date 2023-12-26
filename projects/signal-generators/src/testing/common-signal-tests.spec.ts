@@ -3,7 +3,10 @@ import { isSignalInput } from '../lib/internal/signal-input-utilities';
 import { ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
 import { MockRender } from 'ng-mocks';
 
-/** These tests should be run on every signal created. */
+/**
+ * Makes sure a signal properly passes isSignal and isSignalInput.
+ * These tests should be run on every signal created.
+ */
 export function setupTypeGuardTests(signalSetup: () => Signal<unknown>): void {
   describe('when used against type guards', () => {
     it('gets a true result when it is passed to isSignal', () => {
@@ -52,7 +55,7 @@ export function setupComputedAndEffectTests<T>(
     expect(executionTimesSpy).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
     const updatedValue = output();
     expect(executionTimesSpy).withContext('when source is updated, computed signal is executed when read').toBe(2);
-    expect(updatedValue).withContext('when source is updated a new value is returned from computed signal').not.toEqual(initialValue);
+    expect(updatedValue).withContext('when source is updated a new value is returned from computed signal').not.toBe(initialValue);
   }));
 
   it(`${expectationContext}works properly when used within an effect`, fakeAsync(() => {
