@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SignalType } from '../demo-configuration';
 
-export type SignalGeneratorType = 'signal' | 'generator';
 @Component({
   selector: 'app-signal-type-badge',
   standalone: true,
   imports: [CommonModule],
   template: `
     @switch (type) {
-      @case ('signal') {
+      @case ('writableSignal') {
         <div class="badge leading-4 tooltip bg-green-300"
           data-tip="This can be passed a value to create an writable signal."
           aria-description="Badge indicating this can be passed a value to create an writable signal.">
@@ -28,7 +28,7 @@ export type SignalGeneratorType = 'signal' | 'generator';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalTypeBadgeComponent {
-  @Input({ required: true }) type: SignalGeneratorType = 'signal';
+  @Input({ required: true }) type: SignalType = 'writableSignal';
 
 
 }

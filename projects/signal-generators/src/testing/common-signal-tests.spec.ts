@@ -3,7 +3,10 @@ import { isSignalInput } from '../lib/internal/signal-input-utilities';
 import { ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
 import { MockRender } from 'ng-mocks';
 
-/** These tests should be run on every signal created. */
+/**
+ * Makes sure a signal properly passes isSignal and isSignalInput.
+ * These tests should be run on every signal created.
+ */
 export function setupTypeGuardTests(signalSetup: () => Signal<unknown>): void {
   describe('when used against type guards', () => {
     it('gets a true result when it is passed to isSignal', () => {

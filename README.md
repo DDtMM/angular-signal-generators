@@ -57,7 +57,9 @@ Adds new methods to a signal - even hiding the existing methods if desired.  It 
 
 ### filterSignal
 
-Filters values from another signal or from values set on directly on the signal.  Can be used with guard functions.
+Filters values set to a signal to prevent the value from changing:  
+If the filter assigned at creation does not pass then the signal does not change. 
+Can be used with guard functions.
 
 ### liftSignal
 
@@ -67,6 +69,9 @@ Filters values from another signal or from values set on directly on the signal.
 
 Creates a signal whose input value is immediately mapped to a different value based on a selector.
 Either a value or multiple signals can be passed and used in the selector function.
+
+### reduceSignal
+Creates a signal similar to `Array.reduce` or Rxjs's `scan` operator, using a reducer function to create a new value from the current and prior values.
 
 ### sequenceSignal
 
@@ -85,7 +90,8 @@ This was directly inspired by Svelte's *tweened* function.  When the signal valu
 ## Conventions
 
 ### SignalInput and ValueSource
-Many arguments are of type **SignalInput&lt;T&gt;** or **ValueSource&lt;T&gt;**.
+As much as possible signals the functions provided try to create signals from either values or other signals.
+To accommodate this, many arguments are of type **SignalInput&lt;T&gt;** or **ValueSource&lt;T&gt;**.
 
 *SignalInput* can be either something that can be either converted to a signal with *toSignal*, a function that can be passed to *computed* or a regular old *signal*.  The purpose of this is to make things just a bit more convenient.
 

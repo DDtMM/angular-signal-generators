@@ -1,13 +1,14 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
-import { TimerSignalComponent } from './signal-generators/timer-signal.component';
-import { DebounceSignalComponent } from './signal-generators/debounce-signal.component';
-import { SequenceSignalComponent } from './signal-generators/sequence-signal.component';
-import { MapSignalComponent } from './signal-generators/map-signal.component';
-import { LiftSignalComponent } from './signal-generators/lift-signal.component';
-import { ExtendSignalComponent } from './signal-generators/extend-signal.component';
-import { TweenSignalComponent } from './signal-generators/tween-signal.component';
-import { FilterSignalComponent } from './signal-generators/filter-signal.component';
+import { DebounceSignalComponent } from './demos/debounce-signal.component';
+import { ExtendSignalComponent } from './demos/extend-signal.component';
+import { FilterSignalComponent } from './demos/filter-signal.component';
+import { LiftSignalComponent } from './demos/lift-signal.component';
+import { MapSignalComponent } from './demos/map-signal.component';
+import { ReduceSignalComponent } from './demos/reduce-signal.component';
+import { SequenceSignalComponent } from './demos/sequence-signal.component';
+import { TimerSignalComponent } from './demos/timer-signal.component';
+import { TweenSignalComponent } from './demos/tween-signal.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'filter-signal', component: FilterSignalComponent },
   { path: 'lift-signal', component: LiftSignalComponent },
   { path: 'map-signal', component: MapSignalComponent },
+  { path: 'reduce-signal', component: ReduceSignalComponent },
   { path: 'sequence-signal', component: SequenceSignalComponent },
   { path: 'timer-signal', component: TimerSignalComponent },
   { path: 'tween-signal', component: TweenSignalComponent },

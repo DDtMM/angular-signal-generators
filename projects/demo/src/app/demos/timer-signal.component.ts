@@ -10,8 +10,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   standalone: true,
   imports: [CommonModule, FormsModule, SignalHeaderComponent],
   template: `
-<!-- for some reason the API docs come out with -1 at the end -->
-<app-signal-header name="Timer Signal" apiPath="./api/functions/timerSignal-1.html" [types]="['generator']" />
+<app-signal-header fnName="timerSignal" />
 <p>
   This is very similar to rxjs's <i>timer</i> operator.
   It will be have like setTimeout or interval depending on the parameters passed.
