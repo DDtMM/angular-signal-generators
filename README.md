@@ -45,7 +45,7 @@ export class SignalDemoComponent {
 }
 ```
 
-## Signal Generators
+## Signals
 
 ### debounceSignal
 
@@ -86,6 +86,12 @@ This is very similar to rxjs's *timer* operator.  It will be have like setTimeou
 ### tweenSignal
 
 This was directly inspired by Svelte's *tweened* function.  When the signal value is change, the observed value slowly morphs over time.  So if the original value was **1** and the next value was set to **5**, then the observed value will be something like *1*, *1.512*, *2.12*, *2.6553*, *3* over a set duration.
+
+## Utilities
+
+### signalToIterator
+
+Converts a signal to an AsyncIterator.  Once created, changes are retained until elements are looped through at a later time.
 
 ## Conventions
 

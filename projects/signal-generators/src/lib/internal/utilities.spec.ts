@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { getDestroyRef, hasKey, isMethodKey } from './utilities';
+import { getDestroyRef, getInjector, hasKey, isMethodKey } from './utilities';
 
 describe('hasKey', () => {
   type Something = { keyX?: number };
@@ -31,9 +31,24 @@ describe('getDestroyRef', () => {
       destroyRef = getDestroyRef(() => 1);
     }
     beforeEach(() => MockBuilder(TestHarness));
-    it('returns injector when no injector is passed and in injector context', () => {
-      const service = MockRender(TestHarness).point.componentInstance;
-      expect(service.destroyRef).toBeDefined();
+    it('returns injector when no injector is passed', () => {
+      expect(MockRender(TestHarness).point.componentInstance.destroyRef).toBeDefined();
+    });
+  });
+});
+
+describe('getInjector', () => {
+  it('throws when no injector is passed and not in injector context', () => {
+    expect(() => getInjector(() => 1)).toThrowError();
+  });
+  describe('when in injector context', () => {
+    @Injectable()
+    class TestHarness {
+      injectorRef = getInjector(() => 1);
+    }
+    beforeEach(() => MockBuilder(TestHarness));
+    it('returns injector', () => {
+      expect(MockRender(TestHarness).point.componentInstance.injectorRef).toBeDefined();
     });
   });
 });
