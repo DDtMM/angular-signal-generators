@@ -16,7 +16,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
       <div class="card-body">
         <h3 class="card-title cursor-pointer" [routerLink]="demoConfig.route">
           <a class="link" [routerLink]="demoConfig.route">{{demoConfig.name}}</a>
-          @for (signalType of demoConfig.signalTypes; track signalType) {
+          @for (signalType of demoConfig.usages; track signalType) {
             <app-signal-type-badge [type]="signalType"/>
           }
         </h3>

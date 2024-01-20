@@ -1,16 +1,17 @@
 import { Type } from '@angular/core';
 import { DebounceSignalComponent } from './home-demos/debounce-signal.component';
-import { TweenSignalComponent } from './home-demos/tween-signal.component';
-import { TimerSignalComponent } from './home-demos/timer-signal.component';
-import { SequenceSignalComponent } from './home-demos/sequence-signal.component';
-import { ReduceSignalComponent } from './home-demos/reduce-signal.component';
-import { MapSignalComponent } from './home-demos/map-signal.component';
-import { LiftSignalComponent } from './home-demos/lift-signal.component';
-import { FilterSignalComponent } from './home-demos/filter-signal.component';
 import { ExtendSignalComponent } from './home-demos/extend-signal.component';
+import { FilterSignalComponent } from './home-demos/filter-signal.component';
+import { LiftSignalComponent } from './home-demos/lift-signal.component';
+import { MapSignalComponent } from './home-demos/map-signal.component';
+import { ReduceSignalComponent } from './home-demos/reduce-signal.component';
+import { SequenceSignalComponent } from './home-demos/sequence-signal.component';
+import { SignalToIteratorComponent } from './home-demos/signal-to-iterator.component';
+import { TimerSignalComponent } from './home-demos/timer-signal.component';
+import { TweenSignalComponent } from './home-demos/tween-signal.component';
 
 /** What type of signals are returned from signal factory functions. */
-export type SignalType = 'writableSignal' | 'generator';
+export type UsageType = 'generator' | 'utility' | 'writableSignal';
 
 export interface DemoConfigurationItem<FnName extends string> {
   readonly component: Type<unknown>,
@@ -22,7 +23,7 @@ export interface DemoConfigurationItem<FnName extends string> {
   readonly name: string;
   /** The route from the root of the app. */
   readonly route: string;
-  readonly signalTypes: SignalType[];
+  readonly usages: UsageType[];
 }
 
 export const DEMO_CONFIGURATIONS = [
@@ -32,7 +33,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'debounceSignal' as const,
     name: 'Debounce',
     route: 'debounce-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
   },
   {
     component: ExtendSignalComponent,
@@ -40,7 +41,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'extendSignal' as const,
     name: 'Extend',
     route: 'extend-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
   },
   {
     component: FilterSignalComponent,
@@ -48,7 +49,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'filterSignal'  as const,
     name: 'Filter',
     route: 'filter-signal',
-    signalTypes: ['writableSignal']
+    usages: ['writableSignal']
   },
   {
     component: LiftSignalComponent,
@@ -56,7 +57,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'liftSignal' as const,
     name: 'Lift',
     route: 'lift-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
   },
   {
     component: MapSignalComponent,
@@ -64,7 +65,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'mapSignal' as const,
     name: 'Map',
     route: 'map-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
   },
   {
     component: ReduceSignalComponent,
@@ -72,7 +73,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'reduceSignal' as const,
     name: 'Reduce',
     route: 'reduce-signal',
-    signalTypes: ['writableSignal']
+    usages: ['writableSignal']
   },
   {
     component: SequenceSignalComponent,
@@ -80,7 +81,15 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'sequenceSignal' as const,
     name: 'Sequence',
     route: 'sequence-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    component: SignalToIteratorComponent,
+    docUrl: './api/functions/signalToIterator.html',
+    fnName: 'signalToIterator' as const,
+    name: 'SignalToIterator',
+    route: 'signal-to-iterator',
+    usages: ['utility']
   },
   {
     component: TimerSignalComponent,
@@ -88,7 +97,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'timerSignal' as const,
     name: 'Timer',
     route: 'timer-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
   },
   {
     component: TweenSignalComponent,
@@ -96,7 +105,7 @@ export const DEMO_CONFIGURATIONS = [
     fnName: 'tweenSignal' as const,
     name: 'Tween',
     route: 'tween-signal',
-    signalTypes: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal']
   }
 ] satisfies DemoConfigurationItem<string>[];
 

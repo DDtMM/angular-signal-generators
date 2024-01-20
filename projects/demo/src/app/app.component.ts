@@ -40,7 +40,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
         </a>
       </li>
       <li>
-        <h2 class="menu-title">Signals</h2>
+        <h2 class="menu-title">Functions</h2>
         <ul>
           @for (l of demos; track l) {
             <li>
