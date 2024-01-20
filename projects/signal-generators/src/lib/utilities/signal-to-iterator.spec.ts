@@ -150,9 +150,9 @@ describe('signalToIterator', () => {
         const iterator = signalToIterator(source, { injector });
         Promise.all([
           iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
-          iterator.next().then(() => fail()).catch((x) => expect(x).toEqual('error'))
+          iterator.next().then(() => fail()).catch((x) => expect(x).toEqual('error')),
+          iterator.throw('error').catch(() => {})
         ]).then(() => done());
-        iterator.throw('error');
       });
       it('will stop and return rejected promise', (done) => {
         const source = autoDetectChangesSignal(fixture, signal(1));
