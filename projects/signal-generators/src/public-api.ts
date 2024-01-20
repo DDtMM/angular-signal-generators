@@ -11,6 +11,7 @@ export * from './lib/generators/reduce-signal';
 export * from './lib/generators/sequence-signal';
 export * from './lib/generators/timer-signal';
 export * from './lib/generators/tween-signal';
+export * from './lib/utilities/signal-to-iterator';
 export * from './lib/signal-input';
 export { SignalFunction, SignalFunctions, SignalProxy } from './lib/signal-proxy';
 export { ValueSource, ValueSourceValue }  from './lib/value-source';

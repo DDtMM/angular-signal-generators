@@ -1,14 +1,22 @@
 import { DestroyRef, Injector, assertInInjectionContext, inject } from '@angular/core';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyFunctionType = (...args: any[]) => void;
+
 /** Gets the DestroyRef either using the passed injector or inject function. */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function getDestroyRef(fn: Function, injector?: Injector | null | undefined): DestroyRef {
+export function getDestroyRef(fnType: AnyFunctionType, injector?: Injector | null | undefined): DestroyRef {
   if (injector) {
     return injector.get(DestroyRef);
   }
 
-  assertInInjectionContext(fn);
+  assertInInjectionContext(fnType);
   return inject(DestroyRef);
+}
+
+/** Gets the injector, throwing if the function is in injection context.  */
+export function getInjector(fnType: AnyFunctionType): Injector {
+  assertInInjectionContext(fnType);
+  return inject(Injector);
 }
 
 /** A type safeway for determining a key is in an object. */
