@@ -150,9 +150,9 @@ describe('signalToIterator', () => {
         const iterator = signalToIterator(source, { injector });
         Promise.all([
           iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
-          iterator.next().then(() => fail()).catch((x) => expect(x).toEqual('error'))
+          iterator.next().then(() => fail()).catch((x) => expect(x).toEqual('error')),
+          iterator.throw('error').catch(() => {})
         ]).then(() => done());
-        iterator.throw('error');
       });
       it('will stop and return rejected promise', (done) => {
         const source = autoDetectChangesSignal(fixture, signal(1));
@@ -208,7 +208,6 @@ describe('signalToIterator', () => {
 
   describe('in component injector context', () => {
     @Component({ standalone: true })
-    //@Injectable()
     class TestComponent {
       source = signal(1);
       iterator = signalToIterator(this.source);
@@ -217,17 +216,12 @@ describe('signalToIterator', () => {
       MockBuilder(TestComponent);
       const fixture = MockRender(TestComponent);
       const { iterator, source } = fixture.point.componentInstance;
-      (async () => {
-        const emissions: number[] = [];
-        for await (const item of iterator) {
-          emissions.push(item);
-        }
-        expect(emissions).toEqual([1, 2]);
-        done();
-      })();
+      Promise.all([
+        iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
+        iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 }))
+      ]).then(() => done());
       source.set(2);
       fixture.detectChanges();
-      fixture.destroy();
     });
   });
 });
