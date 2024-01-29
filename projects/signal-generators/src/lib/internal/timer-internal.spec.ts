@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { tickAndAssertValue } from '../../testing/testing-utilities';
+import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { TimerInternal, TimerInternalOptions, TimerStatus } from './timer-internal';
 
 describe('timerInternal', () => {
@@ -117,7 +117,7 @@ describe('timerInternal', () => {
 
   /** It is a pretty common pattern in these tests to tick, and then expect a value */
   function tickAndAssertTimerValue(timer: TimerInternal, pattern: [elapsedMs: number, expectedTicks: number][]): void {
-    tickAndAssertValue(() => timer.ticks, pattern);
+    tickAndAssertValues(() => timer.ticks, pattern);
   }
 });
 

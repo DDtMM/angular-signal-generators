@@ -2,7 +2,7 @@ import { Injector, signal } from '@angular/core';
 import { MockedComponentFixture, MockRender } from 'ng-mocks';
 import { debounceSignal } from './debounce-signal';
 import { fakeAsync } from '@angular/core/testing';
-import { tickAndAssertValue } from '../../testing/testing-utilities';
+import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 
@@ -34,11 +34,11 @@ describe('debounceSignal', () => {
       const originalValue = 1;
       const source = autoDetectChangesSignal(fixture, signal(originalValue));
       const debounced = debounceSignal(source, 500, { injector });
-      tickAndAssertValue(debounced, [[100, originalValue]]);
+      tickAndAssertValues(debounced, [[100, originalValue]]);
       source.set(2);
-      tickAndAssertValue(debounced, [[499, originalValue], [1, source()]]);
+      tickAndAssertValues(debounced, [[499, originalValue], [1, source()]]);
       source.set(3);
-      tickAndAssertValue(debounced, [[500, source()]]);
+      tickAndAssertValues(debounced, [[500, source()]]);
     }));
 
     it('should adjust debounce time when time from a signal changes', fakeAsync(() => {
@@ -46,10 +46,10 @@ describe('debounceSignal', () => {
       const debounceTime = autoDetectChangesSignal(fixture, signal(500));
       const source = autoDetectChangesSignal(fixture, signal(originalValue));
       const debounced = autoDetectChangesSignal(fixture, debounceSignal(source, debounceTime, { injector }));
-      tickAndAssertValue(debounced, [[100, originalValue]]);
+      tickAndAssertValues(debounced, [[100, originalValue]]);
       source.set(2);
       debounceTime.set(5000);
-      tickAndAssertValue(debounced, [[500, originalValue], [4500, source()]]);
+      tickAndAssertValues(debounced, [[500, originalValue], [4500, source()]]);
     }));
   });
 
@@ -62,15 +62,15 @@ describe('debounceSignal', () => {
 
     it('#set should be debounced', fakeAsync(() => {
       const debounced = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));
-      tickAndAssertValue(debounced, [[100, 'x']]);
+      tickAndAssertValues(debounced, [[100, 'x']]);
       debounced.set('z');
-      tickAndAssertValue(debounced, [[499, 'x'], [1, 'z']]);
+      tickAndAssertValues(debounced, [[499, 'x'], [1, 'z']]);
     }));
     it('#update should be debounced', fakeAsync(() => {
       const debounced = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));
-      tickAndAssertValue(debounced, [[100, 'x']]);
+      tickAndAssertValues(debounced, [[100, 'x']]);
       debounced.update((x) => x + 'z');
-      tickAndAssertValue(debounced, [[499, 'x'], [1, 'xz']]);
+      tickAndAssertValues(debounced, [[499, 'x'], [1, 'xz']]);
     }));
     it('asReadonly just returns itself', () => {
       const debounced = debounceSignal('x', 500, { injector });

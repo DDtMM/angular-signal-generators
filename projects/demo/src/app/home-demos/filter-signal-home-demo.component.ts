@@ -5,7 +5,6 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  selector: 'app-filter-signal',
   standalone: true,
   imports: [FormsModule, HomeBoxComponent],
   hostDirectives: [ContentsClassDirective],
@@ -27,6 +26,6 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FilterSignalComponent {
+export class FilterSignalHomeDemoComponent {
   readonly filtered = filterSignal<string>('no upper case letters please', (x) => !/[A-Z]/.test(x));
 }

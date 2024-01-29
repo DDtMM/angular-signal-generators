@@ -5,7 +5,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 
 @Component({
-  selector: 'app-signal-to-iterator',
+  selector: 'app-signal-to-iterator-demo',
   standalone: true,
   imports: [CommonModule, HighlightModule, SignalHeaderComponent],
   template: `
@@ -24,7 +24,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignalToIteratorComponent {
+export class SignalToIteratorDemoComponent {
   readonly simpleExample = `const source = signal('start');
 // if not in constructor then pass injectorRef.
 for await (const item of signalToIterator(source, { injector: this.injectorRef })) {

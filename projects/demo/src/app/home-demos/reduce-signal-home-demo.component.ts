@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { reduceSignal } from 'projects/signal-generators/src/lib/generators/reduce-signal';
+import { reduceSignal } from 'projects/signal-generators/src/lib/signals/reduce-signal';
 import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  selector: 'app-reduce-signal',
   standalone: true,
   imports: [FormsModule, HomeBoxComponent],
   hostDirectives: [ContentsClassDirective],
@@ -28,7 +27,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReduceSignalComponent {
+export class ReduceSignalHomeDemoComponent {
   readonly reduceSource = signal(1);
   readonly reduceSum = reduceSignal(0, (prior, cur) => prior + cur);
 }

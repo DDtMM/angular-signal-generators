@@ -6,7 +6,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { ExampleCodeComponent } from '../controls/example-code.component';
 
 @Component({
-  selector: 'app-debounce-signal',
+  selector: 'app-debounce-signal-demo',
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
@@ -76,7 +76,7 @@ setTimeout(() => console.log(original(), debounced()), 500) // changed, changed.
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DebounceSignalComponent {
+export class DebounceSignalDemoComponent {
   readonly inputText = signal('')
   readonly debounceTime = signal(500);
   readonly inputTextDebounced = debounceSignal(this.inputText, this.debounceTime);

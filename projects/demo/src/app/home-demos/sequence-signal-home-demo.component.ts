@@ -5,7 +5,6 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  selector: 'app-timer-signal',
   standalone: true,
   imports: [FormsModule, HomeBoxComponent],
   hostDirectives: [ContentsClassDirective],
@@ -33,6 +32,6 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SequenceSignalComponent {
+export class SequenceSignalHomeDemoComponent {
   readonly sequenceChoices = sequenceSignal(['a', 'b', 'c']);
 }

@@ -6,7 +6,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 
 @Component({
-  selector: 'app-timer-signal',
+  selector: 'app-timer-signal-demo',
   standalone: true,
   imports: [CommonModule, FormsModule, SignalHeaderComponent],
   template: `
@@ -57,7 +57,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TimerSignalComponent {
+export class TimerSignalDemoComponent {
 
   executionCount = -1;
   readonly mode = signal<'timeout' | 'interval'>('interval');
