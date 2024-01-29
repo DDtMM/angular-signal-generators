@@ -46,6 +46,9 @@ export class SignalDemoComponent {
 ```
 
 ## Signals
+### asyncSignal
+
+Takes an async source (Promise, Observable) or signal/function that returns an async source and returns that source's values as part of a signal.  Kind of like an rxjs flattening operator.
 
 ### debounceSignal
 

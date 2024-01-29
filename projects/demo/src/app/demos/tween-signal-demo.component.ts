@@ -8,7 +8,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 
 @Component({
-  selector: 'app-tween-signal',
+  selector: 'app-tween-signal-demo',
   standalone: true,
   imports: [CommonModule, FormsModule, HighlightModule, SignalHeaderComponent],
   template: `
@@ -74,7 +74,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TweenSignalComponent {
+export class TweenSignalDemoComponent {
   readonly easingNames = EASING_NAMES;
   readonly easingFn = signal<EasingName>('easeInBack');
   readonly tweenSignalSimple = tweenSignal(0);

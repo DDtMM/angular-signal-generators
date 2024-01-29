@@ -4,7 +4,6 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  selector: 'app-extend-signal',
   standalone: true,
   imports: [HomeBoxComponent, ExampleCodeComponent],
   hostDirectives: [ContentsClassDirective],
@@ -25,4 +24,4 @@ console.log(calculator()); // 15;
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExtendSignalComponent { }
+export class ExtendSignalHomeDemoComponent { }

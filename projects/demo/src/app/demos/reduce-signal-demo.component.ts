@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { filterSignal } from 'projects/signal-generators/src/public-api';
 import { ExampleCodeComponent } from '../controls/example-code.component';
 import { SignalHeaderComponent } from '../controls/signal-header.component';
-import { reduceSignal } from 'projects/signal-generators/src/lib/generators/reduce-signal';
+import { reduceSignal } from 'projects/signal-generators/src/lib/signals/reduce-signal';
 
 @Component({
-  selector: 'app-reduce-signal',
+  selector: 'app-reduce-signal-demo',
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
@@ -45,7 +45,7 @@ import { reduceSignal } from 'projects/signal-generators/src/lib/generators/redu
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReduceSignalComponent {
+export class ReduceSignalDemoComponent {
   readonly $searchInput = signal('');
   readonly $searchHistory = reduceSignal([] as string[], (prior, x: string) => [...prior, x]);
   readonly onlyLowerCaseFilter = filterSignal('', (x: string): x is Lowercase<string> => !/[A-Z]/.test(x));

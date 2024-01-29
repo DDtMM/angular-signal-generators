@@ -1,0 +1,7 @@
+{
+  "bracketSameLine": true,
+  "embeddedLanguageFormatting": "off",
+  "printWidth": 130,
+  "semi": true,
+  "trailingComma": "none"
+}

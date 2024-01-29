@@ -6,7 +6,7 @@ import { ExampleCodeComponent } from '../controls/example-code.component';
 import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 @Component({
-  selector: 'app-filter-signal',
+  selector: 'app-filter-signal-demo',
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
@@ -52,7 +52,7 @@ setFilters(value: string): void {{ '{' }}
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilterSignalComponent {
+export class FilterSignalDemoComponent {
 
   readonly maxLengthFilter = filterSignal<string>('', x => x.length < 5);
   readonly onlyLowerCaseFilter = filterSignal('', (x: string): x is Lowercase<string> => !/[A-Z]/.test(x));

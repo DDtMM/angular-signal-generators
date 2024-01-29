@@ -6,7 +6,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { ExampleCodeComponent } from '../controls/example-code.component';
 
 @Component({
-  selector: 'app-map-signal',
+  selector: 'app-map-signal-demo',
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FormsModule, SignalHeaderComponent],
   template: `
@@ -39,7 +39,7 @@ readonly multiplierSquared = mapSignal(this.inputVal, this.multiplier, (a, b) =>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapSignalComponent {
+export class MapSignalDemoComponent {
   readonly multiplier = signal(2);
   readonly inputVal = mapSignal(1, x => x * this.multiplier());
   readonly multiplierSquared = mapSignal(this.inputVal, this.multiplier, (a, b) => a * b);

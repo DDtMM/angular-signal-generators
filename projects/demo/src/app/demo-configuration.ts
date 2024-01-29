@@ -1,20 +1,21 @@
 import { Type } from '@angular/core';
-import { DebounceSignalComponent } from './home-demos/debounce-signal.component';
-import { ExtendSignalComponent } from './home-demos/extend-signal.component';
-import { FilterSignalComponent } from './home-demos/filter-signal.component';
-import { LiftSignalComponent } from './home-demos/lift-signal.component';
-import { MapSignalComponent } from './home-demos/map-signal.component';
-import { ReduceSignalComponent } from './home-demos/reduce-signal.component';
-import { SequenceSignalComponent } from './home-demos/sequence-signal.component';
-import { SignalToIteratorComponent } from './home-demos/signal-to-iterator.component';
-import { TimerSignalComponent } from './home-demos/timer-signal.component';
-import { TweenSignalComponent } from './home-demos/tween-signal.component';
+import { AsyncSignalHomeDemoComponent } from './home-demos/async-signal-home-demo.component';
+import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-home-demo.component';
+import { ExtendSignalHomeDemoComponent } from './home-demos/extend-signal-home-demo.component';
+import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
+import { LiftSignalHomeDemoComponent } from './home-demos/lift-signal-home-demo.component';
+import { MapSignalHomeDemoComponent } from './home-demos/map-signal-home-demo.component';
+import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-demo.component';
+import { SequenceSignalHomeDemoComponent } from './home-demos/sequence-signal-home-demo.component';
+import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterator-home-demo.component';
+import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-demo.component';
+import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
 
 /** What type of signals are returned from signal factory functions. */
 export type UsageType = 'generator' | 'utility' | 'writableSignal';
 
 export interface DemoConfigurationItem<FnName extends string> {
-  readonly component: Type<unknown>,
+  readonly homeComponent: Type<unknown>;
   /** The url to the docs from the root. */
   readonly docUrl: string;
   /** Function name to generate signal.  Acts as distinct key. */
@@ -28,7 +29,15 @@ export interface DemoConfigurationItem<FnName extends string> {
 
 export const DEMO_CONFIGURATIONS = [
   {
-    component: DebounceSignalComponent,
+    homeComponent: AsyncSignalHomeDemoComponent,
+    docUrl: './api/functions/asyncSignal-1.html',
+    fnName: 'asyncSignal' as const,
+    name: 'Async',
+    route: 'async-signal',
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    homeComponent: DebounceSignalHomeDemoComponent,
     docUrl: './api/functions/debounceSignal.html',
     fnName: 'debounceSignal' as const,
     name: 'Debounce',
@@ -36,7 +45,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    component: ExtendSignalComponent,
+    homeComponent: ExtendSignalHomeDemoComponent,
     docUrl: './api/functions/extendSignal.html',
     fnName: 'extendSignal' as const,
     name: 'Extend',
@@ -44,15 +53,15 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    component: FilterSignalComponent,
+    homeComponent: FilterSignalHomeDemoComponent,
     docUrl: './api/functions/filterSignal-1.html',
-    fnName: 'filterSignal'  as const,
+    fnName: 'filterSignal' as const,
     name: 'Filter',
     route: 'filter-signal',
     usages: ['writableSignal']
   },
   {
-    component: LiftSignalComponent,
+    homeComponent: LiftSignalHomeDemoComponent,
     docUrl: './api/functions/liftSignal.html',
     fnName: 'liftSignal' as const,
     name: 'Lift',
@@ -60,7 +69,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    component: MapSignalComponent,
+    homeComponent: MapSignalHomeDemoComponent,
     docUrl: './api/functions/mapSignal-1.html',
     fnName: 'mapSignal' as const,
     name: 'Map',
@@ -68,7 +77,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    component: ReduceSignalComponent,
+    homeComponent: ReduceSignalHomeDemoComponent,
     docUrl: './api/functions/reduceSignal-1.html',
     fnName: 'reduceSignal' as const,
     name: 'Reduce',
@@ -76,7 +85,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['writableSignal']
   },
   {
-    component: SequenceSignalComponent,
+    homeComponent: SequenceSignalHomeDemoComponent,
     docUrl: './api/functions/sequenceSignal-1.html',
     fnName: 'sequenceSignal' as const,
     name: 'Sequence',
@@ -84,7 +93,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    component: SignalToIteratorComponent,
+    homeComponent: SignalToIteratorHomeDemoComponent,
     docUrl: './api/functions/signalToIterator.html',
     fnName: 'signalToIterator' as const,
     name: 'SignalToIterator',
@@ -92,7 +101,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['utility']
   },
   {
-    component: TimerSignalComponent,
+    homeComponent: TimerSignalHomeDemoComponent,
     docUrl: './api/functions/timerSignal-1.html',
     fnName: 'timerSignal' as const,
     name: 'Timer',
@@ -100,7 +109,7 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    component: TweenSignalComponent,
+    homeComponent: TweenSignalHomeDemoComponent,
     docUrl: './api/functions/tweenSignal-1.html',
     fnName: 'tweenSignal' as const,
     name: 'Tween',
@@ -109,7 +118,9 @@ export const DEMO_CONFIGURATIONS = [
   }
 ] satisfies DemoConfigurationItem<string>[];
 
-export type SignalFunctionName = typeof DEMO_CONFIGURATIONS[number]['fnName'];
+export type SignalFunctionName = (typeof DEMO_CONFIGURATIONS)[number]['fnName'];
 
-export const DEMO_CONFIG_MAP = DEMO_CONFIGURATIONS.reduce((prior, cur) => ({ ...prior, [cur.fnName]: cur}),
-  {} as Record<SignalFunctionName, DemoConfigurationItem<SignalFunctionName>>)
+export const DEMO_CONFIG_MAP = DEMO_CONFIGURATIONS.reduce(
+  (prior, cur) => ({ ...prior, [cur.fnName]: cur }),
+  {} as Record<SignalFunctionName, DemoConfigurationItem<SignalFunctionName>>
+);

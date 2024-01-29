@@ -7,7 +7,7 @@ import { ExampleCodeComponent } from '../controls/example-code.component';
 import { SignalHeaderComponent } from '../controls/signal-header.component';
 
 @Component({
-  selector: 'app-extend-signal',
+  selector: 'app-extend-signal-demo',
   standalone: true,
   imports: [CommonModule, ExampleCodeComponent, FaIconComponent, FormsModule, SignalHeaderComponent],
   template: `
@@ -57,7 +57,7 @@ readonly voice = extendSignal('hello', {{ '{' }}
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExtendSignalComponent {
+export class ExtendSignalDemoComponent {
   inputText = '';
 
   readonly voice = extendSignal('hello', {

@@ -1,30 +1,27 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ExampleCodeComponent } from '../controls/example-code.component';
 import { HomeBoxComponent } from '../controls/home-box.component';
-
+import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  selector: 'app-signal-to-iterator',
   standalone: true,
   imports: [ExampleCodeComponent, HomeBoxComponent],
+  hostDirectives: [ContentsClassDirective],
   template: `
-<app-home-box fnName="signalToIterator">
+<app-home-box fnName="liftSignal">
   <div>
-  This converts a signal into an AsyncIterator where is can be used in a <code class="inline p-1">for async</code> loop.
+    "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
   </div>
   <div class="divider">Example</div>
   <app-example-code><pre>
-const source = signal('start');
-for await (const item of signalToIterator(source)) &lbrace;
-  console.log(item); // 'start', 'next'
-&rbrace;
-source.next('next');
+const liftedArray = liftSignal([1, 2, 3], null, ['push']);
+liftedArray.push(4)
+console.log(liftedArray()); // [1, 2, 3, 4];
 </pre></app-example-code>
 </app-home-box>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignalToIteratorComponent {
+export class LiftSignalHomeDemoComponent {
 
 }
-

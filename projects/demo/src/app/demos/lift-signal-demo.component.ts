@@ -7,7 +7,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
-  selector: 'app-lift-signal',
+  selector: 'app-lift-signal-demo',
   standalone: true,
   imports: [CommonModule, FaIconComponent, HighlightModule, SignalHeaderComponent],
   template: `
@@ -49,7 +49,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LiftSignalComponent {
+export class LiftSignalDemoComponent {
   readonly example = `
 numbers = liftSignal([this.randomNumber(), this.randomNumber(), this.randomNumber()], ['concat'], ['push', 'pop']);
 randomNumber(): number { return Math.floor(Math.random() * 100); }
