@@ -1,4 +1,4 @@
-import { Injector, WritableSignal, signal } from '@angular/core';
+import { Injector, WritableSignal, signal, untracked } from '@angular/core';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { ValueSource } from '../value-source';
@@ -155,10 +155,10 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
    */
   function createCursorGetterFromSignalInput(inputSource: SignalInput<ArrayLike<T> | Cursor<T>>): () => Cursor<T> {
     const sequenceSignal = coerceSignal(inputSource, options);
-    let lastSequence = sequenceSignal();
+    let lastSequence = untracked(sequenceSignal);
     let cachedCursor = getCursor(lastSequence);
     return () => {
-      const currentSequence = sequenceSignal();
+      const currentSequence = untracked(sequenceSignal);
       if (currentSequence !== lastSequence) {
         lastSequence = currentSequence;
         cachedCursor = getCursor(lastSequence);
@@ -166,8 +166,8 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
       return cachedCursor;
     };
   }
-   /** Creates function that gets a cached cursor from a value.  */
-   function createCursorGetterFromValue(value: ArrayLike<T> | Cursor<T>): () => Cursor<T> {
+  /** Creates function that gets a cached cursor from a value.  */
+  function createCursorGetterFromValue(value: ArrayLike<T> | Cursor<T>): () => Cursor<T> {
     const cursor = getCursor(value);
     return () => cursor;
   }

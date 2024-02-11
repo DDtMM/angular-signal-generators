@@ -52,6 +52,8 @@ export function extendSignal<T, V extends ValueSource<T>, const M extends Record
     ? toSignalProxy(output)
     : output as SignalProxy<ValueSourceSignal<V>>;
 
+  // for each key in methods, create a method that will be assigned to output.
+  // The method will accept the proxy as the first argument and all the same arguments after
   const assignMethods = Object.keys(methods).reduce((acc, key: keyof typeof methods) => {
     const innerMethod = methods[key];
     acc[key] = ((...args) => innerMethod(proxy, ...args)) as OutputMethod<typeof innerMethod>;
@@ -61,4 +63,3 @@ export function extendSignal<T, V extends ValueSource<T>, const M extends Record
 
   return Object.assign(output, assignMethods) as (Signal<ValueSourceValue<V>> & ValueSourceSignal<V> & OutputMethods<M>);
 }
-

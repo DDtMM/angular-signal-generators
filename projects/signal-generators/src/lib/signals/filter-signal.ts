@@ -1,4 +1,4 @@
-import { CreateSignalOptions, Signal, WritableSignal, signal } from '@angular/core';
+import { CreateSignalOptions, Signal, WritableSignal, signal, untracked } from '@angular/core';
 
 export type FilterSignal<T, O = T> = Signal<O> & Omit<WritableSignal<O>, 'set' | 'update'> & {
   /** Sets the new value IF it is compatible with the filter function. */
@@ -34,7 +34,7 @@ export function filterSignal<T, O extends T>(initialValue: O, filterFn: (x: T) =
 
   return Object.assign(internal, {
     set: (x: T) => setConditionally(x),
-    update: (signalUpdateFn: (x: T) => T) => setConditionally(signalUpdateFn(internal()))
+    update: (signalUpdateFn: (x: T) => T) => setConditionally(signalUpdateFn(untracked(internal)))
   });
 
   function setConditionally(value: T): void {

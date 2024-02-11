@@ -1,10 +1,10 @@
-import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal } from '@angular/core';
+import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
 import { coerceSignal } from '../internal/signal-coercion';
+import { isSignalInput } from '../internal/signal-input-utilities';
 import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
 import { SignalInput } from '../signal-input';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
-import { isSignalInput } from '../internal/signal-input-utilities';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -68,11 +68,12 @@ function createFromSignal<T>(source: SignalInput<T>,
 
   const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
   const srcSignal = coerceSignal(source, options);
-  const output = signal(srcSignal());
+  const output = signal(untracked(srcSignal));
   const set = output.set; // in case this gets by createDebouncedSignal.
-  const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => set.call(output, srcSignal()) });
+  const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => set.call(output, untracked(srcSignal)) });
   // setup cleanup actions.
   getDestroyRef(createFromSignal, options?.injector).onDestroy(() => timer.destroy());
+
   watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, options?.injector);
   effect(() => {
     srcSignal(); // wish there was a better way to watch the value.

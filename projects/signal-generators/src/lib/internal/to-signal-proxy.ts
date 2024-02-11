@@ -3,7 +3,6 @@ import { Signal, computed, untracked } from '@angular/core';
 import { SignalFunction, SignalFunctions, SignalProxy } from '../signal-proxy';
 import { isMethodKey } from './utilities';
 
-
 /**
  * Creates a computed signal that wraps the internal signal and then adds the original function.
  * This signal will NOT be reactive, and is only intended for situations where it needs to match a signal's signature.
@@ -27,5 +26,5 @@ export function toSignalProxy<S extends Signal<any>>(source: S): SignalProxy<S> 
     }
     return result;
   }
-
 }
+

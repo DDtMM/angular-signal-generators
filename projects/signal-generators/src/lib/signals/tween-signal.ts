@@ -85,7 +85,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
 
   if (isSignalInput<T>(source)) {
     const srcSignal = coerceSignal(source, options);
-    output = signal(srcSignal());
+    output = signal(untracked(srcSignal));
     outputSet = output.set;
     signalValueGetter = () => [srcSignal(), undefined];
   }
