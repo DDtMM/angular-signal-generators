@@ -1,20 +1,19 @@
-import { MockedComponentFixture, MockRender } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { filterSignal } from './filter-signal';
 
 describe('filterSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
-
-  beforeEach(() => {
-    fixture = MockRender();
-  });
 
   setupTypeGuardTests(() => filterSignal<number>(1, x => x < 5));
+
+  setupDoesNotCauseReevaluationsSimplyWhenNested(
+    () => filterSignal<number>(1, x => x < 5),
+    (sut) => sut.set(4)
+  );
 
   setupComputedAndEffectTests(() => {
     const sut = filterSignal<number>(1, x => x < 5);
     return [sut, () => sut.set(2)];
-  }, () => fixture);
+  });
 
   it('filters values based on a boolean condition', () => {
     const sut = filterSignal<number>(1, x => x < 5);

@@ -1,16 +1,8 @@
-import { Injector, signal } from '@angular/core';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
+import { signal } from '@angular/core';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { Cursor, sequenceSignal } from './sequence-signal';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 
 describe('sequenceSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
-  let injector: Injector;
-
-  beforeEach(() => {
-    fixture = MockRender();
-    injector = fixture.componentRef.injector;
-  });
 
   setupTypeGuardTests(() => sequenceSignal([1, 2, 3]));
 
@@ -24,7 +16,11 @@ describe('sequenceSignal', () => {
     setupComputedAndEffectTests(() => {
       const sut = sequenceSignal(sequenceItems);
       return [sut, () => { sut.next() }];
-    }, () => fixture);
+    });
+    setupDoesNotCauseReevaluationsSimplyWhenNested(
+      () => sequenceSignal(sequenceItems),
+      (sut) => sut.next()
+    );
 
     it('throws when trying to access empty array', () => {
       expect(() => sequenceSignal([])).toThrowError();
@@ -87,6 +83,7 @@ describe('sequenceSignal', () => {
   });
 
   describe('when signal passed as first parameter', () => {
+
     /** A common source of values usable in each test. */
     let sequenceItems: number[];
     beforeEach(() => {
@@ -95,9 +92,22 @@ describe('sequenceSignal', () => {
 
     setupComputedAndEffectTests(() => {
       const source = signal(sequenceItems);
-      const sut = sequenceSignal(source, { injector });
-      return [sut, () => { source.set([3 + Math.random()]); fixture.detectChanges(); sut.next(); }]; // only calling next will change the value
-    }, () => fixture);
+      const sut = sequenceSignal(source);
+      return [sut, () => { source.set([3 + Math.random()]); sut.next(); }]; // only calling next will change the value
+    });
+
+    setupDoesNotCauseReevaluationsSimplyWhenNested(
+      () => {
+        const source = signal(sequenceItems);
+        const sut = sequenceSignal(source);
+        // this is a rig to pass back the source so an emission can be triggered.
+        return Object.assign(sut, { triggerChange: () => source.set([ 3 + Math.random() ])});
+      },
+      (sut) => {
+        sut.triggerChange();
+        sut.next(); // only calling next will change the value
+      }
+    );
 
     it('throws when trying to access empty array', () => {
       expect(() => sequenceSignal(signal([]))).toThrowError();
@@ -106,10 +116,9 @@ describe('sequenceSignal', () => {
     it('will move to the first element of a new signal value when next is called.', () => {
       const sourceSignal = signal(sequenceItems);
       const nextArray = [3 + Math.random()];
-      const sequence = sequenceSignal(sourceSignal, { injector });
+      const sequence = sequenceSignal(sourceSignal);
       sequence.next();
       sourceSignal.set(nextArray);
-      fixture.detectChanges();
       expect(sequence()).toBe(sequenceItems[1]);
       sequence.next();
       expect(sequence()).toBe(nextArray[0]);
@@ -118,10 +127,9 @@ describe('sequenceSignal', () => {
     it('will not throw an error if the next sequence is empty.', () => {
       const sourceSignal = signal(sequenceItems);
       const nextArray: number[] = [];
-      const sequence = sequenceSignal(sourceSignal, { injector });
+      const sequence = sequenceSignal(sourceSignal);
       sequence.next();
       sourceSignal.set(nextArray);
-      fixture.detectChanges();
       expect(sequence()).toBe(sequenceItems[1]);
       sequence.next();
       expect(sequence()).toBe(sequenceItems[1]);

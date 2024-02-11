@@ -106,21 +106,26 @@ function createFromValue<T>(
 }
 
 function createOutputSignal<T>(input: Signal<AsyncSource<T>>, options: AsyncSignalOptions<T | undefined>): Signal<T | undefined> {
-  /** An "unsubscribe" function. */
-  let previousListenerCleanup: () => void = VOID_FN;
-
   const state = signal<AsyncSignalState<T | undefined>>({ status: AsyncSignalStatus.Ok, value: options.defaultValue });
+
+  /** An "unsubscribe" function. */
+  let currentSource = untracked(input);
+  let currentListenerCleanup: () => void = updateListener(currentSource);
 
   effect(
     () => {
-      previousListenerCleanup();
+      currentListenerCleanup();
       if (untracked(state).status === AsyncSignalStatus.Ok) {
         // by nesting this inside Ok branch, the effect will only be called one when the state turns to error.
-        const inputValue = input();
-        // this is untracked because a signal may be used inside.
-        previousListenerCleanup = untracked(() => updateListener(inputValue));
+        const nextSource = input();
+        if (nextSource === currentSource) {
+          return; // don't start listening to an already listened to source.
+        }
+        currentSource = nextSource;
+        // this is untracked because a signal may be used inside currentSource and cause additional invocations.
+        currentListenerCleanup = untracked(() => updateListener(currentSource));
       }
-      return previousListenerCleanup;
+      return currentListenerCleanup;
     },
     { injector: options.injector }
   );

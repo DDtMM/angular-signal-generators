@@ -1,11 +1,10 @@
 import { Injector, signal } from '@angular/core';
-import { MockedComponentFixture, MockRender } from 'ng-mocks';
-import { debounceSignal } from './debounce-signal';
 import { fakeAsync } from '@angular/core/testing';
-import { tickAndAssertValues } from '../../testing/testing-utilities';
-import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
-
+import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { tickAndAssertValues } from '../../testing/testing-utilities';
+import { debounceSignal } from './debounce-signal';
 
 describe('debounceSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -23,6 +22,7 @@ describe('debounceSignal', () => {
       const source = signal(1);
       return [debounceSignal(source, 500, { injector }), () => source.set(2)];
     }, () => fixture);
+
 
     it('initially shows the source value', fakeAsync(() => {
       const source = signal(1);

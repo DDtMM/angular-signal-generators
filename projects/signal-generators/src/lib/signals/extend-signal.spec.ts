@@ -1,9 +1,14 @@
 import { computed, signal } from '@angular/core';
 import { extendSignal } from './extend-signal';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 
 describe('extendSignal', () => {
   setupTypeGuardTests(() => extendSignal(1, { dummy: () => undefined}));
+
+  setupDoesNotCauseReevaluationsSimplyWhenNested(
+    () => extendSignal(1, { andOne: (proxy) => proxy.update(y => y + 1) }),
+    (sut) => sut.andOne()
+  );
 
   describe('for computed and effects', () => {
     setupComputedAndEffectTests(() => {
