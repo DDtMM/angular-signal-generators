@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { liftSignal } from './lift-signal';
 
 class DummyClass {
@@ -31,6 +31,12 @@ describe('liftSignal', () => {
     sut.double();
     expect(sut()).toEqual(new DummyClass(-2));
   });
+
+  setupDoesNotCauseReevaluationsSimplyWhenNested(
+    () => liftSignal([1, 2, 3], ['map']),
+    (sut) => sut.map(x => x + 2)
+  );
+
   [
     { factory: () => new DummyClass(5), label: 'object' },
     { factory: () => signal(new DummyClass(5)), label: 'object signal' }

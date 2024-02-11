@@ -1,10 +1,10 @@
 import { Injector, signal } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { tickAndAssertValues } from '../../testing/testing-utilities';
-import { TimerSignal, timerSignal } from './timer-signal';
-import { ValueSource } from '../value-source';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { tickAndAssertValues } from '../../testing/testing-utilities';
+import { ValueSource } from '../value-source';
+import { TimerSignal, timerSignal } from './timer-signal';
 
 describe('timerSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
@@ -175,7 +175,4 @@ describe('timerSignal', () => {
       timer.pause();
     });
   }
-
 });
-
-

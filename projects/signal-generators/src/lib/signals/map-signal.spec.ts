@@ -1,16 +1,8 @@
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
-import { mapSignal } from './map-signal';
 import { WritableSignal, signal } from '@angular/core';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { mapSignal } from './map-signal';
 
 describe('mapSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
-
-  beforeEach(() => {
-    fixture = MockRender();
-  });
-
   setupTypeGuardTests(() => mapSignal(1, (x) => x + 1));
 
   it('throws if not enough parameters are passed', () => {
@@ -21,14 +13,19 @@ describe('mapSignal', () => {
     let signal1: WritableSignal<number>;
     let signal2: WritableSignal<number>;
     beforeEach(() => {
-      signal1 = autoDetectChangesSignal(fixture, signal(3));
-      signal2 = autoDetectChangesSignal(fixture, signal(5));
+      signal1 = signal(3);
+      signal2 = signal(5);
     });
     setupComputedAndEffectTests(() => {
       const source = signal(1);
       const sut = mapSignal(source, x => x + 1);
       return [sut, () => { source.set(2) }];
-    }, () => fixture);
+    });
+    setupDoesNotCauseReevaluationsSimplyWhenNested(
+      () => mapSignal(signal1, x => x + 1),
+      () => signal1.set(4)
+    );
+
     it('the typings are correct for a single signal', () => {
       const source = mapSignal(signal1, (a) => a + 1);
       expect(source()).toBe(4);
@@ -61,31 +58,38 @@ describe('mapSignal', () => {
     setupComputedAndEffectTests(() => {
       const sut = mapSignal(1, x => x + 1);
       return [sut, () => { sut.set(2) }];
-    }, () => fixture);
+    });
+    setupDoesNotCauseReevaluationsSimplyWhenNested(
+      () => mapSignal(1, x => x + 1),
+      (sut) => sut.set(4)
+    );
     it('initially returns mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3));
+      const source = mapSignal(1, (x) => x * 3);
       expect(source()).toBe(3);
     });
-    it('#asReadonly returns itself', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal({ value: 1 }, (x) => ( { value: x.value * 3 })));
-      expect(source.asReadonly()).toBe(source);
+    it('#asReadonly returns a signal that reflects the original', () => {
+      const source = mapSignal({ value: 1 }, (x) => ( { value: x.value * 3 }));
+      const readOnly = source.asReadonly();
+      expect(source()).toBe(readOnly());
+      source.set({ value: 3 });
+      expect(source()).toBe(readOnly());
     });
     it('#input returns signal containing input value', () => {
       const source = mapSignal(1, (x) => x * 3);
       expect(source.input()).toBe(1);
     });
     it('#set sets signal to mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3));
+      const source = mapSignal(1, (x) => x * 3);
       source.set(2);
       expect(source()).toBe(6);
     });
     it('#update sets signal to mapped value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x * 3));
+      const source = mapSignal(1, (x) => x * 3);
       source.update((x) => x + 5);
       expect(source()).toBe(18);
     });
     it('respects options.equal value', () => {
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + 1, { equal: (_, b) => b % 2 === 0 }));
+      const source = mapSignal(1, (x) => x + 1, { equal: (_, b) => b % 2 === 0 });
       source(); // this is a little dodgy, equal won't run if it doesn't think the signal is being listened to.
       source.set(3);
       expect(source()).toBe(2); // this should NOT change because of silly equal function.
@@ -93,8 +97,8 @@ describe('mapSignal', () => {
       expect(source()).toBe(5);
     });
     it('changes value when signal inside selector changes value', () => {
-      const selectorValue = autoDetectChangesSignal(fixture, 1);
-      const source = autoDetectChangesSignal(fixture, mapSignal(1, (x) => x + selectorValue()));
+      const selectorValue = signal(1);
+      const source = mapSignal(1, (x) => x + selectorValue());
       selectorValue.set(5);
       expect(source()).toBe(6);
     });

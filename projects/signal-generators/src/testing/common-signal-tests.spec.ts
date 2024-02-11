@@ -1,4 +1,4 @@
-import { Signal, computed, effect, isSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, computed, effect, isSignal, signal } from '@angular/core';
 import { isSignalInput } from '../lib/internal/signal-input-utilities';
 import { ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
 import { MockRender } from 'ng-mocks';
@@ -15,6 +15,65 @@ export function setupTypeGuardTests(signalSetup: () => Signal<unknown>): void {
     it('gets a true result when it is passed to isSignalInput', () => {
       expect(isSignalInput(signalSetup())).toEqual(true);
     });
+  });
+}
+
+/**
+ * If the signal is created in a *computed* of *effect* then it shouldn't cause any extra evaluations.
+ * This would detect if a change from the update function causes the computed to refire.
+ * NOTE: This will throw on signals relying on effects!!!
+ * NOTE2: I'm not sure if effect tests are actually effective, but computed definitely are.
+ * @param signalSetup a function that will just create a signal
+ * @param signalUpdateFn a function that will update a signal
+ */
+export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Signal<T>>(
+  signalSetup: () => S,
+  signalUpdateFn: (sut: S, fixture: ComponentFixture<unknown>) => void,
+): void {
+  describe('when created inside an computed', () => {
+    it('does not cause multiple evaluations', fakeAsync(() => {
+      let computedExecutionTimesSpy = 0;
+      let effectExecutionTimesSpy = 0;
+      let createdSignal: S;
+      @Component({
+        template: '<div>{{computedSignal()}}</div>',
+        standalone: true,
+        changeDetection: ChangeDetectionStrategy.OnPush
+      })
+      class TestComponent {
+        dummySignal = signal(1);
+        computedSignal = computed(
+          () => {
+            createdSignal = signalSetup();
+            computedExecutionTimesSpy++;
+            return this.dummySignal();
+          },
+          { equal: () => false }
+        );
+        _ = effect(() => {
+          signalSetup();
+          effectExecutionTimesSpy++;
+        })
+      }
+      const fixture =  MockRender(TestComponent);
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+      expect(computedExecutionTimesSpy).withContext('computed signal with instantiated target does not execute unnecessarily').toBe(1);
+      expect(effectExecutionTimesSpy).withContext('effect with instantiated target does not execute unnecessarily').toBe(1);
+      signalUpdateFn(createdSignal!, fixture);
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+      expect(computedExecutionTimesSpy).withContext('change to the target signal does not cause computed signal to update').toBe(1);
+      expect(effectExecutionTimesSpy).withContext('change to the target signal does not cause effect to execute').toBe(1);
+      fixture.point.componentInstance.dummySignal.set(5);
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+      expect(computedExecutionTimesSpy).withContext('the expected number of changes occur after a signal used in computed is updated.').toBe(2);
+      expect(effectExecutionTimesSpy).withContext('effect never executes more than once.').toBe(1);
+    }));
   });
 }
 
