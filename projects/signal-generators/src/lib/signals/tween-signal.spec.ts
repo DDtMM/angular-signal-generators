@@ -22,7 +22,7 @@ describe('tweenSignal', () => {
     setupComputedAndEffectTests(() => {
       const sut = tweenSignal(1, { injector,  duration: 500 });
       return [sut, () => { sut.set(2); fixture.detectChanges(); tick(500); }];
-    }, () => fixture);
+    });
 
     it('initially returns the initial value', fakeAsync(() => {
       const sut = tweenSignal(5, { injector });
@@ -146,7 +146,7 @@ describe('tweenSignal', () => {
       const source = signal(1);
       const sut = tweenSignal(source, { injector,  duration: 500 });
       return [sut, () => { source.set(2); fixture.detectChanges(); tick(500); }];
-    }, () => fixture);
+    });
 
     it('returns tweened values', fakeAsync(() => {
       const source = autoDetectChangesSignal(fixture, signal(5));

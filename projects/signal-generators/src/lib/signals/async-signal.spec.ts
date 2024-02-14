@@ -23,7 +23,6 @@ describe('asyncSignal', () => {
         const sut = asyncSignal(Promise.resolve(1), { injector });
         return [sut, () => sut.set(Promise.resolve(2))];
       },
-      null,
       'from a value'
     );
     setupComputedAndEffectTests(
@@ -32,7 +31,6 @@ describe('asyncSignal', () => {
         const sut = asyncSignal(source, { injector });
         return [sut, () => source.set(Promise.resolve(2))];
       },
-      null,
       'from a signal'
     );
   });
@@ -78,12 +76,11 @@ describe('asyncSignal', () => {
 
   describe('execution', () => {
     it('creates a signal that initially returns defaultValue if provided in options', fakeAsync(() => {
-      const sut = autoDetectChangesSignal(fixture, asyncSignal(Promise.resolve(1), { defaultValue: -1, injector }));
+      const sut = asyncSignal(Promise.resolve(1), { defaultValue: -1, injector });
       expect(sut()).toBe(-1);
       tick();
       expect(sut()).toBe(1);
     }));
-
     it('create a new subscription when source changes', fakeAsync(() => {
       const source1 = new BehaviorSubject(1);
       const source2 = new BehaviorSubject(5);

@@ -21,7 +21,7 @@ describe('debounceSignal', () => {
     setupComputedAndEffectTests(() => {
       const source = signal(1);
       return [debounceSignal(source, 500, { injector }), () => source.set(2)];
-    }, () => fixture);
+    });
 
 
     it('initially shows the source value', fakeAsync(() => {
@@ -58,7 +58,7 @@ describe('debounceSignal', () => {
     setupComputedAndEffectTests(() => {
       const sut = debounceSignal(1, 500, { injector });
       return [sut, () => sut.set(2)];
-    }, () => fixture);
+    });
 
     it('#set should be debounced', fakeAsync(() => {
       const debounced = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));

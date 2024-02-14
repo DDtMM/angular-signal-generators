@@ -27,7 +27,7 @@ describe('timerSignal', () => {
       setupComputedAndEffectTests(() => {
         const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
         return [sut, () => { tick(500); }];
-      }, () => fixture);
+      });
 
       it('sets a timer for the timerSource amount', testTimer(100, undefined, (timer) => {
         tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ]]);
@@ -38,7 +38,7 @@ describe('timerSignal', () => {
       setupComputedAndEffectTests(() => {
         const sut = timerSignal(signal(500), null, { injector: fixture.componentRef.injector });
         return [sut, () => { tick(500); sut.pause(); }];
-      }, () => fixture);
+      });
 
 
       it('sets a timer for the timerSource amount', testTimer(signal(1000), undefined, (timer) => {
@@ -100,7 +100,7 @@ describe('timerSignal', () => {
       setupComputedAndEffectTests(() => {
         const sut = timerSignal(500, 500, { injector: fixture.componentRef.injector });
         return [sut, () => { tick(2000); sut.pause(); }];
-      }, () => fixture);
+      });
 
       it('sets an interval for the intervalSource amount', testTimer(1000, 500, (timer) => {
         tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
@@ -111,7 +111,7 @@ describe('timerSignal', () => {
       setupComputedAndEffectTests(() => {
         const sut = timerSignal(500, signal(500), { injector: fixture.componentRef.injector });
         return [sut, () => { tick(2000); sut.pause(); }];
-      }, () => fixture);
+      });
 
 
       it('sets a timer for the timerSource amount', testTimer(1000, signal(500), (timer) => {

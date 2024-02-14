@@ -14,12 +14,12 @@ describe('extendSignal', () => {
     setupComputedAndEffectTests(() => {
       const sut = extendSignal(1, { andOne: (proxy) => proxy.update(y => y + 1) });
       return [sut, () => { sut.andOne(); }];
-    }, null, 'from a value');
+    }, 'from a value');
     setupComputedAndEffectTests(() => {
       const source = signal(1);
       const sut = extendSignal(source, { andOne: () => source.update(y => y + 1) });
       return [sut, () => { sut.andOne(); }];
-    }, null, 'from a signal');
+    }, 'from a signal');
   })
 
   it('initially returns initial value from a value', () => {
