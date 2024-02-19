@@ -1,4 +1,4 @@
-import { Injector, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
@@ -8,14 +8,10 @@ import { TimerSignal, timerSignal } from './timer-signal';
 
 describe('timerSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
-  let injector: Injector;
 
-  beforeEach(() => {
-    fixture = MockRender();
-    injector = fixture.componentRef.injector;
-  });
+  beforeEach(() => fixture = MockRender());
 
-  setupTypeGuardTests(() => timerSignal(500, undefined, { injector }));
+  setupTypeGuardTests(() => timerSignal(500, undefined, { injector: fixture.componentRef.injector }));
 
   describe('as a timer', () => {
 
@@ -170,7 +166,7 @@ describe('timerSignal', () => {
     assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): jasmine.ImplementationCallback {
 
     return fakeAsync(() => {
-      const timer = timerSignal(timerTime, intervalTime, { injector });
+      const timer = timerSignal(timerTime, intervalTime, { injector: fixture.componentRef.injector });
       assertion(timer, timerTime, intervalTime);
       timer.pause();
     });

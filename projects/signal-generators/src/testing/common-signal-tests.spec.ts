@@ -1,6 +1,7 @@
 import { Injector, Signal, computed, effect, isSignal, signal } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { isSignalInput } from '../lib/internal/signal-input-utilities';
+import { computedSpy } from './signal-testing-utilities';
 
 /**
  * Makes sure a signal properly passes isSignal and isSignalInput.
@@ -31,18 +32,9 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
 ): void {
   describe('when created inside a computed or effect', () => {
     it('does not cause multiple evaluations', fakeAsync(() => {
-      let computedExecutionTimesSpy = 0;
       let effectExecutionTimesSpy = 0;
-      let sut: S;
       const dummySignal = signal(1);
-      const computedSignal = computed(
-        () => {
-          sut = signalSetup();
-          computedExecutionTimesSpy++;
-          return dummySignal();
-        },
-        { equal: () => false }
-      );
+      const computedSignal = computedSpy(() => ({ dummyValue: dummySignal(), sut: signalSetup() }));
       TestBed.runInInjectionContext(() => effect(() => {
         signalSetup();
         effectExecutionTimesSpy++;
@@ -53,14 +45,14 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
       TestBed.flushEffects();
       computedSignal(); // run twice but change should only occur once.
       computedSignal();
-      expect(computedExecutionTimesSpy).withContext('computed signal with instantiated target does not execute unnecessarily').toBe(1);
+      expect(computedSignal.timesUpdated).withContext('computed signal with instantiated target does not execute unnecessarily').toBe(1);
       expect(effectExecutionTimesSpy).withContext('effect with instantiated target does not execute unnecessarily').toBe(1);
-      signalUpdateFn(sut!);
+      signalUpdateFn(computedSignal().sut);
       TestBed.flushEffects();
       flush();
       TestBed.flushEffects();
       computedSignal(); // there should be no additional changes.
-      expect(computedExecutionTimesSpy).withContext('change to the target signal does not cause computed signal to update').toBe(1);
+      expect(computedSignal.timesUpdated).withContext('change to the target signal does not cause computed signal to update').toBe(1);
       expect(effectExecutionTimesSpy).withContext('change to the target signal does not cause effect to execute').toBe(1);
       dummySignal.set(5);
       TestBed.flushEffects();
@@ -68,7 +60,7 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
       TestBed.flushEffects();
       computedSignal(); // run twice but change should only occur once.
       computedSignal();
-      expect(computedExecutionTimesSpy).withContext('the expected number of changes occur after a signal used in computed is updated.').toBe(2);
+      expect(computedSignal.timesUpdated).withContext('the expected number of changes occur after a signal used in computed is updated.').toBe(2);
       expect(effectExecutionTimesSpy).withContext('effect never executes more than once.').toBe(1);
     }));
   });
@@ -88,17 +80,13 @@ export function setupComputedAndEffectTests<T>(
 
   it(`${expectationContext}works properly when used within a computed signal`, fakeAsync(() => {
     const [sut, action] = setup();
-    let executionTimesSpy = 0;
-    const output = computed(() => {
-      executionTimesSpy++;
-      return sut();
-    });
+    const output = computedSpy(() => sut());
     TestBed.flushEffects(); // no need to worry about async changes since a signal should immediately have an initial value.
-    expect(executionTimesSpy).withContext('computed signal does not execute before computed signal is read').toBe(0);
+    expect(output.timesUpdated).withContext('computed signal does not execute before computed signal is read').toBe(0);
     const initialValue = output();
-    expect(executionTimesSpy).withContext('computed signal executes after first read').toBe(1);
+    expect(output.timesUpdated).withContext('computed signal executes after first read').toBe(1);
     const additionalReadValueBeforeAction = output();
-    expect(executionTimesSpy).withContext('computed signal does not execute after additional reads if source has not changed').toBe(1);
+    expect(output.timesUpdated).withContext('computed signal does not execute after additional reads if source has not changed').toBe(1);
     expect(additionalReadValueBeforeAction)
       .withContext('computed signal returns initial value if source has not changed')
       .toBe(initialValue);
@@ -106,9 +94,9 @@ export function setupComputedAndEffectTests<T>(
     TestBed.flushEffects();
     flush();
     TestBed.flushEffects(); // make sure to detect any asynchronous changes that occur after flush.
-    expect(executionTimesSpy).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
+    expect(output.timesUpdated).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
     const updatedValue = output();
-    expect(executionTimesSpy).withContext('when source is updated, computed signal is executed when read').toBe(2);
+    expect(output.timesUpdated).withContext('when source is updated, computed signal is executed when read').toBe(2);
     expect(updatedValue).withContext('when source is updated a new value is returned from computed signal').not.toBe(initialValue);
   }));
 
