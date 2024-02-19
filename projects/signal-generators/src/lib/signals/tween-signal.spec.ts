@@ -16,13 +16,13 @@ describe('tweenSignal', () => {
     injector = fixture.componentRef.injector;
   });
 
-  setupTypeGuardTests(() => tweenSignal(1,  { injector }));
+  setupTypeGuardTests(() => tweenSignal(1, { injector }));
 
   describe('when passed a value', () => {
     setupComputedAndEffectTests(() => {
       const sut = tweenSignal(1, { injector,  duration: 500 });
       return [sut, () => { sut.set(2); fixture.detectChanges(); tick(500); }];
-    }, () => fixture);
+    });
 
     it('initially returns the initial value', fakeAsync(() => {
       const sut = tweenSignal(5, { injector });
@@ -146,7 +146,7 @@ describe('tweenSignal', () => {
       const source = signal(1);
       const sut = tweenSignal(source, { injector,  duration: 500 });
       return [sut, () => { source.set(2); fixture.detectChanges(); tick(500); }];
-    }, () => fixture);
+    });
 
     it('returns tweened values', fakeAsync(() => {
       const source = autoDetectChangesSignal(fixture, signal(5));
@@ -155,7 +155,5 @@ describe('tweenSignal', () => {
       tickAndAssertValues(() => Math.round(sut()), [[0, 5], [250, 7], [250, 9]]);
     }));
   })
-
-
 
 });
