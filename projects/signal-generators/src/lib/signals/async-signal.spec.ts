@@ -1,6 +1,6 @@
-import { Component, Injector, signal } from '@angular/core';
-import { fakeAsync, flush, tick } from '@angular/core/testing';
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
+import { Injector, signal } from '@angular/core';
+import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { BehaviorSubject, startWith, tap, timer } from 'rxjs';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
@@ -23,7 +23,6 @@ describe('asyncSignal', () => {
         const sut = asyncSignal(Promise.resolve(1), { injector });
         return [sut, () => sut.set(Promise.resolve(2))];
       },
-      null,
       'from a value'
     );
     setupComputedAndEffectTests(
@@ -32,10 +31,18 @@ describe('asyncSignal', () => {
         const sut = asyncSignal(source, { injector });
         return [sut, () => source.set(Promise.resolve(2))];
       },
-      null,
       'from a signal'
     );
+    // setupDoesNotCauseReevaluationsSimplyWhenNested can not be tested because nesting this signal will cause an error.
   });
+
+  // This shouldn't be any different if passed a signal, value, or async object.
+  it('can be created without options', fakeAsync(() => {
+    const sut = TestBed.runInInjectionContext(() => asyncSignal(Promise.resolve(1)));
+    expect(sut()).toBe(undefined);
+    tick();
+    expect(sut()).toBe(1);
+  }));
 
   describe('from a value', () => {
     it('returns a signal that can be set', fakeAsync(() => {
@@ -187,22 +194,4 @@ describe('asyncSignal', () => {
       expect(() => sut()).toThrowMatching((x) => (x as Error).cause === 'error1');
     }));
   });
-});
-
-/**
- * This needed to be outside the other asyncSignal tests since the only way to test without options was to be in an injection context.
- * I tried using ngMocks.reset(), but that didn't work either.
- */
-describe('asyncSignal', () => {
-  it('can be created without options', fakeAsync(() => {
-    @Component({ standalone: true })
-    class TestComponent {
-      sut = asyncSignal(Promise.resolve(1));
-    }
-    MockBuilder(TestComponent);
-    const fixture = MockRender(TestComponent);
-    expect(fixture.point.componentInstance.sut()).toBe(undefined);
-    tick();
-    expect(fixture.point.componentInstance.sut()).toBe(1);
-  }));
 });
