@@ -1,4 +1,4 @@
-import { CreateComputedOptions, CreateEffectOptions, EffectCleanupRegisterFn, EffectRef, Signal, WritableSignal, computed, effect, isSignal, signal } from '@angular/core';
+import { CreateComputedOptions, CreateEffectOptions, EffectCleanupFn, EffectRef, Signal, WritableSignal, computed, effect, isSignal, signal } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 
 /** Wraps a signal with a Proxy that calls change detection after each method call. */
@@ -52,7 +52,7 @@ export type EffectSpy = EffectRef & {
 };
 
 /** Creates a computed signal that monitors the number of times it is updated. */
-export function effectSpy(effectFn: (onCleanup: EffectCleanupRegisterFn) => void, options?: CreateEffectOptions): EffectSpy {
+export function effectSpy(effectFn: (onCleanup: (cleanupFn: EffectCleanupFn) => void) => void, options?: CreateEffectOptions): EffectSpy {
   let timesUpdated = 0;
   const output = effect((onCleanup) => {
     timesUpdated++;
