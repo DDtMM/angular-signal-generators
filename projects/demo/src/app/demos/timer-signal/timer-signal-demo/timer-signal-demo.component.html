@@ -1,0 +1,38 @@
+<div class="flex flex-col w-full sm:flex-row gap-3">
+  <div>
+    <p>You controls to below to manipulate the timer.  The right-most button will toggle between interval and timeout modes.</p>
+    <div class="join pr-3">
+      <button type="button" class="btn btn-primary join-item" (click)="$timer().pause()">Pause</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$timer().resume()">Resume</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$timer().restart()">Restart</button>
+      <div class="join-item divider"></div>
+      <button type="button" class="btn btn-secondary join-item" (click)="toggleMode()">{{ $mode() }} Mode</button>
+    </div>
+  </div>
+  <div class="flex-grow w-full">
+    <div>
+      <label class="label">Timeout Time: {{$timeoutRange()}}</label>
+      <input class="range range-primary" type="range" min="0" max="10000" [ngModel]="$timeoutRange()" (ngModelChange)="$timeoutRange.set($event)" />
+    </div>
+    <div>
+      <label class="label" >Interval Time: {{$intervalRange()}}</label>
+      <input class="range" type="range" min="0" max="10000" [ngModel]="$intervalRange()" (ngModelChange)="$intervalRange.set($event)"
+        [ngClass]="$mode() === 'interval' ? 'range-primary' : 'range-accent'"
+        [disabled]="$mode() === 'timeout'" />
+    </div>
+  </div>
+</div>
+<div class="flex flex-col w-full sm:flex-row gap-3 pt-3">
+  <div class="flex-grow card card-compact shadow-lg bg-base-100">
+    <div class="card-body flex flex-col items-center">
+      <div>Ticks since Restart</div>
+      <div class="h-7 text-lg">{{$timer()()}}</div>
+    </div>
+  </div>
+  <div class="flex-grow card card-compact shadow-lg bg-base-100">
+    <div class="card-body flex flex-col items-center">
+      <div>Total Ticks</div>
+      <div class="h-7 text-lg">{{$executions()}}</div>
+    </div>
+  </div>
+</div>

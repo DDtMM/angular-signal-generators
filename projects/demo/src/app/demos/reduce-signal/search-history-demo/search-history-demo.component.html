@@ -1,0 +1,25 @@
+<div class="flex flex-row flex-wrap mb-2 gap-3">
+  <input
+    class="input"
+    class="input input-bordered"
+    type="text"
+    #searchInput
+    (keyup)="$searchText.set(searchInput.value)"
+    (change)="$searchText.set(searchInput.value)"
+    placeholder="Enter some text"
+  />
+  <button type="button" class="btn btn-primary" (click)="doSearch($searchText())" [disabled]="!$searchText()">Search</button>
+</div>
+
+<div class="card card-compact shadow-lg bg-base-100 ">
+  <div class="card-body flex flex-col h-48">
+    <div class="card-title">Search History</div>
+    <div class="overflow-auto w-100 h-100">
+      <ul class="list-inside list-disc">
+        @for (historyItem of $searchHistory(); track historyItem) {
+          <li>{{historyItem.on | date : 'medium'}}: {{ historyItem.value }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
 import { DEMO_CONFIGURATIONS } from './demo-configuration';
 
 @Component({
@@ -12,18 +12,21 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
   template: `
 <nav class="navbar bg-primary">
   <div class="flex-1">
-    <ul class="menu menu-horizontal flex-nowrap py-0 px-1">
+    <ul class="menu menu-horizontal font-semibold text-xl tracking-tight normal-case  flex-nowrap py-0 px-1">
       <li>
-        <a class="btn btn-primary font-semibold text-xl tracking-tight normal-case pl-1" [routerLink]="['/']">
+        <a class="text-primary-content pl-1" [routerLink]="['/']">
           <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-8 w-8 -my-2" />
           Angular Signal Generators
         </a>
       </li>
-      <li><a class="btn btn-primary font-semibold text-xl tracking-tight normal-case hidden md:inline-block" href="./api/index.html">API Docs</a></li>
-      <li><a class="btn btn-primary font-semibold text-xl tracking-tight normal-case hidden md:inline-block" href="https://github.com/DDtMM/angular-signal-generators">
-        <fa-icon [icon]="faGithub" />
-          Github
-      </a></li>
+      <li><a class="text-primary-content hidden md:grid" routerLink="/getting-started">Getting Started</a></li>
+      <li><a class="text-primary-content hidden md:grid" href="./api/index.html">API Docs</a></li>
+      <li>
+        <a class="text-primary-content hidden md:grid" href="https://github.com/DDtMM/angular-signal-generators">
+          <fa-icon [icon]="faGithub" />
+            Github
+        </a>
+      </li>
     </ul>
   </div>
   <div class="dropdown dropdown-end flex-none">
@@ -33,6 +36,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
       </svg>
     </label>
     <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+      <li><a routerLink="/getting-started">Getting Started</a></li>
       <li><a href="./api/index.html">API Docs</a></li>
       <li>
         <a href="https://github.com/DDtMM/angular-signal-generators">
@@ -55,11 +59,22 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
 <div class="p-4">
   <router-outlet></router-outlet>
 </div>
+<div class="footer p-10 bg-neutral text-neutral-content">
+  <div>Angular Signal Generators was created by Danny Gimenez.</div>
+  <nav>
+    <a class="link link-hover" href="https://github.com/DDtMM/"><fa-icon [icon]="faGithub" /> Github</a>
+    <a class="link link-hover" href="https://www.linkedin.com/in/dangimenez"><fa-icon [icon]="faLinkedin" /> LinkedIn</a>
+    <a class="link link-hover" href="https://medium.com/@ddtmm"><fa-icon [icon]="faMedium" /> Medium</a>
+    <a class="link link-hover" href="https://stackoverflow.com/users/2497335/daniel-gimenez"><fa-icon [icon]="faStackOverflow" />  Stack Overflow</a>
+  </nav>
+</div>
   `,
   styles: [],
 })
 export class AppComponent {
   readonly faGithub = faGithub;
-
+  readonly faLinkedin = faLinkedin;
+  readonly faMedium = faMedium;
+  readonly faStackOverflow = faStackOverflow;
   readonly demos = DEMO_CONFIGURATIONS;
 }

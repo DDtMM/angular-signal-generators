@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { UsageType } from '../demo-configuration';
 
 @Component({
@@ -7,7 +7,7 @@ import { UsageType } from '../demo-configuration';
   standalone: true,
   imports: [CommonModule],
   template: `
-    @switch (type) {
+    @switch (type()) {
       @case ('generator') {
         <div class="badge leading-4 tooltip bg-blue-300"
           data-tip="This can be passed a signal, observable, or compute function to generate new values."
@@ -35,7 +35,6 @@ import { UsageType } from '../demo-configuration';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalTypeBadgeComponent {
-  @Input({ required: true }) type: UsageType = 'writableSignal';
-
+  readonly type = input.required<UsageType>();
 
 }

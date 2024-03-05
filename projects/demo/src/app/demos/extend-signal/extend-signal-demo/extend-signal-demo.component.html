@@ -1,0 +1,15 @@
+<div class="flex flex-row flex-wrap -m-2">
+  <div class="m-2">
+    <input class="input" class="input input-bordered" type="text" #textInput placeholder="Say something" />
+  </div>
+  <div class="m-2 join">
+    <button type="button" class="btn btn-primary join-item" (click)="$voice.whisper(textInput.value)">Whisper</button>
+    <button type="button" class="btn btn-primary join-item" (click)="$voice.yell(textInput.value)">Yell</button>
+    <button type="button" class="btn btn-primary join-item" (click)="$voice.clear()">Clear</button>
+  </div>
+</div>
+<div class="flex flex-row pt-3">
+  <label class="label">Result</label>
+  <div class="grow py-2 px-4 border border-base-300 rounded-lg bg-base-100">{{$voice() || '(no value)'}}</div>
+</div>
+

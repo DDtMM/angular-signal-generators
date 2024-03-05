@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
-import { DEMO_CONFIG_MAP, DemoConfigurationItem, SignalFunctionName } from '../demo-configuration';
+import { DEMO_CONFIG_MAP, SignalFunctionName } from '../demo-configuration';
 import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
 @Component({
@@ -27,12 +27,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalHeaderComponent {
-  readonly $demoConfig = signal<DemoConfigurationItem<string> | undefined>(undefined);
-
+  readonly $demoConfig = computed(() => DEMO_CONFIG_MAP[this.$fnName()]);
   readonly faFile = faFile;
-
-  @Input({ required: true })
-  set fnName(value: SignalFunctionName) {
-    this.$demoConfig.set(DEMO_CONFIG_MAP[value]);
-  }
+  readonly $fnName = input.required<SignalFunctionName>({ alias: 'fnName'});
 }
