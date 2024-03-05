@@ -1,0 +1,20 @@
+<div class="flex flex-row flex-wrap -m-2">
+  <div class="m-2">
+    <input class="input" class="input input-bordered" type="text" #textInput
+      (keyup)="setFilters(textInput.value)" placeholder="Enter some text" />
+  </div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+  <div class="flex-grow card card-compact shadow-lg">
+    <div class="card-body flex flex-col items-center">
+      <label class="label">Max Length Filter</label>
+      <div class="h-7 text-lg">{{maxLengthFilter()}}</div>
+    </div>
+  </div>
+  <div class="flex-grow card card-compact  shadow-lg">
+    <div class="card-body flex flex-col items-center">
+      <label class="label">Lower case Filter</label>
+      <div class="h-7 text-lg">{{onlyLowerCaseFilter()}}</div>
+    </div>
+  </div>
+</div>

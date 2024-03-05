@@ -23,11 +23,11 @@ describe('debounceSignal', () => {
       return [debounceSignal(source, 500, { injector }), () => source.set(2)];
     });
 
-    it('initially shows the source value', fakeAsync(() => {
+    it('initially shows the source value', () => {
       const source = signal(1);
       const debounced = debounceSignal(source, 500, { injector });
       expect(debounced()).toBe(source());
-    }));
+    });
 
     it('should not change value until time of last source change equals debounce time', fakeAsync(() => {
       const originalValue = 1;

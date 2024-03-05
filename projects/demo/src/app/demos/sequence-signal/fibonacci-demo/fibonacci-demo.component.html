@@ -1,0 +1,11 @@
+<div class="flex flex-row items-center">
+  <div class="flex flex-col text-center px-3">
+    <div class="label">Value</div>
+    <div class="text-lg">{{$fibonacci()}}</div>
+  </div>
+  <div class="px-3">
+    <label class="label">Step Size: {{fibonacciStepSize}}</label>
+    <input class="range" type="range" min="-10" max="10" [(ngModel)]="fibonacciStepSize" />
+  </div>
+  <button type="button" class="btn btn-primary" (click)="$fibonacci.next(fibonacciStepSize)">Next</button>
+</div>

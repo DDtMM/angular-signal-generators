@@ -1,29 +1,33 @@
 import { Routes } from '@angular/router';
-import { AsyncSignalDemoComponent } from './demos/async-signal-demo.component';
-import { DebounceSignalDemoComponent } from './demos/debounce-signal-demo.component';
-import { ExtendSignalDemoComponent } from './demos/extend-signal-demo.component';
-import { FilterSignalDemoComponent } from './demos/filter-signal-demo.component';
-import { LiftSignalDemoComponent } from './demos/lift-signal-demo.component';
-import { MapSignalDemoComponent } from './demos/map-signal-demo.component';
-import { ReduceSignalDemoComponent } from './demos/reduce-signal-demo.component';
-import { SequenceSignalDemoComponent } from './demos/sequence-signal-demo.component';
-import { SignalToIteratorDemoComponent } from './demos/signal-to-iterator-demo.component';
-import { TimerSignalDemoComponent } from './demos/timer-signal-demo.component';
-import { TweenSignalDemoComponent } from './demos/tween-signal-demo.component';
+import { AsyncSignalPageComponent } from './demos/async-signal/async-signal-page.component';
+import { DebounceSignalPageComponent } from './demos/debounce-signal/debounce-signal-page.component';
+import { ExtendSignalPageComponent } from './demos/extend-signal/extend-signal-page.component';
+import { FilterSignalPageComponent } from './demos/filter-signal/filter-signal-page.component';
+import { LiftSignalPageComponent } from './demos/lift-signal/lift-signal-page.component';
+import { MapSignalPageComponent } from './demos/map-signal/map-signal-page.component';
+import { ReduceSignalPageComponent } from './demos/reduce-signal/reduce-signal-page.component';
+import { SequenceSignalPageComponent } from './demos/sequence-signal/sequence-signal-page.component';
+import { SignalToIteratorPageComponent } from './demos/signal-to-iterator/signal-to-iterator-page.component';
+import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page.component';
+import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
 import { HomeComponent } from './home.component';
+import { GettingStartedComponent } from './content/getting-started.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'async-signal', component: AsyncSignalDemoComponent },
-  { path: 'debounce-signal', component: DebounceSignalDemoComponent },
-  { path: 'extend-signal', component: ExtendSignalDemoComponent },
-  { path: 'filter-signal', component: FilterSignalDemoComponent },
-  { path: 'lift-signal', component: LiftSignalDemoComponent },
-  { path: 'map-signal', component: MapSignalDemoComponent },
-  { path: 'reduce-signal', component: ReduceSignalDemoComponent },
-  { path: 'signal-to-iterator', component: SignalToIteratorDemoComponent },
-  { path: 'sequence-signal', component: SequenceSignalDemoComponent },
-  { path: 'timer-signal', component: TimerSignalDemoComponent },
-  { path: 'tween-signal', component: TweenSignalDemoComponent },
+  { path: 'getting-started', component: GettingStartedComponent },
+  // demos
+  { path: 'async-signal', component: AsyncSignalPageComponent },
+  { path: 'debounce-signal', component: DebounceSignalPageComponent },
+  { path: 'extend-signal', component: ExtendSignalPageComponent },
+  { path: 'filter-signal', component: FilterSignalPageComponent },
+  { path: 'lift-signal', component: LiftSignalPageComponent },
+  { path: 'map-signal', component: MapSignalPageComponent },
+  { path: 'reduce-signal', component: ReduceSignalPageComponent },
+  { path: 'signal-to-iterator', component: SignalToIteratorPageComponent },
+  { path: 'sequence-signal', component: SequenceSignalPageComponent },
+  { path: 'timer-signal', component: TimerSignalPageComponent },
+  { path: 'tween-signal', component: TweenSignalPageComponent },
+  // redirect
   { path: '**', redirectTo: '' }
 ];

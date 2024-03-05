@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
-import { SignalHeaderComponent } from '../controls/signal-header.component';
+import { SignalHeaderComponent } from '../../controls/signal-header.component';
 
 
 @Component({
-  selector: 'app-signal-to-iterator-demo',
+  selector: 'app-signal-to-iterator-page',
   standalone: true,
   imports: [CommonModule, HighlightModule, SignalHeaderComponent],
   template: `
@@ -24,7 +24,7 @@ import { SignalHeaderComponent } from '../controls/signal-header.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignalToIteratorDemoComponent {
+export class SignalToIteratorPageComponent {
   readonly simpleExample = `const source = signal('start');
 // if not in constructor then pass injectorRef.
 for await (const item of signalToIterator(source, { injector: this.injectorRef })) {

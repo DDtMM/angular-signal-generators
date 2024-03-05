@@ -1,0 +1,14 @@
+<div class="flex flex-row gap-3">
+  <div>
+    <label class="label">Input Value</label>
+    <input class="input" type="text" [ngModel]="$directDebounced()" (ngModelChange)="$directDebounced.set($event)" />
+  </div>
+  <div class="w-48">
+    <label class="label">Debounce Time: {{$debounceTime()}}</label>
+    <input class="range range-primary" type="range" min="0" max="10000" [ngModel]="$debounceTime()"
+      (ngModelChange)="$debounceTime.set($event)" />
+  </div>
+</div>
+<div>
+  <div class="text-secondary">Current Value: {{$directDebounced() || '(no value)'}}</div>
+</div>

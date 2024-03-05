@@ -86,11 +86,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/demo",
+            "outputPath": {
+              "base": "dist/demo"
+            },
             "index": "projects/demo/src/index.html",
-            "main": "projects/demo/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -99,13 +100,27 @@
             "assets": [
               "projects/demo/src/favicon.ico",
               "projects/demo/src/assets",
-              { "glob": "404.md", "input": "projects/demo/src/", "output": "/" },
-              { "glob": "**/*.*", "input": "projects/demo/src/api/", "output": "api/" }
+              {
+                "glob": "404.md",
+                "input": "projects/demo/src/",
+                "output": "/"
+              },
+              {
+                "glob": "**/*.*",
+                "input": "projects/demo/src/api/",
+                "output": "api/"
+              }
             ],
             "styles": [
               "projects/demo/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "browser": "projects/demo/src/main.ts",
+            "server": "projects/demo/src/main.server.ts",
+            "prerender": true,
+            "ssr": {
+              "entry": "projects/demo/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -124,12 +139,9 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"

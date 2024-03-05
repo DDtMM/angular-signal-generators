@@ -17,11 +17,11 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     <div class="flex flex-col gap-3">
       <div class="flex flex-row gap-3 items-baseline">
         <label>Input</label>
-        <input type="text" class="input input-bordered input-sm grow" [ngModel]="debounced()" (ngModelChange)="debounced.set($event)" />
+        <input type="text" class="input input-bordered input-sm grow" [ngModel]="$debounced()" (ngModelChange)="$debounced.set($event)" />
       </div>
       <div class="flex flex-row gap-3  leading-8">
         <span>Debounced</span>
-        <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{debounced()}}</span>
+        <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{$debounced()}}</span>
       </div>
     </div>
   </app-home-box>
@@ -29,6 +29,5 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DebounceSignalHomeDemoComponent {
-  readonly debounced = debounceSignal('', 500);
-
+  readonly $debounced = debounceSignal('', 500);
 }

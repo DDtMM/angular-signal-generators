@@ -1,35 +1,25 @@
-<h1>Angular Signal Generators</h1>
-<p>
-  Angular Signal Generators is a library to help expand the usefulness of signals.
-  Primarily this is done by exposing purpose built signals meant to simplify common tasks encountered in Components.
-  They work like vanilla signals, but they have extra capabilities built in to help extend a signal's functionality.
-  Most can be either used in a similar fashion to a writable signal, or be passed a reference to an existing signal to generate new values.
-</p>
-<p>
-  You can install these from npm
-  <code>
-    npm install &#64;ddtmm/angular-signal-generators
-  </code>
-</p>
-<p>
-  To learn more about how these signals are created, or some dos or don'ts when creating your own,
-  please check out the following articles:
-</p>
-<ul class="list-inside list-disc indent-2">
-  <li>
-    <a href="https://blog.stackademic.com/crafting-custom-angular-signals-7ef83b2e751f" class="link italic">
-      Crafting Custom Angular Signals
-    </a>
-  </li>
-  <li>
-    <a href="https://blog.stackademic.com/experiments-in-angular-signals-six-techniques-that-sizzle-or-fizzle-119692b451ab"
-      class="link italic">
-      Experiments in Angular Signals: Six Techniques that Sizzle or Fizzle
-    </a>
-  </li>
-</ul>
+<div class="hero bg-base-200">
+  <div class="hero-content text-center md:p-6">
+    <div class="max-w-lg">
+      <div class="flex flex-row ">
+        <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-32 w-32 self-center drop-shadow-xl" />
+        <h1 class="text-5xl font-bold text-left">
+          Angular Signal Generators
+        </h1>
+      </div>
+
+      <p class="py-6">
+        Angular Signal Generators is a library to help expand the usefulness of signals.
+        This is done by exposing purpose built signals meant to simplify common tasks encountered in Components.
+        They work like vanilla signals, but with extra capabilities built in.
+      </p>
+      <button class="btn btn-primary" routerLink="/getting-started">Get Started</button>
+    </div>
+  </div>
+</div>
+
 <div class="divider"></div>
-<h2>Demos</h2>
+<h2 class="text-3xl text-center">Function Demos</h2>
 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
   @for (l of demos; track l.fnName) {
     <ng-container *ngComponentOutlet="l.homeComponent" class="contents" />

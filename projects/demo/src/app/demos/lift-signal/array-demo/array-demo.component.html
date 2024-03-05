@@ -1,0 +1,14 @@
+<p>
+  You can easily lift the methods on from any object to the signal.
+  Here various array methods are lifted and directly accessed.
+</p>
+<div class="join pr-3">
+  <button type="button" class="btn btn-primary join-item" (click)="$numbers.push(randomNumber())">Push</button>
+  <button type="button" class="btn btn-primary join-item" (click)="$numbers.pop()">Pop</button>
+  <button type="button" class="btn btn-primary join-item" (click)="$numbers.shift()">Shift</button>
+  <button type="button" class="btn btn-primary join-item" (click)="$numbers.concat([randomNumber(), randomNumber()])">Concat</button>
+</div>
+<div>
+  <label class="label">Array Value</label>
+  {{$numbers() | json}}
+</div>

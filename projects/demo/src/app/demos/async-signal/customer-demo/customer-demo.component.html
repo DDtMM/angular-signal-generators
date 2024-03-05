@@ -1,0 +1,53 @@
+<div class="grid grid-flow-col grid-cols-2 gap-3">
+  <!-- customers column -->
+  <div>
+    <div class="font-semibold">Customers <span class="text-info">(click one to simulate load)</span></div>
+    @if (!$customers()) {
+      <div>Loading <span class="loading loading-spinner loading-sm align-text-bottom text-info"></span></div>
+    }
+    @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of $customers(); track c.id) {
+            <tr class="hover" (click)="$id.set(c.id)">
+              <td>{{ c.id }}</td>
+              <td>{{ c.name }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+  <!-- products column -->
+  <div>
+    <div class="font-semibold">Products</div>
+    @if ($id() === 0) {
+      <span class="text-info">Select Customer to see Products</span>
+    }
+    @if (!$products()) {
+      <div>Loading <span class="loading loading-spinner loading-sm align-text-bottom text-info"></span></div>
+    }
+    @else if ($products()?.length) {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of $products(); track p.id) {
+            <tr>
+              <td>{{ p.name }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

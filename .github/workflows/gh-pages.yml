@@ -54,16 +54,16 @@ jobs:
       #  run: npx istanbul-badges-readme --coverageDir=\"./coverage/signal-generators\"
 
       - name: Add api docs to demo site
-        run: npx typedoc --out dist/demo/api
+        run: npx typedoc --out dist/demo/browser/api
 
       # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
       - name: Make 404 page from Index.
-        run: npx cpy ./dist/demo/index.html ./ --rename 404.html
+        run: npx cpy ./dist/demo/browser/index.html ./ --rename 404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./dist/demo
+          path: ./dist/demo/browser
 
 
   # Deployment job

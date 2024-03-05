@@ -1,0 +1,15 @@
+<div class="flex flex-col items-center sm:items-start gap-3">
+  <div>
+    You can tween between anything as long as there is an interpolation function that can translate progress into a value.
+  </div>
+  <div class="flex flex-row w-full gap-3 ">
+    <div>
+      <button type="button" class="btn btn-primary" (click)="$stringInterpolationSequence.next()">Type</button>
+    </div>
+    <div class="chat chat-start grow">
+      <div class="chat-bubble" [ariaDescription]="$stringInterpolationSequence()">
+        <span aria-hidden="true">{{$stringInterpolationTween()}}</span>
+      </div>
+    </div>
+  </div>
+</div>

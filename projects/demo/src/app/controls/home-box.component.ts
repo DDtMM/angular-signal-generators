@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DEMO_CONFIG_MAP, DemoConfigurationItem, SignalFunctionName } from '../demo-configuration';
+import { DEMO_CONFIG_MAP, SignalFunctionName } from '../demo-configuration';
 import { ContentsClassDirective } from './contents-class.directive';
 import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
@@ -28,10 +28,6 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeBoxComponent {
-  readonly $demoConfig = signal<DemoConfigurationItem<string> | undefined>(undefined);
-
-  @Input({ required: true })
-  set fnName(value: SignalFunctionName) {
-    this.$demoConfig.set(DEMO_CONFIG_MAP[value]);
-  }
+  readonly $demoConfig = computed(() => DEMO_CONFIG_MAP[this.$fnName()]);
+  readonly $fnName = input.required<SignalFunctionName>({ alias: 'fnName' });
 }
