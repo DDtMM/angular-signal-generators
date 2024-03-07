@@ -10,12 +10,13 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink, RouterOutlet],
   template: `
+<div class="flex flex-col h-screen justify-between">
 <nav class="navbar bg-primary">
   <div class="flex-1">
-    <ul class="menu menu-horizontal font-semibold text-xl tracking-tight normal-case  flex-nowrap py-0 px-1">
+    <ul class="menu menu-horizontal font-semibold text-lg tracking-tight normal-case  flex-nowrap py-0 px-1">
       <li>
         <a class="text-primary-content pl-1" [routerLink]="['/']">
-          <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-8 w-8 -my-2" />
+          <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-7 w-7 -my-2" />
           Angular Signal Generators
         </a>
       </li>
@@ -56,17 +57,40 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
     </ul>
   </div>
 </nav>
-<div class="p-4">
-  <router-outlet></router-outlet>
+<div class="flex flex-row gap-3 mb-auto">
+
+  <div class="w-64 menu menu-sm py-3 px-1 bg-base border-base-300 border-r  hidden md:flex">
+    <ul>
+      <li><a routerLink="getting-started">Getting Started</a></li>
+      <li class="">
+        <a class="menu-title">Functions</a>
+        <ul>
+
+          @for (l of demos; track l) {
+            <li>
+              <a [routerLink]="l.route">{{l.name}}</a>
+            </li>
+          }
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div class="w-full p-3">
+    <router-outlet></router-outlet>
+  </div>
 </div>
-<div class="footer p-10 bg-neutral text-neutral-content">
-  <div>Angular Signal Generators was created by Danny Gimenez.</div>
+
+
+<footer class="footer p-10 bg-neutral text-neutral-content">
+
   <nav>
+    <div class="font-semibold">Angular Signal Generators was created by Danny Gimenez</div>
     <a class="link link-hover" href="https://github.com/DDtMM/"><fa-icon [icon]="faGithub" /> Github</a>
     <a class="link link-hover" href="https://www.linkedin.com/in/dangimenez"><fa-icon [icon]="faLinkedin" /> LinkedIn</a>
     <a class="link link-hover" href="https://medium.com/@ddtmm"><fa-icon [icon]="faMedium" /> Medium</a>
     <a class="link link-hover" href="https://stackoverflow.com/users/2497335/daniel-gimenez"><fa-icon [icon]="faStackOverflow" />  Stack Overflow</a>
   </nav>
+</footer>
 </div>
   `,
   styles: [],

@@ -10,7 +10,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, SignalTypeBadgeComponent],
   template: `
-<div class="flex flex-row items-baseline gap-3">
+<div class="flex flex-row items-baseline gap-3 doc-header">
   @if($demoConfig(); as demoConfig) {
     <h1>{{demoConfig.name}}</h1>
     <div class="flex flex-row gap-1">

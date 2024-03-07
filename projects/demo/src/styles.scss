@@ -29,6 +29,9 @@
     }
   }
 
+  .doc-header {
+    @apply -ml-6 -mx-3 -my-3 pb-2 pt-1 mb-4 pl-6 pr-3 bg-secondary text-secondary-content shadow-sm;
+  }
 }
 code.hljs {
   @apply px-4 py-2;
