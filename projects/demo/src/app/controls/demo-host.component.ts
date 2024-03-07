@@ -12,7 +12,7 @@ type SourceType = 'html' | 'typescript' | 'unknown';
   standalone: true,
   imports: [CommonModule, HighlightModule],
   template: `
-  <div class="mx-1 mb-1 text-xl">{{$name()}}</div>
+  <div class="mx-1 mb-1 text-xl text-secondary">{{$name()}}</div>
   <div role="tablist" class="tabs tabs-lifted w-full  ">
     <button role="tab" class="tab [--tab-bg:#F8FAFC]"
         [ngClass]="{ 'tab-active': $selectedTabType() === 'demo'}"
