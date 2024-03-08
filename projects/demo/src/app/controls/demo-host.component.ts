@@ -3,6 +3,7 @@ import { default as sources } from '../../assets/demos-sources';
 import { HighlightModule } from 'ngx-highlightjs';
 import { CommonModule } from '@angular/common';
 import { mapSignal } from 'projects/signal-generators/src/public-api';
+import { CopyButtonComponent } from './copy-button.component';
 
 type SourceType = 'html' | 'typescript' | 'unknown';
 
@@ -10,7 +11,7 @@ type SourceType = 'html' | 'typescript' | 'unknown';
 @Component({
   selector: 'app-demo-host',
   standalone: true,
-  imports: [CommonModule, HighlightModule],
+  imports: [CopyButtonComponent, CommonModule, HighlightModule],
   template: `
   <div class="mx-1 mb-1 text-xl text-secondary">{{$name()}}</div>
   <div role="tablist" class="tabs tabs-lifted w-full  ">
@@ -31,7 +32,10 @@ type SourceType = 'html' | 'typescript' | 'unknown';
         {{typeLabels[source.type]}}
       </button>
       @if ($selectedTabType() === source.type) {
-        <div class="tab-content border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-h-[400px] overflow-auto rounded-box shadow-lg ">
+        <div class="relative tab-content border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-h-[400px] overflow-auto rounded-box shadow-lg ">
+          <span class="absolute right-0 p-1">
+            <app-copy-button [content]="source.code"></app-copy-button>
+          </span>
           <code class="h-full w-full bg-slate-50 " [highlight]="source.code" [languages]="[source.type]"></code>
         </div>
       }

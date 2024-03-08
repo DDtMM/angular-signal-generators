@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
+import { CopyButtonComponent } from '../controls/copy-button.component';
 
 @Component({
   selector: 'app-getting-started',
   standalone: true,
-  imports: [HighlightModule],
+  imports: [CopyButtonComponent, HighlightModule],
   template: `
 <div>
   <div class="doc-header">
@@ -14,10 +15,16 @@ import { HighlightModule } from 'ngx-highlightjs';
   <p>
     Angular Signal Generators are compatible with Angular 16 and 17.
     You can install it from npm by running the following:
-    <code class="bg-slate-50 p-3 my-2 shadow-sm">
+
+  </p>
+  <div class="relative">
+    <span class="absolute right-0 p-1">
+      <app-copy-button [element]="installCode"></app-copy-button>
+    </span>
+    <code class="bg-slate-50 p-3 my-2 shadow-sm" #installCode>
       npm install &#64;ddtmm/angular-signal-generators
     </code>
-  </p>
+  </div>
   <div class="divider"></div>
   <h2>Usage</h2>
   <p>

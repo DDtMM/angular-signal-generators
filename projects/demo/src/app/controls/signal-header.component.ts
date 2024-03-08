@@ -15,7 +15,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
     <h1>{{demoConfig.name}}</h1>
     <div class="flex flex-row gap-1">
       @for (type of demoConfig.usages; track type) {
-        <app-signal-type-badge [type]="type"/>
+        <app-signal-type-badge [type]="type" />
       }
     </div>
     @if (demoConfig.docUrl) {
