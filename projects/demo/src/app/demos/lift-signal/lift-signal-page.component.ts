@@ -18,7 +18,7 @@ import { ArrayDemoComponent } from './array-demo/array-demo.component';
   Calling the <i>push</i> method will internally call <b>signal.update()</b>
   with a function that executes the push and returns the updated signal.
 </p>
-<div role="alert" class="alert alert-warning">
+<div role="alert" class="alert alert-warning mb-3">
   <fa-icon [icon]="faTriangleExclamation" class="text-info" />
   <div>
     <div> <b>Warning</b></div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
 import { DEMO_CONFIGURATIONS } from './demo-configuration';
@@ -8,7 +8,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, RouterLink, RouterOutlet],
+  imports: [CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, RouterOutlet],
   template: `
 <div class="flex flex-col h-screen justify-between">
 <nav class="navbar bg-primary">
@@ -58,17 +58,15 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
   </div>
 </nav>
 <div class="flex flex-row gap-3 mb-auto">
-
-  <div class="w-64 menu menu-sm py-3 px-1 bg-base border-base-300 border-r  hidden md:flex">
+  <div class="w-64 menu menu-sm py-3  bg-base border-base-300 border-r  hidden md:flex">
     <ul>
-      <li><a routerLink="getting-started">Getting Started</a></li>
+      <li><a routerLink="getting-started" routerLinkActive="active">Getting Started</a></li>
       <li class="">
         <a class="menu-title">Functions</a>
         <ul>
-
           @for (l of demos; track l) {
             <li>
-              <a [routerLink]="l.route">{{l.name}}</a>
+              <a [routerLink]="l.route" routerLinkActive="active">{{l.name}}</a>
             </li>
           }
         </ul>

@@ -16,17 +16,18 @@ This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,
 and one where it has a <i>set</i> and <i>update</i> method and the change of the value occurs after debounce time elapses.
 </p>
-<app-demo-host name="Directly set debounced signal"
-  prefix="debounce-signal/direct-demo/direct-demo.component"
-  [sourceNames]="['.ts', '.html']">
-  <app-direct-demo />
-</app-demo-host>
-<app-demo-host name="Debounce another signal's value"
-  prefix="debounce-signal/indirect-demo/indirect-demo.component"
-  [sourceNames]="['.ts', '.html']">
-  <app-indirect-demo />
-</app-demo-host>
-
+<div class="flex flex-col gap-3">
+  <app-demo-host name="Directly set debounced signal"
+    prefix="debounce-signal/direct-demo/direct-demo.component"
+    [sourceNames]="['.ts', '.html']">
+    <app-direct-demo />
+  </app-demo-host>
+  <app-demo-host name="Debounce another signal's value"
+    prefix="debounce-signal/indirect-demo/indirect-demo.component"
+    [sourceNames]="['.ts', '.html']">
+    <app-indirect-demo />
+  </app-demo-host>
+</div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
