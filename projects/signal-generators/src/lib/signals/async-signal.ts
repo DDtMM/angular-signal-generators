@@ -114,16 +114,20 @@ function createOutputSignal<T>(input: Signal<AsyncSource<T>>, options: AsyncSign
 
   effect(
     () => {
-      currentListenerCleanup();
       if (untracked(state).status === AsyncSignalStatus.Ok) {
         // by nesting this inside Ok branch, the effect will only be called one when the state turns to error.
         const nextSource = input();
         if (nextSource === currentSource) {
           return; // don't start listening to an already listened to source.
         }
+        currentListenerCleanup();
         currentSource = nextSource;
         // this is untracked because a signal may be used inside currentSource and cause additional invocations.
         currentListenerCleanup = untracked(() => updateListener(currentSource));
+      }
+      else {
+        // this exists out of an abundance of caution as only an observable needs cleanup and erroring should kill subs.
+        currentListenerCleanup();
       }
       return currentListenerCleanup;
     },
@@ -154,7 +158,7 @@ function createOutputSignal<T>(input: Signal<AsyncSource<T>>, options: AsyncSign
       return () => unsubscribe.unsubscribe();
     }
     asyncSource.then(setValue, setError);
-    return VOID_FN;
+    return VOID_FN; // there is no way to cleanup a promise that I know of.
 
     /** Sets the state of errored if an error hadn't already occurred. */
     function setError(err: unknown): void {
