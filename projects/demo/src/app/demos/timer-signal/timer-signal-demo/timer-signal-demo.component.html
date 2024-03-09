@@ -2,8 +2,8 @@
   <div>
     <p>You controls to below to manipulate the timer.  The right-most button will toggle between interval and timeout modes.</p>
     <div class="join pr-3">
-      <button type="button" class="btn btn-primary join-item" (click)="$timer().pause()">Pause</button>
-      <button type="button" class="btn btn-primary join-item" (click)="$timer().resume()">Resume</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$timer().pause()" [disabled]="$timer().state() !== 'running'">Pause</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$timer().resume()" [disabled]="$timer().state() !== 'paused'">Resume</button>
       <button type="button" class="btn btn-primary join-item" (click)="$timer().restart()">Restart</button>
       <div class="join-item divider"></div>
       <button type="button" class="btn btn-secondary join-item" (click)="toggleMode()">{{ $mode() }} Mode</button>

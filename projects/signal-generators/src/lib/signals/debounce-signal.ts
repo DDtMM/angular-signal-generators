@@ -70,7 +70,7 @@ function createFromSignal<T>(source: SignalInput<T>,
   const srcSignal = coerceSignal(source, options);
   const output = signal(untracked(srcSignal));
   const set = output.set; // in case this gets by createDebouncedSignal.
-  const timer = new TimerInternal(timerTimeFn(), undefined, { callback: () => set.call(output, untracked(srcSignal)) });
+  const timer = new TimerInternal(timerTimeFn(), undefined, { onTick: () => set.call(output, untracked(srcSignal)) });
   // setup cleanup actions.
   getDestroyRef(createFromSignal, options?.injector).onDestroy(() => timer.destroy());
 

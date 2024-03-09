@@ -1,34 +1,32 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, input } from '@angular/core';
-import {ClipboardModule} from '@angular/cdk/clipboard';
-import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { timerSignal } from 'projects/signal-generators/src/public-api';
 
 /** Can copy element or text to clipboard by clicking the button. */
 @Component({
   selector: 'app-copy-button',
   standalone: true,
-  imports: [ClipboardModule, FontAwesomeModule],
+  imports: [ClipboardModule, CommonModule, FontAwesomeModule],
   template: `
-    <button type="button" class="btn btn-ghost p-2 leading-none min-h-0 h-auto" [cdkCopyToClipboard]="$value()"
-      [attr.aria-label]="$description()">
-      <fa-icon [icon]="faCopy" />
+    <button type="button" class="btn btn-ghost btn-square btn-sm opacity-50 hover:opacity-100 "
+      [cdkCopyToClipboard]="$content() ?? ''"
+      [attr.aria-label]="$description()"
+      (click)="$clickAnimationTimer.restart()">
+      <fa-icon [icon]="faCopy" [ngClass]="$clickAnimationClass()" />
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CopyButtonComponent {
   /** Raw string content to copy from. */
+  readonly $clickAnimationTimer = timerSignal(1000, null, { stopped: true });
+  readonly $clickAnimationClass = computed(() =>
+    this.$clickAnimationTimer.state() === 'running' && this.$clickAnimationTimer() === 0 ? 'animate-pulse' : ''
+  );
   readonly $content = input<string | null | undefined>(undefined, { alias: 'content' });
-  readonly $description = input<string>('Copy nearby text', { alias: 'description '});
-  /** An element to copy inner text from.  Takes precedence over $content */
-  readonly $element = input<HTMLElement | ElementRef | null | undefined>(undefined, { alias: 'element' });
+  readonly $description = input<string>('Copy nearby text', { alias: 'description ' });
   readonly faCopy = faCopy;
-  /** The value that will be copied. */
-  readonly $value = computed(() => {
-    const element = this.$element();
-    if (element) {
-      return 'nativeElement' in element ? (element.nativeElement as HTMLElement).innerText : element.innerText;
-    }
-    return this.$content() ?? '';
-  });
 }

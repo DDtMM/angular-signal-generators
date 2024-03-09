@@ -1,4 +1,4 @@
-import { Injector, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
@@ -8,20 +8,37 @@ import { TimerSignal, timerSignal } from './timer-signal';
 
 describe('timerSignal', () => {
   let fixture: MockedComponentFixture<void, void>;
-  let injector: Injector;
 
-  beforeEach(() => {
-    fixture = MockRender();
-    injector = fixture.componentRef.injector;
-  });
+  beforeEach(() => fixture = MockRender());
 
-  setupTypeGuardTests(() => timerSignal(500, undefined, { injector }));
+  setupTypeGuardTests(() => timerSignal(500, undefined, { injector: fixture.componentRef.injector }));
 
   describe('as a timer', () => {
 
     it('emits once after specified time.', testTimer(100, undefined, (timer) => {
       tickAndAssertValues(() => timer(), [[0, 0], [ 1000, 1 ], [ 2000, 1 ]]);
     }));
+
+    it('is not running if stopped option is true', () => {
+      const sut = timerSignal(500, null, { stopped: true, injector: fixture.componentRef.injector });
+      expect(sut.state()).toBe('stopped');
+    });
+
+    it('reflects correct state after action', () => {
+      const sut = timerSignal(500, null, { stopped: true, injector: fixture.componentRef.injector });
+      expect(sut.state()).toBe('stopped');
+      sut.restart();
+      expect(sut.state()).toBe('running');
+      sut.pause();
+      expect(sut.state()).toBe('paused');
+      sut.resume();
+      expect(sut.state()).toBe('running');
+      sut.pause();
+      sut.restart();
+      expect(sut.state()).toBe('running');
+      fixture.componentRef.destroy();
+      expect(sut.state()).toBe('destroyed');
+    });
 
     describe('with a number for timerSource parameter', () => {
       setupComputedAndEffectTests(() => {
@@ -170,7 +187,7 @@ describe('timerSignal', () => {
     assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): jasmine.ImplementationCallback {
 
     return fakeAsync(() => {
-      const timer = timerSignal(timerTime, intervalTime, { injector });
+      const timer = timerSignal(timerTime, intervalTime, { injector: fixture.componentRef.injector });
       assertion(timer, timerTime, intervalTime);
       timer.pause();
     });

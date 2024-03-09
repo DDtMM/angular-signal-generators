@@ -34,7 +34,7 @@ type SourceType = 'html' | 'typescript' | 'unknown';
       @if ($selectedTabType() === source.type) {
         <div class="relative tab-content border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-h-[400px] overflow-auto rounded-box shadow-lg ">
           <span class="absolute right-0 p-1">
-            <app-copy-button [content]="source.code"></app-copy-button>
+            <app-copy-button [content]="source.code" />
           </span>
           <code class="h-full w-full bg-slate-50 " [highlight]="source.code" [languages]="[source.type]"></code>
         </div>
