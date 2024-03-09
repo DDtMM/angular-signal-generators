@@ -1,6 +1,8 @@
-import { CreateSignalOptions, Signal, WritableSignal, signal, untracked } from '@angular/core';
+import { CreateSignalOptions, Signal, signal, untracked } from '@angular/core';
 
-export type FilterSignal<T, O = T> = Signal<O> & Omit<WritableSignal<O>, 'set' | 'update'> & {
+export type FilterSignal<T, O = T> = Signal<O> & {
+  /** Returns the output signal as a readonly. */
+  asReadonly(): Signal<O>;
   /** Sets the new value IF it is compatible with the filter function. */
   set(value: T): void;
   /** Updates the signal's value IF it is compatible with the filter function. */
@@ -11,10 +13,8 @@ export type FilterSignal<T, O = T> = Signal<O> & Omit<WritableSignal<O>, 'set' |
 export function filterSignal<T, O extends T>(initialValue: O, filterFn: (x: T) => x is O, options?: CreateSignalOptions<O>): FilterSignal<T, O>
 export function filterSignal<O>(initialValue: O, filterFn: (x: O) => boolean, options?: CreateSignalOptions<O>): FilterSignal<O>
 /**
- * Filters values from another signal or from values set on directly on the signal.
+ * Filters values set to a directly so that the value only changes when the filter is passed.
  * Some overloads allow for a guard function which will change the type of the signal's output value.
- * WARNING: When using signals as a source of values there are cases where changes can be skipped.
- * This can occur when multiple changes occur before changeDetection and if the signal is not consumed in between changes.
  * @example
  * ```ts
  * const nonNegative = filterSignal<number>(0, x => x >= 0);
@@ -33,7 +33,7 @@ export function filterSignal<T, O extends T>(initialValue: O, filterFn: (x: T) =
   const setFn = internal.set;
 
   return Object.assign(internal, {
-    set: (x: T) => setConditionally(x),
+    set: setConditionally,
     update: (signalUpdateFn: (x: T) => T) => setConditionally(signalUpdateFn(untracked(internal)))
   });
 

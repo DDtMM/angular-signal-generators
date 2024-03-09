@@ -12,11 +12,11 @@
   }
   h2 {
     @apply text-xl;
-    @apply pt-3;
+    @apply pt-2;
   }
   h3 {
     @apply text-lg;
-    @apply pt-3;
+    @apply pt-2;
   }
   p {
     @apply pb-3;
@@ -30,7 +30,7 @@
   }
 
   .doc-header {
-    @apply -ml-6 -mx-3 -my-3 pb-2 pt-1 mb-4 pl-6 pr-3 bg-secondary text-secondary-content shadow-sm;
+    @apply -mx-3 -my-3 pb-2 mb-3 px-3 bg-secondary text-secondary-content shadow-sm;
   }
 }
 code.hljs {

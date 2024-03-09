@@ -1,12 +1,17 @@
 import { Injector, Signal, WritableSignal, signal } from '@angular/core';
-import { TimerInternal } from '../internal/timer-internal';
+import { TimerInternal, TimerStatus } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+
+export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
 
 export interface TimerSignalOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
+  /** If true, the timer isn't running at start. */
+  stopped?: boolean;
 }
+
 /** A readonly signal with methods to affect execution */
 export interface TimerSignal extends Signal<number> {
   /** Pauses the timer. */
@@ -15,6 +20,8 @@ export interface TimerSignal extends Signal<number> {
   restart(): void;
   /** Resumes the timer if paused using the remaining time when paused. */
   resume(): void;
+  /** The status of the timer as a signal. */
+  state: Signal<TimerSignalStatus>;
 }
 
 /**
@@ -43,7 +50,12 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
   const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, options?.injector) : undefined;
   /** The signal that will be returned. */
   const output = signal(0);
-  const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), { callback: (x) => output.set(x), runAtStart: true });
+  const state = signal<TimerSignalStatus>('stopped');
+  const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), {
+    onStatusChange: (internalStatus) => state.set(transformTimerStatus(internalStatus)),
+    onTick: (x) => output.set(x),
+    runAtStart: !options?.stopped
+  });
   // setup cleanup actions.
   getDestroyRef(timerSignal, options?.injector).onDestroy(() => timer.destroy());
   // watch for changes to update timer properties.
@@ -60,8 +72,18 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
         sourceSignal.set(0);
         timer.start();
       },
-      resume: timer.resume.bind(timer)
+      resume: timer.resume.bind(timer),
+      state
     });
+  }
+
+  function transformTimerStatus(status: TimerStatus): TimerSignalStatus {
+    switch (status) {
+      case TimerStatus.Destroyed: return 'destroyed';
+      case TimerStatus.Running: return 'running';
+      case TimerStatus.Paused: return 'paused';
+      case TimerStatus.Stopped: return 'stopped';
+    }
   }
 }
 

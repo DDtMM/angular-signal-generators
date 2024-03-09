@@ -126,6 +126,7 @@ function createOutputSignal<T>(input: Signal<AsyncSource<T>>, options: AsyncSign
         currentListenerCleanup = untracked(() => updateListener(currentSource));
       }
       else {
+        // this exists out of an abundance of caution as only an observable needs cleanup and erroring should kill subs.
         currentListenerCleanup();
       }
       return currentListenerCleanup;

@@ -95,7 +95,7 @@ describe('timerInternal', () => {
   }));
   it('calls callback after each tick', fakeAsync(() => {
     const callbackSpy = jasmine.createSpy('callback', (x: number) => x);
-    const timer = new TimerInternal(1000, 500, { runAtStart: true , callback: callbackSpy });
+    const timer = new TimerInternal(1000, 500, { runAtStart: true , onTick: callbackSpy });
     tick(3000);
     expect(callbackSpy).toHaveBeenCalledTimes(5);
     expect(callbackSpy).toHaveBeenCalledWith(5);

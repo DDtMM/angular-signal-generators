@@ -19,7 +19,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   </p>
   <div class="relative">
     <span class="absolute right-0 p-1">
-      <app-copy-button [element]="installCode"></app-copy-button>
+      <app-copy-button [content]="installCode.innerText"></app-copy-button>
     </span>
     <code class="bg-slate-50 p-3 my-2 shadow-sm" #installCode>
       npm install &#64;ddtmm/angular-signal-generators

@@ -1,7 +1,7 @@
 import { Injector, signal } from '@angular/core';
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { BehaviorSubject, startWith, tap, timer } from 'rxjs';
+import { BehaviorSubject, finalize, of, startWith, tap, timer } from 'rxjs';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { asyncSignal } from './async-signal';
@@ -181,6 +181,27 @@ describe('asyncSignal', () => {
       reject(); // this will go undetected... at first.
       sut.set(Promise.resolve(5));
       flush(); // ensure all promises resolve
+      expect(() => sut()).toThrowError();
+    }));
+
+    it('will run cleanup and continue to throw if the state is errored but source changes.', fakeAsync(() => {
+      let isCleanedUp = false;
+      const obs$ = timer(250, 250).pipe(
+        tap((i) => {
+          if (i === 1) {
+            throw new Error();
+          }
+        }),
+        finalize(() => isCleanedUp = true)
+      );
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(obs$, { injector }));
+      tick(250);
+      expect(isCleanedUp).toBe(false);
+      tick(250); // get observable to throw error.
+      expect(isCleanedUp).toBe(true);
+      expect(() => sut()).toThrowError();
+      sut.set(of(5));
+      tick(2000);
       expect(() => sut()).toThrowError();
     }));
 

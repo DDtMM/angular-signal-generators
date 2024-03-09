@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DocPageContext } from '../../controls/doc-page.component';
 import { SignalHeaderComponent } from '../../controls/signal-header.component';
 import { CustomerDemoComponent } from './customer-demo/customer-demo.component';
 
@@ -23,15 +22,9 @@ import { CustomerDemoComponent } from './customer-demo/customer-demo.component';
   [sourceNames]="['.ts', '.html']">
   <app-customer-demo />
 </app-demo-host>
-
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AsyncSignalPageComponent {
-  readonly $context = input<DocPageContext>('ownPage', { alias: 'context' });
-  readonly example = `
-readonly $id = signal(0);
-// assume getProducts is a method that calls an http endpoint and returns a state.
-readonly $products = asyncSignal(() => $id() !== 0 ? this.getProducts(this.$id()) : of([]));
-`.trim();
+
 }

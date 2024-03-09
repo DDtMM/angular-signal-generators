@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { extendSignal, timerSignal } from 'projects/signal-generators/src/public-api';
+import { TimerSignalStatus, extendSignal, timerSignal } from 'projects/signal-generators/src/public-api';
 
 @Component({
   selector: 'app-timer-signal-demo',
@@ -18,13 +18,9 @@ export class TimerSignalDemoComponent {
   readonly $timer = computed(() => this.$mode() === 'timeout' ? this.$timeoutTimer : this.$intervalTimer);
   readonly $timeoutRange = signal(500);
   // timer signal and SSR don't mix.
-  readonly $intervalTimer = isPlatformBrowser(inject(PLATFORM_ID))
-    ? timerSignal(this.$timeoutRange, this.$intervalRange)
-    : extendSignal(signal(0), { 'pause': () => {}, 'resume': () => {}, 'restart': () => {} });
+  readonly $intervalTimer = isPlatformBrowser(inject(PLATFORM_ID)) ? timerSignal(this.$timeoutRange, this.$intervalRange) : DUMMY_TIMER_FACTORY();
   // timer signal and SSR don't mix.
-  readonly $timeoutTimer = isPlatformBrowser(inject(PLATFORM_ID))
-    ? timerSignal(this.$timeoutRange)
-    : extendSignal(signal(0), { 'pause': () => {}, 'resume': () => {}, 'restart': () => {} });
+  readonly $timeoutTimer = isPlatformBrowser(inject(PLATFORM_ID)) ? timerSignal(this.$timeoutRange) : DUMMY_TIMER_FACTORY();
 
   constructor() {
     effect(() => {
@@ -40,5 +36,6 @@ export class TimerSignalDemoComponent {
     this.$mode.update(x => x === 'interval' ? 'timeout' : 'interval');
     this.$timer().restart();
   }
-
 }
+
+const DUMMY_TIMER_FACTORY = () => extendSignal(signal(0), { pause: () => {}, resume: () => {}, restart: () => {}, state: () => ('stopped' as TimerSignalStatus) });

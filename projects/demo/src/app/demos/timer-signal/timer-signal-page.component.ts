@@ -17,6 +17,10 @@ import { TimerSignalDemoComponent } from './timer-signal-demo/timer-signal-demo.
   It will be have like setTimeout or interval depending on the parameters passed.
   The value of the timer is incremented after every "tick".
 </p>
+<p>
+  The signal has methods to pause, resume and restart the timer.
+  Additionally, there is a <b>state</b> signal that will return the current state of the timer.
+</p>
 <app-demo-host name="Timer and Interval Demo"
   prefix="timer-signal/timer-signal-demo/timer-signal-demo.component"
   [sourceNames]="['.ts', '.html']">
