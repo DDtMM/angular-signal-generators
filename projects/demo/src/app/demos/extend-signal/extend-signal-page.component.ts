@@ -26,14 +26,11 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
   <code class="inline p-1">Object.assign</code> or assign the functions directly.
 </p>
 <app-demo-host name="Signal with specialized setters"
-  prefix="extend-signal/extend-signal-demo/demo.component"
-  [sourceNames]="['.ts', '.html']">
+    prefix="extend-signal/extend-signal-demo/extend-signal-demo.component"
+    [sourceNames]="['.ts', '.html']">
   <app-extend-signal-demo />
 </app-demo-host>
-
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExtendSignalPageComponent {
-
-}
+export class ExtendSignalPageComponent { }
