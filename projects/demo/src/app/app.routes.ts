@@ -10,24 +10,24 @@ import { SequenceSignalPageComponent } from './demos/sequence-signal/sequence-si
 import { SignalToIteratorPageComponent } from './demos/signal-to-iterator/signal-to-iterator-page.component';
 import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page.component';
 import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
-import { HomeComponent } from './home.component';
+import { HomeComponent } from './content/home.component';
 import { GettingStartedComponent } from './content/getting-started.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'getting-started', component: GettingStartedComponent },
+  { path: 'getting-started', component: GettingStartedComponent, title: 'Getting Started' },
   // demos
-  { path: 'async-signal', component: AsyncSignalPageComponent },
-  { path: 'debounce-signal', component: DebounceSignalPageComponent },
-  { path: 'extend-signal', component: ExtendSignalPageComponent },
-  { path: 'filter-signal', component: FilterSignalPageComponent },
-  { path: 'lift-signal', component: LiftSignalPageComponent },
-  { path: 'map-signal', component: MapSignalPageComponent },
-  { path: 'reduce-signal', component: ReduceSignalPageComponent },
-  { path: 'signal-to-iterator', component: SignalToIteratorPageComponent },
-  { path: 'sequence-signal', component: SequenceSignalPageComponent },
-  { path: 'timer-signal', component: TimerSignalPageComponent },
-  { path: 'tween-signal', component: TweenSignalPageComponent },
+  { path: 'async-signal', component: AsyncSignalPageComponent, title: 'Async Signal' },
+  { path: 'debounce-signal', component: DebounceSignalPageComponent, title: 'Debounce Signal' },
+  { path: 'extend-signal', component: ExtendSignalPageComponent, title: 'Extend Signal' },
+  { path: 'filter-signal', component: FilterSignalPageComponent, title: 'Filter Signal' },
+  { path: 'lift-signal', component: LiftSignalPageComponent, title: 'Lift Signal' },
+  { path: 'map-signal', component: MapSignalPageComponent, title: 'Map Signal' },
+  { path: 'reduce-signal', component: ReduceSignalPageComponent, title: 'Reduce Signal' },
+  { path: 'signal-to-iterator', component: SignalToIteratorPageComponent, title: 'Signal to Iterator' },
+  { path: 'sequence-signal', component: SequenceSignalPageComponent, title: 'Sequence Signal' },
+  { path: 'timer-signal', component: TimerSignalPageComponent, title: 'Timer Signal' },
+  { path: 'tween-signal', component: TweenSignalPageComponent, title: 'Tween Signal' },
   // redirect
   { path: '**', redirectTo: '' }
 ];
