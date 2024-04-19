@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { easings } from 'projects/signal-generators/src/public-api';
-import { EasingFn, easeInBack } from 'signal-generators';
+import { EasingFn, easeInBack, easings } from 'projects/signal-generators/src/public-api';
 
 type EasingFnName = keyof typeof easings;
 
