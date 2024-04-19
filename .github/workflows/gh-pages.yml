@@ -43,7 +43,7 @@ jobs:
         run: npm ci --force
 
       - name: Add demo site source files and StackBlitz templates
-        run: node scripts/create-demo-file-collections.mj
+        run: node scripts/create-demo-file-collections.mjs
 
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
