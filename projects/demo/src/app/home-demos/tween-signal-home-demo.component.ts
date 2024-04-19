@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { tweenSignal } from 'projects/signal-generators/src/public-api';
-import { HomeBoxComponent } from '../controls/home-box.component';
+import { easeInBounce, tweenSignal } from 'projects/signal-generators/src/public-api';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
+import { HomeBoxComponent } from '../controls/home-box.component';
 
 @Component({
   standalone: true,
@@ -26,5 +26,5 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TweenSignalHomeDemoComponent {
-  readonly tweenExample = tweenSignal(0, { duration: 1000, easing: 'easeInBounce' });
+  readonly tweenExample = tweenSignal(0, { duration: 1000, easing: easeInBounce });
 }

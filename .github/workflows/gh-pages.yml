@@ -42,6 +42,9 @@ jobs:
           steps.cache-nodemodules.outputs.cache-hit != 'true' # if cache hits the skip this step.
         run: npm ci --force
 
+      - name: Add demo site source files and StackBlitz templates
+        run: node scripts/create-demo-file-collections.mj
+
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
 
@@ -52,6 +55,7 @@ jobs:
 
       # - name: Update coverage on readme
       #  run: npx istanbul-badges-readme --coverageDir=\"./coverage/signal-generators\"
+
 
       - name: Add api docs to demo site
         run: npx typedoc --out dist/demo/browser/api

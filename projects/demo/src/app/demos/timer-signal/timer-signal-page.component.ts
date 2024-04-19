@@ -21,9 +21,7 @@ import { TimerSignalDemoComponent } from './timer-signal-demo/timer-signal-demo.
   The signal has methods to pause, resume and restart the timer.
   Additionally, there is a <b>state</b> signal that will return the current state of the timer.
 </p>
-<app-demo-host name="Timer and Interval Demo"
-  prefix="timer-signal/timer-signal-demo/timer-signal-demo.component"
-  [sourceNames]="['.ts', '.html']">
+<app-demo-host name="Timer and Interval Demo" pattern="timer-signal/timer-signal-demo/">
   <app-timer-signal-demo />
 </app-demo-host>
   `,

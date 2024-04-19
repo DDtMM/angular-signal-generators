@@ -12,6 +12,7 @@ import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page
 import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
 import { HomeComponent } from './content/home.component';
 import { GettingStartedComponent } from './content/getting-started.component';
+import { StorageSignalPageComponent } from './demos/storage-signal/storage-signal-page.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'reduce-signal', component: ReduceSignalPageComponent, title: 'Reduce Signal' },
   { path: 'signal-to-iterator', component: SignalToIteratorPageComponent, title: 'Signal to Iterator' },
   { path: 'sequence-signal', component: SequenceSignalPageComponent, title: 'Sequence Signal' },
+  { path: 'storage-signal', component: StorageSignalPageComponent, title: 'Storage Signal' },
   { path: 'timer-signal', component: TimerSignalPageComponent, title: 'Timer Signal' },
   { path: 'tween-signal', component: TweenSignalPageComponent, title: 'Tween Signal' },
   // redirect

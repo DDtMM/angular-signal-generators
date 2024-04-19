@@ -25,9 +25,7 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
   If changing how a signal's original methods work isn't something you need, then just use
   <code class="inline p-1">Object.assign</code> or assign the functions directly.
 </p>
-<app-demo-host name="Signal with specialized setters"
-    prefix="extend-signal/extend-signal-demo/extend-signal-demo.component"
-    [sourceNames]="['.ts', '.html']">
+<app-demo-host name="Signal with specialized setters" pattern="extend-signal/extend-signal-demo/">
   <app-extend-signal-demo />
 </app-demo-host>
   `,

@@ -74,6 +74,7 @@ Creates a signal whose input value is immediately mapped to a different value ba
 Either a value or multiple signals can be passed and used in the selector function.
 
 ### reduceSignal
+
 Creates a signal similar to `Array.reduce` or Rxjs's `scan` operator, using a reducer function to create a new value from the current and prior values.
 
 ### sequenceSignal
@@ -81,6 +82,10 @@ Creates a signal similar to `Array.reduce` or Rxjs's `scan` operator, using a re
 The Sequence Signal is useful for situations where you want to easily cycle between options.  For example, if you want to toggle between true/false or a list of sizes.  These are still writable signals so you can manually override the current value.
 
 There is also a special option to pass a cursor, which is similar to an iterator, but can be reset.  There will probably be more functionality added later.
+
+### storageSignal / localStorageSignal / sessionStorageSignal
+
+A signal that uses a secondary storage system to store values, ideally beyond the lifetime of the application.  The next time the signal is initialized the initial value will come from this secondary storage.  Implementations using *localStorage* and *sessionStorage* exist for your convenience.
 
 ### timerSignal
 

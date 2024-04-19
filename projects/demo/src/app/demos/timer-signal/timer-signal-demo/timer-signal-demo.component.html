@@ -12,11 +12,11 @@
   <div class="flex-grow w-full">
     <div>
       <label class="label">Timeout Time: {{$timeoutRange()}}</label>
-      <input class="range range-primary" type="range" min="0" max="10000" [ngModel]="$timeoutRange()" (ngModelChange)="$timeoutRange.set($event)" />
+      <input class="range range-primary" type="range" min="0" max="10000" [(ngModel)]="$timeoutRange" />
     </div>
     <div>
       <label class="label" >Interval Time: {{$intervalRange()}}</label>
-      <input class="range" type="range" min="0" max="10000" [ngModel]="$intervalRange()" (ngModelChange)="$intervalRange.set($event)"
+      <input class="range" type="range" min="0" max="10000" [(ngModel)]="$intervalRange"
         [ngClass]="$mode() === 'interval' ? 'range-primary' : 'range-accent'"
         [disabled]="$mode() === 'timeout'" />
     </div>

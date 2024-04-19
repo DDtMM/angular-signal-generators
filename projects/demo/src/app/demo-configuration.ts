@@ -8,6 +8,7 @@ import { MapSignalHomeDemoComponent } from './home-demos/map-signal-home-demo.co
 import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-demo.component';
 import { SequenceSignalHomeDemoComponent } from './home-demos/sequence-signal-home-demo.component';
 import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterator-home-demo.component';
+import { StorageSignalHomeDemoComponent } from './home-demos/storage-signal-home-demo.component';
 import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-demo.component';
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
 
@@ -99,6 +100,14 @@ export const DEMO_CONFIGURATIONS = [
     name: 'SignalToIterator',
     route: 'signal-to-iterator',
     usages: ['utility']
+  },
+  {
+    homeComponent: StorageSignalHomeDemoComponent,
+    docUrl: './api/functions/storageSignal.html',
+    fnName: 'storageSignal' as const,
+    name: 'Storage',
+    route: 'storage-signal',
+    usages: ['writableSignal']
   },
   {
     homeComponent: TimerSignalHomeDemoComponent,

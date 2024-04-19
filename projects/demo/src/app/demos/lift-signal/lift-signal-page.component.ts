@@ -30,9 +30,7 @@ import { ArrayDemoComponent } from './array-demo/array-demo.component';
     </div>
   </div>
 </div>
-<app-demo-host name="Lift methods from an array directly to signal"
-  prefix="lift-signal/array-demo/array-demo.component"
-  [sourceNames]="['.ts', '.html']">
+<app-demo-host name="Lift methods from an array directly to signal" pattern="lift-signal/array-demo/">
   <app-array-demo />
 </app-demo-host>
 

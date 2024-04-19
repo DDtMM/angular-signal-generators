@@ -35,6 +35,10 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
+
+  "exclude": [
+    "scripts/**/*.*"
+  ],
   "typedocOptions": {
     "categorizeByGroup": true,
     "entryPoints": ["projects/signal-generators/src/public-api.ts"],
