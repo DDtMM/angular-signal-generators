@@ -1,6 +1,6 @@
 {
   "name": "@ddtmm/angular-signal-generators",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "license": "MIT",
   "description": "Specialized Angular signals to help with frequently encountered situations.",
   "peerDependencies": {
@@ -8,7 +8,6 @@
     "@angular/core": ">=16.0.0"
   },
   "dependencies": {
-    "easings.net": "^1.0.3",
     "tslib": "^2.3.0"
   },
   "bugs": {

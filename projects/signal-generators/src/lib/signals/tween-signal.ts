@@ -3,8 +3,7 @@ import { SignalInput } from '../signal-input';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { ValueSource } from '../value-source';
-import { AnimationFrameFn, EasingName, getRequestAnimationFrame, getEasingFn } from '../internal/animations';
-
+import { AnimationFrameFn, getRequestAnimationFrame } from '../internal/animations';
 
 /** Request animation frame function */
 const requestAnimationFrame = getRequestAnimationFrame();
@@ -13,8 +12,8 @@ const requestAnimationFrame = getRequestAnimationFrame();
 export type InterpolateStepFn<T> = (progress: number) => T;
 /** Returns a function that will return an interpolated value at an point in time. */
 export type InterpolateFactoryFn<T> = (a:T, b: T) => InterpolateStepFn<T>;
-/** Either a built-in easing name, or a function that alters progress. */
-export type EasingOptionValue = EasingName | ((progress: number) => number);
+/** A function that alters progress between 0 and 1. */
+export type EasingFn = ((progress: number) => number);
 
 /** Options that can be used to overwrite default options. */
 export interface TweenOptions<T> {
@@ -23,7 +22,7 @@ export interface TweenOptions<T> {
   /** If not provided then a default of 400 is used. */
   duration?: number;
   /** An easing function that distorts progress. */
-  easing?: EasingOptionValue;
+  easing?: EasingFn;
   /** A function used to determine the intermediate value */
   interpolator?: InterpolateFactoryFn<T>;
 }
@@ -67,7 +66,7 @@ export function tweenSignal<T>(source: ValueSource<T>, options: TweenSignalOptio
  * @example
  * ```ts
  * const fastLinearChange = tweenSignal(1);
- * const slowEaseInChange = tweenSignal(1, { duration: 5000, easing: 'easeInQuad' });
+ * const slowEaseInChange = tweenSignal(1, { duration: 5000, easing: easeInQuad });
  * function demo(): void {
  *   fastLinearChange.set(5); // in 400ms will display something like 1, 1.453, 2.134, 3.521, 4.123, 5.
  *   slowEaseInChange.set(5, { duration: 10000 }); // in 10000ms will display something like 1, 1.21, 1.4301...
@@ -84,7 +83,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   let signalValueGetter: () => [value: T, options: TweenOptions<T> | undefined];
 
   if (isSignalInput<T>(source)) {
-    const srcSignal = coerceSignal(source, options);
+    const srcSignal = coerceSignal(source, options) as Signal<T>; // why is the cast needed now?
     output = signal(untracked(srcSignal));
     outputSet = output.set;
     signalValueGetter = () => [srcSignal(), undefined];
@@ -102,7 +101,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
 
   const defaultDelay = options?.delay || 0;
   const defaultDuration = options?.duration || 400;
-  const defaultEasing = easingOptionToFn(options?.easing);
+  const defaultEasing = options?.easing || ((x: number) => x);
   const defaultInterpolateFactoryFn = options?.interpolator ?? createInterpolator(output() as TweenNumericValues);
 
   let delayTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -113,7 +112,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     const [nextValue, overrideOptions] = signalValueGetter();
     const delay = overrideOptions?.delay || defaultDelay;
     const duration = overrideOptions?.duration || defaultDuration;
-    const easing = overrideOptions?.easing ? easingOptionToFn(overrideOptions.easing) : defaultEasing;
+    const easing = overrideOptions?.easing || defaultEasing;
     const interpolate = (overrideOptions?.interpolator || defaultInterpolateFactoryFn)(priorValue, nextValue);
     const thisInstanceId = ++instanceId;
     let start: number;
@@ -168,13 +167,6 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     function interpolateNumber(a: number, b: number, progress: number): number {
       return a * (1 - progress) + b * progress;
     }
-  }
-
-  /** Gets an easing function, returning a dummy one if easingOpt is undefined. */
-  function easingOptionToFn(easingOpt?: EasingOptionValue): (progress: number) => number {
-    return easingOpt ?
-      typeof easingOpt === 'string' ? getEasingFn(easingOpt) : easingOpt
-      : ((x: number) => x);
   }
 }
 

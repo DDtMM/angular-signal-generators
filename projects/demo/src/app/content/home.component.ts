@@ -3,6 +3,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DEMO_CONFIGURATIONS } from '../demo-configuration';
 
+
+
 @Component({
   selector: 'app-home',
   standalone: true,

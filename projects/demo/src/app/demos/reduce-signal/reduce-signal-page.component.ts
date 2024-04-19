@@ -14,9 +14,7 @@ import { SearchHistoryDemoComponent } from './search-history-demo/search-history
   the signal is set, the callback function is executed with the prior and currently set value as arguments, returning a new value.
 </p>
 <p>Like other reduce-like functions the value set to the signal does not have to be the same type returned from it.</p>
-<app-demo-host name="Using Reduce Signal for Change History"
-  prefix="reduce-signal/search-history-demo/search-history-demo.component"
-  [sourceNames]="['.ts', '.html']">
+<app-demo-host name="Using Reduce Signal for Change History" pattern="reduce-signal/search-history-demo/">
   <app-search-history-demo />
 </app-demo-host>
   `,

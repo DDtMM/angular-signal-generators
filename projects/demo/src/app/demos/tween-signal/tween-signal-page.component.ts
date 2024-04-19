@@ -31,22 +31,20 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
   By default this can automatically tween between a number, array of numbers, or Record of numbers.
   You can also pass an interpolation function to tween between objects of any type.
 </p>
+<p>
+  As a convenience a collection of easing functions are provided such as <i>easeInBack</i>.
+  They can also be retrieved as a collection of all easing functions by importing <i>easings</i>.
+</p>
 <div class="flex flex-col gap-3">
-<app-demo-host name="Simple Value Changes"
-          prefix="tween-signal/simple-demo/simple-demo.component"
-          [sourceNames]="['.ts', '.html']">
-          <app-simple-demo />
-</app-demo-host>
-<app-demo-host name="Multiple Value Changes"
-          prefix="tween-signal/multiple-numbers-demo/multiple-numbers-demo.component"
-          [sourceNames]="['.ts', '.html']">
-          <app-multiple-numbers-demo />
-</app-demo-host>
-<app-demo-host name="Fun with Interpolation"
-          prefix="tween-signal/interpolation-demo/interpolation-demo.component"
-          [sourceNames]="['.ts', '.html']">
-          <app-interpolation-demo />
-</app-demo-host>
+  <app-demo-host name="Simple Value Changes" pattern="tween-signal/simple-demo">
+    <app-simple-demo />
+  </app-demo-host>
+  <app-demo-host name="Multiple Value Changes" pattern="tween-signal/multiple-numbers-demo/">
+    <app-multiple-numbers-demo />
+  </app-demo-host>
+  <app-demo-host name="Fun with Interpolation" pattern="tween-signal/interpolation-demo/">
+    <app-interpolation-demo />
+  </app-demo-host>
 </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

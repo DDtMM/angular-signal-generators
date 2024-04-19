@@ -5,6 +5,7 @@ import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { tweenSignal } from './tween-signal';
+import { easeOutQuart } from '../utilities/easings';
 
 describe('tweenSignal', () => {
 
@@ -55,14 +56,8 @@ describe('tweenSignal', () => {
       tickAndAssertValues(() => Math.round(sut()), [[0, 1], [500, 1], [250, 3], [250, 5]]);
     }));
 
-    it('returns an eased value when easing is passed as a EasingName', fakeAsync(() => {
-      const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, easing: 'easeOutQuart', duration: 500 }));
-      sut.set(5);
-      tickAndAssertValues(() => Math.round(sut()), [[0, 1], [200, 4], [300, 5]]);
-    }));
-
     it('returns an eased value when easing is passed as a function', fakeAsync(() => {
-      const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, easing: (x) =>  1 - Math.pow(1 - x, 4), duration: 500 }));
+      const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, easing: easeOutQuart, duration: 500 }));
       sut.set(5);
       tickAndAssertValues(() => Math.round(sut()), [[0, 1], [200, 4], [300, 5]]);
     }));
@@ -95,9 +90,9 @@ describe('tweenSignal', () => {
         sut.set(5, { delay: 1000 });
         tickAndAssertValues(() => Math.round(sut()), [[0, 1], [1000, 1], [250, 3], [250, 5]]);
       }));
-      it('returns an eased value when easing is passed as a EasingName', fakeAsync(() => {
+      it('returns an eased value when easing is passed as a function', fakeAsync(() => {
         const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 500 }));
-        sut.set(5, { easing: 'easeOutQuart' });
+        sut.set(5, { easing: easeOutQuart });
         tickAndAssertValues(() => Math.round(sut()), [[0, 1], [200, 4], [300, 5]]);
       }));
       it('returns a interpolated value when interpolator is passed', fakeAsync(() => {

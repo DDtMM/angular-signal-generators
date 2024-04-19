@@ -17,14 +17,10 @@ This has two overloads - one where it accepts a signal and the value is debounce
 and one where it has a <i>set</i> and <i>update</i> method and the change of the value occurs after debounce time elapses.
 </p>
 <div class="flex flex-col gap-3">
-  <app-demo-host name="Directly set debounced signal"
-    prefix="debounce-signal/direct-demo/direct-demo.component"
-    [sourceNames]="['.ts', '.html']">
+  <app-demo-host name="Directly set debounced signal" pattern="debounce-signal/direct-demo/">
     <app-direct-demo />
   </app-demo-host>
-  <app-demo-host name="Debounce another signal's value"
-    prefix="debounce-signal/indirect-demo/indirect-demo.component"
-    [sourceNames]="['.ts', '.html']">
+  <app-demo-host name="Debounce another signal's value" pattern="debounce-signal/indirect-demo/">
     <app-indirect-demo />
   </app-demo-host>
 </div>
