@@ -24,32 +24,35 @@ interface DemoHostSourceFile extends SourceFile {
       <span class="hidden sm:inline">StackBlitz</span>
     </button>
   </div>
-  <div role="tablist" class="tabs tabs-lifted w-full  ">
-    <button role="tab" class="tab [--tab-bg:#F8FAFC]"
-        [ngClass]="{ 'tab-active': $selectedTab() === demoTabId}"
-        (click)="$selectedTab.set(demoTabId)">
-        Demo
-    </button>
+  <div class="grid grid-flow-row pt-3">
+    <div role="tablist" class="tabs tabs-lifted z-10 grid-flow-row-dense -mb-[var(--tab-border)] justify-self-start">
+      <button role="tab" class="tab [--tab-bg:#F8FAFC]"
+          [ngClass]="{ 'tab-active': $selectedTab() === demoTabId}"
+          (click)="$selectedTab.set(demoTabId)">
+          Demo
+      </button>
+      @for (source of $visibleSources(); track source.name) {
+        <button role="tab" class="tab [--tab-bg:#F8FAFC] text-nowrap"
+          [ngClass]="{ 'tab-active': $selectedTab() === source.id}"
+          (click)="$selectedTab.set(source.id)">
+          {{source.label}}
+        </button>
+      }
+    </div>
     @if ($selectedTab() === demoTabId) {
-      <div role="tab" class="tab-content border-base-300 bg-slate-50 rounded-box rounded-tl-none p-3 shadow-lg">
+      <div role="tab" class="border border-base-300 bg-slate-50 w-full rounded-b-box  p-3 shadow-lg">
         <ng-content />
       </div>
     }
-    @for (source of $sources(); track source.name) {
-      <button role="tab" class="tab [--tab-bg:#F8FAFC]"
-        [ngClass]="{ 'tab-active': $selectedTab() === source.id}"
-        (click)="$selectedTab.set(source.id)">
-        {{source.label}}
-      </button>
-      @if ($selectedTab() === source.id) {
-        <div class="relative tab-content border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-h-[400px] overflow-auto rounded-box shadow-lg ">
-          <span class="absolute right-0 p-1">
-            <app-copy-button [content]="source.code" />
-          </span>
-          <code class="h-full w-full bg-slate-50 " [highlight]="source.code" [languages]="[source.type]"></code>
-        </div>
-      }
+    @if($selectedSource(); as src) {
+      <div class="relative border border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-h-[400px] overflow-auto rounded-b-box  shadow-lg ">
+        <span class="absolute right-0 p-1">
+          <app-copy-button [content]="src.code" />
+        </span>
+        <code class="h-full w-full bg-slate-50 " [highlight]="src.code" [languages]="[src.type]"></code>
+      </div>
     }
+
   </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -58,6 +61,8 @@ export class DemoHostComponent {
   private readonly demoSvc = inject(DemoService);
 
   readonly demoTabId = '_demo_';
+  /** A regex pattern to hide sources from the demo that should be included the full project. */
+  readonly $hiddenPattern = input<string | undefined>(undefined, { alias: 'hiddenPattern' });
   /** Displayed name of demo. */
   readonly $name = input.required<string>({ alias: 'name' });
   /** A string that will be used to construct a regex to match the source names */
@@ -67,34 +72,58 @@ export class DemoHostComponent {
   /** Currently visible tab */
   readonly $selectedTab = signal<string | number>(this.demoTabId);
   /** All source files relevant to the demo. */
-  readonly $sources = computed<DemoHostSourceFile[]>(() => {
+  readonly $sources = computed<SourceFile[]>(() => {
     const sourceFilesMatcher = new RegExp(this.$pattern());
+    return this.demoSvc.getSourceFiles(sourceFilesMatcher);
+  });
+
+  readonly $visibleSources = computed<DemoHostSourceFile[]>(() => {
+    const visibleFilesFinder = this.$visibleFilesFinder();
     const primaryComponentFinder = this.$primaryComponentFinder();
-    const sourceFiles = this.demoSvc.getSourceFiles(sourceFilesMatcher);
-    const uiSourceFiles = sourceFiles.map((x, i) => ({
-      ...x,
-      /** It is shorter to use the file type, but if sources are too many then the file names are used. */
-      label: sourceFiles.length <= 2 ? this.typeLabels[x.type] || x.name : x.name,
-      id: i
-    }));
-    const primaryComponentFile = uiSourceFiles.find(primaryComponentFinder);
-    if (primaryComponentFile) {
-      const primaryComponentFileNameSansExtension = primaryComponentFile.name.substring(0, primaryComponentFile.name.lastIndexOf('.'));
-      uiSourceFiles.sort((a, b) => {
-        // check if primary component file take priority in case b is the primary component file
-        if (a === primaryComponentFile) return -1;
-        if (b === primaryComponentFile) return 1;
-        if (a.name.substring(0, a.name.lastIndexOf('.')) === primaryComponentFileNameSansExtension) return -1;
-        if (b.name.substring(0, b.name.lastIndexOf('.')) === primaryComponentFileNameSansExtension) return 1;
-        return a.name < b.name ? -1 : 1;
-      })
-    }
+    const sourceFiles = this.$sources().filter(visibleFilesFinder);
+    const uiSourceFiles = sourceFiles
+      .map((x, i) => ({
+        ...x,
+        /** It is shorter to use the file type, but if sources are too many then the file names are used. */
+        label: sourceFiles.length <= 2 ? this.typeLabels[x.type] || x.name : x.name,
+        id: i
+      }));
+    const primaryComponentFile = uiSourceFiles.find(primaryComponentFinder)?.name || '_NO_MATCH_.zzz';
+    const primaryComponentFileNameSansExtension = primaryComponentFile.substring(0, primaryComponentFile.lastIndexOf('.'));
+    uiSourceFiles.sort((a, b) => {
+      if (a.name === primaryComponentFile) return -1;
+      if (b.name === primaryComponentFile) return 1;
+      const aNameBeforeExt = a.name.substring(0, a.name.lastIndexOf('.'));
+      const bNameBeforeExt = b.name.substring(0, b.name.lastIndexOf('.'));
+      if (aNameBeforeExt === bNameBeforeExt) {
+        // have typescript files go first if names are equal.
+        if (a.type === 'typescript') {
+          return -1;
+        }
+        if (b.type === 'typescript') {
+          return 1;
+        }
+      }
+      // if a or b are named similarly to the primary component then keep them together by moving them to the top.
+      if (a.name.substring(0, a.name.lastIndexOf('.')) === primaryComponentFileNameSansExtension) return -1;
+      if (b.name.substring(0, b.name.lastIndexOf('.')) === primaryComponentFileNameSansExtension) return 1;
+      return a.name < b.name ? -1 : 1;
+    });
+
     return uiSourceFiles;
   });
 
-  readonly $visibleSource = mapSignal(this.$selectedTab, this.$sources,
-    (tabType, sources) => sources.length && tabType !== 'demo' ? sources.find(x => x.type === tabType) : undefined);
+  readonly $selectedSource = mapSignal(this.$selectedTab, this.$visibleSources, (tab, sources) => sources.find(x => x.id === tab));
 
+  /** Converts the hidden files pattern to a function that returns true for visible files. */
+  private readonly $visibleFilesFinder = computed(() => {
+    const hiddenPattern = this.$hiddenPattern();
+    if (hiddenPattern) {
+      const matcherRegex = new RegExp(hiddenPattern);
+      return (x: SourceFile) => !matcherRegex.test(x.name);
+    }
+    return () => true;
+  });
   private readonly $primaryComponentFinder = computed(() => {
     const primaryComponentPattern = this.$primaryComponentPattern();
     if (primaryComponentPattern) {
@@ -102,14 +131,14 @@ export class DemoHostComponent {
       return (x: SourceFile) => matcherRegex.test(x.name);
     };
     return (x: SourceFile) => x.type === 'typescript';
-  })
+  });
+
   private readonly typeLabels: Record<string, string> = {
     'html': 'HTML',
     'typescript': 'TypeScript'
   };
 
   openProject(): void {
-
     this.demoSvc.openProject(this.$name(), this.$sources(), this.$primaryComponentFinder());
   }
 }
