@@ -36,10 +36,16 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
   They can also be retrieved as a collection of all easing functions by importing <i>easings</i>.
 </p>
 <div class="flex flex-col gap-3">
-  <app-demo-host name="Simple Value Changes" pattern="tween-signal/simple-demo">
+  <app-demo-host name="Simple Value Changes"
+    pattern="tween-signal/(simple-demo|shared)"
+    hiddenPattern="easing-selector"
+    primaryComponentPattern="demo\.component" >
     <app-simple-demo />
   </app-demo-host>
-  <app-demo-host name="Multiple Value Changes" pattern="tween-signal/multiple-numbers-demo/">
+  <app-demo-host name="Multiple Value Changes"
+    pattern="tween-signal/(multiple-numbers-demo|shared)"
+    hiddenPattern="easing-selector"
+    primaryComponentPattern="demo\.component" >
     <app-multiple-numbers-demo />
   </app-demo-host>
   <app-demo-host name="Fun with Interpolation" pattern="tween-signal/interpolation-demo/">

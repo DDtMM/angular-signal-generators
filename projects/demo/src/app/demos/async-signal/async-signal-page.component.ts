@@ -26,7 +26,8 @@ import { CustomerDemoComponent } from './customer-demo/customer-demo.component';
 </p>
 <app-demo-host name="Execute Async Requests When a Signal Changes"
   pattern="async-signal/customer-demo/"
-  primaryComponentPattern="customer-demo\\.component\\.ts">
+  primaryComponentPattern="component\\.ts"
+  hiddenPattern="service\\.ts">
   <app-customer-demo />
 </app-demo-host>
   `,

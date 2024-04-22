@@ -24,15 +24,11 @@ export class EasingSelectorComponent {
 
   /** Retrieves the name of the easing function based on the provided easing function or returns "linear". */
   getEasingName(easingFn: EasingFn): EasingFnName {
-    console.log(easingFn);
-    const easingFnName = Object.entries(easings).find(([, value]) => value === easingFn)?.[0] as EasingFnName || 'linear';
-    console.log(`gettings ${easingFnName}`);
     return Object.entries(easings).find(([, value]) => value === easingFn)?.[0] as EasingFnName || 'linear';
   }
 
   /** Sets $easingFn based on the provided easingFnName. */
   setEasingFn(easingFnName: EasingFnName): void {
-    console.log(`settings ${easingFnName}`);
     this.$easingFn.set(easings[easingFnName]);
   }
 }

@@ -11,7 +11,7 @@ function createDemoSources() {
   ];
   // create demoName from remaining portions of path.  Making sure the slash is normalized.
   const nameTransformFn = (fileName) => fileName.replace(/^.*(\/|\\)demos(\/|\\)/, '').replaceAll('\\', '/');
-  const fileNames = glob.sync(`./projects/demo/src/app/demos/**/*-demo/*.{html,ts}`);
+  const fileNames = glob.sync(`./projects/demo/src/app/demos/**/@(*-demo|shared)/*.{html,ts}`);
   createFileCollection('./projects/demo/src/app/services/demos-sources.ts', fileNames, nameTransformFn, replacements);
 }
 

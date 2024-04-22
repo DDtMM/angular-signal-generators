@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { EasingFn, easeInBack, tweenSignal } from 'projects/signal-generators/src/public-api';
-import { EasingSelectorComponent } from '../easing-selector.component';
+import { EasingSelectorComponent } from '../shared/easing-selector.component';
 
 @Component({
   selector: 'app-multiple-numbers-demo',
