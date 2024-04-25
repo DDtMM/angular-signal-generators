@@ -41,9 +41,17 @@ export interface TweenSignalOptions<T> extends TweenOptions<T> {
 export type TweenNumericValues = number | number[] | Record<string | number | symbol, number>;
 /** Same as regular TweenSignal options, but interpolator is not required. */
 export type TweenNumericSignalOptions<T extends TweenNumericValues> = Omit<TweenSignalOptions<T>, 'interpolator'> & Partial<Pick<TweenSignalOptions<T>, 'interpolator'>>;
-/** Like a writable a signal, but with options. */
-export interface TweenSignal<T> extends Signal<T> {
-  /** Sets the value of signal with optional options, */
+
+/** A signal with a function to set animation parameters. */
+export interface TweenSignal<T> extends Signal<T>
+{
+  /** Sets the default animation parameters for the signal.  This won't updated a running animation. */
+  setOptions(options: TweenOptions<T>): void;
+}
+
+/** Like a writable a signal, but with optional options when setting. */
+export interface WritableTweenSignal<T> extends TweenSignal<T> {
+  /** Sets the value of signal with optional options. */
   set(value: T, options?: TweenOptions<T>): void;
   /** Update the value of the signal based on its current value.  */
   update(updateFn: (value: T) => T, options?: TweenOptions<T>): void;
@@ -53,11 +61,11 @@ export interface TweenSignal<T> extends Signal<T> {
 
 // for some reason extends TweenNumericValues acted weird for number types.
 export function tweenSignal<V extends ValueSource<number>>(source: V, options?: TweenNumericSignalOptions<number>):
-  V extends SignalInput<number> ? Signal<number> : TweenSignal<number>
+  V extends SignalInput<number> ? TweenSignal<number> : WritableTweenSignal<number>
 export function tweenSignal<T extends TweenNumericValues>(source: ValueSource<T>, options?: TweenNumericSignalOptions<T>):
-  typeof source extends SignalInput<T> ? Signal<T> : TweenSignal<T>
+  typeof source extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
 export function tweenSignal<T>(source: ValueSource<T>, options: TweenSignalOptions<T>):
-  typeof source extends SignalInput<T> ? Signal<T> : TweenSignal<T>
+  typeof source extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
 /**
  * Creates a signal whose value morphs from the old value to the new over a specified duration.
  * @param source Either a value, signal, observable, or function that can be used in a computed function.
@@ -74,36 +82,38 @@ export function tweenSignal<T>(source: ValueSource<T>, options: TweenSignalOptio
  * ```
  */
 export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Partial<TweenSignalOptions<T>>):
-  V extends SignalInput<T> ? Signal<T> : TweenSignal<T>
+  V extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
 {
-
-  let output: WritableSignal<T>;
+  /** The output signal that will be returned. */
+  let output: WritableSignal<T> & TweenSignal<T>;
+  /** The original setter for the output signal. */
   let outputSet: (value: T) => void;
   /** Normalizes output of the source signal since it is different when this is writable. */
   let signalValueGetter: () => [value: T, options: TweenOptions<T> | undefined];
 
+
   if (isSignalInput<T>(source)) {
     const srcSignal = coerceSignal(source, options) as Signal<T>; // why is the cast needed now?
-    output = signal(untracked(srcSignal));
+    output = signal(untracked(srcSignal)) as WritableSignal<T> & TweenSignal<T>;
     outputSet = output.set;
     signalValueGetter = () => [srcSignal(), undefined];
+    Object.assign(output, { setOptions });
   }
   else {
-    output = signal(source as T);
+    output = signal(source as T) as WritableSignal<T> & TweenSignal<T>;
     outputSet = output.set;
     const srcSignal = signal<[value: T, options: TweenOptions<T> | undefined]>([source as T, undefined]);
     signalValueGetter = srcSignal;
     Object.assign(output, {
       set: (x: T, options?: TweenOptions<T>) => srcSignal.set([x, options]),
+      setOptions,
       update: (updateFn: (value: T) => T, options?: TweenOptions<T>) => srcSignal.update(([value]) => [updateFn(value), options])
     });
   }
-
-  const defaultDelay = options?.delay || 0;
-  const defaultDuration = options?.duration || 400;
-  const defaultEasing = options?.easing || ((x: number) => x);
-  const defaultInterpolateFactoryFn = options?.interpolator ?? createInterpolator(output() as TweenNumericValues);
-
+  let defaultDelay = options?.delay ?? 0;
+  let defaultDuration = options?.duration ?? 400;
+  let defaultEasing = options?.easing || ((x: number) => x);
+  let defaultInterpolateFactoryFn = options?.interpolator ?? createInterpolator(output() as TweenNumericValues);
   let delayTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
   let instanceId = 0;
 
@@ -167,6 +177,14 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     function interpolateNumber(a: number, b: number, progress: number): number {
       return a * (1 - progress) + b * progress;
     }
+  }
+
+  /** Function that is applied to return signal that sets default animation parameters. */
+  function setOptions(options: TweenOptions<T>): void {
+    defaultDelay = options?.delay ?? defaultDelay;
+    defaultDuration = options?.duration ?? defaultDuration;
+    defaultEasing = options?.easing ?? defaultEasing;
+    defaultInterpolateFactoryFn = options?.interpolator ?? defaultInterpolateFactoryFn;
   }
 }
 

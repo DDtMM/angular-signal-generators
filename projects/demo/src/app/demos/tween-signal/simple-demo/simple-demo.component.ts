@@ -11,5 +11,5 @@ import { EasingSelectorComponent } from '../shared/easing-selector.component';
 })
 export class SimpleDemoComponent {
   readonly $easingFn = signal<EasingFn>(easeInBack);
-  readonly tweenSignalSimple = tweenSignal(0);
+  readonly $sliderValue = tweenSignal(0, { easing: this.$easingFn() });
 }

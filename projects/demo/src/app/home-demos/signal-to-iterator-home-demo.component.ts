@@ -9,7 +9,7 @@ import { HomeBoxComponent } from '../controls/home-box.component';
   template: `
 <app-home-box fnName="signalToIterator">
   <div>
-  This converts a signal into an AsyncIterator where is can be used in a <code class="inline p-1">for async</code> loop.
+  This converts a signal into an AsyncIterator where is can be used in a <code class="inline">for async</code> loop.
   </div>
   <div class="divider">Example</div>
   <app-example-code><pre>

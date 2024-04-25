@@ -15,10 +15,10 @@ A signal that uses a secondary storage system to store values, ideally beyond th
 When the signal is initialized it will check the store for an existing value and fallback to the initialValue if it wasn't present.
 </p>
 <p>
-The <i>storageSignal</i> implementation requires a store to be specified,
-but two built-in implementations exist: <i>localStorageSignal</i> and <i>sessionStorageSignal</i>.
+The <b>storageSignal</b> implementation requires a store to be specified,
+but two built-in implementations exist: <b>localStorageSignal</b> and <b>sessionStorageSignal</b>.
 </p>
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-6">
   <app-demo-host name="Built-in Browser Storage Signal with Custom Serialization" pattern="storage-signal/built-in-storage-demo">
     <app-built-in-storage-demo />
   </app-demo-host>

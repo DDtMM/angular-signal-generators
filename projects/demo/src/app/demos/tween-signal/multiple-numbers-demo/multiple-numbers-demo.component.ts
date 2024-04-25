@@ -12,5 +12,5 @@ import { EasingSelectorComponent } from '../shared/easing-selector.component';
 })
 export class MultipleNumbersDemoComponent {
   readonly $easingFn = signal<EasingFn>(easeInBack);
-  readonly $coords = tweenSignal([0, 0]);
+  readonly $coords = tweenSignal([0, 0], { easing: this.$easingFn() });
 }

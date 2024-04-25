@@ -15,14 +15,14 @@ import { CustomerDemoComponent } from './customer-demo/customer-demo.component';
 </p>
 <p>
   To avoid confusion an observable of observables is not "flattened." This is so observables passed in as the valueSource can
-  create a writable signal. The function <code class="inline p-1">toSignal</code> can be used if this behavior is necessary.
+  create a writable signal. The function <code class="inline">toSignal</code> can be used if this behavior is necessary.
 </p>
 <p>
   This function is most convenient when you need to execute an asynchronous request when a signal changes.
   As seen in the example below, you can mix signals and observables by wrapping them in an anonymous function.
   This function is converted to a computed signal that returns an observable.
   Every time a signal changes, <b>asyncSignal</b> will unsubscribe from the old observable and
-  subscribe to the new one, behaving similarly to an Rxjs <code class="inline p-1">switchMap</code>.
+  subscribe to the new one, behaving similarly to an Rxjs <code class="inline">switchMap</code>.
 </p>
 <app-demo-host name="Execute Async Requests When a Signal Changes"
   pattern="async-signal/customer-demo/"

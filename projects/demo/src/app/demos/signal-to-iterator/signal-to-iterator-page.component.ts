@@ -14,7 +14,7 @@ import { SignalHeaderComponent } from '../../controls/signal-header.component';
 <p>
   This converts a signal into an AsyncIterator.
   The emissions from the signal will build up, and then released each time next is called.
-  The iterator can be used in a <code class="inline p-1">for async</code> loop.
+  The iterator can be used in a <code class="inline">for async</code> loop.
   This uses an effect under the hood, so be sure to pass injector if it isn't created in the constructor.
 </p>
 <div>

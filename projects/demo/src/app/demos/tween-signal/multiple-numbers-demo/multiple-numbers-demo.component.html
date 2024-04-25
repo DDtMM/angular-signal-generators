@@ -4,10 +4,10 @@
 </p>
 <div class="flex flex-row gap-3 items-center pb-3">
   <span>Easing Function</span>
-  <app-easing-selector [(easingFn)]="$easingFn" />
+  <app-easing-selector [(easingFn)]="$easingFn" (easingFnChange)="$coords.setOptions({ easing: $easingFn() })" />
 </div>
 <div class="cursor-pointer w-36 h-36 bg-green-600 rounded-lg border-slate-900 border-solid border"
-  (click)="$coords.set([$event.offsetX - 8, $event.offsetY - 8], { easing: $easingFn() }) ">
+  (click)="$coords.set([$event.offsetX - 8, $event.offsetY - 8])">
   <div class="w-4 h-4 bg-slate-900 rounded-full"
     [ngStyle]="{ 'translate': $coords()[0] + 'px ' + $coords()[1] + 'px' }">
   </div>
