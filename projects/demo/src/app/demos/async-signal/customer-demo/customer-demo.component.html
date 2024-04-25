@@ -1,7 +1,10 @@
-<div class="grid grid-flow-row sm:grid-flow-col sm:grid-cols-2 gap-3">
+<div class="grid grid-flow-row md:grid-flow-col md:grid-cols-2 gap-3">
   <!-- customers column -->
   <div>
-    <div class="font-semibold">Customers <span class="text-info">(click one to simulate load)</span></div>
+    <div class="font-semibold">Customers</div>
+    @if ($id() === 0) {
+      <span class="text-info">Click one to simulate loading</span>
+    }
     @if (!$customers()) {
       <div>Loading <span class="loading loading-spinner loading-sm align-text-bottom text-info"></span></div>
     }

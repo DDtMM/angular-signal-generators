@@ -12,7 +12,7 @@ import { ShopService } from './shop.service';
 })
 export class CustomerDemoComponent {
   private readonly shopSvc = inject(ShopService);
-
+  /* Just a regular observable converted to a signal. */
   readonly $customers = toSignal(this.shopSvc.getCustomers().pipe(startWith(undefined)));
   readonly $id = signal(0);
   /** uses $id signal to get customer products */
