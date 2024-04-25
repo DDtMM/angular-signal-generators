@@ -11,7 +11,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   template: `
    <app-home-box fnName="reduceSignal">
     <div>
-      Creates a signal similar to <code class="inline p-1">Array.reduce</code> or Rxjs's <code class="inline p-1">scan</code> operator,
+      Creates a signal similar to <code class="inline">Array.reduce</code> or Rxjs's <code class="inline">scan</code> operator,
       using a reducer function to create a new value from the current and prior values.
     </div>
     <div class="divider">Example</div>

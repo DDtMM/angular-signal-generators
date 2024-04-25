@@ -79,7 +79,34 @@ describe('tweenSignal', () => {
       tickAndAssertValues(() => Math.round(sut()), [[0, 0], [250, 4], [250, 8]]);
     }));
 
-    describe('and overriding defaults', () => {
+    describe('and using set options to change default animation parameters', () => {
+      it('returns an in between value when in between duration', fakeAsync(() => {
+        const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 100 }));
+        sut.setOptions({ duration: 1000 });
+        sut.set(5);
+        tickAndAssertValues(() => Math.round(sut()), [[0, 1], [500, 3], [500, 5]]);
+      }));
+      it('returns a delayed value when delay is passed', fakeAsync(() => {
+        const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, delay: 500, duration: 500 }));
+        sut.setOptions({ delay: 1000 });
+        sut.set(5);
+        tickAndAssertValues(() => Math.round(sut()), [[0, 1], [1000, 1], [250, 3], [250, 5]]);
+      }));
+      it('returns an eased value when easing is passed as a function', fakeAsync(() => {
+        const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 500 }));
+        sut.setOptions({ easing: easeOutQuart });
+        sut.set(5);
+        tickAndAssertValues(() => Math.round(sut()), [[0, 1], [200, 4], [300, 5]]);
+      }));
+      it('returns a interpolated value when interpolator is passed', fakeAsync(() => {
+        const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 500 }));
+        sut.setOptions({ interpolator: (a, b) => (p) => (a * (1 - p)) + (b * p) + 2 });
+        sut.set(5);
+        tickAndAssertValues(() => Math.round(sut()), [[0, 1], [250, 5], [250, 7]]);
+      }));
+    });
+
+    describe('and overriding defaults when setting a value', () => {
       it('returns an in between value when in between duration', fakeAsync(() => {
         const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 100 }));
         sut.set(5, { duration: 1000 });
@@ -96,10 +123,7 @@ describe('tweenSignal', () => {
         tickAndAssertValues(() => Math.round(sut()), [[0, 1], [200, 4], [300, 5]]);
       }));
       it('returns a interpolated value when interpolator is passed', fakeAsync(() => {
-        const sut = autoDetectChangesSignal(fixture, tweenSignal(1, {
-          injector,
-          interpolator: (a, b) => (p) => (a * (1 - p)) + (b * p) + 1,
-          duration: 500 }));
+        const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 500 }));
         sut.set(5, { interpolator: (a, b) => (p) => (a * (1 - p)) + (b * p) + 2 });
         tickAndAssertValues(() => Math.round(sut()), [[0, 1], [250, 5], [250, 7]]);
       }));

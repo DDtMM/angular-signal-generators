@@ -18,7 +18,7 @@ interface DemoHostSourceFile extends SourceFile {
   imports: [CopyButtonComponent, CommonModule, FontAwesomeModule, HighlightModule],
   template: `
   <div class="flex flex-row gap-3">
-    <div class="mx-1 mb-1 text-xl text-secondary">{{$name()}}</div>
+    <div class="mb-1 text-xl text-secondary">{{$name()}}</div>
     <button type="button" class="btn btn-secondary btn-outline btn-sm" (click)="openProject()" title="Open in StackBlitz">
       <img class="w-4" alt="Open in StackBlitz" src="assets/stackblitz-icon.svg"/>
       <span class="hidden sm:inline">StackBlitz</span>

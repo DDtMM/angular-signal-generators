@@ -1,4 +1,4 @@
-import { Injector, Signal, ValueEqualityFn, computed, signal } from '@angular/core';
+import { Injector, Signal, ValueEqualityFn, WritableSignal, computed, signal } from '@angular/core';
 import { SignalInputValue, SignalInput, SignalInputSignal } from '../signal-input';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
@@ -13,8 +13,12 @@ export interface MapSignalOptions<R>  {
 export interface MapSignal<TIn, TOut> extends Signal<TOut> {
   /** Returns the output signal as a readonly. */
   asReadonly(): Signal<TOut>;
-  /** Contains the values that are input to the signal. */
-  input: Signal<TIn>;
+  /**
+   * Contains the values that are input to the signal.
+   * Calling set or update on this will have the same behavior as calling the main set or update methods
+   * and is exposed to make it easier for binding.
+   */
+  input: WritableSignal<TIn>;
   set(value: TIn): void;
   update(updateFn: (value: TIn) => TIn): void;
 }

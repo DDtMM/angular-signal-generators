@@ -1,16 +1,16 @@
 <div class="flex flex-row gap-3 items-center pb-3">
   <span>Easing Function</span>
-  <app-easing-selector [(easingFn)]="$easingFn" />
+  <app-easing-selector [(easingFn)]="$easingFn" (easingFnChange)="$sliderValue.setOptions({ easing: $easingFn() })" />
 </div>
 <div class="flex flex-col w-full sm:flex-row items-center">
   <div class="flex-none">
     <div class="join pr-3">
-      <button type="button" class="btn btn-primary join-item" (click)="tweenSignalSimple.set(0, { easing: $easingFn() })">0%</button>
-      <button type="button" class="btn btn-primary join-item" (click)="tweenSignalSimple.set(50, { easing: $easingFn() })">50%</button>
-      <button type="button" class="btn btn-primary join-item" (click)="tweenSignalSimple.set(100, { easing: $easingFn() })">100%</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$sliderValue.set(0)">0%</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$sliderValue.set(50)">50%</button>
+      <button type="button" class="btn btn-primary join-item" (click)="$sliderValue.set(100)">100%</button>
     </div>
   </div>
   <div>
-    <input class="range range-primary" type="range" [value]="tweenSignalSimple()" min="0" max="100" />
+    <input class="range range-primary" type="range" [value]="$sliderValue()" min="0" max="100" />
   </div>
 </div>

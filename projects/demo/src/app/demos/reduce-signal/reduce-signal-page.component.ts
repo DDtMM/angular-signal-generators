@@ -10,7 +10,7 @@ import { SearchHistoryDemoComponent } from './search-history-demo/search-history
   template: `
 <app-signal-header fnName="reduceSignal" />
 <p>
-  Creates a signal similar to <code class="inline p-1">Array.reduce</code> or Rxjs's <code class="inline p-1">scan</code> operator. When
+  Creates a signal similar to <code class="inline">Array.reduce</code> or Rxjs's <code class="inline">scan</code> operator. When
   the signal is set, the callback function is executed with the prior and currently set value as arguments, returning a new value.
 </p>
 <p>Like other reduce-like functions the value set to the signal does not have to be the same type returned from it.</p>
