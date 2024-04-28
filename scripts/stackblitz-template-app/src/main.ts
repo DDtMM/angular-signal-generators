@@ -7,7 +7,7 @@ import 'zone.js';
   selector: 'app-root',
   standalone: true,
   imports: [$$DemoClass$$],
-  template: '<div class="p-1"><$$DemoSelector$$ /></div>',
+  template: '<$$DemoSelector$$ />',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent { }

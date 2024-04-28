@@ -1,12 +1,12 @@
 <div class="inline-block ">
-  <div class="grid grid-cols-2 gap-3 ">
+  <div class="grid grid-cols-2 gap-x-4 gap-y-3">
     <label class="label" for="inputVal">Input Value</label>
     <input class="input input-bordered w-32 text-right" id="inputVal" type="number" [(ngModel)]="$inputVal.input" />
     <label class="label" for="multiplier">Multiplier</label>
     <input class="input input-bordered w-32 text-right" id="multiplier" type="number" [(ngModel)]="$multiplier" />
     <label class="label" >Output</label>
-    <div class="self-center text-right w-32 pr-4">{{$inputVal()}}</div>
+    <div class="self-center text-right w-32">{{$inputVal()}}</div>
     <label class="label" >Multiplier Squared</label>
-    <div class="self-center text-right w-32 pr-4">{{$multiplierSquared()}}</div>
+    <div class="self-center text-right w-32">{{$multiplierSquared()}}</div>
   </div>
 </div>

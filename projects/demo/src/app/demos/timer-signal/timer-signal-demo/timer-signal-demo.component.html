@@ -1,7 +1,7 @@
 <div class="flex flex-col w-full sm:flex-row gap-3">
   <div>
     <p>You controls to below to manipulate the timer.  The right-most button will toggle between interval and timeout modes.</p>
-    <div class="join pr-3">
+    <div class="join">
       <button type="button" class="btn btn-primary join-item" (click)="$timer().pause()" [disabled]="$timer().state() !== 'running'">Pause</button>
       <button type="button" class="btn btn-primary join-item" (click)="$timer().resume()" [disabled]="$timer().state() !== 'paused'">Resume</button>
       <button type="button" class="btn btn-primary join-item" (click)="$timer().restart()">Restart</button>

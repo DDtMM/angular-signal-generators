@@ -1,6 +1,7 @@
-import { Injector, Signal, WritableSignal, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injector, PLATFORM_ID, Signal, WritableSignal, signal } from '@angular/core';
 import { TimerInternal, TimerStatus } from '../internal/timer-internal';
-import { getDestroyRef } from '../internal/utilities';
+import { getDestroyRef, getInjector } from '../internal/utilities';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
 export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
@@ -8,7 +9,10 @@ export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
 export interface TimerSignalOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
-  /** If true, the timer isn't running at start. */
+  /**
+   * If true, the timer isn't running at start.
+   * When running in a non-browser environment, the signal always begins in a stopped state by default.
+   */
   stopped?: boolean;
 }
 
@@ -46,21 +50,22 @@ export interface TimerSignal extends Signal<number> {
  */
 export function timerSignal(timerTime: ValueSource<number>, intervalTime?: ValueSource<number> | null, options?: TimerSignalOptions): TimerSignal {
   // To make thinks easy to access values, make TimeSources functions.
-  const timerTimeFn = createGetValueFn(timerTime, options?.injector);
-  const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, options?.injector) : undefined;
+  const injector = options?.injector ?? getInjector(timerSignal);
+  const timerTimeFn = createGetValueFn(timerTime, injector);
+  const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, injector) : undefined;
   /** The signal that will be returned. */
   const output = signal(0);
   const state = signal<TimerSignalStatus>('stopped');
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), {
     onStatusChange: (internalStatus) => state.set(transformTimerStatus(internalStatus)),
     onTick: (x) => output.set(x),
-    runAtStart: !options?.stopped
+    runAtStart: !options?.stopped && isPlatformBrowser(injector.get(PLATFORM_ID))
   });
   // setup cleanup actions.
   getDestroyRef(timerSignal, options?.injector).onDestroy(() => timer.destroy());
   // watch for changes to update timer properties.
-  watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, options?.injector);
-  watchValueSourceFn(intervalTimeFn, (x) => timer.intervalTime = x, options?.injector);
+  watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, injector);
+  watchValueSourceFn(intervalTimeFn, (x) => timer.intervalTime = x, injector);
   // bind timer functions to output.
   return createTimerSignal(output, timer);
 

@@ -15,7 +15,7 @@ import { HomeBoxComponent } from '../controls/home-box.component';
     <div class="divider">Example</div>
     <input type="range" class="range range-primary" [value]="tweenExample()" min="0" max="100" />
     <div class="flex flex-row gap-3 justify-center" (click)="$event.stopPropagation()">
-      <div class="join pr-3">
+      <div class="join">
         <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(0)">0%</button>
         <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(50)">50%</button>
         <button type="button" class="btn btn-primary join-item" (click)="tweenExample.set(100)">100%</button>

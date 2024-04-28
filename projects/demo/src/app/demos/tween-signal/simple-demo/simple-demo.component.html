@@ -2,9 +2,9 @@
   <span>Easing Function</span>
   <app-easing-selector [(easingFn)]="$easingFn" (easingFnChange)="$sliderValue.setOptions({ easing: $easingFn() })" />
 </div>
-<div class="flex flex-col w-full sm:flex-row items-center">
+<div class="flex flex-col w-full sm:flex-row items-center gap-3">
   <div class="flex-none">
-    <div class="join pr-3">
+    <div class="join">
       <button type="button" class="btn btn-primary join-item" (click)="$sliderValue.set(0)">0%</button>
       <button type="button" class="btn btn-primary join-item" (click)="$sliderValue.set(50)">50%</button>
       <button type="button" class="btn btn-primary join-item" (click)="$sliderValue.set(100)">100%</button>
