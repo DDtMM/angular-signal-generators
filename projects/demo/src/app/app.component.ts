@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
@@ -88,8 +88,6 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
       </nav>
     </footer>
   </div>
-
-
   `
 })
 export class AppComponent {

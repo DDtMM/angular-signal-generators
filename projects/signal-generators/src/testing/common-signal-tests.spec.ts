@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Signal, isSignal, signal } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
-import { MockRender } from 'ng-mocks';
+import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { isSignalInput } from '../lib/internal/signal-input-utilities';
 import { computedSpy, effectSpy } from './signal-testing-utilities';
 
@@ -70,18 +70,23 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
 /**
  * Tests that the signal being tested works properly with computed and effect.
  * @param setup returns a tuple with the tested signal, and an action that should update the signal.
- * @param fixtureFactory retrieves fixture needed for change detection.  If not provided then one will be created.
  * @param context An optional description.
+ * @param fixtureFactory An optional fixture in case rendering already occurred.
+ * @param useRealAsync Tests will use fakeAsync (which is faster) unless this is true.
  */
 export function setupComputedAndEffectTests<T>(
-  setup: () => [sut: Signal<T>, action: () => void],
-  context?: string
+  setup: () => [sut: Signal<T>, action: () => void | Promise<unknown>],
+  context?: string,
+  fixtureFactory?: () => MockedComponentFixture<unknown, unknown>,
+  useRealAsync?: boolean
 ): void {
   const expectationContext = context ? `${context}: ` : '';
 
-  it(`${expectationContext}works properly when used within a computed signal`, fakeAsync(() => {
+  const flushFn = flushFactory(useRealAsync);
+
+  it(`${expectationContext}works properly when used within a computed signal`, fakeOrRealAsync(useRealAsync, async() => {
     const [sut, action] = setup();
-    const fixture = MockRender();
+    const fixture = fixtureFactory?.() ?? MockRender();
     const computedSignal = computedSpy(() => sut());
     expect(computedSignal.timesUpdated).withContext('computed signal does not execute before computed signal is read').toBe(0);
     const initialValue = computedSignal();
@@ -91,10 +96,10 @@ export function setupComputedAndEffectTests<T>(
     expect(additionalReadValueBeforeAction)
       .withContext('computed signal returns initial value if source has not changed')
       .toBe(initialValue);
-    action(); // execute change to signal
+    await action(); // execute change to signal
     // while computed does not need detectChanges, a signal that relies on effects might.
     fixture.detectChanges();
-    flush();
+    flushFn();
     fixture.detectChanges(); // make sure to detect any asynchronous changes that occur after flush.
     expect(computedSignal.timesUpdated).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
     const updatedValue = computedSignal();
@@ -102,19 +107,32 @@ export function setupComputedAndEffectTests<T>(
     expect(updatedValue).withContext('when source is updated a new value is returned from computed signal').not.toBe(initialValue);
   }));
 
-  it(`${expectationContext}works properly when used within an effect`, fakeAsync(() => {
+  it(`${expectationContext}works properly when used within an effect`, fakeOrRealAsync(useRealAsync, async () => {
     const [sut, action] = setup();
-    const fixture = MockRender();
+    const fixture = fixtureFactory?.() ?? MockRender();
     const effectRef = effectSpy(() => sut(), { injector: fixture.componentRef.injector });
     fixture.detectChanges(); // no need to worry about async changes since a signal should immediately have an initial value.
     expect(effectRef.timesUpdated).withContext('effect executes immediately after changed detection').toBe(1);
-    action(); // execute change to signal
+    await action(); // execute change to signal
     fixture.detectChanges();
-    flush();
+    flushFn();
     fixture.detectChanges(); // make sure to detect any asynchronous changes that occur after flush.
     // This test originally was just checking that the effect was called twice.
     // However, when upgrading to 17.2 it appears that async functions like timers would could effects to trigger.
     expect(effectRef.timesUpdated).withContext('effect executes after signal update is detected').toBeGreaterThanOrEqual(2);
     effectRef.destroy();
   }));
+
+}
+
+/**
+ * Returns a void function isAsync is true,
+ * otherwise returns a reference to the flush function to flush microtasks inside a fakeAsync.
+ */
+function flushFactory(isAsync: boolean | undefined): () => void {
+  return isAsync ? () => {} : flush;
+}
+
+function fakeOrRealAsync(isAsync: boolean | undefined, fn: () => unknown) {
+  return isAsync ? async () => await fn() : fakeAsync(fn);
 }
