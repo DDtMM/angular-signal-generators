@@ -30,15 +30,16 @@ export function resizeSignal(
   options?: ResizeSignalOptions
 ): Signal<ResizeObserverEntry[]>;
 /**
- * Uses MutationObserver to observe changes to nodes passed to the signal.
- * @param source Either a signal/observable/function that returns Nodes or ElementRefs, or a value that is Node or ElementRef.
+ * Uses ResizeObserver to observe changes to elements passed to the signal.
+ * @param source Either a signal/observable/function that returns Elements or ElementRefs, or a value that is Element or ElementRef.
  * If the source is a value then the signal will be writable.
- * @param options Options for the signal or the MutationObserver used to monitor changes.
+ * @param options Options for the signal or the ResizeObserver used to monitor changes.
  * @example
  * ```ts
- * const mutation = mutationSignal<number>(document.getElementById('el1'));
- * node.setAttribute('data-node-value', 'hello there');
- * console.log(mutation()[0]?.attributeName)); // will log 'data-node-value'
+ * const el = document.getElementById('el1');
+ * const $obs = resizeSignal(el);
+ * effect(() => console.log($obs()[0])); // will output changes to size.
+ * el.style.height = '250px';
  * ```
  */
 export function resizeSignal(
@@ -54,7 +55,6 @@ export function resizeSignal(
     source,
     options,
     getElement,
-    [],
     injector);
 
 }

@@ -101,6 +101,11 @@
               "projects/demo/src/favicon.ico",
               "projects/demo/src/assets",
               {
+                "glob": "*.*",
+                "input": "projects/demo/src/google-search",
+                "output": "/"
+              },
+              {
                 "glob": "404.md",
                 "input": "projects/demo/src/",
                 "output": "/"

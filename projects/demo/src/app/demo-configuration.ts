@@ -11,18 +11,36 @@ import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterat
 import { StorageSignalHomeDemoComponent } from './home-demos/storage-signal-home-demo.component';
 import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-demo.component';
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
+import { AsyncSignalPageComponent } from './demos/async-signal/async-signal-page.component';
+import { DebounceSignalPageComponent } from './demos/debounce-signal/debounce-signal-page.component';
+import { ExtendSignalPageComponent } from './demos/extend-signal/extend-signal-page.component';
+import { FilterSignalPageComponent } from './demos/filter-signal/filter-signal-page.component';
+import { LiftSignalPageComponent } from './demos/lift-signal/lift-signal-page.component';
+import { MapSignalPageComponent } from './demos/map-signal/map-signal-page.component';
+import { ReduceSignalPageComponent } from './demos/reduce-signal/reduce-signal-page.component';
+import { SequenceSignalPageComponent } from './demos/sequence-signal/sequence-signal-page.component';
+import { SignalToIteratorPageComponent } from './demos/signal-to-iterator/signal-to-iterator-page.component';
+import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page.component';
+import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
+import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
+import { MutationSignalHomeDemoComponent } from './home-demos/mutation-signal-home-demo.component';
+import { ResizeSignalHomeDemoComponent } from './home-demos/resize-signal-home-demo.component';
+import { ResizeSignalPageComponent } from './demos/resize-signal/resize-signal-page.component';
+import { MutationSignalPageComponent } from './demos/mutation-signal/mutation-signal-page.component';
+import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
 
 /** What type of signals are returned from signal factory functions. */
 export type UsageType = 'generator' | 'utility' | 'writableSignal';
 
 export interface DemoConfigurationItem<FnName extends string> {
-  readonly homeComponent: Type<unknown>;
+  readonly homeDemo: Type<unknown>;
   /** The url to the docs from the root. */
   readonly docUrl: string;
   /** Function name to generate signal.  Acts as distinct key. */
   readonly fnName: FnName;
   /** Display name */
   readonly name: string;
+  readonly page: Type<unknown>;
   /** The route from the root of the app. */
   readonly route: string;
   readonly usages: UsageType[];
@@ -30,98 +48,137 @@ export interface DemoConfigurationItem<FnName extends string> {
 
 export const DEMO_CONFIGURATIONS = [
   {
-    homeComponent: AsyncSignalHomeDemoComponent,
+    homeDemo: AsyncSignalHomeDemoComponent,
     docUrl: './api/functions/asyncSignal-1.html',
     fnName: 'asyncSignal' as const,
-    name: 'Async',
+    name: 'AsyncSignal',
+    page: AsyncSignalPageComponent,
     route: 'async-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: DebounceSignalHomeDemoComponent,
+    homeDemo: DebounceSignalHomeDemoComponent,
     docUrl: './api/functions/debounceSignal.html',
     fnName: 'debounceSignal' as const,
-    name: 'Debounce',
+    name: 'DebounceSignal',
+    page: DebounceSignalPageComponent,
     route: 'debounce-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: ExtendSignalHomeDemoComponent,
+    homeDemo: ExtendSignalHomeDemoComponent,
     docUrl: './api/functions/extendSignal.html',
     fnName: 'extendSignal' as const,
-    name: 'Extend',
+    name: 'ExtendSignal',
+    page: ExtendSignalPageComponent,
     route: 'extend-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: FilterSignalHomeDemoComponent,
+    homeDemo: FilterSignalHomeDemoComponent,
     docUrl: './api/functions/filterSignal-1.html',
     fnName: 'filterSignal' as const,
-    name: 'Filter',
+    name: 'FilterSignal',
+    page: FilterSignalPageComponent,
     route: 'filter-signal',
     usages: ['writableSignal']
   },
   {
-    homeComponent: LiftSignalHomeDemoComponent,
+    homeDemo: IntersectionSignalHomeDemoComponent,
+    docUrl: './api/functions/intersectionSignal-1.html',
+    fnName: 'intersectionSignal' as const,
+    name: 'IntersectionSignal',
+    page: IntersectionSignalPageComponent,
+    route: 'intersection-signal',
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: LiftSignalHomeDemoComponent,
     docUrl: './api/functions/liftSignal.html',
     fnName: 'liftSignal' as const,
-    name: 'Lift',
+    name: 'LiftSignal',
+    page: LiftSignalPageComponent,
     route: 'lift-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: MapSignalHomeDemoComponent,
+    homeDemo: MapSignalHomeDemoComponent,
     docUrl: './api/functions/mapSignal-1.html',
     fnName: 'mapSignal' as const,
-    name: 'Map',
+    name: 'MapSignal',
+    page: MapSignalPageComponent,
     route: 'map-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: ReduceSignalHomeDemoComponent,
+    homeDemo: MutationSignalHomeDemoComponent,
+    docUrl: './api/functions/mutationSignal-1.html',
+    fnName: 'mutationSignal' as const,
+    name: 'MutationSignal',
+    page: MutationSignalPageComponent,
+    route: 'mutation-signal',
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: ReduceSignalHomeDemoComponent,
     docUrl: './api/functions/reduceSignal-1.html',
     fnName: 'reduceSignal' as const,
-    name: 'Reduce',
+    name: 'ReduceSignal',
+    page: ReduceSignalPageComponent,
     route: 'reduce-signal',
     usages: ['writableSignal']
   },
   {
-    homeComponent: SequenceSignalHomeDemoComponent,
+    homeDemo: ResizeSignalHomeDemoComponent,
+    docUrl: './api/functions/resizeSignal-1.html',
+    fnName: 'resizeSignal' as const,
+    name: 'ResizeSignal',
+    page: ResizeSignalPageComponent,
+    route: 'resize-signal',
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: SequenceSignalHomeDemoComponent,
     docUrl: './api/functions/sequenceSignal-1.html',
     fnName: 'sequenceSignal' as const,
-    name: 'Sequence',
+    name: 'SequenceSignal',
+    page: SequenceSignalPageComponent,
     route: 'sequence-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: SignalToIteratorHomeDemoComponent,
+    homeDemo: SignalToIteratorHomeDemoComponent,
     docUrl: './api/functions/signalToIterator.html',
     fnName: 'signalToIterator' as const,
     name: 'SignalToIterator',
+    page: SignalToIteratorPageComponent,
     route: 'signal-to-iterator',
     usages: ['utility']
   },
   {
-    homeComponent: StorageSignalHomeDemoComponent,
+    homeDemo: StorageSignalHomeDemoComponent,
     docUrl: './api/functions/storageSignal.html',
     fnName: 'storageSignal' as const,
-    name: 'Storage',
+    name: 'StorageSignal',
+    page: SequenceSignalPageComponent,
     route: 'storage-signal',
     usages: ['writableSignal']
   },
   {
-    homeComponent: TimerSignalHomeDemoComponent,
+    homeDemo: TimerSignalHomeDemoComponent,
     docUrl: './api/functions/timerSignal-1.html',
     fnName: 'timerSignal' as const,
-    name: 'Timer',
+    name: 'TimerSignal',
+    page: TimerSignalPageComponent,
     route: 'timer-signal',
     usages: ['generator', 'writableSignal']
   },
   {
-    homeComponent: TweenSignalHomeDemoComponent,
+    homeDemo: TweenSignalHomeDemoComponent,
     docUrl: './api/functions/tweenSignal-1.html',
     fnName: 'tweenSignal' as const,
-    name: 'Tween',
+    name: 'TweenSignal',
+    page: TweenSignalPageComponent,
     route: 'tween-signal',
     usages: ['generator', 'writableSignal']
   }

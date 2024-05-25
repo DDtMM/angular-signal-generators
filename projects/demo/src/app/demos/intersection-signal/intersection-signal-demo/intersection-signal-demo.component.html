@@ -1,0 +1,8 @@
+<div class="overflow-x-auto w-full h-16 bg-slate-500 relative" #rootEl>
+  <div class="w-[300%]">
+    <div class="w-8 h-8 mt-2 absolute bg-primary rounded left-[150%]" #targetEl></div>
+  </div>
+</div>
+<div>
+  {{$intersection().length > 0 && $intersection()[0].isIntersecting ? 'Is Intersecting' : 'Is Not Intersecting'}}
+</div>

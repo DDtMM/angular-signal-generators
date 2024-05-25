@@ -1,0 +1,13 @@
+<div class="flex flex-col gap-3">
+  <div class="flex flex-row gap-3">
+    <label for="widthRange" class="whitespace-nowrap">Element Width</label>
+    <input id="widthRange" type="range" min="0" max="100" class="range range-primary" [(ngModel)]="$width">
+  </div>
+  <div class="flex flex-row justify-center w-full">
+    <div #targetEl class="rounded bg-secondary h-8" [style.width.%]="$width()" title="Adjustable Width Element">
+    </div>
+  </div>
+  <div class="text-center">
+    {{$resizeResult()}}
+  </div>
+</div>

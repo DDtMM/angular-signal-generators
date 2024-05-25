@@ -1,107 +1,115 @@
-import { Component, ElementRef, Injector, viewChild } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture, ngMocks } from 'ng-mocks';
+import { ElementRef, Injector } from '@angular/core';
+import { TestBed, fakeAsync, flush } from '@angular/core/testing';
+import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests.spec';
-import { delayForObserver, setupEnsureSignalWorksWhenObserverIsMissing } from './dom-observer-test-utilities.spec';
+import { setupEnsureSignalWorksWhenObserverIsMissing } from './common-dom-observer-tests.spec';
 import { IntersectionSignal, IntersectionSignalValue, intersectionSignal } from './intersection-signal';
-
-@Component({
-  standalone: true,
-  template: `
-<div #outer style="overflow: auto; width: 100px; height: 100px; background: gray;">
-  <div #innerMid id="innerMid" style="position: relative; top: 200px">Mid</div>
-  <div #innerBottom id="innerBottom" style="position: relative; top: 600px">Bottom</div>
-</div>
-      `
-})
-class TestComponent {
-  readonly outer = viewChild.required<ElementRef<HTMLDivElement>>('outer');
-  readonly innerMid = viewChild.required<ElementRef<HTMLDivElement>>('innerMid');
-  readonly innerBottom = viewChild.required<ElementRef<HTMLDivElement>>('innerBottom');
-}
+import { MockIntersectionObserver } from './mock-observer.spec';
+import { MockRender, MockedComponentFixture } from 'ng-mocks';
 
 describe('intersectionSignal', () => {
-
-  let component: TestComponent;
-  let fixture: MockedComponentFixture<TestComponent, TestComponent>;
+  let fixture: MockedComponentFixture<void, void>;
   let injector: Injector;
+  let restoreObserver: () => void;
 
   beforeEach(() => {
-    fixture = MockRender(TestComponent);
-    component = fixture.point.componentInstance;
+    fixture = MockRender();
     injector = fixture.componentRef.injector;
+    restoreObserver = replaceGlobalProperty('IntersectionObserver', MockIntersectionObserver);
   });
-  // "setupDoesNotCauseReevaluationsSimplyWhenNested" won't work because that test requires its own MockRender.
-  setupTypeGuardTests(() => intersectionSignal(component.innerMid, { injector }));
+  afterEach(() => {
+    restoreObserver();
+  });
+
+  setupTypeGuardTests(() => intersectionSignal(null, { injector }));
   setupComputedAndEffectTests(
     () => {
-      const sut = intersectionSignal(component.innerMid, { injector, root: component.outer() });
-      return [sut, async () => {
-        component.innerMid().nativeElement.scrollIntoView();
-        await delayForObserver();
+      const sut = intersectionSignal(document.createElement('div'), { injector });
+      return [sut, () => {
+        MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
       }];
     },
     undefined,
-    () => fixture,
-    true
+    () => fixture
   );
+
   setupEnsureSignalWorksWhenObserverIsMissing('IntersectionObserver',
-    () => intersectionSignal(component.innerMid, { injector, root: component.outer() }),
-    () => component.innerMid().nativeElement.scrollIntoView());
+    () => intersectionSignal(document.createElement('div'), { injector }),
+    () => MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]));
 
 
-  it('should use injection context if injector isn\'t passed on an option.', async () => {
-    const sut = TestBed.runInInjectionContext(() => intersectionSignal(component.innerMid, { injector, root: component.outer() }));
-    component.innerMid().nativeElement.scrollIntoView();
-    await delayForObserver();
+  it('should use injection context if injector isn\'t passed on an option.', fakeAsync(() => {
+    const sut = TestBed.runInInjectionContext(() => intersectionSignal(document.createElement('div'), { root: document }));
+    MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+    flush();
     expect(sut()[0]?.isIntersecting).toBeTrue();
-  });
+  }));
 
-  it('observes changes to a Element and elementRef attribute changes by default', async () => {
-    // these tests are compressed into one because of the delay introduced by waiting for mutation observer.
-    const el = ngMocks.find(fixture, '#innerMid').nativeElement;
-    const sutElRef = intersectionSignal(component.innerMid, { injector, root: component.outer() });
-    const sutEl = intersectionSignal(el, { injector });
-    component.innerMid().nativeElement.scrollIntoView();
-    await delayForObserver();
-    expect(sutEl()[0]?.isIntersecting).toBeTrue();
-    expect(sutElRef()[0]?.isIntersecting).toBeTrue();
-  });
+  it('should work if no options are passed.', fakeAsync(() => {
+    const sut = TestBed.runInInjectionContext(() => intersectionSignal(document.createElement('div')));
+    MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+    flush();
+    expect(sut()[0]?.isIntersecting).toBeTrue();
+  }));
 
-  it('observes nothing if the source is null or undefined', () => {
-    const sut1 = intersectionSignal(null, { injector });
-    const sut2 = intersectionSignal(undefined, { injector });
-    expect(sut1()).toEqual([]);
-    expect(sut2()).toEqual([]);
-  });
+  it('observes changes to a element', fakeAsync(() => {
+    const el = document.createElement('div');
+    const sut = intersectionSignal(el, { injector });
+    MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+    flush();
+    expect(sut()[0]?.isIntersecting).toBeTrue();
+  }));
+  it('observes changes to a elementRef', fakeAsync(() => {
+    const el = new ElementRef(document.createElement('div'));
+    const sut = intersectionSignal(el, { injector });
+    MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+    flush();
+    expect(sut()[0]?.isIntersecting).toBeTrue();
+  }));
+  it('observes nothing if the source is null', fakeAsync(() => {
+    const sut = intersectionSignal(null, { injector });
+    MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+    flush();
+    expect(sut()).toEqual([]);
+  }));
+  it('observes nothing if the source is undefined', fakeAsync(() => {
+    const sut = intersectionSignal(undefined, { injector });
+    MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+    flush();
+    expect(sut()).toEqual([]);
+  }));
 
   it('passes along observer options from function options', () => {
-    const observerCtorSpy = spyOn(globalThis, 'IntersectionObserver').and.callThrough();
-    intersectionSignal(component.innerMid(), { injector, root: component.outer() });
-    expect(observerCtorSpy).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({ root: component.outer().nativeElement}));
+    const root = document.createElement('div');
+    intersectionSignal(null, { injector, root });
+    expect(MockIntersectionObserver.currentInstance?.initOptions?.root).toBe(root);
   });
 
+  it('converts the root option to an element when passed as an elementRef', () => {
+    const rootRef = new ElementRef(document.createElement('div'));
+    intersectionSignal(null, { injector, root: rootRef });
+    expect(MockIntersectionObserver.currentInstance?.initOptions?.root).toBe(rootRef.nativeElement);
+  });
   [
     ['set', (sut: IntersectionSignal, next: IntersectionSignalValue) => sut.set(next)] as const,
     ['update', (sut: IntersectionSignal, next: IntersectionSignalValue) => sut.update(() => next)] as const
   ].forEach(([methodName, setter]) => {
 
-    it(`should observe different elements when the source changes with ${methodName}`, async () => {
-      const innerMid = component.innerMid().nativeElement;
-      const innerBottom = component.innerMid().nativeElement;
-      const outer = component.outer().nativeElement;
-      const sut = intersectionSignal(innerMid, { root: outer, injector });
-      innerMid.scrollIntoView();
-      await delayForObserver();
+    it(`should observe different elements when the source changes with ${methodName}`, fakeAsync(() => {
+
+      const el1 = document.createElement('div');
+      const el2 = document.createElement('div');
+      const sut = intersectionSignal(el1, { injector });
+      const mockObserver = MockIntersectionObserver.currentInstance!
+      mockObserver.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
+      flush();
       expect(sut()[0]?.isIntersecting).toBeTrue();
-      outer.scrollTop = 0;
-      await delayForObserver();
+      setter(sut, el2);
+      expect(mockObserver.observed[0][0]).toBe(el2);
+      mockObserver.simulateObservation([{ isIntersecting: false } as IntersectionObserverEntry]);
+      flush();
       expect(sut()[0]?.isIntersecting).toBeFalse();
-      setter(sut, innerBottom);
-      innerBottom.scrollIntoView();
-      await delayForObserver();
-      expect(sut()[0]?.isIntersecting).toBeTrue();
-    });
+    }));
   });
 
 });

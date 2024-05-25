@@ -5,13 +5,12 @@ import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
 
 /**
- * Optional injector reference if created outside injector context and MutationObserver options.
- * If no MutationObserver options are passed then only all attributes are observed.
+ * Optional injector reference if created outside injector context and IntersectionObserver options.
+ * If no IntersectionObserver options are passed then only all attributes are observed.
  */
 export interface IntersectionObserverOptions extends Omit<IntersectionObserverInit, 'root'> {
   /** This signal must either be created in an injection context or passed an injector. */
   injector?: Injector;
-
   /** The root element where intersections will be observed. */
   root?: Document | ElementRef | Element | null | undefined;
 }
@@ -21,9 +20,9 @@ export type IntersectionSignalValue = ElementRef | Element | null | undefined;
 export type IntersectionSignal = Signal<IntersectionObserverEntry[]> & {
   /** Returns the output signal as a readonly. */
   asReadonly(): Signal<IntersectionObserverEntry[]>;
-  /** Sets the new ElementRef to watch. */
+  /** Sets the new Element to watch. */
   set(value: IntersectionSignalValue): void;
-  /** Updates the new Node or ElementRef to watch from the existing value. */
+  /** Updates the new Node or Element to watch from the existing value. */
   update(updateFn: (value: IntersectionSignalValue) => IntersectionSignalValue): void;
 };
 
@@ -33,15 +32,16 @@ export function intersectionSignal(
   options?: IntersectionObserverOptions
 ): Signal<IntersectionObserverEntry[]>;
 /**
- * Uses MutationObserver to observe changes to nodes passed to the signal.
- * @param source Either a signal/observable/function that returns Nodes or ElementRefs, or a value that is Node or ElementRef.
+ * Uses IntersectionObserver to observe changes to nodes passed to the signal.
+ * @param source Either a signal/observable/function that returns Elements or ElementRefs, or a value that is Elements or ElementRef.
  * If the source is a value then the signal will be writable.
- * @param options Options for the signal or the MutationObserver used to monitor changes.
+ * @param options Options for the signal or the IntersectionObserver used to monitor changes.
  * @example
  * ```ts
- * const mutation = mutationSignal<number>(document.getElementById('el1'));
- * node.setAttribute('data-node-value', 'hello there');
- * console.log(mutation()[0]?.attributeName)); // will log 'data-node-value'
+ * const el = document.getElementById('el1');
+ * const $obs = intersectionSignal(el);
+ * effect(() => console.log($obs()[0]?.attributeName)); // will log when scrolled into view.
+ * el.scrollIntoView();
  * ```
  */
 export function intersectionSignal(
@@ -49,7 +49,7 @@ export function intersectionSignal(
   options?: IntersectionObserverOptions
 ): Signal<IntersectionObserverEntry[]> | IntersectionSignal {
   if (typeof IntersectionObserver === 'undefined') {
-    return signal([]); // return a dummy signal that never changes if there is no MutationObserver (like in SSR).
+    return signal([]); // return a dummy signal that never changes if there is no IntersectionObserver (like in SSR).
   }
   const injector = options?.injector ?? getInjector(intersectionSignal);
   return domObserverSignalFactory<IntersectionObserver, IntersectionSignalValue, Element>(
@@ -60,7 +60,6 @@ export function intersectionSignal(
     source,
     undefined, // intersection observer options never change
     getElement,
-    [],
     injector);
 
 }

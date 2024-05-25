@@ -36,9 +36,10 @@ export function mutationSignal(
  * @param options Options for the signal or the MutationObserver used to monitor changes.
  * @example
  * ```ts
- * const mutation = mutationSignal<number>(document.getElementById('el1'));
- * node.setAttribute('data-node-value', 'hello there');
- * console.log(mutation()[0]?.attributeName)); // will log 'data-node-value'
+ * const el = document.getElementById('el1');
+ * const $obs = mutationSignal(el);
+ * effect(() => console.log($obs()[0]?.attributeName)); // will log 'data-node-value'
+ * el.setAttribute('data-node-value', 'hello there');
  * ```
  */
 export function mutationSignal(
@@ -55,7 +56,6 @@ export function mutationSignal(
     source,
     getObserverOptions(options),
     getNode,
-    [],
     injector);
 
 }

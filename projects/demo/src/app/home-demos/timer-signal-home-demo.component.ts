@@ -25,5 +25,6 @@ import { HomeBoxComponent } from '../controls/home-box.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerSignalHomeDemoComponent {
+  /** A little delay is added to the timer for hydration. */
   $timer = timerSignal(1000, 1000);
 }

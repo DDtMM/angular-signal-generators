@@ -17,7 +17,7 @@ export type DomObserverCallback<D extends DomObserver> =
   : D extends ResizeObserver ? ResizeObserverCallback
   : never;
 
-export type DomObserverOutput<D extends DomObserver> = Parameters<DomObserverCallback<D>>[0];
+export type DomObserverOutput<D extends DomObserver> = Parameters<DomObserverCallback<D>>[0] & unknown[];
 export type DomSignalValue<D extends DomObserver> = ElementRef | null | undefined | DomObserverTarget<D>;
 
 
@@ -31,16 +31,26 @@ export type DomObserverSignal<D extends DomObserver, I extends DomSignalValue<D>
 }
 
 
+/**
+ *
+ * @param observerFactoryFn Returns an observer that executes a callback whenever a notification is received.
+ * @param source The Observed value.
+ * @param options A mixture of options for the signal and the observer.
+ * @param nativeObservedTransformFn Converts the source value into the appropriate type for the observer.
+ * @param initialOutput The initial output for the signal.
+ * @param injector The injector used to create an effect to monitor changes to the source if it is a signal.
+ * @returns A signal whose value changes to the latest observer output.
+ */
 export function domObserverSignalFactory<D extends DomObserver, I extends DomSignalValue<D>, T extends DomObserverTarget<D>>(
   observerFactoryFn: (callback: (result: DomObserverOutput<D>) => void) => D,
   source: ValueSource<I>,
   options: DomObserverOptions<D>,
   nativeObservedTransformFn: (rawSubject: I) => T | undefined,
-  initialOutput: DomObserverOutput<D>,
   injector: Injector
 ): DomObserverSignal<D, I> | Signal<DomObserverOutput<D>> {
-  const $observerOutput = signal<DomObserverOutput<D>>(initialOutput);
-  const observer = observerFactoryFn((x) => {console.log('setting', x); $observerOutput.set(x) });
+  const $observerOutput = signal<DomObserverOutput<D>>([]);
+  const outputSetter = $observerOutput.set; // copy setter in case it is overwritten by writable output.
+  const observer = observerFactoryFn((x) => outputSetter(x));
   const destroyRef = getDestroyRef(domObserverSignalFactory, injector);
   destroyRef.onDestroy(() => observer.disconnect());
 
@@ -53,6 +63,7 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
   }
 }
 
+/** Creates a writable signal. */
 function domObserverWritableSignalFactory<D extends DomObserver, I extends DomSignalValue<D>, S extends DomObserverTarget<D>>(
   observer: D,
   $output: WritableSignal<DomObserverOutput<D>>,
@@ -98,6 +109,7 @@ function domObserverComputedSignalSetup<D extends DomObserver, I extends DomSign
   }, { injector });
 }
 
+/** Common behavior when the subject changes. */
 function observeNextSubject<D extends DomObserver, S extends DomObserverTarget<D>>(
   observer: DomObserver, subject: S | undefined, options: DomObserverOptions<D>): void {
   observer.disconnect();

@@ -1,0 +1,13 @@
+<div class="flex flex-row gap-3">
+  <div class="join">
+    <button type="button" class="btn btn-primary join-item" (click)="$color.set('red')">Red</button>
+    <button type="button" class="btn btn-primary join-item" (click)="$color.set('green')">Green</button>
+    <button type="button" class="btn btn-primary join-item" (click)="$color.set('blue')">Blue</button>
+  </div>
+  <div class="text-center border border-solid rounded grow">
+    <div #targetEl class="p-3" [style]="{ color: $color() }">Change Me</div>
+  </div>
+</div>
+<div>
+  Last Change: {{$mutationResult()}}
+</div>
