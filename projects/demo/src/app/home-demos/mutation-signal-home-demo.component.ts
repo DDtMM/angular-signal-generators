@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, signal, viewChild } from '@angular/core';
-import { mutationSignal } from 'projects/signal-generators/src/public-api';
-import { mapSignal } from 'signal-generators';
+import { mapSignal, mutationSignal } from 'projects/signal-generators/src/public-api';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { ExampleCodeComponent } from '../controls/example-code.component';
 import { HomeBoxComponent } from '../controls/home-box.component';
