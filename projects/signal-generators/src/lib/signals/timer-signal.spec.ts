@@ -1,6 +1,6 @@
-import { signal } from '@angular/core';
-import { fakeAsync, tick } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
+import { PLATFORM_ID, signal } from '@angular/core';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { MockBuilder, MockInstance, MockRender, MockedComponentFixture } from 'ng-mocks';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { ValueSource } from '../value-source';
@@ -13,10 +13,17 @@ describe('timerSignal', () => {
 
   setupTypeGuardTests(() => timerSignal(500, undefined, { injector: fixture.componentRef.injector }));
 
-  describe('as a timer', () => {
+  it('should use injector when not passed as a parameter', fakeAsync(() => {
+    TestBed.runInInjectionContext(() => {
+      const sut = timerSignal(500, 500);
+      tickAndAssertValues(() => sut(), [[0, 0], [ 500, 1 ], [ 500, 2 ]]);
+      sut.pause();
+    });
+  }));
+  describe('as a sut', () => {
 
-    it('emits once after specified time.', testTimer(100, undefined, (timer) => {
-      tickAndAssertValues(() => timer(), [[0, 0], [ 1000, 1 ], [ 2000, 1 ]]);
+    it('emits once after specified time.', testTimer(100, undefined, (sut) => {
+      tickAndAssertValues(() => sut(), [[0, 0], [ 1000, 1 ], [ 2000, 1 ]]);
     }));
 
     it('is not running if stopped option is true', () => {
@@ -46,10 +53,11 @@ describe('timerSignal', () => {
         return [sut, () => { tick(500); }];
       });
 
-      it('sets a timer for the timerSource amount', testTimer(100, undefined, (timer) => {
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ]]);
+      it('sets a sut for the timerSource amount', testTimer(100, undefined, (sut) => {
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ]]);
       }));
     });
+
 
     describe('with a signal for timerSource parameter', () => {
       setupComputedAndEffectTests(() => {
@@ -58,59 +66,59 @@ describe('timerSignal', () => {
       });
 
 
-      it('sets a timer for the timerSource amount', testTimer(signal(1000), undefined, (timer) => {
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ]]);
+      it('sets a sut for the timerSource amount', testTimer(signal(1000), undefined, (sut) => {
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ]]);
       }));
 
-      it('increases due time if signal increases', testTimer(signal(1000), undefined, (timer, timerDurationSignal) => {
-        tickAndAssertValues(timer, [[ 500, 0 ]]);
+      it('increases due time if signal increases', testTimer(signal(1000), undefined, (sut, timerDurationSignal) => {
+        tickAndAssertValues(sut, [[ 500, 0 ]]);
         timerDurationSignal.set(1500);
         fixture.detectChanges();
-        tickAndAssertValues(timer, [[ 500, 0 ], [ 500, 1 ]]);
+        tickAndAssertValues(sut, [[ 500, 0 ], [ 500, 1 ]]);
       }));
 
-      it('decreases due time if signal decreases', testTimer(signal(1000), undefined, (timer, timerDurationSignal) => {
-        tickAndAssertValues(timer, [[ 500, 0 ]]);
+      it('decreases due time if signal decreases', testTimer(signal(1000), undefined, (sut, timerDurationSignal) => {
+        tickAndAssertValues(sut, [[ 500, 0 ]]);
         timerDurationSignal.set(500);
         fixture.detectChanges();
-        tickAndAssertValues(timer, [[ 1, 1 ]]);
+        tickAndAssertValues(sut, [[ 1, 1 ]]);
       }));
     });
 
     describe('#restart', () => {
-      it('resets signal value', testTimer(1000, undefined, (timer) => {
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ]]);
-        timer.restart();
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ]]);
+      it('resets signal value', testTimer(1000, undefined, (sut) => {
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ]]);
+        sut.restart();
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ]]);
       }));
 
-      it('interrupts an existing timer.', testTimer(1000, undefined, (timer) => {
-        tickAndAssertValues(timer, [[0, 0], [ 500, 0 ]]);
-        timer.restart();
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ]]);
+      it('interrupts an existing sut.', testTimer(1000, undefined, (sut) => {
+        tickAndAssertValues(sut, [[0, 0], [ 500, 0 ]]);
+        sut.restart();
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ]]);
       }));
     });
 
     describe('pause and resume', () => {
-      it('#pause prevents emissions over time', testTimer(1000, undefined, (timer) => {
-        tickAndAssertValues(timer, [[ 500, 0 ]]);
-        timer.pause();
-        tickAndAssertValues(timer, [[ 5000, 0 ]]);
+      it('#pause prevents emissions over time', testTimer(1000, undefined, (sut) => {
+        tickAndAssertValues(sut, [[ 500, 0 ]]);
+        sut.pause();
+        tickAndAssertValues(sut, [[ 5000, 0 ]]);
       }));
 
-      it('#resume continues emissions', testTimer(1000, undefined, (timer) => {
-        tickAndAssertValues(timer, [[ 999, 0 ]]);
-        timer.pause();
-        tickAndAssertValues(timer, [[ 5000, 0 ]]);
-        timer.resume();
-        tickAndAssertValues(timer, [[ 1, 1 ]]);
+      it('#resume continues emissions', testTimer(1000, undefined, (sut) => {
+        tickAndAssertValues(sut, [[ 999, 0 ]]);
+        sut.pause();
+        tickAndAssertValues(sut, [[ 5000, 0 ]]);
+        sut.resume();
+        tickAndAssertValues(sut, [[ 1, 1 ]]);
       }));
     });
   });
 
   describe('as an interval', () => {
-    it('emits continuously after timerTime is complete', testTimer(1000, 500, (timer) => {
-      tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
+    it('emits continuously after timerTime is complete', testTimer(1000, 500, (sut) => {
+      tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
     }));
 
     describe('with a number for intervalSource parameter', () => {
@@ -119,8 +127,8 @@ describe('timerSignal', () => {
         return [sut, () => { tick(2000); sut.pause(); }];
       });
 
-      it('sets an interval for the intervalSource amount', testTimer(1000, 500, (timer) => {
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
+      it('sets an interval for the intervalSource amount', testTimer(1000, 500, (sut) => {
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
       }));
     });
 
@@ -131,65 +139,86 @@ describe('timerSignal', () => {
       });
 
 
-      it('sets a timer for the timerSource amount', testTimer(1000, signal(500), (timer) => {
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
+      it('sets a sut for the timerSource amount', testTimer(1000, signal(500), (sut) => {
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
       }));
 
 
-      it('increases due time if signal increases', testTimer(1000, signal(500), (timer, _, intervalDurationSignal) => {
-        tickAndAssertValues(timer, [[ 1750, 2]]);
+      it('increases due time if signal increases', testTimer(1000, signal(500), (sut, _, intervalDurationSignal) => {
+        tickAndAssertValues(sut, [[ 1750, 2]]);
         intervalDurationSignal.set(750);
         fixture.detectChanges();
-        tickAndAssertValues(timer, [[ 500, 3 ], [ 750, 4 ], [750, 5]]);
+        tickAndAssertValues(sut, [[ 500, 3 ], [ 750, 4 ], [750, 5]]);
       }));
 
-      it('decreases due time if signal decreases', testTimer(1000, signal(500), (timer, _, intervalDurationSignal) => {
-        tickAndAssertValues(timer, [[ 1750, 2]]);
+      it('decreases due time if signal decreases', testTimer(1000, signal(500), (sut, _, intervalDurationSignal) => {
+        tickAndAssertValues(sut, [[ 1750, 2]]);
         intervalDurationSignal.set(250);
         fixture.detectChanges();
-        tickAndAssertValues(timer, [[ 0, 3 ], [ 250, 4 ], [250, 5]]);
+        tickAndAssertValues(sut, [[ 0, 3 ], [ 250, 4 ], [250, 5]]);
       }));
     });
 
     describe('#restart', () => {
-      it('resets signal value and begins from initial timer', testTimer(1000, 500, (timer) => {
-        tickAndAssertValues(timer, [[ 1750, 2]]);
-        timer.restart();
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ], [500, 2]]);
+      it('resets signal value and begins from initial sut', testTimer(1000, 500, (sut) => {
+        tickAndAssertValues(sut, [[ 1750, 2]]);
+        sut.restart();
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ], [500, 2]]);
       }));
 
-      it('interrupts an existing interval.', testTimer(1000, 500, (timer) => {
-        tickAndAssertValues(timer, [[ 1750, 2]]);
-        timer.restart();
-        tickAndAssertValues(timer, [[0, 0], [ 1000, 1 ], [500, 2]]);
+      it('interrupts an existing interval.', testTimer(1000, 500, (sut) => {
+        tickAndAssertValues(sut, [[ 1750, 2]]);
+        sut.restart();
+        tickAndAssertValues(sut, [[0, 0], [ 1000, 1 ], [500, 2]]);
       }));
     });
     describe('#pause and #resume', () => {
-      it('#pause prevents emissions over time', testTimer(1000, 500, (timer) => {
-        tickAndAssertValues(timer, [[ 2000, 3 ]]);
-        timer.pause();
-        tickAndAssertValues(timer, [[ 5000, 3 ]]);
+      it('#pause prevents emissions over time', testTimer(1000, 500, (sut) => {
+        tickAndAssertValues(sut, [[ 2000, 3 ]]);
+        sut.pause();
+        tickAndAssertValues(sut, [[ 5000, 3 ]]);
       }));
 
-      it('#resume continues emissions', testTimer(1000, 500, (timer) => {
-        tickAndAssertValues(timer, [[ 2000, 3 ]]);
-        timer.pause();
-        tickAndAssertValues(timer, [[ 5000, 3 ]]);
-        timer.resume();
-        tickAndAssertValues(timer, [[ 500, 4 ]]);
+      it('#resume continues emissions', testTimer(1000, 500, (sut) => {
+        tickAndAssertValues(sut, [[ 2000, 3 ]]);
+        sut.pause();
+        tickAndAssertValues(sut, [[ 5000, 3 ]]);
+        sut.resume();
+        tickAndAssertValues(sut, [[ 500, 4 ]]);
       }));
     });
   });
 
 
-  /** sets up the test inside fakeAsync and pauses the timer at the end to avoid error message. */
+  /** sets up the test inside fakeAsync and pauses the sut at the end to avoid error message. */
   function testTimer<T extends ValueSource<number>, U extends ValueSource<number> | undefined>(timerTime: T, intervalTime: U,
-    assertion: (timer: TimerSignal, timerTime: T, intervalTime: U) => void): jasmine.ImplementationCallback {
+    assertion: (sut: TimerSignal, timerTime: T, intervalTime: U) => void): jasmine.ImplementationCallback {
 
     return fakeAsync(() => {
-      const timer = timerSignal(timerTime, intervalTime, { injector: fixture.componentRef.injector });
-      assertion(timer, timerTime, intervalTime);
-      timer.pause();
+      const sut = timerSignal(timerTime, intervalTime, { injector: fixture.componentRef.injector });
+      assertion(sut, timerTime, intervalTime);
+      sut.pause();
     });
   }
+});
+
+/** Environment tests have slightly different setups. */
+describe('timerSignal', () => {
+  beforeEach(() => MockBuilder().mock(PLATFORM_ID));
+  MockInstance.scope();
+  it('should start running after creation when platform is browser', fakeAsync(() => {
+    MockInstance(PLATFORM_ID, () => 'browser');
+    const fixture = MockRender();
+    const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
+    expect(sut.state()).toBe('running');
+    tickAndAssertValues(sut, [[ 500, 1 ]]);
+  }));
+
+  it('should be stopped after creation when platform is not browser', fakeAsync(() => {
+    MockInstance(PLATFORM_ID, () => 'not browser');
+    const fixture = MockRender();
+    const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
+    expect(sut.state()).toBe('stopped');
+    tickAndAssertValues(sut, [[ 500, 0 ]]);
+  }));
 });

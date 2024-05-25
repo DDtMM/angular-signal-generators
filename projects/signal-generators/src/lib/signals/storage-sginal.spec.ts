@@ -2,6 +2,7 @@ import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNe
 import { WebObjectStore } from '../internal/web-object-store';
 import { MapBasedStorage } from '../internal/map-based-storage';
 import { localStorageSignal, sessionStorageSignal, storageSignal } from './storage-signal';
+import { replaceGlobalProperty } from '../../testing/testing-utilities';
 
 
 describe('storageSignal', () => {
@@ -53,41 +54,45 @@ describe('storageSignal', () => {
 
 describe('localStorageSignal', () => {
   it('uses localStorage when it exists on globalThis', () => {
-    Object.defineProperty(globalThis, 'localStorage', { value: new MapBasedStorage() });
+    const restoreProperty = replaceGlobalProperty('localStorage', new MapBasedStorage());
     const sut = localStorageSignal(15, 'test');
     sut.set(83);
     expect(sut()).toBe(83);
     const sut2 = localStorageSignal(24, 'test');
     expect(sut2()).toBe(83);
     expect(globalThis.localStorage.getItem('test')).toBe('83');
+    restoreProperty();
   });
   it('uses alternative storage when localStorage is not on globalThis', () => {
-    Object.defineProperty(globalThis, 'localStorage', { value: undefined });
+    const restoreProperty = replaceGlobalProperty('localStorage', undefined);
     const sut = localStorageSignal(15, 'test');
     sut.set(88);
     expect(sut()).toBe(88);
     const sut2 = localStorageSignal(25, 'test');
     expect(sut2()).toBe(88);
     expect(globalThis.localStorage as unknown).toBe(undefined);
+    restoreProperty();
   });
 });
 describe('sessionStorageSignal', () => {
   it('uses sessionStorage when it exists on globalThis', () => {
-    Object.defineProperty(globalThis, 'sessionStorage', { value: new MapBasedStorage() });
+    const restoreProperty = replaceGlobalProperty('sessionStorage', new MapBasedStorage());
     const sut = sessionStorageSignal(15, 'test');
     sut.set(41);
     expect(sut()).toBe(41);
     const sut2 = sessionStorageSignal(21, 'test');
     expect(sut2()).toBe(41);
     expect(globalThis.sessionStorage.getItem('test')).toBe('41');
+    restoreProperty();
   });
   it('uses alternative storage when sessionStorage is not on globalThis', () => {
-    Object.defineProperty(globalThis, 'sessionStorage', { value: undefined });
+    const restoreProperty = replaceGlobalProperty('sessionStorage', undefined);
     const sut = sessionStorageSignal(15, 'test');
     sut.set(105);
     expect(sut()).toBe(105);
     const sut2 = sessionStorageSignal(105, 'test');
     expect(sut2()).toBe(105);
     expect(globalThis.sessionStorage as unknown).toBe(undefined);
+    restoreProperty();
   });
 });
