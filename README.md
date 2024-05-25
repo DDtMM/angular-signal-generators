@@ -54,6 +54,10 @@ Takes an async source (Promise, Observable) or signal/function that returns an a
 
 This is very similar to rxjs's *debounce* operator.  This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal, and one where it has a *set* and *update* method and the change of the value occurs after debounce time elapses.
 
+### DOM Observer Signals - intersectionSignal / mutationSignal / resizeSignal
+
+These signals wrap the DOM observers IntersectionObserver, MutationObserver and ResizeObserver to output the last observation of changes to a target element passed to the signal.
+
 ### extendSignal
 
 Adds new methods to a signal - even hiding the existing methods if desired.  It does this by passing the original signal or a "proxy" as the first parameter of the new method.  This first parameter is obscured from the consumer so that it appears to be a normal method.
@@ -83,9 +87,9 @@ The Sequence Signal is useful for situations where you want to easily cycle betw
 
 There is also a special option to pass a cursor, which is similar to an iterator, but can be reset.  There will probably be more functionality added later.
 
-### storageSignal / localStorageSignal / sessionStorageSignal
+### Storage Signals - storageSignal / localStorageSignal / sessionStorageSignal
 
-A signal that uses a secondary storage system to store values, ideally beyond the lifetime of the application.  The next time the signal is initialized the initial value will come from this secondary storage.  Implementations using *localStorage* and *sessionStorage* exist for your convenience.
+Signals that uses a secondary storage system to store values, ideally beyond the lifetime of the application.  The next time the signal is initialized the initial value will come from this secondary storage.  Implementations using *localStorage* and *sessionStorage* exist for your convenience.
 
 ### timerSignal
 
