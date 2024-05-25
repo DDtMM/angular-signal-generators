@@ -50,7 +50,7 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
 ): DomObserverSignal<D, I> | Signal<DomObserverOutput<D>> {
   const $observerOutput = signal<DomObserverOutput<D>>([]);
   const outputSetter = $observerOutput.set; // copy setter in case it is overwritten by writable output.
-  const observer = observerFactoryFn((x) => outputSetter(x));
+  const observer = observerFactoryFn((x) => outputSetter.call($observerOutput, x));
   const destroyRef = getDestroyRef(domObserverSignalFactory, injector);
   destroyRef.onDestroy(() => observer.disconnect());
 
