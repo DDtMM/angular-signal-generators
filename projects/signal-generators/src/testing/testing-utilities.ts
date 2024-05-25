@@ -22,3 +22,21 @@ export function tickAndAssertValues<T>(selector: () => T, pattern: [elapsedMs: n
     .withContext(`At times ${times.join(', ')}`)
     .toEqual(pattern.map((x) => x[1]));
 }
+
+/**
+ * Replaces a property on globalThis and returns a function to restore it.
+ * Probably a good idea to do something more robust since an exception could prevent restoration.
+ * @example
+ * ``` ts
+ * it('should do something', () => {
+ *   const restoreProperty = replaceGlobalProperty('MutationObserver', undefined);
+ *   // do stuff ...
+ *   restoreProperty();
+ * });
+ * ```
+ */
+export function replaceGlobalProperty(key: PropertyKey, value: unknown): () => void {
+  const priorValue = (globalThis as Record<PropertyKey, unknown>)[key];
+  Object.defineProperty(globalThis, key, { value });
+  return () => Object.defineProperty(globalThis, key, { value: priorValue });
+}

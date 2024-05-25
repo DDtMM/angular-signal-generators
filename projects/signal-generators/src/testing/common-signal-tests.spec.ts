@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Signal, isSignal, signal } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
-import { MockRender } from 'ng-mocks';
+import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { isSignalInput } from '../lib/internal/signal-input-utilities';
 import { computedSpy, effectSpy } from './signal-testing-utilities';
 
@@ -22,7 +22,7 @@ export function setupTypeGuardTests(signalSetup: () => Signal<unknown>): void {
 /**
  * If the signal is created in a *computed* of *effect* then it shouldn't cause any extra evaluations.
  * This would detect if a change from the update function causes the computed to refire.
- * NOTE: This will throw on signals relying on effects!!!
+ * NOTE: This will throw on signals relying on effects!!! (Is this actually true?)
  * NOTE2: I'm not sure if effect tests are actually effective, but computed definitely are.
  * @param signalSetup a function that will just create a signal
  * @param signalUpdateFn a function that will update a signal
@@ -70,24 +70,26 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
 /**
  * Tests that the signal being tested works properly with computed and effect.
  * @param setup returns a tuple with the tested signal, and an action that should update the signal.
- * @param fixtureFactory retrieves fixture needed for change detection.  If not provided then one will be created.
  * @param context An optional description.
+ * @param fixtureFactory An optional fixture in case rendering already occurred.
+ * @param useRealAsync Tests will use fakeAsync (which is faster) unless this is true.
  */
 export function setupComputedAndEffectTests<T>(
-  setup: () => [sut: Signal<T>, action: () => void],
-  context?: string
+  setup: () => [sut: Signal<T>, action: () => void | Promise<unknown>],
+  context?: string,
+  fixtureFactory?: () => MockedComponentFixture<unknown, unknown>
 ): void {
   const expectationContext = context ? `${context}: ` : '';
 
   it(`${expectationContext}works properly when used within a computed signal`, fakeAsync(() => {
-    const [sut, action] = setup();
-    const fixture = MockRender();
-    const computedSignal = computedSpy(() => sut());
-    expect(computedSignal.timesUpdated).withContext('computed signal does not execute before computed signal is read').toBe(0);
-    const initialValue = computedSignal();
-    expect(computedSignal.timesUpdated).withContext('computed signal executes after first read').toBe(1);
-    const additionalReadValueBeforeAction = computedSignal();
-    expect(computedSignal.timesUpdated).withContext('computed signal does not execute after additional reads if source has not changed').toBe(1);
+    const fixture = fixtureFactory?.() ?? MockRender();
+    const [$sut, action] = setup();
+    const $computedSut = computedSpy(() => $sut());
+    expect($computedSut.timesUpdated).withContext('computed signal does not execute before computed signal is read').toBe(0);
+    const initialValue = $computedSut();
+    expect($computedSut.timesUpdated).withContext('computed signal executes after first read').toBe(1);
+    const additionalReadValueBeforeAction = $computedSut();
+    expect($computedSut.timesUpdated).withContext('computed signal does not execute after additional reads if source has not changed').toBe(1);
     expect(additionalReadValueBeforeAction)
       .withContext('computed signal returns initial value if source has not changed')
       .toBe(initialValue);
@@ -96,16 +98,16 @@ export function setupComputedAndEffectTests<T>(
     fixture.detectChanges();
     flush();
     fixture.detectChanges(); // make sure to detect any asynchronous changes that occur after flush.
-    expect(computedSignal.timesUpdated).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
-    const updatedValue = computedSignal();
-    expect(computedSignal.timesUpdated).withContext('when source is updated, computed signal is executed when read').toBe(2);
+    expect($computedSut.timesUpdated).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
+    const updatedValue = $computedSut();
+    expect($computedSut.timesUpdated).withContext('when source is updated, computed signal is executed when read').toBe(2);
     expect(updatedValue).withContext('when source is updated a new value is returned from computed signal').not.toBe(initialValue);
   }));
 
   it(`${expectationContext}works properly when used within an effect`, fakeAsync(() => {
-    const [sut, action] = setup();
-    const fixture = MockRender();
-    const effectRef = effectSpy(() => sut(), { injector: fixture.componentRef.injector });
+    const fixture = fixtureFactory?.() ?? MockRender();
+    const [$sut, action] = setup();
+    const effectRef = effectSpy(() => $sut(), { injector: fixture.componentRef.injector });
     fixture.detectChanges(); // no need to worry about async changes since a signal should immediately have an initial value.
     expect(effectRef.timesUpdated).withContext('effect executes immediately after changed detection').toBe(1);
     action(); // execute change to signal
@@ -117,4 +119,7 @@ export function setupComputedAndEffectTests<T>(
     expect(effectRef.timesUpdated).withContext('effect executes after signal update is detected').toBeGreaterThanOrEqual(2);
     effectRef.destroy();
   }));
+
 }
+
+

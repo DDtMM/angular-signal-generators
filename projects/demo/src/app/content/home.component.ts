@@ -35,7 +35,7 @@ import { DEMO_CONFIGURATIONS } from '../demo-configuration';
 <h2 class="text-3xl text-center">Function Demos</h2>
 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
   @for (l of demos; track l.fnName) {
-    <ng-container *ngComponentOutlet="l.homeComponent" class="contents" />
+    <ng-container *ngComponentOutlet="l.homeDemo" class="contents" />
   }
 </ul>
 `,
