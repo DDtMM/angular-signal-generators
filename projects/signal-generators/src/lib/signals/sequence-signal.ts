@@ -154,11 +154,11 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
    * This is done in lieu of using an effect.
    */
   function createCursorGetterFromSignalInput(inputSource: SignalInput<ArrayLike<T> | Cursor<T>>): () => Cursor<T> {
-    const sequenceSignal = coerceSignal(inputSource, options);
-    let lastSequence = untracked(sequenceSignal);
+    const $input = coerceSignal(inputSource, options);
+    let lastSequence = untracked($input);
     let cachedCursor = getCursor(lastSequence);
     return () => {
-      const currentSequence = untracked(sequenceSignal);
+      const currentSequence = untracked($input);
       if (currentSequence !== lastSequence) {
         lastSequence = currentSequence;
         cachedCursor = getCursor(lastSequence);
@@ -184,6 +184,4 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
     }
     return res.value;
   }
-
-
 }

@@ -3,10 +3,11 @@ import { ExampleCodeComponent } from '../controls/example-code.component';
 import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { intersectionSignal } from 'projects/signal-generators/src/public-api';
+import { IntersectionSignalDemoComponent } from '../demos/intersection-signal/intersection-signal-demo/intersection-signal-demo.component';
 
 @Component({
   standalone: true,
-  imports: [ExampleCodeComponent, HomeBoxComponent],
+  imports: [ExampleCodeComponent, HomeBoxComponent, IntersectionSignalDemoComponent],
   hostDirectives: [ContentsClassDirective],
   template: `
 <app-home-box fnName="intersectionSignal">
@@ -14,14 +15,7 @@ import { intersectionSignal } from 'projects/signal-generators/src/public-api';
   Wraps IntersectionObserver so that changes in the intersection of an element with its ancestor can be observed.
   </div>
   <div class="divider">Example</div>
-  <div class="overflow-x-auto w-full h-16 bg-slate-500 relative" #rootEl>
-    <div class="w-[300%]">
-      <div class="w-8 h-8 mt-2 absolute bg-primary rounded left-[150%]" #targetEl></div>
-    </div>
-  </div>
-  <div>
-    {{$intersection().length > 0 && $intersection()[0].isIntersecting ? 'Is Intersecting' : 'Is Not Intersecting'}}
-  </div>
+  <app-intersection-signal-demo />
 </app-home-box>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

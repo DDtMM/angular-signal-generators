@@ -14,7 +14,7 @@ import { HighlightModule } from 'ngx-highlightjs';
   imports: [CommonModule, HighlightModule],
   preserveWhitespaces: true,
   template: `
-<pre class="h-full w-full">@if (text) {<code class="h-full w-full" [highlight]="text" [languages]="['typescript']"></code>}</pre>
+<pre class="h-full w-full">@if (text) {<code class="h-full w-full" [highlight]="text" language="typescript"></code>}</pre>
 <div #contentWrapper class="hidden">
   <ng-content></ng-content>
 </div>

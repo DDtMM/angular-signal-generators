@@ -19,7 +19,7 @@ import { SignalHeaderComponent } from '../../controls/signal-header.component';
 </p>
 <div>
   <h3>Example</h3>
-  <pre><code [highlight]="simpleExample" [languages]="['typescript']"></code></pre>
+  <pre><code [highlight]="simpleExample" language="typescript"></code></pre>
 </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

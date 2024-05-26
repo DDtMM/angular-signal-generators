@@ -1,11 +1,9 @@
-<div class="flex flex-row flex-wrap -m-2">
-  <div class="m-2">
-    <input class="input" class="input input-bordered" type="text" #textInput placeholder="Say something" />
-  </div>
-  <div class="m-2 join">
-    <button type="button" class="btn btn-primary join-item" (click)="$voice.whisper(textInput.value)">Whisper</button>
-    <button type="button" class="btn btn-primary join-item" (click)="$voice.yell(textInput.value)">Yell</button>
-    <button type="button" class="btn btn-primary join-item" (click)="$voice.clear()">Clear</button>
+<div class="flex flex-row flex-wrap gap-3">
+  <input class="input" class="input input-bordered input-sm shrink grow min-w-10" type="text" #textInput placeholder="Say something" />
+  <div class="join">
+    <button type="button" class="btn btn-primary btn-sm join-item" (click)="$voice.whisper(textInput.value)">Whisper</button>
+    <button type="button" class="btn btn-primary btn-sm join-item" (click)="$voice.yell(textInput.value)">Yell</button>
+    <button type="button" class="btn btn-primary btn-sm join-item" (click)="$voice.clear()">Clear</button>
   </div>
 </div>
 <div class="flex flex-row pt-3">
