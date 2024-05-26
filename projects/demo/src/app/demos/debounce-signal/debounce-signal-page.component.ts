@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { DirectDemoComponent } from './direct-demo/direct-demo.component';
 import { IndirectDemoComponent } from './indirect-demo/indirect-demo.component';
 
 @Component({
   selector: 'app-debounce-signal-page',
   standalone: true,
-  imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, SignalHeaderComponent],
+  imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="debounceSignal" />
+<app-demo-page-header fnName="debounceSignal" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,

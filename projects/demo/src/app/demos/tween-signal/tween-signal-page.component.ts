@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { InterpolationDemoComponent } from './interpolation-demo/interpolation-demo.component';
 import { MultipleNumbersDemoComponent } from './multiple-numbers-demo/multiple-numbers-demo.component';
 import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
@@ -17,14 +17,14 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
     DemoHostComponent,
     FormsModule,
     HighlightModule,
-    SignalHeaderComponent,
+    DemoPageHeaderComponent,
     InterpolationDemoComponent,
     MultipleNumbersDemoComponent,
     SimpleDemoComponent
   ],
   template: `
 <!-- for some reason the API docs come out with -1 at the end -->
-<app-signal-header fnName="tweenSignal" />
+<app-demo-page-header fnName="tweenSignal" />
 <p>
   This function is heavily inspired by Svelte's <i>tweened</i> function.
   It allows you to create engaging simple transition animations with just a signal.

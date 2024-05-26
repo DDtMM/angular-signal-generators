@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
-import { MutationSignalDemoComponent } from './mutation-signal/mutation-signal-demo.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
+import { MutationSignalDemoComponent } from './mutation-signal-demo/mutation-signal-demo.component';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
   selector: 'app-mutation-signal-page',
   standalone: true,
-  imports: [CommonModule, DemoHostComponent, MutationSignalDemoComponent, SignalHeaderComponent],
+  imports: [CommonModule, DemoHostComponent, MutationSignalDemoComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="mutationSignal" />
+<app-demo-page-header fnName="mutationSignal" />
 <p>
   Uses MutationObserver to observe changes to elements passed to the signal.
   All of the same options that can be passed to an IntersectionObserver can be passed to this signal.

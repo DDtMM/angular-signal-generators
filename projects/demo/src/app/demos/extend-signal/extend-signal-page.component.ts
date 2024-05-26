@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { ExtendSignalDemoComponent } from './extend-signal-demo/extend-signal-demo.component';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
   selector: 'app-extend-signal-page',
   standalone: true,
-  imports: [CommonModule, DemoHostComponent, ExtendSignalDemoComponent, SignalHeaderComponent],
+  imports: [CommonModule, DemoHostComponent, ExtendSignalDemoComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="extendSignal" />
+<app-demo-page-header fnName="extendSignal" />
 <p>
   Extends a signal by adding new methods directly to the signal.
   The original signal's methods can even be hidden.
