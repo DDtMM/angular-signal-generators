@@ -46,7 +46,24 @@ describe('storageSignal', () => {
     expect(sut()).toBe(15);
     expect(storage.get('test')).toBe(15);
   });
-
+  it('#asReadonly returns a signal that reflects the original', () => {
+    const storage = createStorage<number>();
+    const sut = storageSignal(3, 'test', storage);
+    const $readonly = sut.asReadonly();
+    sut.set(5);
+    expect(sut()).toBe(5);
+    expect(sut()).toEqual($readonly());
+  });
+  it('respects equal function when passed as option', () => {
+    const storage = createStorage<number>();
+    const sut = storageSignal(4, 'test', storage, { equal: (a, b) => a % 2 === b % 2});
+    sut.set(6);
+    expect(sut()).toBe(4);
+    expect(storage.get('test')).toBe(undefined); // storage isn't set from initial value.
+    sut.set(7);
+    expect(sut()).toBe(7);
+    expect(storage.get('test')).toBe(7);
+  });
   function createStorage<T>() {
     return new WebObjectStore<T>(new MapBasedStorage());
   }

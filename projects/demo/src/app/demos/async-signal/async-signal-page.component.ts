@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { CustomerDemoComponent } from './customer-demo/customer-demo.component';
 
 @Component({
   selector: 'app-async-signal-page',
   standalone: true,
-  imports: [CustomerDemoComponent, DemoHostComponent, SignalHeaderComponent],
+  imports: [CustomerDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="debounceSignal" />
+<app-demo-page-header fnName="debounceSignal" />
 <p>
   "Flattens" a source of promises or observables to a signal of result values, switching to the new source as soon as it
   changes.

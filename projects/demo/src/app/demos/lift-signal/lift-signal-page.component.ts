@@ -2,15 +2,15 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { ArrayDemoComponent } from './array-demo/array-demo.component';
 
 @Component({
   selector: 'app-lift-signal-page',
   standalone: true,
-  imports: [ArrayDemoComponent, DemoHostComponent, FaIconComponent, SignalHeaderComponent],
+  imports: [ArrayDemoComponent, DemoHostComponent, FaIconComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="liftSignal"/>
+<app-demo-page-header fnName="liftSignal"/>
 <p>
   "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
   The lifted methods should be those appropriate for mutating or updating the value.

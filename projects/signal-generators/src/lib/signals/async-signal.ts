@@ -1,4 +1,5 @@
 import { Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, untracked } from '@angular/core';
+import { SIGNAL, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInputFunction } from '../internal/signal-input-utilities';
 import { ToSignalInput } from '../signal-input';
@@ -88,35 +89,37 @@ function createFromSignalInputFunction<T>(
   signalInput: () => AsyncSource<T>,
   options: AsyncSignalOptions<T | undefined>
 ): Signal<T | undefined> {
-  const input = coerceSignal(signalInput, { initialValue: undefined as AsyncSource<T> | undefined, injector: options.injector });
-  return createOutputSignal(input, options);
+  const $input = coerceSignal(signalInput, { initialValue: undefined as AsyncSource<T> | undefined, injector: options.injector });
+  return createOutputSignal($input, options);
 }
 
 function createFromValue<T>(
   initialSource: AsyncSource<T>,
   options: AsyncSignalOptions<T | undefined>
 ): AsyncSignal<T | undefined> {
-  const input = signal(initialSource);
-  const output = createOutputSignal(input, options);
-  return Object.assign(output, {
-    asReadonly: () => output,
-    set: input.set.bind(input),
-    update: input.update.bind(input)
+
+  const $input = createSignal(initialSource);
+  const inputNode = $input[SIGNAL];
+  const $output = createOutputSignal($input, options);
+  return Object.assign($output, {
+    asReadonly: () => $output,
+    set: (value: AsyncSource<T>) => signalSetFn(inputNode, value),
+    update: (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn)
   });
 }
 
-function createOutputSignal<T>(input: Signal<AsyncSource<T>>, options: AsyncSignalOptions<T | undefined>): Signal<T | undefined> {
+function createOutputSignal<T>($input: Signal<AsyncSource<T>>, options: AsyncSignalOptions<T | undefined>): Signal<T | undefined> {
   const state = signal<AsyncSignalState<T | undefined>>({ status: AsyncSignalStatus.Ok, value: options.defaultValue });
 
   /** An "unsubscribe" function. */
-  let currentSource = untracked(input);
+  let currentSource = untracked($input);
   let currentListenerCleanup: () => void = updateListener(currentSource);
 
   effect(
     () => {
       if (untracked(state).status === AsyncSignalStatus.Ok) {
         // by nesting this inside Ok branch, the effect will only be called one when the state turns to error.
-        const nextSource = input();
+        const nextSource = $input();
         if (nextSource === currentSource) {
           return; // don't start listening to an already listened to source.
         }

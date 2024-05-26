@@ -43,6 +43,8 @@ export interface DemoConfigurationItem<FnName extends string> {
   readonly page: Type<unknown>;
   /** The route from the root of the app. */
   readonly route: string;
+  /** The partial url from the lib folder to link to source in github. */
+  readonly sourceUrl: string;
   readonly usages: UsageType[];
 }
 
@@ -54,6 +56,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'AsyncSignal',
     page: AsyncSignalPageComponent,
     route: 'async-signal',
+    sourceUrl: 'signals/async-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -63,6 +66,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'DebounceSignal',
     page: DebounceSignalPageComponent,
     route: 'debounce-signal',
+    sourceUrl: 'signals/debounce-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -72,6 +76,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'ExtendSignal',
     page: ExtendSignalPageComponent,
     route: 'extend-signal',
+    sourceUrl: 'signals/extends-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -81,6 +86,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'FilterSignal',
     page: FilterSignalPageComponent,
     route: 'filter-signal',
+    sourceUrl: 'signals/filter-signal.ts',
     usages: ['writableSignal']
   },
   {
@@ -90,6 +96,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'IntersectionSignal',
     page: IntersectionSignalPageComponent,
     route: 'intersection-signal',
+    sourceUrl: 'signals/dom-observers/intersection-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -99,6 +106,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'LiftSignal',
     page: LiftSignalPageComponent,
     route: 'lift-signal',
+    sourceUrl: 'signals/lift-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -108,6 +116,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'MapSignal',
     page: MapSignalPageComponent,
     route: 'map-signal',
+    sourceUrl: 'signals/map-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -117,6 +126,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'MutationSignal',
     page: MutationSignalPageComponent,
     route: 'mutation-signal',
+    sourceUrl: 'signals/dom-observers/mutation-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -126,6 +136,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'ReduceSignal',
     page: ReduceSignalPageComponent,
     route: 'reduce-signal',
+    sourceUrl: 'signals/reduce-signal.ts',
     usages: ['writableSignal']
   },
   {
@@ -135,6 +146,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'ResizeSignal',
     page: ResizeSignalPageComponent,
     route: 'resize-signal',
+    sourceUrl: 'signals/dom-observers/resize-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -144,6 +156,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'SequenceSignal',
     page: SequenceSignalPageComponent,
     route: 'sequence-signal',
+    sourceUrl: 'signals/sequence-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -153,6 +166,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'SignalToIterator',
     page: SignalToIteratorPageComponent,
     route: 'signal-to-iterator',
+    sourceUrl: 'utilities/signal-to-iterator.ts',
     usages: ['utility']
   },
   {
@@ -162,6 +176,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'StorageSignal',
     page: SequenceSignalPageComponent,
     route: 'storage-signal',
+    sourceUrl: 'signals/storage-signal.ts',
     usages: ['writableSignal']
   },
   {
@@ -171,6 +186,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'TimerSignal',
     page: TimerSignalPageComponent,
     route: 'timer-signal',
+    sourceUrl: 'signals/timer-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -180,6 +196,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'TweenSignal',
     page: TweenSignalPageComponent,
     route: 'tween-signal',
+    sourceUrl: 'signals/tween-signal.ts',
     usages: ['generator', 'writableSignal']
   }
 ] satisfies DemoConfigurationItem<string>[];

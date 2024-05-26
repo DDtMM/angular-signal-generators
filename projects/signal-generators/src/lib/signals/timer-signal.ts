@@ -54,11 +54,11 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
   const timerTimeFn = createGetValueFn(timerTime, injector);
   const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, injector) : undefined;
   /** The signal that will be returned. */
-  const output = signal(0);
+  const $output = signal(0);
   const state = signal<TimerSignalStatus>('stopped');
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), {
     onStatusChange: (internalStatus) => state.set(transformTimerStatus(internalStatus)),
-    onTick: (x) => output.set(x),
+    onTick: (x) => $output.set(x),
     runAtStart: !options?.stopped && isPlatformBrowser(injector.get(PLATFORM_ID))
   });
   // setup cleanup actions.
@@ -67,7 +67,7 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
   watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, injector);
   watchValueSourceFn(intervalTimeFn, (x) => timer.intervalTime = x, injector);
   // bind timer functions to output.
-  return createTimerSignal(output, timer);
+  return createTimerSignal($output, timer);
 
   /** Assigns timer functions to the signal. */
   function createTimerSignal(sourceSignal: WritableSignal<number>, timer: TimerInternal): TimerSignal {

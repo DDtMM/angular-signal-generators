@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { ResizeSignalDemoComponent } from './resize-signal-demo/resize-signal-demo.component';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
   selector: 'app-resize-signal-page',
   standalone: true,
-  imports: [CommonModule, DemoHostComponent, ResizeSignalDemoComponent, SignalHeaderComponent],
+  imports: [CommonModule, DemoHostComponent, ResizeSignalDemoComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="resizeSignal" />
+<app-demo-page-header fnName="resizeSignal" />
 <p>
   Uses ResizeObserver to observe changes to elements passed to the signal.
   All of the same options that can be passed to an IntersectionObserver can be passed to this signal.

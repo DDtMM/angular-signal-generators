@@ -51,20 +51,20 @@ export function liftSignal<T extends NonNullable<unknown>,
   ):
   WritableSignal<T> & BoundMethods<T, NonNullable<M>> & BoundMethods<T, NonNullable<U>> {
 
-  const output = isSignal(valueSource)
+  const $output = isSignal(valueSource)
     ? valueSource
     : signal(valueSource, options);
 
   const boundMethods = {} as BoundMethods<T, NonNullable<M>> & BoundMethods<T, NonNullable<U>>;
 
   updaters?.forEach((cur) => {
-    boundMethods[cur] = (...args) => output.update(x => (x[cur] as UpdaterKeyFn<typeof x, typeof cur>)(...args));
+    boundMethods[cur] = (...args) => $output.update(x => (x[cur] as UpdaterKeyFn<typeof x, typeof cur>)(...args));
   });
 
   if (mutators) {
-    const cloneFn = options?.cloneFn ?? cloneFnFactory(output());
+    const cloneFn = options?.cloneFn ?? cloneFnFactory($output());
     mutators.forEach((cur) => {
-      boundMethods[cur] = (...args) => output.update(x => {
+      boundMethods[cur] = (...args) => $output.update(x => {
         const cloned = cloneFn(x);
         (cloned[cur] as MethodKeyFn<typeof x, typeof cur>)(...args);
         return cloned;
@@ -72,7 +72,7 @@ export function liftSignal<T extends NonNullable<unknown>,
     });
   }
 
-  return Object.assign(output, boundMethods);
+  return Object.assign($output, boundMethods);
 }
 
 /** Creates a cloning function based on the sample object. */

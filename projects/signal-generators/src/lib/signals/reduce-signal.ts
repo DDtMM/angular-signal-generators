@@ -1,4 +1,5 @@
-import { CreateSignalOptions, Signal, signal } from '@angular/core';
+import { CreateSignalOptions, Signal } from '@angular/core';
+import { SIGNAL, SignalGetter, createSignal, signalUpdateFn } from '@angular/core/primitives/signals';
 
 export type ReduceSignal<T, U> = Signal<T> & {
   asReadonly(): Signal<T>;
@@ -26,12 +27,13 @@ export function reduceSignal<T, U>(initialValue: T, callbackFn: (prior: T, curre
  * ```
  */
 export function reduceSignal<T, U>(initialValue: T, callbackFn: (prior: T, current: U) => T, options?: CreateSignalOptions<T>): ReduceSignal<T, U> {
-  const output = signal(initialValue, options);
-  const updateFn = output.update;
-
-  return Object.assign(output, {
-    set: (value: U) => updateFn.call(output, (prior) => callbackFn(prior, value)),
-    update: (itemUpdateFn: (prior: T) => U) => updateFn.call(output, (prior) =>  callbackFn(prior, itemUpdateFn(prior)))
-  });
-
+  const $output = createSignal(initialValue) as SignalGetter<T> & ReduceSignal<T, U>;
+  const outputNode = $output[SIGNAL];
+  if (options?.equal) {
+    outputNode.equal = options.equal;
+  }
+  $output.asReadonly = () => $output;
+  $output.set = (value: U) => signalUpdateFn(outputNode, (prior) => callbackFn(prior, value));
+  $output.update = (itemUpdateFn: (prior: T) => U) => signalUpdateFn(outputNode, (prior) =>  callbackFn(prior, itemUpdateFn(prior)));
+  return $output;
 }

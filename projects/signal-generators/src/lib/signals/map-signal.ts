@@ -1,7 +1,8 @@
-import { Injector, Signal, ValueEqualityFn, WritableSignal, computed, signal } from '@angular/core';
-import { SignalInputValue, SignalInput, SignalInputSignal } from '../signal-input';
+import { Injector, Signal, ValueEqualityFn, WritableSignal, computed } from '@angular/core';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
+import { SignalInput, SignalInputSignal, SignalInputValue } from '../signal-input';
 
 export interface MapSignalOptions<R>  {
   /** An equal function put on the selector result. */
@@ -99,13 +100,14 @@ export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType
 
 /** Creates a new signal that runs selector after every value change. */
 function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options: MapSignalOptions<R> = {}): MapSignal<T, R> {
-  const input = signal<T>(initialValue);
-  const output = computed(() => selector(input()), { equal: options.equal });
-  return Object.assign(output, {
-    asReadonly: () => output,
-    input,
-    set: input.set.bind(input),
-    update: input.update.bind(input)
+  const $input = createSignal<T>(initialValue) as SignalGetter<T> & WritableSignal<T>;
+  const inputNode = $input[SIGNAL];
+  const $output = computed(() => selector($input()), { equal: options.equal });
+  return Object.assign($output, {
+    asReadonly: () => $output,
+    input: $input,
+    set: (value: T) => signalSetFn(inputNode, value),
+    update: (updateFn: (value: T) => T) => signalUpdateFn(inputNode, updateFn)
   });
 }
 

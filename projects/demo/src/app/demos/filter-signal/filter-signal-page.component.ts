@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { FilterTextDemoComponent } from './filter-text-demo/filter-text-demo.component';
 
 @Component({
   selector: 'app-filter-signal-page',
   standalone: true,
-  imports: [DemoHostComponent, FilterTextDemoComponent, SignalHeaderComponent],
+  imports: [DemoHostComponent, FilterTextDemoComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="filterSignal" />
+<app-demo-page-header fnName="filterSignal" />
 <p>
   Filters values set to this signal directly upon the result of a filter function.
   The filter function can be a guard function, changing the return type from the source type of the signal.

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SignalHeaderComponent } from '../../controls/signal-header.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { BuiltInStorageDemoComponent } from './built-in-storage-demo/built-in-storage-demo.component';
 import { CustomStorageDemoComponent } from './custom-storage-demo/custom-storage-demo.component';
 
 @Component({
   selector: 'app-storage-signal-page',
   standalone: true,
-  imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, SignalHeaderComponent],
+  imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
   template: `
-<app-signal-header fnName="storageSignal" />
+<app-demo-page-header fnName="storageSignal" />
 <p>
 A signal that uses a secondary storage system to store values, ideally beyond the lifetime of the application.
 When the signal is initialized it will check the store for an existing value and fallback to the initialValue if it wasn't present.

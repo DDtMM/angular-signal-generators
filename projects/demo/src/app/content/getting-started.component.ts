@@ -26,6 +26,20 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
     </code>
   </div>
   <div class="divider"></div>
+  <h2>Versions</h2>
+  <p>The following is a table of compatibility for library versions with respect to Angular versions:</p>
+  <table class="table">
+    <thead><tr>
+      <td>Library</td>
+      <td>Angular</td>
+    </tr>
+    </thead>
+    <tbody>
+      <tr><td>2.x.x</td><td>&gt;=17.0.0 ^18.0.0</td></tr>
+      <tr><td>1.x.x</td><td>&gt;=16.0.0 ^17.0.0</td></tr>
+</tbody>
+  </table>
+  <div class="divider"></div>
   <h2>Usage</h2>
   <p>
     Most can be either used in a similar fashion to a writable signal, or be passed a reference to an existing signal to generate new values.
@@ -33,7 +47,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   </p>
 
   <div class="border-base-300 bg-slate-50 whitespace-pre-wrap w-full overflow-clip shadow-sm">
-    <code class="h-full w-full bg-slate-50 " [highlight]="source" [languages]="['typescript']"></code>
+    <code class="h-full w-full bg-slate-50 " [highlight]="source" language="typescript"></code>
   </div>
   <div class="divider"></div>
   <p>
