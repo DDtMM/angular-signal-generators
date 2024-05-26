@@ -1,4 +1,5 @@
-import { CreateSignalOptions, Signal, signal, untracked } from '@angular/core';
+import { CreateSignalOptions, Signal, WritableSignal, signal, untracked } from '@angular/core';
+import { SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
 
 export type FilterSignal<T, O = T> = Signal<O> & {
   /** Returns the output signal as a readonly. */
@@ -29,17 +30,17 @@ export function filterSignal<O>(initialValue: O, filterFn: (x: O) => boolean, op
  * @returns A writable signal whose values are only updated when set.
  */
 export function filterSignal<T, O extends T>(initialValue: O, filterFn: (x: T) => boolean, options?: CreateSignalOptions<O>): FilterSignal<T, O> {
-  const internal = signal<O>(initialValue, options);
-  const setFn = internal.set;
+  const $output = signal<O>(initialValue, options) as SignalGetter<O> & WritableSignal<O>;
+  const outputNode = $output[SIGNAL];
 
-  return Object.assign(internal, {
+  return Object.assign($output, {
     set: setConditionally,
-    update: (signalUpdateFn: (x: T) => T) => setConditionally(signalUpdateFn(untracked(internal)))
+    update: (signalUpdateFn: (x: T) => T) => setConditionally(signalUpdateFn(untracked($output)))
   });
 
   function setConditionally(value: T): void {
     if (filterFn(value)) {
-      setFn.call(internal, value as O);
+      signalSetFn(outputNode, value as O);
     }
   }
 }

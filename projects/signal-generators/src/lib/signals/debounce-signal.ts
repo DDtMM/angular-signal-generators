@@ -5,6 +5,7 @@ import { TimerInternal } from '../internal/timer-internal';
 import { getDestroyRef } from '../internal/utilities';
 import { SignalInput } from '../signal-input';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -62,24 +63,24 @@ export function debounceSignal<T>(
 }
 
 /** Creates a signal that debounces the srcSignal the given debounceTime. */
-function createFromSignal<T>(source: SignalInput<T>,
+function createFromSignal<T>(sourceInput: SignalInput<T>,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions): Signal<T> {
 
   const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
-  const srcSignal = coerceSignal(source, options);
-  const output = signal(untracked(srcSignal));
-  const set = output.set; // in case this gets by createDebouncedSignal.
-  const timer = new TimerInternal(timerTimeFn(), undefined, { onTick: () => set.call(output, untracked(srcSignal)) });
+  const $source = coerceSignal(sourceInput, options);
+  const $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T>;;
+  const outputNode = $output[SIGNAL];
+  const timer = new TimerInternal(timerTimeFn(), undefined, { onTick: () => signalSetFn(outputNode, untracked($source)) });
   // setup cleanup actions.
   getDestroyRef(createFromSignal, options?.injector).onDestroy(() => timer.destroy());
 
   watchValueSourceFn(timerTimeFn, (x) => timer.timeoutTime = x, options?.injector);
   effect(() => {
-    srcSignal(); // wish there was a better way to watch the value.
+    $source(); // wish there was a better way to watch the value.
     timer.start();
   }, options);
-  return output;
+  return $output;
 }
 
 /** Creates a writeable signal that updates after a certain amount of time. */
@@ -87,12 +88,17 @@ function createFromValue<T>(initialValue: T,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions & CreateSignalOptions<T>): UpdatableSignal<T> {
 
-  const source = signal(initialValue, options);
-  const debounced = createFromSignal(source, debounceTime, options);
+  const $source = createSignal(initialValue);
+  const sourceNode = $source[SIGNAL];
+  if (options?.equal) {
+    sourceNode.equal = options.equal;
+  }
 
-  return Object.assign(debounced, {
-    asReadonly: () => debounced,
-    set: (value: T) => source.set(value), // set.call(source, value),
-    update: (updateFn: (value: T) => T) => source.update(updateFn)
+  const $debounced = createFromSignal($source, debounceTime, options);
+
+  return Object.assign($debounced, {
+    asReadonly: () => $debounced,
+    set: (value: T) => signalSetFn(sourceNode, value),
+    update: (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn)
   });
 }

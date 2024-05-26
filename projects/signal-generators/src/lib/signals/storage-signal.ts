@@ -1,6 +1,7 @@
-import { CreateSignalOptions, WritableSignal, signal } from '@angular/core';
-import { WebObjectStore } from '../internal/web-object-store';
+import { CreateSignalOptions, WritableSignal } from '@angular/core';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn } from '@angular/core/primitives/signals';
 import { MapBasedStorage } from '../internal/map-based-storage';
+import { WebObjectStore } from '../internal/web-object-store';
 
 /** A simple provider of persistent storage for storageSignal. */
 export interface StorageSignalStore<T> {
@@ -28,20 +29,25 @@ export interface StorageSignalStore<T> {
  */
 export function storageSignal<T>(initialValue: T, key: string, storageProvider: StorageSignalStore<T>, options?: CreateSignalOptions<T>): WritableSignal<T> {
   const storageValue = storageProvider.get(key);
-  const output = signal(storageValue === undefined ? initialValue : storageValue, options);
-  const set = output.set;
-  return Object.assign(output, {
-
-    set: (value: T) => {
+  const $output = createSignal(storageValue === undefined ? initialValue : storageValue) as SignalGetter<T> & WritableSignal<T>;
+  const outputNode = $output[SIGNAL];
+  // the equal function needs to be checked BEFORE setting storage or the value will be inconsistent.
+  const equalFn = options?.equal ?? outputNode.equal;
+  $output.asReadonly = () => $output;
+  $output.set = (value: T) => {
+    if (!equalFn(value, outputNode.value)) {
       storageProvider.set(key, value);
-      set.call(output, value);
-    },
-    update: (updateFn: (value: T) => T) => {
-      const next = updateFn(output());
-      storageProvider.set(key, next);
-      set.call(output, next);
+      signalSetFn(outputNode, value);
     }
-  });;
+  };
+  $output.update =(updateFn: (value: T) => T) => {
+    const next = updateFn(outputNode.value);
+    if (!equalFn(next, outputNode.value)) {
+      storageProvider.set(key, next);
+      signalSetFn(outputNode, next);
+    }
+  };
+  return $output;
 }
 
 /** Options for localStorageSignal and sessionStorageSignal. */

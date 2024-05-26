@@ -4,6 +4,7 @@ import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { ValueSource } from '../value-source';
 import { AnimationFrameFn, getRequestAnimationFrame } from '../internal/animations';
+import { SIGNAL, SignalGetter, SignalNode, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 
 /** Request animation frame function */
 const requestAnimationFrame = getRequestAnimationFrame();
@@ -85,41 +86,43 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   V extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
 {
   /** The output signal that will be returned. */
-  let output: WritableSignal<T> & TweenSignal<T>;
+  let $output: SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
   /** The original setter for the output signal. */
-  let outputSet: (value: T) => void;
+  let outputNode: SignalNode<T>;
   /** Normalizes output of the source signal since it is different when this is writable. */
-  let signalValueGetter: () => [value: T, options: TweenOptions<T> | undefined];
+  let signalValueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]>;
 
 
   if (isSignalInput<T>(source)) {
-    const srcSignal = coerceSignal(source, options) as Signal<T>; // why is the cast needed now?
-    output = signal(untracked(srcSignal)) as WritableSignal<T> & TweenSignal<T>;
-    outputSet = output.set;
-    signalValueGetter = () => [srcSignal(), undefined];
-    Object.assign(output, { setOptions });
+    const $source = coerceSignal(source, options) as Signal<T>; // why is the cast needed now?
+    $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
+    outputNode = $output[SIGNAL];
+    signalValueFn = () => [$source(), undefined];
+    Object.assign($output, { setOptions });
   }
   else {
-    output = signal(source as T) as WritableSignal<T> & TweenSignal<T>;
-    outputSet = output.set;
-    const srcSignal = signal<[value: T, options: TweenOptions<T> | undefined]>([source as T, undefined]);
-    signalValueGetter = srcSignal;
-    Object.assign(output, {
-      set: (x: T, options?: TweenOptions<T>) => srcSignal.set([x, options]),
+    $output = signal(source as T) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
+    outputNode = $output[SIGNAL];
+    const $source = createSignal<Readonly<[value: T, options: TweenOptions<T> | undefined]>>([source as T, undefined]);
+    const sourceNode = $source[SIGNAL];
+    signalValueFn = $source;
+    Object.assign($output, {
+      set: (x: T, options?: TweenOptions<T>) => signalSetFn(sourceNode, [x, options] as const),
       setOptions,
-      update: (updateFn: (value: T) => T, options?: TweenOptions<T>) => srcSignal.update(([value]) => [updateFn(value), options])
+      update: (updateFn: (value: T) => T, options?: TweenOptions<T>) =>
+        signalUpdateFn(sourceNode, ([value]) => [updateFn(value), options] as const),
     });
   }
   let defaultDelay = options?.delay ?? 0;
   let defaultDuration = options?.duration ?? 400;
   let defaultEasing = options?.easing || ((x: number) => x);
-  let defaultInterpolateFactoryFn = options?.interpolator ?? createInterpolator(output() as TweenNumericValues);
+  let defaultInterpolateFactoryFn = options?.interpolator ?? createInterpolator($output() as TweenNumericValues);
   let delayTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
   let instanceId = 0;
 
   effect((onCleanup) => {
-    const priorValue = untracked(output);
-    const [nextValue, overrideOptions] = signalValueGetter();
+    const priorValue = untracked($output);
+    const [nextValue, overrideOptions] = signalValueFn();
     const delay = overrideOptions?.delay || defaultDelay;
     const duration = overrideOptions?.duration || defaultDuration;
     const easing = overrideOptions?.easing || defaultEasing;
@@ -146,7 +149,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
       }
       previousTime = time;
       const progress = Math.max(0, Math.min(1, (time - start) / duration));
-      outputSet.call(output, interpolate(easing(progress)));
+      signalSetFn(outputNode, interpolate(easing(progress)));
       if (progress < 1) {
         requestAnimationFrame(step);
       }
@@ -155,7 +158,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     onCleanup(() => instanceId++);
   }, options);
 
-  return output;
+  return $output;
 
   /** Creates an interpolator of a TweenNumericValues type. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
