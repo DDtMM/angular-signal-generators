@@ -31,7 +31,7 @@
             "browser": "src/main.ts",
             "outputPath": "dist/demo",
             "scripts": [],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/styles.css"],
             "tsConfig": "tsconfig.app.json"
           }
         },
