@@ -8,7 +8,7 @@ import { CustomerDemoComponent } from './customer-demo/customer-demo.component';
   standalone: true,
   imports: [CustomerDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
   template: `
-<app-demo-page-header fnName="debounceSignal" />
+<app-demo-page-header fnName="asyncSignal" />
 <p>
   "Flattens" a source of promises or observables to a signal of result values, switching to the new source as soon as it
   changes.

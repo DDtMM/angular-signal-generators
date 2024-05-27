@@ -16,18 +16,18 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     </div>
     <div class="divider">Example</div>
     <div class="flex flex-row gap-3" (click)="$event.stopPropagation()">
-      <input type="number" class="input input-bordered input-sm grow" [ngModel]="reduceSource()" (ngModelChange)="reduceSource.set($event)" />
-      <button type="button" class="btn btn-sm btn-primary" (click)="reduceSum.set(reduceSource())">Sum</button>
+      <input type="number" class="input input-bordered input-sm grow" [(ngModel)]="$reduceSource" />
+      <button type="button" class="btn btn-sm btn-primary" (click)="$reduceSum.set($reduceSource())">Sum</button>
     </div>
     <div class="flex flex-row gap-3  leading-8">
       <span>Summed: </span>
-      <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{reduceSum()}}</span>
+      <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{$reduceSum()}}</span>
     </div>
   </app-home-box>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReduceSignalHomeDemoComponent {
-  readonly reduceSource = signal(1);
-  readonly reduceSum = reduceSignal(0, (prior, cur) => prior + cur);
+  readonly $reduceSource = signal(1);
+  readonly $reduceSum = reduceSignal(0, (prior, cur) => prior + cur);
 }

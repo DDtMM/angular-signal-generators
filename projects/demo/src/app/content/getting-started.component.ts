@@ -43,7 +43,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   <h2>Usage</h2>
   <p>
     Most can be either used in a similar fashion to a writable signal, or be passed a reference to an existing signal to generate new values.
-    To include them in your project, just import them as needed:
+    To include them in your project, just import them as needed from <b>&#64;ddtmm/angular-signal-generators</b>:
   </p>
 
   <div class="border-base-300 bg-slate-50 whitespace-pre-wrap w-full overflow-clip shadow-sm">
@@ -82,7 +82,7 @@ import { debounceSignal } from '@ddtmm/angular-signal-generators';
   standalone: true,
   imports: [FormsModule],
   template: \`
-    <input [ngModel]="$debounced()" (ngModelChange)="$debounced.set($event)" />
+    <input [(ngModel)]="$debounced" />
     <div>{{$debounced()}}</div>
   \`,
   changeDetection: ChangeDetectionStrategy.OnPush

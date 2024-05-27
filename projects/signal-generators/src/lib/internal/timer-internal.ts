@@ -167,11 +167,10 @@ export class TimerInternal {
    */
   private tickComplete(): void {
     const remainingTime = this.getRemainingTime();
-    if (remainingTime > 0) {
+    if (remainingTime > 0) {  // this could occur if the end time changed.
       this.tickStart();
     }
     else {
-
       ++this.tickCount;
       this.onTickCallback(this.tickCount);
       this.lastCompleteTime = Date.now() + this.getRemainingTime();
@@ -183,7 +182,15 @@ export class TimerInternal {
   private tickStart(): void {
     clearTimeout(this.timeoutId);
     if (this.status === TimerStatus.Running) {
-      this.timeoutId = setTimeout(this.tickComplete.bind(this), this.getRemainingTime());
+      // This is dangerous if remainingTime is always calculated as a value less than 0 as it will create an infinite loop.
+      //
+      const remainingTime = this.getRemainingTime();
+      if (remainingTime > 0) {
+        this.timeoutId = setTimeout(this.tickComplete.bind(this), remainingTime);
+      }
+      else {
+        this.tickComplete();
+      }
     }
   }
 
