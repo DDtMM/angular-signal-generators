@@ -12,7 +12,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
   template: `
 <div class="flex flex-row items-center gap-3 doc-header">
   @if($demoConfig(); as demoConfig) {
-    <h1 class="p-0 text-xl leading-8">{{demoConfig.name}}</h1>
+    <h1>{{demoConfig.name}}</h1>
     <div class="flex flex-row gap-1">
       @for (type of demoConfig.usages; track type) {
         <app-signal-type-badge [type]="type" />

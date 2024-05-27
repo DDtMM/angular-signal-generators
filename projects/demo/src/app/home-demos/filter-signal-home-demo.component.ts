@@ -15,11 +15,11 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
       <div class="flex flex-col gap-3">
         <div class="flex flex-row gap-3 items-baseline">
           <label>Input</label>
-          <input type="text" class="input input-bordered input-sm grow" [ngModel]="filtered()" (ngModelChange)="filtered.set($event)" />
+          <input type="text" class="input input-bordered input-sm grow" [(ngModel)]="$filtered" />
         </div>
         <div class="flex flex-row gap-3  leading-8">
-          <span>Filtered</span>
-          <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{ filtered() }}</span>
+          <span>$filtered</span>
+          <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{ $filtered() }}</span>
         </div>
       </div>
     </app-home-box>
@@ -27,5 +27,5 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterSignalHomeDemoComponent {
-  readonly filtered = filterSignal<string>('no upper case letters please', (x) => !/[A-Z]/.test(x));
+  readonly $filtered = filterSignal<string>('no upper case letters please', (x) => !/[A-Z]/.test(x));
 }

@@ -24,24 +24,24 @@ import { debounceSignal, liftSignal, timerSignal } from '@ddtmm/angular-signal-g
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-<div>{{secondsSinceStart()}}</div>
+<div>{{$secondsSinceStart()}}</div>
 <div>
-  <input type="text" [ngModel]="debounced()" (ngModelChange)="debounced.set($event)" />
+  <input type="text" [(ngModel)]="$debounced" />
   {{debounced()}}
 </div>
 <div>
-  <button type="button" (click)="liftedArray.push(secondsSinceStart())">
+  <button type="button" (click)="$liftedArray.push(secondsSinceStart())">
     Add Element
   </button> 
-  {{liftedArray() | json}}
+  {{$liftedArray() | json}}
 </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalDemoComponent {
-  readonly debounced = debounceSignal('type in me', 1000);
-  readonly liftedArray = liftSignal([0], null, ['push']);
-  readonly secondsSinceStart = timerSignal(1000, 1000);
+  readonly $debounced = debounceSignal('type in me', 1000);
+  readonly $liftedArray = liftSignal([0], null, ['push']);
+  readonly $secondsSinceStart = timerSignal(1000, 1000);
 }
 ```
 
