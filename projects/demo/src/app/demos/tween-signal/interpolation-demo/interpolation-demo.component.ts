@@ -17,8 +17,6 @@ export class InterpolationDemoComponent {
     duration: 2000,
     interpolator: stringInterpolationFactory
   });
-  /** This is here as a workaround for an issue with tweenSignal that appears to only occur in StackBlitz. */
-  private readonly _ = effect(() => console.log(this.$stringInterpolationTween()));
 }
 
 /** Weights the interpolation so the second half takes longer than the first. */
