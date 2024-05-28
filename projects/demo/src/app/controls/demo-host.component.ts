@@ -129,7 +129,7 @@ export class DemoHostComponent {
     if (primaryComponentPattern) {
       const matcherRegex = new RegExp(primaryComponentPattern);
       return (x: SourceFile) => matcherRegex.test(x.name);
-    };
+    }
     return (x: SourceFile) => x.type === 'typescript';
   });
 

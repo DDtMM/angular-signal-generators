@@ -40,7 +40,7 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/signal-generators/src/**/*.ts"
+              "projects/**/*.ts"
             ]
           }
         }

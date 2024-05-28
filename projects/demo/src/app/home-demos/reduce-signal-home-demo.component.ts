@@ -15,8 +15,8 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
       using a reducer function to create a new value from the current and prior values.
     </div>
     <div class="divider">Example</div>
-    <div class="flex flex-row gap-3" (click)="$event.stopPropagation()">
-      <input type="number" class="input input-bordered input-sm grow" [(ngModel)]="$reduceSource" />
+    <div class="flex flex-row gap-3" >
+      <input type="number" class="input input-bordered input-sm grow" [(ngModel)]="$reduceSource" aria-label="Value to be added to running sum" />
       <button type="button" class="btn btn-sm btn-primary" (click)="$reduceSum.set($reduceSource())">Sum</button>
     </div>
     <div class="flex flex-row gap-3  leading-8">
