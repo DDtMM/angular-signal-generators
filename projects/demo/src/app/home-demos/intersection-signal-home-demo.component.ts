@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angular/core';
-import { intersectionSignal } from 'projects/signal-generators/src/public-api';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { HomeBoxComponent } from '../controls/home-box.component';
 import { IntersectionSignalDemoComponent } from '../demos/intersection-signal/intersection-signal-demo/intersection-signal-demo.component';

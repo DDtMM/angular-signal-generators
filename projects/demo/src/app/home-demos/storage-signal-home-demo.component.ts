@@ -16,8 +16,8 @@ import { HomeBoxComponent } from '../controls/home-box.component';
       </div>
       <div class="divider">Example</div>
       <div class="flex flex-row gap-3 items-baseline">
-        <label>Input</label>
-        <input type="text" class="input input-bordered input-sm grow" [ngModel]="$storageValue()" (ngModelChange)="$storageValue.set($event)" />
+        <label for="storageSignalHomeDemoInput">Input</label>
+        <input id="storageSignalHomeDemoInput" type="text" class="input input-bordered input-sm grow" [(ngModel)]="$storageValue" />
       </div>
       <div class="italic">Refresh page to see value persist</div>
     </app-home-box>
@@ -25,5 +25,5 @@ import { HomeBoxComponent } from '../controls/home-box.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StorageSignalHomeDemoComponent {
-  $storageValue = localStorageSignal('', '_storage_signal_demo');
+  readonly $storageValue = localStorageSignal('', '_storage_signal_demo');
 }

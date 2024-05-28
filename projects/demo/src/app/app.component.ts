@@ -31,11 +31,11 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
       </ul>
     </div>
     <div class="dropdown dropdown-end flex-none">
-      <label tabindex="0" class="btn btn-primary">
+      <button tabindex="0" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-      </label>
+      </button>
       <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
         <li><a routerLink="/getting-started">Getting Started</a></li>
         <li><a href="./api/index.html">API Docs</a></li>

@@ -14,7 +14,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
       The Sequence Signal is useful for situations where you want to easily cycle between options.
     </div>
     <div class="divider">Example</div>
-    <div class="flex flex-row gap-3" (click)="$event.stopPropagation()">
+    <div class="flex flex-row gap-3">
       <div class="flex flex-col gap-1">
         <div class="flex flex-row items-center gap-3">
           <input type="radio" class="radio checked:bg-blue-500" value="a" [ngModel]="sequenceChoices()" /> Choice A

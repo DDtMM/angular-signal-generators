@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { EasingFn, easeInBack , tweenSignal } from 'projects/signal-generators/src/public-api';
 import { EasingSelectorComponent } from '../shared/easing-selector.component';
 

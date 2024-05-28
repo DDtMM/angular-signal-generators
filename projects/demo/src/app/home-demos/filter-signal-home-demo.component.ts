@@ -14,8 +14,8 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
       <div class="divider">Example</div>
       <div class="flex flex-col gap-3">
         <div class="flex flex-row gap-3 items-baseline">
-          <label>Input</label>
-          <input type="text" class="input input-bordered input-sm grow" [(ngModel)]="$filtered" />
+          <label for="filterSignalHomeDemoInput">Input</label>
+          <input id="filterSignalHomeDemoInput" type="text" class="input input-bordered input-sm grow" [(ngModel)]="$filtered" />
         </div>
         <div class="flex flex-row gap-3  leading-8">
           <span>$filtered</span>

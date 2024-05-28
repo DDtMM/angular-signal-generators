@@ -15,7 +15,7 @@ import { HomeBoxComponent } from '../controls/home-box.component';
         <div>Time since start</div>
         <div>{{ $timer() }}</div>
       </div>
-      <div class="flex flex-row gap-3 justify-center" (click)="$event.stopPropagation()">
+      <div class="flex flex-row gap-3 justify-center">
         <button type="button" class="btn btn-primary" (click)="$timer.pause()">Pause</button>
         <button type="button" class="btn btn-primary" (click)="$timer.resume()">Resume</button>
         <button type="button" class="btn btn-primary" (click)="$timer.restart()">Restart</button>
@@ -26,5 +26,5 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 })
 export class TimerSignalHomeDemoComponent {
   /** A little delay is added to the timer for hydration. */
-  $timer = timerSignal(1000, 1000);
+  readonly $timer = timerSignal(1000, 1000);
 }
