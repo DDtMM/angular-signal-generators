@@ -11,7 +11,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
   imports: [CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, RouterOutlet],
   template: `
 
-  <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur">
+  <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur drawer drawer-end">
     <div class="flex-1">
       <ul class="menu menu-horizontal font-semibold text-lg tracking-tight normal-case  flex-nowrap py-0 px-1">
         <li>
@@ -30,31 +30,37 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
         </li>
       </ul>
     </div>
-    <div class="dropdown dropdown-end flex-none">
-      <button tabindex="0" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
-        <li><a routerLink="/getting-started">Getting Started</a></li>
-        <li><a href="./api/index.html">API Docs</a></li>
-        <li>
-          <a href="https://github.com/DDtMM/angular-signal-generators">
-            <fa-icon [icon]="faGithub" />Github
-          </a>
-        </li>
-        <li>
-          <h2 class="menu-title">Functions</h2>
-          <ul>
-            @for (l of demos; track l) {
-              <li>
-                <a [routerLink]="l.route">{{l.name}}</a>
-              </li>
-            }
-          </ul>
-        </li>
-      </ul>
+    <div class="flex-none md:hidden">
+      <input id="app-nav-drawer-toggle" type="checkbox" class="drawer-toggle" #appNavDrawerToggle />
+      <div class="drawer-content">
+        <label for="app-nav-drawer-toggle" aria-label="Open Navigation" tabindex="0" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </label>
+      </div>
+      <div class="drawer-side">
+        <label for="app-nav-drawer-toggle" aria-label="Close Navigation" class="drawer-overlay"></label>
+        <ul tabindex="0" class="menu menu-sm min-h-full bg-base-200 w-52">
+          <li><a routerLink="/getting-started">Getting Started</a></li>
+          <li><a href="./api/index.html">API Docs</a></li>
+          <li>
+            <a href="https://github.com/DDtMM/angular-signal-generators">
+              <fa-icon [icon]="faGithub" />Github
+            </a>
+          </li>
+          <li>
+            <h2 class="menu-title">Functions</h2>
+            <ul>
+              @for (l of demos; track l) {
+                <li>
+                  <a [routerLink]="l.route" (click)="appNavDrawerToggle.click()">{{l.name}}</a>
+                </li>
+              }
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
   <div class="w-64 mt-16 top-0 bottom-0 fixed overflow-y-auto y menu menu-sm py-3  bg-base border-base-300 border-r  hidden md:flex">
@@ -72,7 +78,6 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
       </li>
     </ul>
   </div>
-
 
   <div class="pl-0 md:pl-64 w-full min-h-screen -mt-16 pt-16 flex flex-col">
     <div class="p-3 mb-6">
