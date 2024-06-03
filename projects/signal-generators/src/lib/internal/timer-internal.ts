@@ -167,11 +167,10 @@ export class TimerInternal {
    */
   private tickComplete(): void {
     const remainingTime = this.getRemainingTime();
-    if (remainingTime > 0) {
+    if (remainingTime > 0) {  // this could occur if the end time changed.
       this.tickStart();
     }
     else {
-
       ++this.tickCount;
       this.onTickCallback(this.tickCount);
       this.lastCompleteTime = Date.now() + this.getRemainingTime();
