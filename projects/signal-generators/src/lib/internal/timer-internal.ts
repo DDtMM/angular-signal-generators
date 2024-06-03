@@ -182,15 +182,7 @@ export class TimerInternal {
   private tickStart(): void {
     clearTimeout(this.timeoutId);
     if (this.status === TimerStatus.Running) {
-      // This is dangerous if remainingTime is always calculated as a value less than 0 as it will create an infinite loop.
-      //
-      const remainingTime = this.getRemainingTime();
-      if (remainingTime > 0) {
-        this.timeoutId = setTimeout(this.tickComplete.bind(this), remainingTime);
-      }
-      else {
-        this.tickComplete();
-      }
+      this.timeoutId = setTimeout(this.tickComplete.bind(this), this.getRemainingTime());
     }
   }
 
