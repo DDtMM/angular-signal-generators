@@ -1,6 +1,8 @@
-import { WritableSignal, signal } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { mapSignal } from './map-signal';
+import { FormsModule } from '@angular/forms';
+import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
 
 describe('mapSignal', () => {
   setupTypeGuardTests(() => mapSignal(1, (x) => x + 1));
@@ -63,6 +65,23 @@ describe('mapSignal', () => {
       () => mapSignal(1, x => x + 1),
       (sut) => sut.set(4)
     );
+    it('works with ngModel', async() => {
+      @Component({
+        imports: [FormsModule],
+        selector: 'app-test',
+        template: `<input data-test="sutInput" type="number" [(ngModel)]="$sut.input" />`,
+      })
+      class TestComponent {
+        readonly $control = signal(6);
+        readonly $sut = mapSignal(6, x => x + 2);
+      };
+      await MockBuilder(TestComponent).keep(FormsModule);
+      MockRender('<app-test />');
+      const sut = ngMocks.find(TestComponent).componentInstance.$sut;
+      expect(sut()).toBe(8);
+      ngMocks.change('[data-test="sutInput"]', 13);
+      expect(sut()).toBe(15);
+    });
     it('initially returns mapped value', () => {
       const source = mapSignal(1, (x) => x * 3);
       expect(source()).toBe(3);

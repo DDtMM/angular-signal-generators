@@ -1,7 +1,7 @@
 <div class="inline-block ">
   <div class="grid grid-cols-2 gap-x-4 gap-y-3">
     <label class="label" for="inputVal">Input Value</label>
-    <input class="input input-bordered w-32 text-right" id="inputVal" type="number" [ngModel]="$inputVal.input()" (ngModelChange)="$inputVal.set($event)" />
+    <input class="input input-bordered w-32 text-right" id="inputVal" type="number" [(ngModel)]="$inputVal.input" />
     <label class="label" for="multiplier">Multiplier</label>
     <input class="input input-bordered w-32 text-right" id="multiplier" type="number" [(ngModel)]="$multiplier" />
     <div class="label" >Output</div>
