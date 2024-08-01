@@ -29,6 +29,8 @@ import { ResizeSignalPageComponent } from './demos/resize-signal/resize-signal-p
 import { MutationSignalPageComponent } from './demos/mutation-signal/mutation-signal-page.component';
 import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
 import { StorageSignalPageComponent } from './demos/storage-signal/storage-signal-page.component';
+import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
+import { EventSignalPageComponent } from './demos/event-signal/event-signal-page.component';
 
 /** What type of signals are returned from signal factory functions. */
 export type UsageType = 'generator' | 'utility' | 'writableSignal';
@@ -69,6 +71,16 @@ export const DEMO_CONFIGURATIONS = [
     route: 'debounce-signal',
     sourceUrl: 'signals/debounce-signal.ts',
     usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: EventSignalHomeDemoComponent,
+    docUrl: './api/functions/eventSignal.html',
+    fnName: 'eventSignal' as const,
+    name: 'eventSignal',
+    page: EventSignalPageComponent,
+    route: 'event-signal',
+    sourceUrl: 'signals/event-signal.ts',
+    usages: ['generator']
   },
   {
     homeDemo: ExtendSignalHomeDemoComponent,

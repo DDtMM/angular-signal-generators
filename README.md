@@ -58,6 +58,11 @@ This is very similar to rxjs's *debounce* operator.  This has two overloads - on
 
 These signals wrap the DOM observers IntersectionObserver, MutationObserver and ResizeObserver to output the last observation of changes to a target element passed to the signal.
 
+### eventSignal
+
+Listens to HTML element events via Renderer2 and map them to new values.  
+Since a signal can be passed it is easy to use with viewChild function.
+
 ### extendSignal
 
 Adds new methods to a signal - even hiding the existing methods if desired.  It does this by passing the original signal or a "proxy" as the first parameter of the new method.  This first parameter is obscured from the consumer so that it appears to be a normal method.
