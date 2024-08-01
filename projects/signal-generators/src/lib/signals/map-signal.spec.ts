@@ -3,6 +3,8 @@ import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNe
 import { mapSignal } from './map-signal';
 import { FormsModule } from '@angular/forms';
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
+import { BehaviorSubject } from 'rxjs';
+import { TestBed } from '@angular/core/testing';
 
 describe('mapSignal', () => {
   setupTypeGuardTests(() => mapSignal(1, (x) => x + 1));
@@ -36,11 +38,16 @@ describe('mapSignal', () => {
       const source = mapSignal(signal1, signal2, (a, b) => a * b + 1);
       expect(source()).toBe(16);
     });
-    it('can be mapped from signals of different types.', () => {
-      const textSignal = signal('The value of a + b is: ');
-      const source = mapSignal(signal1, signal2, textSignal, (a, b, text) => `${text}${a + b}`);
+    it('can be mapped from value sources of different types.', () => {
+      const number$ = new BehaviorSubject<number>(5)
+      const $text = signal<string>('The value of a + b is: ');
+      const source = TestBed.runInInjectionContext(() => mapSignal(signal1, number$, $text, (a, b, text) => `${text}${a + b}`));
       signal1.set(10);
-      expect(source()).toBe(`The value of a + b is: 15`);
+      expect(source()).toBe('The value of a + b is: 15');
+      number$.next(6);
+      expect(source()).toBe('The value of a + b is: 16');
+      $text.set('A + B = ');
+      expect(source()).toBe('A + B = 16');
     });
     it('respects options.equal value', () => {
       const source = mapSignal(signal1, signal2, (a, b) => a * b, { equal: (_, b: number) => b % 2 === 1 });
@@ -65,14 +72,13 @@ describe('mapSignal', () => {
       () => mapSignal(1, x => x + 1),
       (sut) => sut.set(4)
     );
-    it('works with ngModel', async() => {
+    it('works with ngModel when bound to input', async() => {
       @Component({
         imports: [FormsModule],
         selector: 'app-test',
         template: `<input data-test="sutInput" type="number" [(ngModel)]="$sut.input" />`,
       })
       class TestComponent {
-        readonly $control = signal(6);
         readonly $sut = mapSignal(6, x => x + 2);
       };
       await MockBuilder(TestComponent).keep(FormsModule);
