@@ -11,7 +11,7 @@ import { MathDemoComponent } from './math-demo/math-demo.component';
 <app-demo-page-header fnName="mapSignal" />
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
-  The selector function can include signals or can be mapped directly from an array of signals.
+  The selector function can include signals or can be mapped directly from an array of signals, observables or functions.
 </p>
 <p>
   The writable version of this signal is basically just a writable signal combined with a computed function,

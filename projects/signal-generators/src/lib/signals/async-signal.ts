@@ -111,8 +111,8 @@ function createFromValue<T>(
 function createOutputSignal<T>($input: Signal<AsyncSource<T>>, options: AsyncSignalOptions<T | undefined>): Signal<T | undefined> {
   const state = signal<AsyncSignalState<T | undefined>>({ status: AsyncSignalStatus.Ok, value: options.defaultValue });
 
-  /** An "unsubscribe" function. */
   let currentSource = untracked($input);
+    /** An "unsubscribe" function. */
   let currentListenerCleanup: () => void = updateListener(currentSource);
 
   effect(

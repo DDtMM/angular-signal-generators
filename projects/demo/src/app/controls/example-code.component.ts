@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, viewChild } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
 
 /**
@@ -14,23 +14,14 @@ import { HighlightModule } from 'ngx-highlightjs';
   imports: [CommonModule, HighlightModule],
   preserveWhitespaces: true,
   template: `
-<pre class="h-full w-full">@if (text) {<code class="h-full w-full" [highlight]="text" language="typescript"></code>}</pre>
-<div #contentWrapper class="hidden">
-  <ng-content></ng-content>
-</div>
+<pre class="h-full w-full">@if ($text(); as text) {<code class="h-full w-full" [highlight]="text" language="typescript"></code>}</pre>
+<div #contentWrapper class="hidden"><ng-content /></div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExampleCodeComponent implements AfterViewInit {
-  @ViewChild('contentWrapper') content?: ElementRef
-
+export class ExampleCodeComponent {
+  /** Wraps transcluded content. */
+  readonly content = viewChild<ElementRef<HTMLElement>>('contentWrapper');
   /** Code text from contentWrapper. */
-  text?: string;
-
-  constructor(private cd: ChangeDetectorRef) {}
-
-  ngAfterViewInit(): void {
-    this.text = this.content?.nativeElement?.innerText.trim();
-    this.cd.detectChanges();
-  }
+  readonly $text = computed(() => this.content()?.nativeElement?.innerText.trim() ?? '');
 }
