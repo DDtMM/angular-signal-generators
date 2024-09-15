@@ -168,7 +168,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: NestSignalHomeDemoComponent,
-    docUrl: './api/functions/nestSignal-1.html',
+    docUrl: './api/functions/nestSignal.html',
     fnName: 'nestSignal' as const,
     name: 'nestSignal',
     page: NestSignalPageComponent,
