@@ -3,6 +3,8 @@ import { SIGNAL, SignalGetter, signalSetFn, signalUpdateFn } from '@angular/core
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { SignalInput, SignalInputSignal, SignalInputValue } from '../signal-input';
+import { TransformedSignal } from '../transformed-signal';
+import { asReadonlyFnFactory } from '../internal/utilities';
 
 export interface MapSignalOptions<R>  {
   /** An equal function put on the selector result. */
@@ -11,17 +13,13 @@ export interface MapSignalOptions<R>  {
   injector?: Injector;
 }
 /** A signal that is updated with TIn, but emits TOut due to a selector specified at creation. */
-export interface MapSignal<TIn, TOut> extends Signal<TOut> {
-  /** Returns the output signal as a readonly. */
-  asReadonly(): Signal<TOut>;
+export interface MapSignal<TIn, TOut> extends TransformedSignal<TIn, TOut> {
   /**
    * Contains the values that are input to the signal.
    * Calling set or update on this will have the same behavior as calling the main set or update methods
    * and is exposed to make it easier for binding.
    */
   input: WritableSignal<TIn>;
-  set(value: TIn): void;
-  update(updateFn: (value: TIn) => TIn): void;
 }
 /** Used for when one or more signals passed as parameters */
 export type FromSignalTupleType<T = unknown> = readonly SignalInput<T>[];
@@ -104,7 +102,7 @@ function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options
   const inputNode = $input[SIGNAL];
   const $output = computed(() => selector($input()), { equal: options.equal });
   return Object.assign($output, {
-    asReadonly: () => $output,
+    asReadonly: asReadonlyFnFactory($output),
     input: $input,
     set: (value: T) => signalSetFn(inputNode, value),
     update: (updateFn: (value: T) => T) => signalUpdateFn(inputNode, updateFn)

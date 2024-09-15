@@ -1,20 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { getDestroyRef, getInjector, hasKey, isMethodKey } from './utilities';
+import { setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { asReadonlyFnFactory, getDestroyRef, getInjector, hasKey, isMethodKey } from './utilities';
 
-describe('hasKey', () => {
-  type Something = { keyX?: number };
-  it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBeTrue());
-  it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBeFalse());
-  it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBeFalse());
+describe('asReadonlyFnFactory', () => {
+  setupTypeGuardTests(() => asReadonlyFnFactory(signal(1))());
+  it('returns as signal without other methods', () => {
+    const $result = asReadonlyFnFactory(signal(1))();
+    expect(Object.keys($result)).toEqual([]);
+  });
+  it('resulting signal reflects source signals value', () => {
+    const $src = signal(1);
+    const $result = asReadonlyFnFactory($src)();
+    expect($result()).toBe(1);
+    $src.set(25);
+    expect($result()).toBe(25);
+  });
 });
-
-describe('isMethodKey', () => {
-  const srcObj = { method: () => 1, notMethod: 1 };
-  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBeTrue());
-  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBeFalse());
-  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBeFalse());
-})
 
 describe('getDestroyRef', () => {
   it('throws when no injector is passed and not in injector context', () => {
@@ -51,4 +53,18 @@ describe('getInjector', () => {
       expect(MockRender(TestHarness).point.componentInstance.injectorRef).toBeDefined();
     });
   });
+});
+
+describe('hasKey', () => {
+  type Something = { keyX?: number };
+  it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBeTrue());
+  it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBeFalse());
+  it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBeFalse());
+});
+
+describe('isMethodKey', () => {
+  const srcObj = { method: () => 1, notMethod: 1 };
+  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBeTrue());
+  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBeFalse());
+  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBeFalse());
 });

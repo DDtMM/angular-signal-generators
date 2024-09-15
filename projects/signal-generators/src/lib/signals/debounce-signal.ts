@@ -1,11 +1,11 @@
 import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { TimerInternal } from '../internal/timer-internal';
-import { getDestroyRef } from '../internal/utilities';
+import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
 import { SignalInput } from '../signal-input';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
-import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 
 export interface DebounceSignalOptions {
   /** pass injector if this is not created in Injection Context */
@@ -97,7 +97,7 @@ function createFromValue<T>(initialValue: T,
   const $debounced = createFromSignal($source, debounceTime, options);
 
   return Object.assign($debounced, {
-    asReadonly: () => $debounced,
+    asReadonly: asReadonlyFnFactory($debounced),
     set: (value: T) => signalSetFn(sourceNode, value),
     update: (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn)
   });

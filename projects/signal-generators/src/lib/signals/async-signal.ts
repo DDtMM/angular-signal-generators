@@ -2,7 +2,9 @@ import { Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, 
 import { SIGNAL, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInputFunction } from '../internal/signal-input-utilities';
+import { asReadonlyFnFactory } from '../internal/utilities';
 import { ToSignalInput } from '../signal-input';
+import { TransformedSignal } from '../transformed-signal';
 
 export type AsyncSource<T> = ToSignalInput<T> | Promise<T>;
 
@@ -16,14 +18,7 @@ export interface AsyncSignalOptions<T> {
 }
 
 /** An signal that returns values from an async source that can change. */
-export interface AsyncSignal<T> extends Signal<T> {
-  /** Returns the output signal as a readonly. */
-  asReadonly(): Signal<T>;
-  /** Sets the new async source of the signal. */
-  set(value: AsyncSource<T>): void;
-  /** Updates the async source of the signal. */
-  update(updateFn: (value: AsyncSource<T>) => AsyncSource<T>): void;
-}
+export type AsyncSignal<T> = TransformedSignal<AsyncSource<T>, T>;
 
 const VOID_FN = () => {};
 
@@ -102,7 +97,7 @@ function createFromValue<T>(
   const inputNode = $input[SIGNAL];
   const $output = createOutputSignal($input, options);
   return Object.assign($output, {
-    asReadonly: () => $output,
+    asReadonly: asReadonlyFnFactory($output),
     set: (value: AsyncSource<T>) => signalSetFn(inputNode, value),
     update: (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn)
   });
