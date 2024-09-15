@@ -7,7 +7,7 @@ import { inspect, sequenceSignal } from 'projects/signal-generators/src/public-a
   selector: 'app-alt-reporter-demo',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './alt-reporter.component.html',
+  templateUrl: './alt-reporter-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AltReporterDemoComponent {
