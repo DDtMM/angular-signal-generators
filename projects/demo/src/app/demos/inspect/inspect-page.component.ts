@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { BasicDemoComponent } from './basic-demo/basic-demo.component';
-import { AltReporterComponent } from './alt-reporter/alt-reporter.component';
+import { AltReporterDemoComponent } from './alt-reporter-demo/alt-reporter-demo.component';
 
 @Component({
   selector: 'inspect-page',
   standalone: true,
-  imports: [AltReporterComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
+  imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
   template: `
 <app-demo-page-header fnName="inspect"/>
 <p>

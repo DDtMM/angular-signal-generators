@@ -10,7 +10,7 @@ import { inspect, sequenceSignal } from 'projects/signal-generators/src/public-a
   templateUrl: './alt-reporter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AltReporterComponent {
+export class AltReporterDemoComponent {
   /** This is a very contrived demonstration using nested signals. */
   readonly $luckyNumbers = signal<WritableSignal<number>[]>([]);
   readonly $name = signal('Danny');
