@@ -24,7 +24,7 @@ The Subject can be anything, but to be effective it should be a signal, an objec
 <app-demo-host name="Basic Usage" pattern="inspect/basic-demo/">
   <app-basic-demo />
 </app-demo-host>
-<app-demo-host name="Using Inspect with a Custom Reporter" pattern="inspect/alt-reporter/">
+<app-demo-host name="Using Inspect with a Custom Reporter" pattern="inspect/alt-reporter-demo/">
   <app-alt-reporter-demo />
 </app-demo-host>
 </div>
