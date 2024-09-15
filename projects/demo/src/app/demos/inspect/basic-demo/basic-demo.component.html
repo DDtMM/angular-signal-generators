@@ -1,0 +1,24 @@
+<p>
+  View your browser's console to see output of inspect.
+</p>
+
+<div class="flex flex-col gap-2">
+  <div class="flex flex-row gap-3">
+    <label class="label" for="demo_name">Name</label>
+    <input class="input input-bordered" type="text" id="demo_name" [(ngModel)]="$name" />
+  </div>
+  <div class="px-1 flex flex-col gap-2">
+    <div class="flex flex-row gap-2">
+      <div >{{$name()}}'s Lucky Numbers:</div>
+      <div class="flex flex-row gap-3">
+        @for ($luckyNumber of $luckyNumbers(); track $luckyNumber) {
+          <span>{{$luckyNumber()}}</span>
+        }
+      </div>
+    </div>
+    <div class="join">
+      <button type="button" class="btn btn-primary btn-sm join-item" (click)="addLuckyNumber()">Add Lucky Number</button>
+      <button type="button" class="btn btn-primary btn-sm join-item" (click)="reroll()">Reroll</button>
+    </div>
+  </div>
+</div>

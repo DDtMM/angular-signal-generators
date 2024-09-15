@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCode, faFile } from '@fortawesome/free-solid-svg-icons';
-import { DEMO_CONFIG_MAP, SignalFunctionName } from '../demo-configuration';
+import { DEMO_CONFIG_MAP, DUMMY_CONFIGURATION, SignalFunctionName } from '../demo-configuration';
 import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
 @Component({
@@ -36,7 +36,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoPageHeaderComponent {
-  readonly $demoConfig = computed(() => DEMO_CONFIG_MAP[this.$fnName()]);
+  readonly $demoConfig = computed(() => DEMO_CONFIG_MAP[this.$fnName()] ?? DUMMY_CONFIGURATION);
   readonly faFile = faFile;
   readonly faCode = faCode;
   readonly $fnName = input.required<SignalFunctionName>({ alias: 'fnName'});

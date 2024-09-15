@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { DemoHostComponent } from '../../controls/demo-host.component';
+import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { TimerSignalDemoComponent } from './timer-signal-demo/timer-signal-demo.component';
 
 
 @Component({
   selector: 'app-timer-signal-page',
   standalone: true,
-  imports: [CommonModule, DemoHostComponent, FormsModule, DemoPageHeaderComponent, TimerSignalDemoComponent],
+  imports: [CommonModule, DemoHostComponent, DemoPageHeaderComponent, TimerSignalDemoComponent],
   template: `
 <app-demo-page-header fnName="timerSignal" />
 <p>

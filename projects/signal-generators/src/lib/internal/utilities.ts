@@ -1,7 +1,18 @@
-import { DestroyRef, Injector, assertInInjectionContext, inject } from '@angular/core';
+import { DestroyRef, Injector, Signal, assertInInjectionContext, inject } from '@angular/core';
+import { SIGNAL } from '@angular/core/primitives/signals';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunctionType = (...args: any[]) => void;
+
+/**
+ * This is inspired by `signalAsReadonlyFn` from https://github.com/angular/angular/blob/main/packages/core/src/render3/reactivity/signal.ts#L90
+ * It does not cache the readonlyFn, just creates a new one each time.
+ */
+export function asReadonlyFnFactory<T>($src: Signal<T>): () => Signal<T> {
+  const $readonly = (() => $src()) as Signal<T>;
+  $readonly[SIGNAL] = $src[SIGNAL];
+  return () => $readonly;
+}
 
 /** Gets the DestroyRef either using the passed injector or inject function. */
 export function getDestroyRef(fnType: AnyFunctionType, injector?: Injector | null | undefined): DestroyRef {
@@ -34,3 +45,4 @@ export function hasKey<T extends object>(obj: T | null | undefined, key: keyof T
 export function isMethodKey<T extends object>(obj: T | null | undefined, key: unknown): key is keyof { [K in keyof T as T[K] extends (...args: any[]) => any ? K : never] : K } & keyof T {
   return obj != null && (typeof obj[key as keyof T] === 'function');
 }
+

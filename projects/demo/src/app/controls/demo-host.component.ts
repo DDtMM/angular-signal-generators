@@ -49,7 +49,7 @@ interface DemoHostSourceFile extends SourceFile {
         <span class="absolute right-0 p-1">
           <app-copy-button [content]="src.code" />
         </span>
-        <code class="h-full w-full bg-slate-50 " [highlight]="src.code" [language]="src.type"></code>
+        <code class="h-full w-full bg-slate-50 whitespace-pre" [highlight]="src.code" [language]="src.type"></code>
       </div>
     }
 

@@ -1,36 +1,40 @@
 import { Type } from '@angular/core';
+import { AsyncSignalPageComponent } from './demos/async-signal/async-signal-page.component';
+import { DebounceSignalPageComponent } from './demos/debounce-signal/debounce-signal-page.component';
+import { EventSignalPageComponent } from './demos/event-signal/event-signal-page.component';
+import { ExtendSignalPageComponent } from './demos/extend-signal/extend-signal-page.component';
+import { FilterSignalPageComponent } from './demos/filter-signal/filter-signal-page.component';
+import { InspectPageComponent } from './demos/inspect/inspect-page.component';
+import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
+import { LiftSignalPageComponent } from './demos/lift-signal/lift-signal-page.component';
+import { MapSignalPageComponent } from './demos/map-signal/map-signal-page.component';
+import { MutationSignalPageComponent } from './demos/mutation-signal/mutation-signal-page.component';
+import { NestSignalPageComponent } from './demos/nest-signal/nest-signal-page';
+import { ReduceSignalPageComponent } from './demos/reduce-signal/reduce-signal-page.component';
+import { ResizeSignalPageComponent } from './demos/resize-signal/resize-signal-page.component';
+import { SequenceSignalPageComponent } from './demos/sequence-signal/sequence-signal-page.component';
+import { SignalToIteratorPageComponent } from './demos/signal-to-iterator/signal-to-iterator-page.component';
+import { StorageSignalPageComponent } from './demos/storage-signal/storage-signal-page.component';
+import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page.component';
+import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
 import { AsyncSignalHomeDemoComponent } from './home-demos/async-signal-home-demo.component';
 import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-home-demo.component';
+import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
 import { ExtendSignalHomeDemoComponent } from './home-demos/extend-signal-home-demo.component';
 import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
+import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.component';
+import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
 import { LiftSignalHomeDemoComponent } from './home-demos/lift-signal-home-demo.component';
 import { MapSignalHomeDemoComponent } from './home-demos/map-signal-home-demo.component';
+import { MutationSignalHomeDemoComponent } from './home-demos/mutation-signal-home-demo.component';
+import { NestSignalHomeDemoComponent } from './home-demos/nest-signal-home-demo.component';
 import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-demo.component';
+import { ResizeSignalHomeDemoComponent } from './home-demos/resize-signal-home-demo.component';
 import { SequenceSignalHomeDemoComponent } from './home-demos/sequence-signal-home-demo.component';
 import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterator-home-demo.component';
 import { StorageSignalHomeDemoComponent } from './home-demos/storage-signal-home-demo.component';
 import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-demo.component';
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
-import { AsyncSignalPageComponent } from './demos/async-signal/async-signal-page.component';
-import { DebounceSignalPageComponent } from './demos/debounce-signal/debounce-signal-page.component';
-import { ExtendSignalPageComponent } from './demos/extend-signal/extend-signal-page.component';
-import { FilterSignalPageComponent } from './demos/filter-signal/filter-signal-page.component';
-import { LiftSignalPageComponent } from './demos/lift-signal/lift-signal-page.component';
-import { MapSignalPageComponent } from './demos/map-signal/map-signal-page.component';
-import { ReduceSignalPageComponent } from './demos/reduce-signal/reduce-signal-page.component';
-import { SequenceSignalPageComponent } from './demos/sequence-signal/sequence-signal-page.component';
-import { SignalToIteratorPageComponent } from './demos/signal-to-iterator/signal-to-iterator-page.component';
-import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page.component';
-import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
-import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
-import { MutationSignalHomeDemoComponent } from './home-demos/mutation-signal-home-demo.component';
-import { ResizeSignalHomeDemoComponent } from './home-demos/resize-signal-home-demo.component';
-import { ResizeSignalPageComponent } from './demos/resize-signal/resize-signal-page.component';
-import { MutationSignalPageComponent } from './demos/mutation-signal/mutation-signal-page.component';
-import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
-import { StorageSignalPageComponent } from './demos/storage-signal/storage-signal-page.component';
-import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
-import { EventSignalPageComponent } from './demos/event-signal/event-signal-page.component';
 
 /** What type of signals are returned from signal factory functions. */
 export type UsageType = 'generator' | 'utility' | 'writableSignal';
@@ -51,6 +55,16 @@ export interface DemoConfigurationItem<FnName extends string> {
   readonly usages: UsageType[];
 }
 
+export const DUMMY_CONFIGURATION: DemoConfigurationItem<string> = {
+  homeDemo: AsyncSignalHomeDemoComponent,
+  docUrl: './api/functions/dummy.html',
+  fnName: 'dummy' as const,
+  name: 'dummy',
+  page: AsyncSignalPageComponent,
+  route: 'dummy',
+  sourceUrl: 'dummy.ts',
+  usages: ['generator', 'writableSignal', 'utility']
+};
 export const DEMO_CONFIGURATIONS = [
   {
     homeDemo: AsyncSignalHomeDemoComponent,
@@ -103,6 +117,16 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['writableSignal']
   },
   {
+    homeDemo: InspectHomeDemoComponent,
+    docUrl: './api/functions/inspect.html',
+    fnName: 'inspect' as const,
+    name: 'inspect',
+    page: InspectPageComponent,
+    route: 'inspect',
+    sourceUrl: 'utilities/inspect.ts',
+    usages: ['utility']
+  },
+  {
     homeDemo: IntersectionSignalHomeDemoComponent,
     docUrl: './api/functions/intersectionSignal-1.html',
     fnName: 'intersectionSignal' as const,
@@ -140,6 +164,16 @@ export const DEMO_CONFIGURATIONS = [
     page: MutationSignalPageComponent,
     route: 'mutation-signal',
     sourceUrl: 'signals/dom-observers/mutation-signal.ts',
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: NestSignalHomeDemoComponent,
+    docUrl: './api/functions/nestSignal-1.html',
+    fnName: 'nestSignal' as const,
+    name: 'nestSignal',
+    page: NestSignalPageComponent,
+    route: 'nest-signal',
+    sourceUrl: 'signals/nest-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -214,7 +248,7 @@ export const DEMO_CONFIGURATIONS = [
   }
 ] satisfies DemoConfigurationItem<string>[];
 
-export type SignalFunctionName = (typeof DEMO_CONFIGURATIONS)[number]['fnName'];
+export type SignalFunctionName = (typeof DEMO_CONFIGURATIONS)[number]['fnName'] | 'dummy';
 
 export const DEMO_CONFIG_MAP = DEMO_CONFIGURATIONS.reduce(
   (prior, cur) => ({ ...prior, [cur.fnName]: cur }),

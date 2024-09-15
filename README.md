@@ -82,6 +82,11 @@ Can be used with guard functions.
 Creates a signal whose input value is immediately mapped to a different value based on a selector.
 Either a value or multiple signals can be passed and used in the selector function.
 
+### nestSignal
+
+Creates a signal whose value changes after any nested signal's value updates no matter how deep the signal is nested.
+It's value will be an object where every signal is replaced with its emitted value.
+
 ### reduceSignal
 
 Creates a signal similar to `Array.reduce` or Rxjs's `scan` operator, using a reducer function to create a new value from the current and prior values.
@@ -105,6 +110,10 @@ This is very similar to rxjs's *timer* operator.  It will be have like setTimeou
 This was directly inspired by Svelte's *tweened* function.  When the signal value is change, the observed value slowly morphs over time.  So if the original value was **1** and the next value was set to **5**, then the observed value will be something like *1*, *1.512*, *2.12*, *2.6553*, *3* over a set duration.
 
 ## Utilities
+
+### inspect
+
+Inspired by Svelte's $inspect rune, logs the resolved values of signals deeply nested in an object, array or signal.
 
 ### signalToIterator
 

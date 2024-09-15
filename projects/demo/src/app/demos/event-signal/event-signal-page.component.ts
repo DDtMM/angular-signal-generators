@@ -28,12 +28,14 @@ import { FromStringLiteralDemoComponent } from './from-string-literal-demo/from-
   As with most of the functions in this library, either a value, signal, function, or observable can be passed.
   This makes it handy to use with the <a href="https://angular.dev/api/core/viewChild" class="link">viewChild</a> query signal.
 </p>
-<app-demo-host name="Events from a signal's element" pattern="event-signal/from-signal-demo/">
-  <app-from-signal-demo />
-</app-demo-host>
-<app-demo-host name="Events from body element" pattern="event-signal/from-string-literal-demo/">
-  <app-from-string-literal-demo />
-</app-demo-host>
+<div class="flex flex-col gap-6">
+  <app-demo-host name="Events from a signal's element" pattern="event-signal/from-signal-demo/">
+    <app-from-signal-demo />
+  </app-demo-host>
+  <app-demo-host name="Events from body element" pattern="event-signal/from-string-literal-demo/">
+    <app-from-string-literal-demo />
+  </app-demo-host>
+</div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
