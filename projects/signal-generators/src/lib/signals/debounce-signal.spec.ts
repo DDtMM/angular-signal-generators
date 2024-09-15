@@ -77,10 +77,13 @@ describe('debounceSignal', () => {
       sut.update((x) => x + 'z');
       tickAndAssertValues(sut, [[499, 'x'], [1, 'xz']]);
     }));
-    it('asReadonly just returns itself', () => {
-      const sut = debounceSignal('x', 500, { injector });
-      const asReadonlyResult = sut.asReadonly();
-      expect(asReadonlyResult).toBe(sut);
-    });
+    it('#asReadonly returns signal that reflects source signal value', fakeAsync(() => {
+      const sut = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));
+      const $readonly = sut.asReadonly();
+      expect($readonly()).toEqual(sut());
+      sut.set('y')
+      tickAndAssertValues($readonly, [[499, 'x']]);
+      tickAndAssertValues($readonly, [[1, 'y']]);
+    }));
   });
 });

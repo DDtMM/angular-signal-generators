@@ -1,7 +1,8 @@
-import { ElementRef, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
+import { effect, ElementRef, Injector, Signal, untracked } from '@angular/core';
+import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../../internal/signal-coercion';
 import { isSignalInput } from '../../internal/signal-input-utilities';
-import { getDestroyRef } from '../../internal/utilities';
+import { asReadonlyFnFactory, getDestroyRef } from '../../internal/utilities';
 import { SignalInput } from '../../signal-input';
 import { ValueSource } from '../../value-source';
 
@@ -48,9 +49,10 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
   nativeObservedTransformFn: (rawSubject: I) => T | undefined,
   injector: Injector
 ): DomObserverSignal<D, I> | Signal<DomObserverOutput<D>> {
-  const $observerOutput = signal<DomObserverOutput<D>>([]);
-  const outputSetter = $observerOutput.set; // copy setter in case it is overwritten by writable output.
-  const observer = observerFactoryFn((x) => outputSetter.call($observerOutput, x));
+  const $observerOutput = createSignal<DomObserverOutput<D>>([]);
+  const observerOutputNode = $observerOutput[SIGNAL];
+  //const outputSetter = $observerOutput.set; // copy setter in case it is overwritten by writable output.
+  const observer = observerFactoryFn((x) => signalSetFn(observerOutputNode, x));
   const destroyRef = getDestroyRef(domObserverSignalFactory, injector);
   destroyRef.onDestroy(() => observer.disconnect());
 
@@ -66,7 +68,7 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
 /** Creates a writable signal. */
 function domObserverWritableSignalFactory<D extends DomObserver, I extends DomSignalValue<D>, S extends DomObserverTarget<D>>(
   observer: D,
-  $output: WritableSignal<DomObserverOutput<D>>,
+  $output: SignalGetter<DomObserverOutput<D>>,
   initialSubject: I,
   options: DomObserverOptions<D>,
   nativeObservedTransformFn: (rawSubject: I) => S | undefined,
@@ -76,6 +78,7 @@ function domObserverWritableSignalFactory<D extends DomObserver, I extends DomSi
   observeNextSubject(observer, nativeObservedTransformFn(initialSubject), options);
 
   return Object.assign($output, { // override the output's writable methods
+    asReadonly: asReadonlyFnFactory($output),
     set: updateState,
     update: (updateFn: (value: I) => I) => updateState(updateFn(untransformedSubject))
   });
