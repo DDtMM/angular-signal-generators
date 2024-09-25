@@ -22,9 +22,8 @@ import { DEMO_CONFIGURATIONS } from '../demo-configuration';
       </div>
 
       <p class="py-6">
-        Angular Signal Generators is a library to help expand the usefulness of signals.
-        This is done by exposing purpose built signals meant to simplify common tasks encountered in Components.
-        They work like vanilla signals, but with extra capabilities built in.
+        Streamline your Angular development with Angular Signal Generators,
+        a library of signals and utilities designed to replace common patterns <span class="inline-block">for faster, cleaner code.</span>
       </p>
       <button class="btn btn-primary" routerLink="/getting-started">Get Started</button>
     </div>

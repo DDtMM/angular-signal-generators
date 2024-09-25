@@ -1,7 +1,9 @@
 # <img src="https://raw.githubusercontent.com/DDtMM/angular-signal-generators/main/projects/demo/src/assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" width="32" height="32" style="width: 32px; height: 32px" /> Angular Signal Generators
 
-Angular Signal Generators are purpose built signals meant to simplify common tasks encountered in Components.
-Check out the [demos](https://ddtmm.github.io/angular-signal-generators/) for a better idea on how they can be used.
+Streamline your Angular development with Angular Signal Generators,
+a library of signals and utilities designed to replace common patterns for faster, cleaner code.
+
+Check out the **[demos](https://ddtmm.github.io/angular-signal-generators/)** to learn more.
 
 | Statements                  | Branches                | Functions                 | Lines             |
 | --------------------------- | ----------------------- | ------------------------- | ----------------- |
@@ -14,7 +16,7 @@ npm install @ddtmm/angular-signal-generators
 ```
 
 ## Usage
-You can import the signals from `'@ddtmm/angular-signal-generators`.  The signals are used just like ordinary functions. 
+You can import the signals and utilities from `'@ddtmm/angular-signal-generators`.  Like regular signals, the library's signals are used just like ordinary functions. 
 
 ```ts
 import { debounceSignal, liftSignal, timerSignal } from '@ddtmm/angular-signal-generators';

@@ -18,15 +18,18 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
         <app-signal-type-badge [type]="type" />
       }
     </div>
-    <div class="ml-auto">
+    <div class="ml-auto flex flex-row gap-2">
       @if (demoConfig.docUrl) {
-        <a class="btn btn-outline btn-info btn-sm border-0" [href]="demoConfig.docUrl" title="View API Docs"><fa-icon  [icon]="faFile" /></a>
+        <a class="btn  btn-info btn-sm" [href]="demoConfig.docUrl" title="View API Docs">
+          <fa-icon  [icon]="faFile" /> API
+        </a>
       }
       @if (demoConfig.sourceUrl) {
-        <a class="btn btn-outline btn-info btn-sm border-0"
+        <a class="btn  btn-info btn-sm"
           [href]="'https://github.com/DDtMM/angular-signal-generators/blob/main/projects/signal-generators/src/lib/' + demoConfig.sourceUrl"
           title="View Source" target="_blank">
           <fa-icon  [icon]="faCode" />
+          Source
         </a>
       }
     </div>
