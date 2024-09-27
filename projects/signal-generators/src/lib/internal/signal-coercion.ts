@@ -40,7 +40,8 @@ export function coerceSignal<T, S extends SignalInput<T>>(source: S, options?: C
     return source as SignalInputSignal<S>;
   }
   else if (isToSignalInput(source)) {
-    return (options && hasKey(options, 'initialValue'))
+    // if there is no initialValue then assume the observable has an initial value and set requireSync as true.
+    return (hasKey(options, 'initialValue'))
       ? toSignal(source, options) as SignalInputSignal<S>
       : toSignal(source, { injector: options?.injector, requireSync: true }) as SignalInputSignal<S>;
   }

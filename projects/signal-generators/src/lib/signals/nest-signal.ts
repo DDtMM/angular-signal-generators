@@ -58,12 +58,11 @@ function createFromSignal<T>(sourceInput: SignalInput<T>, options?: NestSignalOp
 function createFromValue<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>> {
   const $source = createSignal(initialValue);
   const sourceNode = $source[SIGNAL];
-  const $unwrapped = computed(() => deNest($source()), options);
-  return Object.assign($unwrapped, {
-    asReadonly: asReadonlyFnFactory($unwrapped),
-    set: (value: T) => signalSetFn(sourceNode, value),
-    update: (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn)
-  });
+  const $unwrapped = computed(() => deNest($source()), options) as TransformedSignal<T, NestSignalValue<T>>;
+  $unwrapped.asReadonly = asReadonlyFnFactory($unwrapped);
+  $unwrapped.set = (value: T) => signalSetFn(sourceNode, value);
+  $unwrapped.update = (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn);
+  return $unwrapped;
 }
 /** Recursively converts and signals in a value into their values. */
 function deNest<T>(input: T): NestSignalValue<T> {

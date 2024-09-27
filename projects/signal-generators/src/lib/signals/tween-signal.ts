@@ -1,10 +1,10 @@
-import { Injector, Signal, ValueEqualityFn, WritableSignal, effect, signal, untracked } from '@angular/core';
-import { SignalInput } from '../signal-input';
+import { Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { AnimationFrameFn, getRequestAnimationFrame } from '../internal/animations';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
+import { SignalInput } from '../signal-input';
 import { ValueSource } from '../value-source';
-import { AnimationFrameFn, getRequestAnimationFrame } from '../internal/animations';
-import { SIGNAL, SignalGetter, SignalNode, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 
 /** Request animation frame function */
 const requestAnimationFrame = getRequestAnimationFrame();
@@ -29,7 +29,6 @@ export interface TweenOptions<T> {
 }
 /** Options for initializing a tween signal. */
 export interface TweenSignalOptions<T> extends TweenOptions<T> {
-  equal?: ValueEqualityFn<T>;
   /** This is only used if a signal is created from an observable. */
   injector?: Injector;
   /** The interpolator is required unless numeric values are used. */
@@ -85,34 +84,18 @@ export function tweenSignal<T>(source: ValueSource<T>, options: TweenSignalOptio
 export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Partial<TweenSignalOptions<T>>):
   V extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
 {
-  /** The output signal that will be returned. */
-  let $output: SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
-  /** The original setter for the output signal. */
-  let outputNode: SignalNode<T>;
-  /** Normalizes output of the source signal since it is different when this is writable. */
-  let signalValueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]>;
+  const [
+    /** The output signal that will be returned and have methods added it it if writable. */
+    $output,
+    /** A function that will get the current value of the source.  It could be a signal */
+    signalValueFn
+  ] = (isSignalInput<T>(source))
+    ? getSignalsFromSignalInput(source, options)
+    : getSignalsFromValue(source as T);
 
+  /** THe SignalNode of the output signal.  Used when the output is set during value changes.  */
+  const outputNode = $output[SIGNAL];
 
-  if (isSignalInput<T>(source)) {
-    const $source = coerceSignal(source, options) as Signal<T>; // why is the cast needed now?
-    $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
-    outputNode = $output[SIGNAL];
-    signalValueFn = () => [$source(), undefined];
-    Object.assign($output, { setOptions });
-  }
-  else {
-    $output = signal(source as T) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
-    outputNode = $output[SIGNAL];
-    const $source = createSignal<Readonly<[value: T, options: TweenOptions<T> | undefined]>>([source as T, undefined]);
-    const sourceNode = $source[SIGNAL];
-    signalValueFn = $source;
-    Object.assign($output, {
-      set: (x: T, options?: TweenOptions<T>) => signalSetFn(sourceNode, [x, options] as const),
-      setOptions,
-      update: (updateFn: (value: T) => T, options?: TweenOptions<T>) =>
-        signalUpdateFn(sourceNode, ([value]) => [updateFn(value), options] as const),
-    });
-  }
   let defaultDelay = options?.delay ?? 0;
   let defaultDuration = options?.duration ?? 400;
   let defaultEasing = options?.easing || ((x: number) => x);
@@ -180,6 +163,31 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     function interpolateNumber(a: number, b: number, progress: number): number {
       return a * (1 - progress) + b * progress;
     }
+  }
+
+  /** Coerces a source signal from signal input and creates the output signal.. */
+  function getSignalsFromSignalInput(sourceSignalInput: SignalInput<T>, options: Partial<TweenSignalOptions<T>> | undefined):
+    [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
+    const $source = coerceSignal(sourceSignalInput, options);
+    const $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
+    $output.setOptions = setOptions;
+    const signalValueFn = () => [$source(), undefined] as const;
+    return [$output, signalValueFn];
+  }
+
+  /** Creates a writable source signal and output signal from the initial value. */
+  function getSignalsFromValue(sourceValue: T):
+    [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
+
+    const $output = signal(sourceValue) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
+    const $source = createSignal<Readonly<[value: T, options: TweenOptions<T> | undefined]>>([sourceValue as T, undefined]);
+    const sourceNode = $source[SIGNAL];
+    $output.set = (x: T, options?: TweenOptions<T>) => signalSetFn(sourceNode, [x, options] as const);
+    $output.setOptions = setOptions;
+    $output.update = (updateFn: (value: T) => T, options?: TweenOptions<T>) =>
+      signalUpdateFn(sourceNode, ([value]) => [updateFn(value), options] as const);
+    const signalValueFn = $source;
+    return [$output, signalValueFn];
   }
 
   /** Function that is applied to return signal that sets default animation parameters. */

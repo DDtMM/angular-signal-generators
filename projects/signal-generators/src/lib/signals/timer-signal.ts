@@ -55,9 +55,10 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
   const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, injector) : undefined;
   /** The signal that will be returned. */
   const $output = signal(0);
-  const state = signal<TimerSignalStatus>('stopped');
+  /** Keeps track of the state of the timer. */
+  const $state = signal<TimerSignalStatus>('stopped');
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), {
-    onStatusChange: (internalStatus) => state.set(transformTimerStatus(internalStatus)),
+    onStatusChange: (internalStatus) => $state.set(transformTimerStatus(internalStatus)),
     onTick: (x) => $output.set(x),
     runAtStart: !options?.stopped && isPlatformBrowser(injector.get(PLATFORM_ID))
   });
@@ -70,16 +71,15 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
   return createTimerSignal($output, timer);
 
   /** Assigns timer functions to the signal. */
-  function createTimerSignal(sourceSignal: WritableSignal<number>, timer: TimerInternal): TimerSignal {
-    return Object.assign(sourceSignal, {
-      pause: timer.pause.bind(timer),
-      restart: () => {
-        sourceSignal.set(0);
-        timer.start();
-      },
-      resume: timer.resume.bind(timer),
-      state
-    });
+  function createTimerSignal(outputSignalFn: WritableSignal<number> & Partial<TimerSignal>, timer: TimerInternal): TimerSignal {
+    outputSignalFn.pause = timer.pause.bind(timer);
+    outputSignalFn.restart = () => {
+      outputSignalFn.set(0);
+      timer.start();
+    };
+    outputSignalFn.resume = timer.resume.bind(timer);
+    outputSignalFn.state = $state;
+    return outputSignalFn as TimerSignal;
   }
 
   function transformTimerStatus(status: TimerStatus): TimerSignalStatus {

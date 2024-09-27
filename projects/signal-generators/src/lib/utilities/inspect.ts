@@ -18,7 +18,11 @@ export interface InspectOptions<T> extends CreateEffectOptions, NestSignalOption
   skipInitial?: boolean;
 }
 
-/** Feel free to change reporter to your own */
+/**
+ * Given that {@link inspect} should have no side-effects and does nothing in production mode,
+ * this is provided as a simple way to set the default behavior without having to get into dependency injection.
+ * You can modify this from wherever you want.
+ */
 export const INSPECT_DEFAULTS = {
   /** This is the default reporter for inspect. */
   reporter: (value: unknown) => console.log(value),

@@ -100,13 +100,12 @@ export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType
 function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options: MapSignalOptions<R> = {}): MapSignal<T, R> {
   const $input = signal<T>(initialValue) as SignalGetter<T> & WritableSignal<T>;
   const inputNode = $input[SIGNAL];
-  const $output = computed(() => selector($input()), { equal: options.equal });
-  return Object.assign($output, {
-    asReadonly: asReadonlyFnFactory($output),
-    input: $input,
-    set: (value: T) => signalSetFn(inputNode, value),
-    update: (updateFn: (value: T) => T) => signalUpdateFn(inputNode, updateFn)
-  });
+  const $output = computed(() => selector($input()), { equal: options.equal }) as MapSignal<T, R>;
+  $output.asReadonly = asReadonlyFnFactory($output);
+  $output.input = $input;
+  $output.set = (value: T) => signalSetFn(inputNode, value);
+  $output.update = (updateFn: (value: T) => T) => signalUpdateFn(inputNode, updateFn);
+  return $output;
 }
 
 /** Creates a readonly signal that selects from one or more signals. */
