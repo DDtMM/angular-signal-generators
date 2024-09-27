@@ -95,12 +95,11 @@ function createFromValue<T>(
 
   const $input = createSignal(initialSource);
   const inputNode = $input[SIGNAL];
-  const $output = createOutputSignal($input, options);
-  return Object.assign($output, {
-    asReadonly: asReadonlyFnFactory($output),
-    set: (value: AsyncSource<T>) => signalSetFn(inputNode, value),
-    update: (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn)
-  });
+  const $output = createOutputSignal($input, options) as AsyncSignal<T | undefined>;
+  $output.asReadonly = asReadonlyFnFactory($output);
+  $output.set = (value: AsyncSource<T>) => signalSetFn(inputNode, value);
+  $output.update = (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn);
+  return $output;
 }
 
 function createOutputSignal<T>($input: Signal<AsyncSource<T>>, options: AsyncSignalOptions<T | undefined>): Signal<T | undefined> {

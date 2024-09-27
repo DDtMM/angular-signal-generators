@@ -30,7 +30,10 @@ export function getInjector(fnType: AnyFunctionType): Injector {
   return inject(Injector);
 }
 
-/** A type safeway for determining a key is in an object. */
+/**
+ * A type safe way for determining a key is in an object.
+ * This is still needed because when "in" is used the propertyType can be inferred as undefined.
+ */
 export function hasKey<T extends object>(obj: T | null | undefined, key: keyof T): obj is T & { [K in typeof key]-?: T[K] } {
   return obj != null && (key in obj);
 }

@@ -65,23 +65,27 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
   }
 }
 
-/** Creates a writable signal. */
+/**
+ * Creates a writable signal.
+ * @param observer The observer that watches subjects.
+ * @param $output The signal function to add methods to.  This will be mutated directly.
+ * @param initialSubject The initially watched subject.
+ * @param options A mixture of options for the signal and the observer.
+*/
 function domObserverWritableSignalFactory<D extends DomObserver, I extends DomSignalValue<D>, S extends DomObserverTarget<D>>(
   observer: D,
-  $output: SignalGetter<DomObserverOutput<D>>,
+  $output: SignalGetter<DomObserverOutput<D>> & Partial<DomObserverSignal<D, I>>,
   initialSubject: I,
   options: DomObserverOptions<D>,
   nativeObservedTransformFn: (rawSubject: I) => S | undefined,
-
 ): DomObserverSignal<D, I> {
   let untransformedSubject = initialSubject;
   observeNextSubject(observer, nativeObservedTransformFn(initialSubject), options);
 
-  return Object.assign($output, { // override the output's writable methods
-    asReadonly: asReadonlyFnFactory($output),
-    set: updateState,
-    update: (updateFn: (value: I) => I) => updateState(updateFn(untransformedSubject))
-  });
+  $output.asReadonly = asReadonlyFnFactory($output);
+  $output.set = updateState;
+  $output.update = (updateFn: (value: I) => I) => updateState(updateFn(untransformedSubject))
+  return $output as DomObserverSignal<D, I>;
 
   function updateState(nextSubject: I, nextOptions?: DomObserverOptions<D>): void {
     if (nextSubject !== untransformedSubject || nextOptions !== undefined) {

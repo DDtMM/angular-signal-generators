@@ -24,6 +24,15 @@ describe('filterSignal', () => {
     expect(sut()).toBe(4);
   });
 
+  it('uses equalFn when passed to options', () => {
+    const sut = filterSignal<number>(1, x => x < 5, { equal: (a, b) => a % 2 === b % 2 });
+    expect(sut()).toBe(1);
+    sut.set(3);
+    expect(sut()).toBe(1); // since the are both still odd, the value should not change.
+    sut.set(4);
+    expect(sut()).toBe(4);
+  });
+
   it('doesn\'t miss a value change', () => {
     const sut = filterSignal<number>(1, x => x < 5);
     expect(sut()).toBe(1);

@@ -1,5 +1,5 @@
 import { ElementRef, Injector, Signal, signal } from '@angular/core';
-import { getInjector, hasKey } from '../../internal/utilities';
+import { getInjector } from '../../internal/utilities';
 import { SignalInput } from '../../signal-input';
 import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
@@ -78,7 +78,7 @@ function getNode(value: MutationSignalValue): Node | undefined {
   if (value instanceof Node) {
     return value;
   }
-  if (hasKey(value, 'nativeElement') && value.nativeElement instanceof Node) {
+  if (value?.nativeElement instanceof Node) {
     return value.nativeElement;
   }
   return undefined;

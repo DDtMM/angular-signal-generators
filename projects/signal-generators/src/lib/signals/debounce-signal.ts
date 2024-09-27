@@ -94,11 +94,9 @@ function createFromValue<T>(initialValue: T,
     sourceNode.equal = options.equal;
   }
 
-  const $debounced = createFromSignal($source, debounceTime, options);
-
-  return Object.assign($debounced, {
-    asReadonly: asReadonlyFnFactory($debounced),
-    set: (value: T) => signalSetFn(sourceNode, value),
-    update: (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn)
-  });
+  const $debounced = createFromSignal($source, debounceTime, options) as UpdatableSignal<T>;
+  $debounced.asReadonly = asReadonlyFnFactory($debounced);
+  $debounced.set = (value: T) => signalSetFn(sourceNode, value);
+  $debounced.update = (updateFn) => signalUpdateFn(sourceNode, updateFn);
+  return $debounced;
 }

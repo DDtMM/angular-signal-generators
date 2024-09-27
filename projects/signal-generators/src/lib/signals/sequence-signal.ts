@@ -1,8 +1,9 @@
-import { Injector, WritableSignal, signal, untracked } from '@angular/core';
+import { Injector, untracked, WritableSignal } from '@angular/core';
+import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
-import { ValueSource } from '../value-source';
 import { SignalInput } from '../signal-input';
+import { ValueSource } from '../value-source';
 
 const NO_ELEMENTS = 'Sequence contains no elements.';
 
@@ -131,23 +132,19 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
     ? createCursorGetterFromSignalInput(sequence)
     : createCursorGetterFromValue(sequence)
 
-  const output = signal(getFirstValue(sequenceCursorGetter()));
-
-  return Object.assign(output, {
-    next: (relativeChange = 1) => {
-      const res = sequenceCursorGetter().next(relativeChange);
-      if (res.hasValue) {
-        output.set(res.value);
-      }
-    },
-    reset: () => {
-      sequenceCursorGetter().reset();
-      const res = sequenceCursorGetter().next();
-      if (res.hasValue) {
-        output.set(res.value);
-      }
+  const $output = createSignal(getFirstValue(sequenceCursorGetter())) as SignalGetter<T> & SequenceSignal<T>;
+  const outputNode = $output[SIGNAL];
+  $output.next = (relativeChange = 1) => {
+    const res = sequenceCursorGetter().next(relativeChange);
+    if (res.hasValue) {
+      signalSetFn(outputNode, res.value);
     }
-  });
+  };
+  $output.reset = () => {
+    sequenceCursorGetter().reset();
+    $output.next();
+  }
+  return $output;
 
   /**
    * Creates function that gets the current cursor from a SignalInput.
