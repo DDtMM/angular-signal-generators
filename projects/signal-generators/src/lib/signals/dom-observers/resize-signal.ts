@@ -1,5 +1,5 @@
 import { ElementRef, Injector, Signal, signal } from '@angular/core';
-import { getInjector, hasKey } from '../../internal/utilities';
+import { getInjector } from '../../internal/utilities';
 import { SignalInput } from '../../signal-input';
 import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
@@ -64,7 +64,7 @@ function getElement(value: ResizeSignalValue): Element | undefined {
   if (value instanceof Element) {
     return value;
   }
-  if (hasKey(value, 'nativeElement') && value.nativeElement instanceof Element) {
+  if (value?.nativeElement instanceof Element) {
     return value.nativeElement;
   }
   return undefined;

@@ -3,11 +3,12 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
 import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
 import { BasicDemoComponent } from './basic-demo/basic-demo.component';
 import { AltReporterDemoComponent } from './alt-reporter-demo/alt-reporter-demo.component';
+import { InspectComponentSignalsDemoComponent } from './inspect-component-signals-demo/inspect-component-signals-demo.component';
 
 @Component({
   selector: 'inspect-page',
   standalone: true,
-  imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
+  imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent, InspectComponentSignalsDemoComponent],
   template: `
 <app-demo-page-header fnName="inspect"/>
 <p>
@@ -26,6 +27,9 @@ The Subject can be anything, but to be effective it should be a signal, an objec
 </app-demo-host>
 <app-demo-host name="Using Inspect with a Custom Reporter" pattern="inspect/alt-reporter-demo/">
   <app-alt-reporter-demo />
+</app-demo-host>
+<app-demo-host  name="The easy way to inspect all signals on a component" pattern="inspect/inspect-component-signals-demo/">
+  <app-inspect-component-signals-demo />
 </app-demo-host>
 </div>
   `,

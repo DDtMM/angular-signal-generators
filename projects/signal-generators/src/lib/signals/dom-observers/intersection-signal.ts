@@ -1,5 +1,5 @@
 import { ElementRef, Injector, Signal, signal } from '@angular/core';
-import { getInjector, hasKey } from '../../internal/utilities';
+import { getInjector } from '../../internal/utilities';
 import { SignalInput } from '../../signal-input';
 import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
@@ -68,7 +68,7 @@ function getRoot(value: IntersectionObserverOptions['root']): Document | Element
   if (value instanceof Element || value instanceof Document) {
     return value;
   }
-  if (hasKey(value, 'nativeElement') && value.nativeElement instanceof Element) {
+  if (value != null && 'nativeElement' in value && value.nativeElement instanceof Element) {
     return value.nativeElement;
   }
   return undefined;
@@ -78,7 +78,7 @@ function getElement(value: IntersectionSignalValue): Element | undefined {
   if (value instanceof Element) {
     return value;
   }
-  if (hasKey(value, 'nativeElement') && value.nativeElement instanceof Element) {
+  if (value?.nativeElement instanceof Element) {
     return value.nativeElement;
   }
   return undefined;
