@@ -33,8 +33,10 @@ import { DEMO_CONFIGURATIONS } from '../demo-configuration';
 <div class="divider"></div>
 <h2 class="text-3xl text-center">Function Demos</h2>
 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-  @for (l of demos; track l.fnName) {
-    <ng-container *ngComponentOutlet="l.homeDemo;" class="contents" />
+  @for (d of demos; track d.fnName) {
+    @if (!d.isExcludedFromHomePage) {
+      <ng-container *ngComponentOutlet="d.homeDemo" class="contents" />
+    }
   }
 </ul>
 `,

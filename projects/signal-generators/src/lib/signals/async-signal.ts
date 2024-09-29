@@ -6,8 +6,10 @@ import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
 import { ToSignalInput } from '../signal-input';
 import { TransformedSignal } from '../transformed-signal';
 
+/** Either something with a .subscribe() function or a promise. */
 export type AsyncSource<T> = ToSignalInput<T> | Promise<T>;
 
+/** Options for {@link asyncSignal}. */
 export interface AsyncSignalOptions<T> {
   /** The default value before the first emission. */
   defaultValue?: T;
@@ -16,7 +18,7 @@ export interface AsyncSignalOptions<T> {
   /** This is only used if a signal is created from an observable. */
   injector?: Injector;
   /**
-   * If true then a value will eagerly be read and it will throw an error if it hasn't been set.
+   * If true, then the passed value will eagerly be read and it will throw an error if it hasn't been set.
    * You shouldn't use defaultValue in this case.
    */
   requireSync?: boolean;
@@ -91,7 +93,7 @@ export function asyncSignal<T>(
   options: AsyncSignalOptions<T | undefined> = {}
 ): Signal<T | undefined> {
   return isSignal(valueSource)
-    ? createOutputSignal(valueSource, options)
+    ? createFromSignal(valueSource, options)
     : isSignalInputFunction(valueSource)
     ? createFromSignalInputFunction(valueSource, options)
     : createFromValue(valueSource, options);
@@ -103,7 +105,7 @@ function createFromSignalInputFunction<T>(
   options: AsyncSignalOptions<T | undefined>
 ): Signal<T | undefined> {
   const $input = coerceSignal(signalInput, { initialValue: undefined as AsyncSource<T> | undefined, injector: options.injector });
-  return createOutputSignal($input, options);
+  return createFromSignal($input, options);
 }
 
 /** Creates the writable version of an async signal from an initial async source. */
@@ -113,7 +115,7 @@ function createFromValue<T>(
 ): AsyncSignal<T | undefined> {
   const $input = createSignal(initialSource);
   const inputNode = $input[SIGNAL];
-  const $output = createOutputSignal($input, options) as AsyncSignal<T | undefined>;
+  const $output = createFromSignal($input, options) as AsyncSignal<T | undefined>;
   $output.asReadonly = asReadonlyFnFactory($output);
   $output.set = (value: AsyncSource<T>) => signalSetFn(inputNode, value);
   $output.update = (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn);
@@ -121,7 +123,7 @@ function createFromValue<T>(
 }
 
 /** Creates a readonly version of an async signal from another signal returning an async source. */
-function createOutputSignal<T>(
+function createFromSignal<T>(
   $input: Signal<AsyncSource<T>>,
   options: AsyncSignalOptions<T | undefined>
 ): Signal<T | undefined> {

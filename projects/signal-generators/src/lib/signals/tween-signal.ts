@@ -16,7 +16,10 @@ export type InterpolateFactoryFn<T> = (a:T, b: T) => InterpolateStepFn<T>;
 /** A function that alters progress between 0 and 1. */
 export type EasingFn = ((progress: number) => number);
 
-/** Options that can be used to overwrite default options. */
+/**
+ * Options that can be used to overwrite default options when calling {@link TweenSignal.setOptions},
+ * {@link WritableTweenSignal.set}, or {@link WritableTweenSignal.update}.
+ */
 export interface TweenOptions<T> {
   /** A delay before starting. */
   delay?: number;
@@ -42,14 +45,14 @@ export type TweenNumericValues = number | number[] | Record<string | number | sy
 /** Same as regular TweenSignal options, but interpolator is not required. */
 export type TweenNumericSignalOptions<T extends TweenNumericValues> = Omit<TweenSignalOptions<T>, 'interpolator'> & Partial<Pick<TweenSignalOptions<T>, 'interpolator'>>;
 
-/** A signal with a function to set animation parameters. */
+/** A signal with a function to set animation parameters returned from {@link tweenSignal}. */
 export interface TweenSignal<T> extends Signal<T>
 {
   /** Sets the default animation parameters for the signal.  This won't updated a running animation. */
   setOptions(options: TweenOptions<T>): void;
 }
 
-/** Like a writable a signal, but with optional options when setting. */
+/** Returned from returned from {@link tweenSignal}. It's like a writable a signal, but with extended options when setting and updating. */
 export interface WritableTweenSignal<T> extends TweenSignal<T> {
   /** Sets the value of signal with optional options. */
   set(value: T, options?: TweenOptions<T>): void;
@@ -90,8 +93,8 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
     /** A function that will get the current value of the source.  It could be a signal */
     signalValueFn
   ] = (isSignalInput<T>(source))
-    ? getSignalsFromSignalInput(source, options)
-    : getSignalsFromValue(source as T);
+    ? createFromSignalInput(source, options)
+    : createFromValue(source as T);
 
   /** THe SignalNode of the output signal.  Used when the output is set during value changes.  */
   const outputNode = $output[SIGNAL];
@@ -166,7 +169,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   }
 
   /** Coerces a source signal from signal input and creates the output signal.. */
-  function getSignalsFromSignalInput(sourceSignalInput: SignalInput<T>, options: Partial<TweenSignalOptions<T>> | undefined):
+  function createFromSignalInput(sourceSignalInput: SignalInput<T>, options: Partial<TweenSignalOptions<T>> | undefined):
     [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
     const $source = coerceSignal(sourceSignalInput, options);
     const $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
@@ -176,7 +179,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   }
 
   /** Creates a writable source signal and output signal from the initial value. */
-  function getSignalsFromValue(sourceValue: T):
+  function createFromValue(sourceValue: T):
     [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
 
     const $output = signal(sourceValue) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;

@@ -19,7 +19,7 @@ import { ArrayDemoComponent } from './array-demo/array-demo.component';
   with a function that executes the push and returns the updated signal.
 </p>
 <div role="alert" class="alert alert-warning mb-3">
-  <fa-icon [icon]="faTriangleExclamation" class="text-info" />
+  <fa-icon [icon]="faTriangleExclamation" />
   <div>
     <div> <b>Warning</b></div>
     <div>

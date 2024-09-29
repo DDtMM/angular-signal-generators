@@ -37,16 +37,20 @@ import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-dem
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
 
 /** What type of signals are returned from signal factory functions. */
-export type UsageType = 'generator' | 'utility' | 'writableSignal';
+export type UsageType = 'generator' | 'obsolete' | 'utility' | 'writableSignal';
 
 export interface DemoConfigurationItem<FnName extends string> {
+  /** The home demo component type. */
   readonly homeDemo: Type<unknown>;
   /** The url to the docs from the root. */
   readonly docUrl: string;
   /** Function name to generate signal.  Acts as distinct key. */
   readonly fnName: FnName;
+  /** If true, then omit then don't show this on the home page demos. */
+  readonly isExcludedFromHomePage?: boolean;
   /** Display name */
   readonly name: string;
+  /** The demo page component type */
   readonly page: Type<unknown>;
   /** The route from the root of the app. */
   readonly route: string;
@@ -100,11 +104,12 @@ export const DEMO_CONFIGURATIONS = [
     homeDemo: ExtendSignalHomeDemoComponent,
     docUrl: './api/functions/extendSignal.html',
     fnName: 'extendSignal' as const,
+    isExcludedFromHomePage: true,
     name: 'extendSignal',
     page: ExtendSignalPageComponent,
     route: 'extend-signal',
     sourceUrl: 'signals/extends-signal.ts',
-    usages: ['generator', 'writableSignal']
+    usages: ['generator', 'obsolete', 'writableSignal']
   },
   {
     homeDemo: FilterSignalHomeDemoComponent,

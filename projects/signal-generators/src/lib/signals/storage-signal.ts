@@ -3,7 +3,7 @@ import { SIGNAL, SignalGetter, createSignal, signalSetFn } from '@angular/core/p
 import { MapBasedStorage } from '../internal/map-based-storage';
 import { WebObjectStore } from '../internal/web-object-store';
 
-/** A simple provider of persistent storage for storageSignal. */
+/** A simple provider of persistent storage for {@link storageSignal}. */
 export interface StorageSignalStore<T> {
   get(key: string): T | undefined;
   set(key: string, value: T): void;
@@ -77,7 +77,7 @@ let SESSION_STORAGE_FALLBACK: Storage;
  * signal1.set(100);
  * console.log(signal1()); // 100 ("someKey" is now 100 in localStorage)
  * ```
- * @see storageSignal
+ * @see {@link storageSignal}
  */
 export function localStorageSignal<T>(initialValue: T, key: string, options?: WebStorageOptions<T>): WritableSignal<T> {
   const storage = globalThis.localStorage ?? (LOCAL_STORAGE_FALLBACK ??= new MapBasedStorage());
@@ -99,7 +99,7 @@ export function localStorageSignal<T>(initialValue: T, key: string, options?: We
  * signal1.set(100);
  * console.log(signal1()); // 100 ("someKey" is now 100 in sessionStorage)
  * ```
- * @see storageSignal
+ * @see {@link storageSignal}
  */
 export function sessionStorageSignal<T>(initialValue: T, key: string, options?: WebStorageOptions<T>): WritableSignal<T> {
   const storage = globalThis.sessionStorage ?? (SESSION_STORAGE_FALLBACK ??= new MapBasedStorage());

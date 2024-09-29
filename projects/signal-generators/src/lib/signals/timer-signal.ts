@@ -4,8 +4,10 @@ import { TimerInternal, TimerStatus } from '../internal/timer-internal';
 import { getDestroyRef, getInjector } from '../internal/utilities';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
+/** The state of the timer. */
 export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
 
+/** Options for {@link timerSignal}. */
 export interface TimerSignalOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
@@ -16,7 +18,7 @@ export interface TimerSignalOptions {
   stopped?: boolean;
 }
 
-/** A readonly signal with methods to affect execution */
+/** A readonly signal with methods to affect execution created from {@link timerSignal}. */
 export interface TimerSignal extends Signal<number> {
   /** Pauses the timer. */
   pause(): void;
