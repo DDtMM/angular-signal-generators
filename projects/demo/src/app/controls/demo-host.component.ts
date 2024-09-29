@@ -45,14 +45,15 @@ interface DemoHostSourceFile extends SourceFile {
       </div>
     }
     @if($selectedSource(); as src) {
-      <div class="relative border border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-h-[400px] overflow-auto rounded-b-box  shadow-lg ">
-        <span class="absolute right-0 p-1">
-          <app-copy-button [content]="src.code" />
-        </span>
+      <div class="relative border border-base-300 bg-slate-50 whitespace-pre-wrap w-full max-w-full max-h-[400px] overflow-auto rounded-b-box  shadow-lg ">
+        <div class="sticky top-0">
+          <div class="absolute top-0 right-0 p-1">
+            <app-copy-button [content]="src.code" />
+          </div>
+        </div>
         <code class="h-full w-full bg-slate-50 whitespace-pre" [highlight]="src.code" [language]="src.type"></code>
       </div>
     }
-
   </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
