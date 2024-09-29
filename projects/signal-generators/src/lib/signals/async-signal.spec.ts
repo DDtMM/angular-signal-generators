@@ -1,7 +1,7 @@
 import { Injector, signal } from '@angular/core';
-import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { BehaviorSubject, finalize, of, startWith, tap, timer } from 'rxjs';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { MockedComponentFixture, MockRender } from 'ng-mocks';
+import { BehaviorSubject, finalize, Observable, of, startWith, Subject, tap, timer } from 'rxjs';
 import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { asyncSignal } from './async-signal';
@@ -63,6 +63,18 @@ describe('asyncSignal', () => {
       tick();
       expect(sut()).toBe(2);
     }));
+
+    it('uses equal function', () => {
+      const asyncSource = new BehaviorSubject(2)
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(asyncSource, { injector, defaultValue: 1, equal: (a, b) => a % 2 === b % 2 }));
+      TestBed.flushEffects();
+      expect(sut()).toBe(2);
+      asyncSource.next(4);
+      expect(sut()).toBe(2);
+      asyncSource.next(5);
+      expect(sut()).toBe(5);
+    });
+
   });
 
   describe('from a signalInput', () => {
@@ -81,9 +93,25 @@ describe('asyncSignal', () => {
       tick();
       expect(sut()).toBe(2);
     }));
+
   });
 
-  describe('execution', () => {
+  describe('from a function that is not a signal', () => {
+    it('does not throw if using a variable defined after it is created', () => {
+      /*
+      * In classes a variable can be defined after the signal is created.
+      * If the variable is initially retrieved then this should throw an error.
+      * So initially the value of the signal should be the default value.
+      */
+      // eslint-disable-next-line prefer-const
+      let innerSubject: BehaviorSubject<number>;
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(() => innerSubject, { defaultValue: -1, injector }));
+      innerSubject = new BehaviorSubject(1);
+      TestBed.flushEffects();
+      expect(sut()).toBe(1);
+    });
+  })
+  describe('general execution', () => {
     it('creates a signal that initially returns defaultValue if provided in options', fakeAsync(() => {
       const sut = autoDetectChangesSignal(fixture, asyncSignal(Promise.resolve(1), { defaultValue: -1, injector }));
       expect(sut()).toBe(-1);
@@ -91,12 +119,13 @@ describe('asyncSignal', () => {
       expect(sut()).toBe(1);
     }));
 
-    it('create a new subscription when source changes', fakeAsync(() => {
+    it('create a new subscription when source changes', () => {
       const source1 = new BehaviorSubject(1);
       const source2 = new BehaviorSubject(5);
       const subscribeSpy1 = spyOn(source1, 'subscribe').and.callThrough();
       const subscribeSpy2 = spyOn(source2, 'subscribe').and.callThrough();
       const sut = autoDetectChangesSignal(fixture, asyncSignal(source1, { defaultValue: -1, injector }));
+      TestBed.flushEffects();
       expect(sut()).toBe(1);
       source1.next(2);
       expect(sut()).toBe(2);
@@ -104,23 +133,13 @@ describe('asyncSignal', () => {
       expect(subscribeSpy1).toHaveBeenCalledTimes(1);
       expect(subscribeSpy2).toHaveBeenCalledTimes(1);
       expect(sut()).toBe(5);
-    }));
-    it('does not resubscribe to an async if the same source is passed again', fakeAsync(() => {
-      const source = new BehaviorSubject(1);
-      const subscribeSpy = spyOn(source, 'subscribe').and.callThrough();
-      const sut = autoDetectChangesSignal(fixture, asyncSignal(source, { defaultValue: -1, injector }));
-      expect(sut()).toBe(1);
-      source.next(2);
-      expect(sut()).toBe(2);
-      sut.set(source);
-      expect(subscribeSpy).toHaveBeenCalledTimes(1);
-      expect(sut()).toBe(2);
-    }));
-    it('ignores output from a prior async source value when another one is active', fakeAsync(() => {
+    });
+
+    it('ignores output from a prior async source value when another one is active', () => {
       const subjectOne = new BehaviorSubject(1);
       const subjectTwo = new BehaviorSubject(6);
       const sut = autoDetectChangesSignal(fixture, asyncSignal(subjectOne, { injector }));
-      tick();
+      TestBed.flushEffects();
       expect(sut()).toBe(1);
       sut.set(subjectTwo);
       expect(sut()).toBe(6);
@@ -128,7 +147,7 @@ describe('asyncSignal', () => {
       expect(sut()).toBe(6);
       subjectTwo.next(7);
       expect(sut()).toBe(7);
-    }));
+    });
 
     it('updates if a signal is used inside of the "auto-computed" overload.', fakeAsync(() => {
       function fakeFetch(idValue: number): Promise<number> {
@@ -144,44 +163,81 @@ describe('asyncSignal', () => {
       flush(); // get promise to resolve
       expect(sut()).toBe(6);
     }));
+
+    it('cleans up when switch sources', () => {
+      const sourceOne = new BehaviorSubject(1);
+      const sourceTwo = new BehaviorSubject(2);
+      const unsubscribeSpy = spyOnUnsubscribeFromObservableSubscribe(sourceOne);
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(sourceOne, { injector }));
+      sut();
+      TestBed.flushEffects();
+      expect(unsubscribeSpy!).toHaveBeenCalledTimes(0);
+      sut.set(sourceTwo);
+      expect(unsubscribeSpy!).toHaveBeenCalledTimes(1);
+    });
+
+    it('cleans up when destroyed', () => {
+      const source = new BehaviorSubject(1);
+      const unsubscribeSpy = spyOnUnsubscribeFromObservableSubscribe(source);
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(source, { injector }));
+      sut();
+      TestBed.flushEffects();
+      expect(unsubscribeSpy!).toHaveBeenCalledTimes(0);
+      fixture.destroy();
+      expect(unsubscribeSpy!).toHaveBeenCalledTimes(1);
+    });
   });
 
-  describe('errors', () => {
+  describe('when requireSync is true', () => {
+    it('does not resubscribe to an async if the same source is passed again', () => {
+      const source = new BehaviorSubject(1);
+      const subscribeSpy = spyOn(source, 'subscribe').and.callThrough();
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(source, { injector, requireSync: true }));
+      expect(sut()).toBe(1);
+      source.next(2);
+      expect(sut()).toBe(2);
+      sut.set(source);
+      expect(subscribeSpy).toHaveBeenCalledTimes(1);
+      expect(sut()).toBe(2);
+    });
+
+    it('throws if there has been no emission', () => {
+      const source = new Subject<number>();
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(source, { injector, requireSync: true }));
+      expect(() => sut()).toThrowError('requireSync is true, but no value was returned from asynchronous source.');
+    });
+  })
+  describe('async errors', () => {
     it('throws when subscribable async source throws', fakeAsync(() => {
       const obs$ = timer(1000).pipe(
-        tap(() => {
-          throw new Error();
-        }),
+        tap(() => { throw new Error(); }),
         startWith(6)
       );
       const sut = autoDetectChangesSignal(fixture, asyncSignal(obs$, { injector }));
+      flush();
       expect(sut()).toBe(6);
       tick(1000); // get observable to throw error.
       expect(() => sut()).toThrowError();
     }));
 
     it('throws when PromiseLike async source is rejected', fakeAsync(() => {
-      let reject: () => void = () => {};
-      const asyncSource = new Promise<number>((_, r) => {
-        reject = r;
-      });
+      const asyncSource = createPromiseWithResolvers<number>();
       const sut = autoDetectChangesSignal(fixture, asyncSignal(asyncSource, { injector }));
       expect(sut()).toBe(undefined);
-      reject();
-      tick(); // need to process the reject.
+      asyncSource.reject();
+      flush(); // need to process the reject.
       expect(() => sut()).toThrowError();
     }));
 
     it('will not update after an error has been thrown', fakeAsync(() => {
-      let reject: () => void = () => {};
-      const asyncSource = new Promise<number>((_, r) => {
-        reject = r;
-      });
+      const asyncSource = createPromiseWithResolvers<number>();
       const sut = autoDetectChangesSignal(fixture, asyncSignal(asyncSource, { injector }));
-      reject(); // this will go undetected... at first.
-      sut.set(Promise.resolve(5));
-      flush(); // ensure all promises resolve
-      expect(() => sut()).toThrowError();
+      asyncSource.reject();
+      flush();
+      expect(() => sut()).toThrowError('Error in Async Source'); // initial error.
+      sut.set(Promise.resolve(5)); // event though this is a good promise, the error should still be present.
+      flush();
+      expect(() => sut()).toThrowError('Error in Async Source'); // still errored.
     }));
 
     it('will run cleanup and continue to throw if the state is errored but source changes.', fakeAsync(() => {
@@ -205,14 +261,50 @@ describe('asyncSignal', () => {
       expect(() => sut()).toThrowError();
     }));
 
-    it('will not create a new error after an error has been thrown', fakeAsync(() => {
-      let reject: (reason: unknown) => void = () => {};
-      const asyncSource = new Promise<number>((_, r) => (reject = r));
+    it('will not create a new error after an error has been thrown from a source', fakeAsync(() => {
+      const asyncSource = createPromiseWithResolvers<number>();
       const sut = autoDetectChangesSignal(fixture, asyncSignal(asyncSource, { injector }));
-      reject('error1'); // there is intentionally no tick after.  Use cause to identify
+      asyncSource.reject('error1');
+      flush();
       sut.set(Promise.reject('error2'));
-      flush(); // ensure promises are all resolved
+      flush();
       expect(() => sut()).toThrowMatching((x) => (x as Error).cause === 'error1');
     }));
   });
 });
+
+/** There will be a native version of this soon. */
+type PromiseWithResolvers<T> = Promise<T> & { resolve: (value: T) => void, reject: (reason?: unknown) => void };
+/** Creates a promise that can be resolved or rejected externally.  There will be a native version soon */
+function createPromiseWithResolvers<T>(): PromiseWithResolvers<T> {
+  let resolve: (value: T) => void = () => {};
+  let reject: (reason?: unknown) => void = () => {};
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  }) as PromiseWithResolvers<T>;
+  promise.reject = reject;
+  promise.resolve = resolve;
+  return promise;
+}
+
+/**
+ * Returns a spy on the unsubscribe function returned from ANY call to subscribe.
+ * So if multiple subscriptions are created, they will all have the same spy returned from this method.
+ */
+function spyOnUnsubscribeFromObservableSubscribe<T>(obs$: Observable<T>): jasmine.Spy {
+  const unsubscribeSpy = jasmine.createSpy('unsubscribe', () => {});
+
+  obs$.subscribe = (observer) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const subscription = Observable.prototype.subscribe.apply(obs$, [observer as any]);
+    const originalUnsubscribe = subscription.unsubscribe;
+    subscription.unsubscribe = () => {
+      originalUnsubscribe.call(subscription);
+      unsubscribeSpy();
+    }
+    return subscription;
+  }
+
+  return unsubscribeSpy;
+}
