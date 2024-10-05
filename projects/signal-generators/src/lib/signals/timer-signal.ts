@@ -4,8 +4,10 @@ import { TimerInternal, TimerStatus } from '../internal/timer-internal';
 import { getDestroyRef, getInjector } from '../internal/utilities';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
+/** The state of the timer. */
 export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
 
+/** Options for {@link timerSignal}. */
 export interface TimerSignalOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
@@ -16,7 +18,7 @@ export interface TimerSignalOptions {
   stopped?: boolean;
 }
 
-/** A readonly signal with methods to affect execution */
+/** A readonly signal with methods to affect execution created from {@link timerSignal}. */
 export interface TimerSignal extends Signal<number> {
   /** Pauses the timer. */
   pause(): void;
@@ -33,6 +35,9 @@ export interface TimerSignal extends Signal<number> {
  * Emitting increasing numbers for each iteration, starting with an initial 0.
  * Using a {@link SignalInput} as a parameter will cause the timer to immediately emit if it is reduced to an amount that would
  * move due time into the past.
+ * @param timerTime A constant or {@link SignalInput} that emits how long until the timer is due.
+ * @param intervalTime An optional constant or {@link SignalInput} that emits how long until the timer is due after the initial time was emitted.
+ * @param options An optional object that affects behavior of the signal.
  * @example
  * ```ts
  * const dueInASecond = timerSignal(1000);
@@ -44,9 +49,6 @@ export interface TimerSignal extends Signal<number> {
  * effect(() => console.log('due every second', dueEverySecond()));
  * effect(() => console.log('due every second', adjustableDueTime()));
  * ```
- * @param timerTime A constant or {@link SignalInput} that emits how long until the timer is due.
- * @param intervalTime An optional constant or {@link SignalInput} that emits how long until the timer is due after the initial time was emitted.
- * @param options An optional object that affects behavior of the signal.
  */
 export function timerSignal(timerTime: ValueSource<number>, intervalTime?: ValueSource<number> | null, options?: TimerSignalOptions): TimerSignal {
   // To make thinks easy to access values, make TimeSources functions.

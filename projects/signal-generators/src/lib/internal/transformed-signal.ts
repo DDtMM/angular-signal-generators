@@ -13,3 +13,4 @@ export interface TransformedSignal<TIn, TOut> extends Signal<TOut> {
   /** Updates the input value of the signal. */
   update(updateFn: (value: TIn) => TIn): void;
 }
+

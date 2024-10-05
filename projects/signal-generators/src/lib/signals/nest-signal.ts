@@ -3,7 +3,7 @@ import { createSignal, SIGNAL, signalSetFn, signalUpdateFn } from '@angular/core
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { ValueSource } from '../value-source';
-import { TransformedSignal } from '../transformed-signal';
+import { TransformedSignal } from '../internal/transformed-signal';
 import { asReadonlyFnFactory } from '../internal/utilities';
 import { SignalInput } from '../signal-input';
 

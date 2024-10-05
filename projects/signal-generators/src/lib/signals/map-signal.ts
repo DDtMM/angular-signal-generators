@@ -3,9 +3,10 @@ import { SIGNAL, SignalGetter, signalSetFn, signalUpdateFn } from '@angular/core
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { SignalInput, SignalInputSignal, SignalInputValue } from '../signal-input';
-import { TransformedSignal } from '../transformed-signal';
+import { TransformedSignal } from '../internal/transformed-signal';
 import { asReadonlyFnFactory } from '../internal/utilities';
 
+/** Options for {@link mapSignal}. */
 export interface MapSignalOptions<R>  {
   /** An equal function put on the selector result. */
   equal?: ValueEqualityFn<R>;
@@ -87,8 +88,8 @@ export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType
   }
 
   return (isFromSignalParameters(params))
-    ? mapSignalFromSignal(...params)
-    : mapSignalFromValue(params[0], params[1], params[2]);
+    ? createFromSignal(...params)
+    : createFromValue(params[0], params[1], params[2]);
 
 
   function isFromSignalParameters(value: typeof params): value is FromSignalParameters<TTpl, R> | FromSignalParametersWithOptions<TTpl, R>{
@@ -97,7 +98,7 @@ export function mapSignal<T, R, const TTpl extends T extends FromSignalTupleType
 }
 
 /** Creates a new signal that runs selector after every value change. */
-function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options: MapSignalOptions<R> = {}): MapSignal<T, R> {
+function createFromValue<T, R>(initialValue: T, selector: (x:T) => R, options: MapSignalOptions<R> = {}): MapSignal<T, R> {
   const $input = signal<T>(initialValue) as SignalGetter<T> & WritableSignal<T>;
   const inputNode = $input[SIGNAL];
   const $output = computed(() => selector($input()), { equal: options.equal }) as MapSignal<T, R>;
@@ -109,7 +110,7 @@ function mapSignalFromValue<T, R>(initialValue: T, selector: (x:T) => R, options
 }
 
 /** Creates a readonly signal that selects from one or more signals. */
-function mapSignalFromSignal<T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R> | FromSignalParametersWithOptions<T, R>): Signal<R> {
+function createFromSignal<T extends FromSignalTupleType, R>(...params: FromSignalParameters<T, R> | FromSignalParametersWithOptions<T, R>): Signal<R> {
   const { inputs, options, selector } = destructureParams();
 
   return computed(() => selector(...inputs.map(x => x()) as FromSignalValues<T>), options);

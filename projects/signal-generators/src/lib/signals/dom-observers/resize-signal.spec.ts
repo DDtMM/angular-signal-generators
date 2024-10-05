@@ -2,7 +2,7 @@ import { ElementRef, Injector } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests';
 import { setupEnsureSignalWorksWhenObserverIsMissing } from './common-dom-observer-tests.spec';
 import { MockResizeObserver } from './mock-observer.spec';
 import { ResizeSignal, ResizeSignalValue, resizeSignal } from './resize-signal';

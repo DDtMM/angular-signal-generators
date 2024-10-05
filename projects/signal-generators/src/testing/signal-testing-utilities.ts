@@ -2,7 +2,11 @@ import { CreateComputedOptions, CreateEffectOptions, EffectCleanupFn, EffectRef,
 import { ComponentFixture } from '@angular/core/testing';
 
 
-/** Wraps a signal with a Proxy that calls change detection after each method call. */
+/**
+ * Wraps a signal with a Proxy that calls change detection after each method call.
+ * Does not initially call detectChanges when created - this would have an impact on signals that depend on effects.
+ * Don't know if this a good idea or not.
+*/
 export function autoDetectChangesSignal<T, S extends Signal<T>>(fixture: ComponentFixture<unknown>, source: S): S {
 
   const proxy = new Proxy(source, {

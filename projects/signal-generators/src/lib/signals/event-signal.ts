@@ -15,6 +15,7 @@ import { isSignalInput } from '../internal/signal-input-utilities';
 import { getInjector } from '../internal/utilities';
 import { ValueSource } from '../value-source';
 
+/** Options for {@link eventSignal}. */
 export interface EventSignalOptions<T> {
   /** An equal function put on the selector result. */
   equal?: ValueEqualityFn<T | undefined>;

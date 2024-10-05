@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Signal, isSignal, signal } from '@angular/core';
-import { ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, Injector, Signal, inject, isSignal, runInInjectionContext, signal } from '@angular/core';
+import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { isSignalInput } from '../lib/internal/signal-input-utilities';
 import { computedSpy, effectSpy } from './signal-testing-utilities';
@@ -11,10 +11,10 @@ import { computedSpy, effectSpy } from './signal-testing-utilities';
 export function setupTypeGuardTests(signalSetup: () => Signal<unknown>): void {
   describe('when used against type guards', () => {
     it('gets a true result when it is passed to isSignal', () => {
-      expect(isSignal(signalSetup())).toEqual(true);
+      expect(isSignal(TestBed.runInInjectionContext(() => signalSetup()))).toEqual(true);
     });
     it('gets a true result when it is passed to isSignalInput', () => {
-      expect(isSignalInput(signalSetup())).toEqual(true);
+      expect(isSignalInput(TestBed.runInInjectionContext(() => signalSetup()))).toEqual(true);
     });
   });
 }
@@ -39,9 +39,13 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
         changeDetection: ChangeDetectionStrategy.OnPush
       })
       class TestComponent {
-        dummySignal = signal(1);
-        computedSignal = computedSpy(() => ({ dummyVal: this.dummySignal(), sut: signalSetup() }));
-        effectRef = effectSpy(() => signalSetup())
+        private readonly injector = inject(Injector);
+        readonly dummySignal = signal(1);
+        readonly computedSignal = computedSpy(() => ({
+          dummyVal: this.dummySignal(),
+          sut: runInInjectionContext(this.injector, signalSetup)
+        }));
+        readonly effectRef = effectSpy(() => runInInjectionContext(this.injector, signalSetup))
       }
       const fixture =  MockRender(TestComponent);
       const computedSignal = fixture.point.componentInstance.computedSignal;
@@ -83,7 +87,7 @@ export function setupComputedAndEffectTests<T>(
 
   it(`${expectationContext}works properly when used within a computed signal`, fakeAsync(() => {
     const fixture = fixtureFactory?.() ?? MockRender();
-    const [$sut, action] = setup();
+    const [$sut, action] = runInInjectionContext(fixture.componentRef.injector, setup);
     const $computedSut = computedSpy(() => $sut());
     expect($computedSut.timesUpdated).withContext('computed signal does not execute before computed signal is read').toBe(0);
     const initialValue = $computedSut();
@@ -106,7 +110,7 @@ export function setupComputedAndEffectTests<T>(
 
   it(`${expectationContext}works properly when used within an effect`, fakeAsync(() => {
     const fixture = fixtureFactory?.() ?? MockRender();
-    const [$sut, action] = setup();
+    const [$sut, action] = runInInjectionContext(fixture.componentRef.injector, setup);
     const effectRef = effectSpy(() => $sut(), { injector: fixture.componentRef.injector });
     fixture.detectChanges(); // no need to worry about async changes since a signal should immediately have an initial value.
     expect(effectRef.timesUpdated).withContext('effect executes immediately after changed detection').toBe(1);

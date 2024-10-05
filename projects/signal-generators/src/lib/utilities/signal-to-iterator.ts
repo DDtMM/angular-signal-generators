@@ -3,6 +3,7 @@ import { getInjector } from '../internal/utilities';
 
 type PromiseParams<T> = Parameters<ConstructorParameters<typeof Promise<T>>[0]>;
 
+/** Options for {@link signalToIterator}. */
 export interface SignalToIteratorOptions {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;

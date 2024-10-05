@@ -1,6 +1,7 @@
 import { CreateSignalOptions, Signal, untracked } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
 
+/** The signal returned from {@link filterSignal}. */
 export type FilterSignal<T, O = T> = Signal<O> & {
   /** Returns the output signal as a readonly. */
   asReadonly(): Signal<O>;

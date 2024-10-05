@@ -5,6 +5,10 @@ import { ValueSourceSignal, valueSourceToSignal } from '../internal/value-source
 import { SignalProxy } from '../signal-proxy';
 import { ValueSource, ValueSourceValue } from '../value-source';
 
+/*
+ * Options for extendSignal
+ * @deprecated see {@link extendSignal} for more info.
+ */
 export interface ExtendSignalOptions<T> {
   /** This is only used if a writable signal is created from a value */
   equal?: ValueEqualityFn<T>;
@@ -12,19 +16,24 @@ export interface ExtendSignalOptions<T> {
   injector?: Injector;
 }
 
-/* A method whose first argument is a SignalProxy. */
+/*
+ * A method whose first argument is a SignalProxy.
+ * @deprecated This is only used with extendSignal, which is deprecated.
+ */
 export type ProxyMethod<S extends Signal<any>> = (p: SignalProxy<S>, ...args: any) => void;
 
+/** @deprecated This is only used with extendSignal, which is deprecated. */
 export type OutputMethod<P extends ProxyMethod<ValueSourceSignal<any>>> =
   P extends (p: any, ...args: infer A) => infer R ? (...args: A) => R : never;
 
+/** @deprecated This is only used with extendSignal, which is deprecated. */
 export type OutputMethods<M extends Record<string, ProxyMethod<ValueSourceSignal<any>>>> = {
   [K in keyof M]: OutputMethod<M[K]>
 };
 
 /**
  * extendSignal allows additional functions added to a Signal or value converted to a WritableSignal.
-
+ * @deprecated This was mildly useful for Angular 16, but with signalSetFn and signalUpdateFn from primitives, it is no longer needed.
  * @param valueSource Either a plain old value or a signal that will have functions added to it.
  * @param methods A literal of functions to be added.  Each function will have a first parameter that is a signal proxy,
  * which could be the original signal, or if there is a conflict with the method names, an object that is similar to the original.

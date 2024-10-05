@@ -1,7 +1,7 @@
 import { PLATFORM_ID, signal } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { MockBuilder, MockInstance, MockRender, MockedComponentFixture } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { ValueSource } from '../value-source';
 import { TimerSignal, timerSignal } from './timer-signal';

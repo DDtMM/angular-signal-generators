@@ -65,10 +65,6 @@ These signals wrap the DOM observers IntersectionObserver, MutationObserver and 
 Listens to HTML element events via Renderer2 and map them to new values.  
 Since a signal can be passed it is easy to use with viewChild function.
 
-### extendSignal
-
-Adds new methods to a signal - even hiding the existing methods if desired.  It does this by passing the original signal or a "proxy" as the first parameter of the new method.  This first parameter is obscured from the consumer so that it appears to be a normal method.
-
 ### filterSignal
 
 Filters values set to a signal to prevent the value from changing:  
@@ -83,6 +79,10 @@ Can be used with guard functions.
 
 Creates a signal whose input value is immediately mapped to a different value based on a selector.
 Either a value or multiple signals can be passed and used in the selector function.
+
+### mediaQuerySignal
+
+Takes a media query, and updates its value whenever the state of that query being matched changes.
 
 ### nestSignal
 

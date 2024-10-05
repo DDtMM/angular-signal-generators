@@ -8,6 +8,7 @@ import { InspectPageComponent } from './demos/inspect/inspect-page.component';
 import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
 import { LiftSignalPageComponent } from './demos/lift-signal/lift-signal-page.component';
 import { MapSignalPageComponent } from './demos/map-signal/map-signal-page.component';
+import { MediaQuerySignalPageComponent } from './demos/media-query-signal/media-query-signal-page.component';
 import { MutationSignalPageComponent } from './demos/mutation-signal/mutation-signal-page.component';
 import { NestSignalPageComponent } from './demos/nest-signal/nest-signal-page';
 import { ReduceSignalPageComponent } from './demos/reduce-signal/reduce-signal-page.component';
@@ -26,6 +27,7 @@ import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.compone
 import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
 import { LiftSignalHomeDemoComponent } from './home-demos/lift-signal-home-demo.component';
 import { MapSignalHomeDemoComponent } from './home-demos/map-signal-home-demo.component';
+import { MediaQuerySignalHomeDemoComponent } from './home-demos/media-query-signal-home-demo.component';
 import { MutationSignalHomeDemoComponent } from './home-demos/mutation-signal-home-demo.component';
 import { NestSignalHomeDemoComponent } from './home-demos/nest-signal-home-demo.component';
 import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-demo.component';
@@ -37,16 +39,20 @@ import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-dem
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
 
 /** What type of signals are returned from signal factory functions. */
-export type UsageType = 'generator' | 'utility' | 'writableSignal';
+export type UsageType = 'generator' | 'obsolete' | 'utility' | 'writableSignal';
 
 export interface DemoConfigurationItem<FnName extends string> {
+  /** The home demo component type. */
   readonly homeDemo: Type<unknown>;
   /** The url to the docs from the root. */
   readonly docUrl: string;
   /** Function name to generate signal.  Acts as distinct key. */
   readonly fnName: FnName;
+  /** If true, then omit then don't show this on the home page demos. */
+  readonly isExcludedFromHomePage?: boolean;
   /** Display name */
   readonly name: string;
+  /** The demo page component type */
   readonly page: Type<unknown>;
   /** The route from the root of the app. */
   readonly route: string;
@@ -100,11 +106,12 @@ export const DEMO_CONFIGURATIONS = [
     homeDemo: ExtendSignalHomeDemoComponent,
     docUrl: './api/functions/extendSignal.html',
     fnName: 'extendSignal' as const,
+    isExcludedFromHomePage: true,
     name: 'extendSignal',
     page: ExtendSignalPageComponent,
     route: 'extend-signal',
     sourceUrl: 'signals/extends-signal.ts',
-    usages: ['generator', 'writableSignal']
+    usages: ['generator', 'obsolete', 'writableSignal']
   },
   {
     homeDemo: FilterSignalHomeDemoComponent,
@@ -154,6 +161,16 @@ export const DEMO_CONFIGURATIONS = [
     page: MapSignalPageComponent,
     route: 'map-signal',
     sourceUrl: 'signals/map-signal.ts',
+    usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: MediaQuerySignalHomeDemoComponent,
+    docUrl: './api/functions/mediaQuerySignal-1.html',
+    fnName: 'mediaQuerySignal' as const,
+    name: 'mediaQuerySignal',
+    page: MediaQuerySignalPageComponent,
+    route: 'media-query-signal',
+    sourceUrl: 'signals/media-query-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
