@@ -2,7 +2,7 @@ import { Injector, signal } from '@angular/core';
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { MockedComponentFixture, MockRender } from 'ng-mocks';
 import { BehaviorSubject, finalize, Observable, of, startWith, Subject, tap, timer } from 'rxjs';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { asyncSignal } from './async-signal';
 

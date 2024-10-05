@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MockedComponentFixture, MockRender, ngMocks } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { eventSignal } from './event-signal';
 
 describe('eventSignal', () => {

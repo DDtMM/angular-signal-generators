@@ -1,4 +1,4 @@
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { WebObjectStore } from '../internal/web-object-store';
 import { MapBasedStorage } from '../internal/map-based-storage';
 import { localStorageSignal, sessionStorageSignal, storageSignal } from './storage-signal';

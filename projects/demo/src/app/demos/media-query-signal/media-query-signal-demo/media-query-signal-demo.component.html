@@ -1,0 +1,15 @@
+<div class="flex flex-col gap-3">
+  <div class="flex flex-row gap-3 items-center">
+    Query
+    <div class="join">
+      @for (opt of queries; track opt.queryType) {
+        <button type="button" class="btn btn-primary btn-sm join-item"
+          [class.btn-active]="$query() === opt"
+          (click)="$query.set(opt)">{{opt.label}}</button>
+      }
+    </div>
+  </div>
+  <div class="bg-secondary text-secondary-content text-center p-3">
+    {{$report()}}
+  </div>
+</div>

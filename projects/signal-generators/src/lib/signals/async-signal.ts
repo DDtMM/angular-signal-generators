@@ -4,7 +4,7 @@ import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInputFunction } from '../internal/signal-input-utilities';
 import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
 import { ToSignalInput } from '../signal-input';
-import { TransformedSignal } from '../transformed-signal';
+import { TransformedSignal } from '../internal/transformed-signal';
 
 /** Either something with a .subscribe() function or a promise. */
 export type AsyncSource<T> = ToSignalInput<T> | Promise<T>;

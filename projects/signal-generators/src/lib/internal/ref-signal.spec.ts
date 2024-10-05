@@ -1,4 +1,4 @@
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { refSignal } from './ref-signal';
 
 describe('refSignal', () => {

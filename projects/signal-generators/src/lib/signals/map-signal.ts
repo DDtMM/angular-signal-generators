@@ -3,7 +3,7 @@ import { SIGNAL, SignalGetter, signalSetFn, signalUpdateFn } from '@angular/core
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
 import { SignalInput, SignalInputSignal, SignalInputValue } from '../signal-input';
-import { TransformedSignal } from '../transformed-signal';
+import { TransformedSignal } from '../internal/transformed-signal';
 import { asReadonlyFnFactory } from '../internal/utilities';
 
 /** Options for {@link mapSignal}. */
