@@ -5,7 +5,7 @@ import {
   setupComputedAndEffectTests,
   setupDoesNotCauseReevaluationsSimplyWhenNested,
   setupTypeGuardTests
-} from '../../testing/common-signal-tests.spec';
+} from '../../testing/common-signal-tests';
 import { nestSignal } from './nest-signal';
 
 describe('nestSignal', () => {

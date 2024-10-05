@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { liftSignal } from './lift-signal';
 
 class DummyClass {

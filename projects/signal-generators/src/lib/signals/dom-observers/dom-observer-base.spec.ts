@@ -5,7 +5,7 @@ import { DomObserverSignal, DomSignalValue, domObserverSignalFactory } from './d
 import { MutationSignalValue } from './mutation-signal';
 import { MockObserver } from './mock-observer.spec';
 import { ValueSource } from '../../value-source';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from 'projects/signal-generators/src/testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from 'projects/signal-generators/src/testing/common-signal-tests';
 
 
 describe('domObserverSignalFactory', () => {

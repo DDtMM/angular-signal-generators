@@ -1,7 +1,7 @@
 import { Injector, signal } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { tweenSignal } from './tween-signal';

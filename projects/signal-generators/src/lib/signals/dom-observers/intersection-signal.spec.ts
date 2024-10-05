@@ -1,7 +1,7 @@
 import { ElementRef, Injector } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests';
 import { setupEnsureSignalWorksWhenObserverIsMissing } from './common-dom-observer-tests.spec';
 import { IntersectionSignal, IntersectionSignalValue, intersectionSignal } from './intersection-signal';
 import { MockIntersectionObserver } from './mock-observer.spec';

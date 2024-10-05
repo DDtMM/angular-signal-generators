@@ -1,6 +1,6 @@
 import { computed, signal } from '@angular/core';
 import { extendSignal } from './extend-signal';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
 
 describe('extendSignal', () => {
   setupTypeGuardTests(() => extendSignal(1, { dummy: () => undefined}));

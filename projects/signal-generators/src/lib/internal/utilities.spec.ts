@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { setupTypeGuardTests } from '../../testing/common-signal-tests.spec';
+import { setupTypeGuardTests } from '../../testing/common-signal-tests';
 import { asReadonlyFnFactory, getDestroyRef, getInjector, hasKey, isMethodKey } from './utilities';
 
 describe('asReadonlyFnFactory', () => {
@@ -25,17 +26,11 @@ describe('getDestroyRef', () => {
   it('returns destroyed ref from passed injector', () => {
     const injector = MockRender().componentRef.injector;
     const destroyRef = getDestroyRef(() => 1, injector);
-    expect(destroyRef).toEqual(destroyRef);
+    expect(destroyRef).toBeDefined();
   });
-  describe('when in injector context', () => {
-    @Injectable()
-    class TestHarness {
-      destroyRef = getDestroyRef(() => 1);
-    }
-    beforeEach(() => MockBuilder(TestHarness));
-    it('returns injector when no injector is passed', () => {
-      expect(MockRender(TestHarness).point.componentInstance.destroyRef).toBeDefined();
-    });
+  it('returns destroyRef when no injector is passed but inside injector context', () => {
+    const destroyRef = TestBed.runInInjectionContext(() => getDestroyRef(() => 1));
+    expect(destroyRef).toBeDefined();
   });
 });
 

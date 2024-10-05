@@ -2,19 +2,26 @@ import { Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, 
 import { SIGNAL, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInputFunction } from '../internal/signal-input-utilities';
-import { asReadonlyFnFactory } from '../internal/utilities';
+import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
 import { ToSignalInput } from '../signal-input';
-import { TransformedSignal } from '../transformed-signal';
+import { TransformedSignal } from '../internal/transformed-signal';
 
+/** Either something with a .subscribe() function or a promise. */
 export type AsyncSource<T> = ToSignalInput<T> | Promise<T>;
 
+/** Options for {@link asyncSignal}. */
 export interface AsyncSignalOptions<T> {
   /** The default value before the first emission. */
   defaultValue?: T;
   /** Equal functions for values emitted from async sources */
-  equal?: ValueEqualityFn<T | undefined>;
+  equal?: ValueEqualityFn<T>;
   /** This is only used if a signal is created from an observable. */
   injector?: Injector;
+  /**
+   * If true, then the passed value will eagerly be read and it will throw an error if it hasn't been set.
+   * You shouldn't use defaultValue in this case.
+   */
+  requireSync?: boolean;
 }
 
 /** An signal that returns values from an async source that can change. */
@@ -23,8 +30,9 @@ export type AsyncSignal<T> = TransformedSignal<AsyncSource<T>, T>;
 const VOID_FN = () => {};
 
 enum AsyncSignalStatus {
+  Error,
   Ok,
-  Error
+  NotSet
 }
 
 interface AsyncSignalState<T> {
@@ -33,18 +41,29 @@ interface AsyncSignalState<T> {
   value: T;
 }
 
-export function asyncSignal<T>(valueSource: AsyncSource<T>, options: AsyncSignalOptions<T> & { defaultValue: T }): AsyncSignal<T>;
 export function asyncSignal<T>(
   valueSource: AsyncSource<T>,
-  options?: AsyncSignalOptions<T | undefined>
+  options: AsyncSignalOptions<T> & { defaultValue: T; requireSync?: false }
+): AsyncSignal<T>;
+export function asyncSignal<T>(
+  valueSource: AsyncSource<T>,
+  options: AsyncSignalOptions<T> & { defaultValue?: undefined; requireSync: true }
+): AsyncSignal<T>;
+export function asyncSignal<T>(
+  valueSource: AsyncSource<T>,
+  options?: AsyncSignalOptions<T | undefined> & { defaultValue?: undefined; requireSync?: false }
 ): AsyncSignal<T | undefined>;
 export function asyncSignal<T>(
   valueSource: Signal<AsyncSource<T>> | (() => AsyncSource<T>),
-  options: AsyncSignalOptions<T> & { defaultValue: T }
+  options: AsyncSignalOptions<T> & { defaultValue: T; requireSync?: false }
 ): Signal<T>;
 export function asyncSignal<T>(
   valueSource: Signal<AsyncSource<T>> | (() => AsyncSource<T>),
-  options?: AsyncSignalOptions<T | undefined>
+  options: AsyncSignalOptions<T> & { defaultValue?: undefined; requireSync: true }
+): Signal<T>;
+export function asyncSignal<T>(
+  valueSource: Signal<AsyncSource<T>> | (() => AsyncSource<T>),
+  options?: AsyncSignalOptions<T | undefined> & { defaultValue?: undefined; requireSync?: false }
 ): Signal<T | undefined>;
 /**
  * Takes an async source (Promise, Observable) or signal/function that returns an async source
@@ -74,69 +93,95 @@ export function asyncSignal<T>(
   options: AsyncSignalOptions<T | undefined> = {}
 ): Signal<T | undefined> {
   return isSignal(valueSource)
-    ? createOutputSignal(valueSource, options)
+    ? createFromSignal(valueSource, options)
     : isSignalInputFunction(valueSource)
     ? createFromSignalInputFunction(valueSource, options)
     : createFromValue(valueSource, options);
 }
 
+/** Called if this is a function that's NOT a signal to create a readonly AsyncSignal. */
 function createFromSignalInputFunction<T>(
   signalInput: () => AsyncSource<T>,
   options: AsyncSignalOptions<T | undefined>
 ): Signal<T | undefined> {
   const $input = coerceSignal(signalInput, { initialValue: undefined as AsyncSource<T> | undefined, injector: options.injector });
-  return createOutputSignal($input, options);
+  return createFromSignal($input, options);
 }
 
+/** Creates the writable version of an async signal from an initial async source. */
 function createFromValue<T>(
   initialSource: AsyncSource<T>,
   options: AsyncSignalOptions<T | undefined>
 ): AsyncSignal<T | undefined> {
-
   const $input = createSignal(initialSource);
   const inputNode = $input[SIGNAL];
-  const $output = createOutputSignal($input, options) as AsyncSignal<T | undefined>;
+  const $output = createFromSignal($input, options) as AsyncSignal<T | undefined>;
   $output.asReadonly = asReadonlyFnFactory($output);
   $output.set = (value: AsyncSource<T>) => signalSetFn(inputNode, value);
   $output.update = (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn);
   return $output;
 }
 
-function createOutputSignal<T>($input: Signal<AsyncSource<T>>, options: AsyncSignalOptions<T | undefined>): Signal<T | undefined> {
-  const state = signal<AsyncSignalState<T | undefined>>({ status: AsyncSignalStatus.Ok, value: options.defaultValue });
+/** Creates a readonly version of an async signal from another signal returning an async source. */
+function createFromSignal<T>(
+  $input: Signal<AsyncSource<T>>,
+  options: AsyncSignalOptions<T | undefined>
+): Signal<T | undefined> {
+  /**
+   * The current source of asynchronous values.
+   * Initially this is undefined because we're trying to defer reading the source until the effect first runs.
+   * If requireSync is true then it will get the value immediately
+   */
+  let currentSource: AsyncSource<T> | undefined;
+  /** An "unsubscribe" function. */
+  let currentListenerCleanupFn: () => void;
 
-  let currentSource = untracked($input);
-    /** An "unsubscribe" function. */
-  let currentListenerCleanup: () => void = updateListener(currentSource);
+  // if requireSync is true, the set the state as NotSet, otherwise it's Ok.  Being NotSet and read will throw an error.
+  const $state = signal<AsyncSignalState<T | undefined>>(
+    options.requireSync
+      ? { status: AsyncSignalStatus.NotSet, value: options.defaultValue }
+      : { status: AsyncSignalStatus.Ok, value: options.defaultValue }
+  );
 
+  // if requireSync is true then immediately start listening.
+  if (options?.requireSync) {
+    currentSource = untracked($input);
+    currentListenerCleanupFn = updateListener(currentSource);
+  } else {
+    currentListenerCleanupFn = () => {};
+  }
   effect(
     () => {
-      if (untracked(state).status === AsyncSignalStatus.Ok) {
-        // by nesting this inside Ok branch, the effect will only be called one when the state turns to error.
-        const nextSource = $input();
-        if (nextSource === currentSource) {
-          return; // don't start listening to an already listened to source.
-        }
-        currentListenerCleanup();
-        currentSource = nextSource;
-        // this is untracked because a signal may be used inside currentSource and cause additional invocations.
-        currentListenerCleanup = untracked(() => updateListener(currentSource));
+      // Initially this used to only run inside a conditional branch if the state was OK.
+      // The problem with that was if another source had an error, the error would bubble up, since we're not catching it.
+      const nextSource = $input();
+      if (nextSource === currentSource) {
+        // don't start listening to an already listened to source.
+        // This is only necessary in case requireSync was true and this is the first effect was run.
+        return;
       }
-      else {
-        // this exists out of an abundance of caution as only an observable needs cleanup and erroring should kill subs.
-        currentListenerCleanup();
-      }
-      return currentListenerCleanup;
+      // manually cleanup old listener.
+      currentListenerCleanupFn();
+      // store the currentSource so it can be used in next invocation of effect.
+      currentSource = nextSource;
+      // Call the updateListener process and set currentListenerCleanupFn from result.
+      // (This is untracked because a signal may be used inside the source and cause additional invocations.)
+      currentListenerCleanupFn = untracked(() => updateListener(nextSource));
     },
     { injector: options.injector }
   );
 
+  // Call cleanup on the last listener.  The effect cleanup can't be used because of the risk of initially repeating subscriptions.
+  getDestroyRef(asyncSignal, options.injector).onDestroy(() => currentListenerCleanupFn());
+
   return computed<T | undefined>(
     () => {
-      const { err, status, value } = state();
+      const { err, status, value } = $state();
       switch (status) {
         case AsyncSignalStatus.Error:
           throw new Error('Error in Async Source', { cause: err });
+        case AsyncSignalStatus.NotSet:
+          throw new Error('requireSync is true, but no value was returned from asynchronous source.');
         case AsyncSignalStatus.Ok:
           return value;
       }
@@ -159,13 +204,13 @@ function createOutputSignal<T>($input: Signal<AsyncSource<T>>, options: AsyncSig
 
     /** Sets the state of errored if an error hadn't already occurred. */
     function setError(err: unknown): void {
-      state.update((cur) =>
+      $state.update((cur) =>
         cur.status === AsyncSignalStatus.Error ? cur : { err, status: AsyncSignalStatus.Error, value: cur.value }
       );
     }
     /** Updates value if the status isn't error. */
     function setValue(value: T): void {
-      state.update((cur) => (cur.status === AsyncSignalStatus.Error ? cur : { status: AsyncSignalStatus.Ok, value }));
+      $state.update((cur) => (cur.status === AsyncSignalStatus.Error ? cur : { status: AsyncSignalStatus.Ok, value }));
     }
   }
 }
