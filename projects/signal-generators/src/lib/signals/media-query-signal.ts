@@ -1,11 +1,12 @@
 import { effect, Injector, untracked } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, SignalNode, signalSetFn } from '@angular/core/primitives/signals';
-import { TransformedSignal, ValueSource } from 'signal-generators';
 import { DestroyableSignal } from '../destroyable-signal';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isSignalInput } from '../internal/signal-input-utilities';
+import { TransformedSignal } from '../internal/transformed-signal';
 import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
 import { SignalInput } from '../signal-input';
+import { ValueSource } from '../value-source';
 
 /** The latest state of a MediaQueryList. */
 export type MediaQueryState = Pick<MediaQueryList, 'matches' | 'media'>;
