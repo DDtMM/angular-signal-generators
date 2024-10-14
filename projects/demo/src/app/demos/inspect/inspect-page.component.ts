@@ -6,7 +6,7 @@ import { AltReporterDemoComponent } from './alt-reporter-demo/alt-reporter-demo.
 import { InspectComponentSignalsDemoComponent } from './inspect-component-signals-demo/inspect-component-signals-demo.component';
 
 @Component({
-  selector: 'inspect-page',
+  selector: 'app-inspect-page',
   standalone: true,
   imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent, InspectComponentSignalsDemoComponent],
   template: `

@@ -7,7 +7,7 @@ import { eventSignal } from './event-signal';
 describe('eventSignal', () => {
 
   setupTypeGuardTests(() =>
-    TestBed.runInInjectionContext(() => eventSignal('body', 'click', () => {}))
+    TestBed.runInInjectionContext(() => eventSignal('body', 'click', () => { /* do nothing */ }))
   );
 
   describe('common issues checks', () => {

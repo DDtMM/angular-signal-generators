@@ -9,7 +9,7 @@ import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/te
  * @param actionFn An action that would typically result in a new value to the signal.
  */
 export function setupEnsureSignalWorksWhenObserverIsMissing<T>(observerName: string, signalFn: () => Signal<T>, actionFn: () => void) {
-  it(`should return an empty signal that doesn\'t respond to changes if ${observerName} doesn\'t exist.`, fakeAsync(() => {
+  it(`should return an empty signal that doesn't respond to changes if ${observerName} doesn't exist.`, fakeAsync(() => {
     expect(observerName in globalThis).toBeTrue(); // the observer should exist.
     const restoreProperty = replaceGlobalProperty(observerName, undefined);
     const sut = signalFn();

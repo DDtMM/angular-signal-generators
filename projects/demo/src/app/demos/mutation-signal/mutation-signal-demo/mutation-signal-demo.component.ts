@@ -17,6 +17,8 @@ export class MutationSignalDemoComponent {
     const change = this.$mutation()[0];
     return !change
       ? 'No Changes'
-      : `Changed ${change.attributeName}.  Color is ${(change.target as HTMLElement).getAttribute(change.attributeName!)}.`
+      : !change.attributeName
+      ? 'Changed Unknown Attribute'
+      : `Changed ${change.attributeName}.  Color is ${(change.target as HTMLElement).getAttribute(change.attributeName)}.`;
   });
 }
