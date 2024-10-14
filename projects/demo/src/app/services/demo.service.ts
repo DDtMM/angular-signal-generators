@@ -44,8 +44,8 @@ export class DemoService {
         throw new Error('No bootstrap component file found');
       }
       const importPath = primaryFile.path.replace(/\.ts$/, '');
-      const componentClass = /export\s+class\s+(\w+)/.exec(primaryFile.code)![1];
-      const componentSelector = /selector:\s*'([^']+)'/.exec(primaryFile.code)![1];
+      const componentClass = /export\s+class\s+(\w+)/.exec(primaryFile.code)?.[1] ?? '** MISSING CLASS **';
+      const componentSelector = /selector:\s*'([^']+)'/.exec(primaryFile.code)?.[1] ?? '** MISSING SELECTOR **';
       const demoFiles: ProjectFiles = sources.reduce((acc, source) => {
         acc[getSrcPath(source)] = source.code;
         return acc;

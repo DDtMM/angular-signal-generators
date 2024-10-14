@@ -60,7 +60,7 @@ export function mediaQuerySignal(
   }
 
   /** The cleanup function for the active MediaQueryList.change eventListener. */
-  let cleanupFn: () => void = () => {};
+  let cleanupFn: () => void = () => { /* do nothing */ };
   /** When true, no more changes should be observed. */
   let isDestroyed = false;
   return isSignalInput(querySource) ? createFromSignalInput(querySource) : createFromValue(querySource);
@@ -152,8 +152,8 @@ function createDummyOutput(query: string): MediaQuerySignal {
   const $output = createSignal<MediaQueryState>({ matches: false, media: query }) as SignalGetter<MediaQueryState> &
     MediaQuerySignal;
   $output.asReadonly = asReadonlyFnFactory($output);
-  $output.destroy = () => {};
-  $output.set = () => {};
-  $output.update = () => {};
+  $output.destroy = () => { /* do nothing */ };
+  $output.set = () => { /* do nothing */ };
+  $output.update = () => { /* do nothing */ };
   return $output;
 }

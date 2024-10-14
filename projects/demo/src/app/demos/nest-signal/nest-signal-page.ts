@@ -4,7 +4,7 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 import { BasicDemoComponent } from './basic-demo/basic-demo.component';
 
 @Component({
-  selector: 'nest-signal-page',
+  selector: 'app-nest-signal-page',
   standalone: true,
   imports: [BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
   template: `

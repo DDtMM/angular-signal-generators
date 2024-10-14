@@ -1,11 +1,11 @@
 <div class="flex flex-row flex-wrap-reverse gap-3">
   <div>
-    <label class="label">Input Value</label>
-    <input class="input" type="text" [ngModel]="$inputText()" (ngModelChange)="$inputText.set($event)" />
+    <label for="inputText" class="label">Input Value</label>
+    <input id="inputText" class="input" type="text" [ngModel]="$inputText()" (ngModelChange)="$inputText.set($event)" />
   </div>
   <div class="w-48">
-    <label class="label">Debounce Time: {{$debounceTime()}}</label>
-    <input class="range range-primary" type="range" min="0" max="10000" [ngModel]="$debounceTime()"
+    <label for="debounceTime" class="label">Debounce Time: {{$debounceTime()}}</label>
+    <input id="debounceTime" class="range range-primary" type="range" min="0" max="10000" [ngModel]="$debounceTime()"
       (ngModelChange)="$debounceTime.set($event)" />
   </div>
 </div>

@@ -27,7 +27,7 @@ export interface AsyncSignalOptions<T> {
 /** An signal that returns values from an async source that can change. */
 export type AsyncSignal<T> = TransformedSignal<AsyncSource<T>, T>;
 
-const VOID_FN = () => {};
+const VOID_FN = () => { /* do nothing */ };
 
 enum AsyncSignalStatus {
   Error,
@@ -148,7 +148,7 @@ function createFromSignal<T>(
     currentSource = untracked($input);
     currentListenerCleanupFn = updateListener(currentSource);
   } else {
-    currentListenerCleanupFn = () => {};
+    currentListenerCleanupFn = () => { /* do nothing */ };
   }
   effect(
     () => {

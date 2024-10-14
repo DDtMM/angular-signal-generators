@@ -6,5 +6,5 @@ import { Directive, HostBinding } from '@angular/core';
   standalone: true
 })
 export class ContentsClassDirective {
-  @HostBinding('class.contents') contentsClass: boolean = true;
+  @HostBinding('class.contents') contentsClass = true;
 }

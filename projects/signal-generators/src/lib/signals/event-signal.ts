@@ -29,7 +29,7 @@ export interface EventSignalOptions<T> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EventSignalTarget = 'window' | 'document' | 'body' | ElementRef | any;
 
-const DUMMY_FN = () => {};
+const DUMMY_FN = () => { /* do nothing */ };
 
 /**
  * Creates a signal that listens to a DOM object event and maps the event to a value, initially returning undefined if default is not set.
