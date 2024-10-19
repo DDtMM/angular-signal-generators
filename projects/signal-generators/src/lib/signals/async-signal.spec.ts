@@ -77,7 +77,7 @@ describe('asyncSignal', () => {
 
   });
 
-  describe('from a signalInput', () => {
+  describe('from a ReactiveSource', () => {
     it('updates output from a signal', fakeAsync(() => {
       const source = autoDetectChangesSignal(fixture, signal(Promise.resolve(1)));
       const sut = asyncSignal(source, { injector });
@@ -277,8 +277,8 @@ describe('asyncSignal', () => {
 type PromiseWithResolvers<T> = Promise<T> & { resolve: (value: T) => void, reject: (reason?: unknown) => void };
 /** Creates a promise that can be resolved or rejected externally.  There will be a native version soon */
 function createPromiseWithResolvers<T>(): PromiseWithResolvers<T> {
-  let resolve: (value: T) => void = () => {};
-  let reject: (reason?: unknown) => void = () => {};
+  let resolve: (value: T) => void = () => { /* do nothing */ };
+  let reject: (reason?: unknown) => void = () => { /* do nothing */ };
   const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
@@ -293,7 +293,7 @@ function createPromiseWithResolvers<T>(): PromiseWithResolvers<T> {
  * So if multiple subscriptions are created, they will all have the same spy returned from this method.
  */
 function spyOnUnsubscribeFromObservableSubscribe<T>(obs$: Observable<T>): jasmine.Spy {
-  const unsubscribeSpy = jasmine.createSpy('unsubscribe', () => {});
+  const unsubscribeSpy = jasmine.createSpy('unsubscribe', () => { /* do nothing */ });
 
   obs$.subscribe = (observer) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

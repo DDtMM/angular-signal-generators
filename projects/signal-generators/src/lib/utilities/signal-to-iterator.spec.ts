@@ -151,7 +151,7 @@ describe('signalToIterator', () => {
         Promise.all([
           iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
           iterator.next().then(() => fail()).catch((x) => expect(x).toEqual('error')),
-          iterator.throw('error').catch(() => {})
+          iterator.throw('error').catch(() => { /* do nothing */ })
         ]).then(() => done());
       });
       it('will stop and return rejected promise', (done) => {

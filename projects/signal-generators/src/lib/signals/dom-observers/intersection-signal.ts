@@ -1,6 +1,6 @@
 import { ElementRef, Injector, Signal, signal } from '@angular/core';
 import { getInjector } from '../../internal/utilities';
-import { SignalInput } from '../../signal-input';
+import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
 
@@ -28,7 +28,7 @@ export type IntersectionSignal = Signal<IntersectionObserverEntry[]> & {
 
 export function intersectionSignal(source: IntersectionSignalValue, options?: IntersectionObserverOptions): IntersectionSignal;
 export function intersectionSignal(
-  source: SignalInput<IntersectionSignalValue>,
+  source: ReactiveSource<IntersectionSignalValue>,
   options?: IntersectionObserverOptions
 ): Signal<IntersectionObserverEntry[]>;
 /**

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Injector, Signal, inject, isSignal, runInInjectionContext, signal } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { isSignalInput } from '../lib/internal/signal-input-utilities';
+import { isReactive } from '../lib/internal/reactive-source-utilities';
 import { computedSpy, effectSpy } from './signal-testing-utilities';
 
 /**
@@ -14,7 +14,7 @@ export function setupTypeGuardTests(signalSetup: () => Signal<unknown>): void {
       expect(isSignal(TestBed.runInInjectionContext(() => signalSetup()))).toEqual(true);
     });
     it('gets a true result when it is passed to isSignalInput', () => {
-      expect(isSignalInput(TestBed.runInInjectionContext(() => signalSetup()))).toEqual(true);
+      expect(isReactive(TestBed.runInInjectionContext(() => signalSetup()))).toEqual(true);
     });
   });
 }
@@ -79,7 +79,7 @@ export function setupDoesNotCauseReevaluationsSimplyWhenNested<T, S extends Sign
  * @param useRealAsync Tests will use fakeAsync (which is faster) unless this is true.
  */
 export function setupComputedAndEffectTests<T>(
-  setup: () => [sut: Signal<T>, action: () => void | Promise<unknown>],
+  setup: () => [sut: Signal<T>, action: () => unknown | Promise<unknown>],
   context?: string,
   fixtureFactory?: () => MockedComponentFixture<unknown, unknown>
 ): void {

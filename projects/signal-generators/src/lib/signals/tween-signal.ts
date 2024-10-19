@@ -1,10 +1,10 @@
 import { Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
 import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
-import { AnimationFrameFn, getRequestAnimationFrame } from '../internal/animations';
+import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
-import { SignalInput } from '../signal-input';
+import { ReactiveSource } from '../reactive-source';
 import { ValueSource } from '../value-source';
+import { AnimationFrameFn, getRequestAnimationFrame } from '../internal/animation-utilities';
 
 /** Request animation frame function */
 const requestAnimationFrame = getRequestAnimationFrame();
@@ -30,17 +30,18 @@ export interface TweenOptions<T> {
   /** A function used to determine the intermediate value */
   interpolator?: InterpolateFactoryFn<T>;
 }
-/** Options for initializing a tween signal. */
+
+/** Options for {@link tweenSignal}. */
 export interface TweenSignalOptions<T> extends TweenOptions<T> {
   /** This is only used if a signal is created from an observable. */
   injector?: Injector;
   /** The interpolator is required unless numeric values are used. */
   interpolator: InterpolateFactoryFn<T>;
-  /** A function to get the next animation frame. */
+  /** A function to get the next animation frame.  Defaults to window.requestAnimationFrame in browser context. */
   raf?: AnimationFrameFn;
 }
 
-/** When using a number, array of numbers, or record of numbers, interpolation is automatically performed by tweenSignal. */
+/** When using a number, array of numbers, or record of numbers, interpolation is automatically performed by {@link tweenSignal}. */
 export type TweenNumericValues = number | number[] | Record<string | number | symbol, number>;
 /** Same as regular TweenSignal options, but interpolator is not required. */
 export type TweenNumericSignalOptions<T extends TweenNumericValues> = Omit<TweenSignalOptions<T>, 'interpolator'> & Partial<Pick<TweenSignalOptions<T>, 'interpolator'>>;
@@ -64,11 +65,11 @@ export interface WritableTweenSignal<T> extends TweenSignal<T> {
 
 // for some reason extends TweenNumericValues acted weird for number types.
 export function tweenSignal<V extends ValueSource<number>>(source: V, options?: TweenNumericSignalOptions<number>):
-  V extends SignalInput<number> ? TweenSignal<number> : WritableTweenSignal<number>
+  V extends ReactiveSource<number> ? TweenSignal<number> : WritableTweenSignal<number>
 export function tweenSignal<T extends TweenNumericValues>(source: ValueSource<T>, options?: TweenNumericSignalOptions<T>):
-  typeof source extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
+  typeof source extends ReactiveSource<T> ? TweenSignal<T> : WritableTweenSignal<T>
 export function tweenSignal<T>(source: ValueSource<T>, options: TweenSignalOptions<T>):
-  typeof source extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
+  typeof source extends ReactiveSource<T> ? TweenSignal<T> : WritableTweenSignal<T>
 /**
  * Creates a signal whose value morphs from the old value to the new over a specified duration.
  * @param source Either a value, signal, observable, or function that can be used in a computed function.
@@ -85,15 +86,15 @@ export function tweenSignal<T>(source: ValueSource<T>, options: TweenSignalOptio
  * ```
  */
 export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Partial<TweenSignalOptions<T>>):
-  V extends SignalInput<T> ? TweenSignal<T> : WritableTweenSignal<T>
+  V extends ReactiveSource<T> ? TweenSignal<T> : WritableTweenSignal<T>
 {
   const [
     /** The output signal that will be returned and have methods added it it if writable. */
     $output,
     /** A function that will get the current value of the source.  It could be a signal */
     signalValueFn
-  ] = (isSignalInput<T>(source))
-    ? createFromSignalInput(source, options)
+  ] = (isReactive<T>(source))
+    ? createFromReactiveSource(source, options)
     : createFromValue(source as T);
 
   /** THe SignalNode of the output signal.  Used when the output is set during value changes.  */
@@ -169,9 +170,9 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   }
 
   /** Coerces a source signal from signal input and creates the output signal.. */
-  function createFromSignalInput(sourceSignalInput: SignalInput<T>, options: Partial<TweenSignalOptions<T>> | undefined):
+  function createFromReactiveSource(reactiveSource: ReactiveSource<T>, options: Partial<TweenSignalOptions<T>> | undefined):
     [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
-    const $source = coerceSignal(sourceSignalInput, options);
+    const $source = coerceSignal(reactiveSource, options);
     const $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
     $output.setOptions = setOptions;
     const signalValueFn = () => [$source(), undefined] as const;

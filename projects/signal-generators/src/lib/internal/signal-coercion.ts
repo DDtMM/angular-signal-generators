@@ -1,13 +1,16 @@
 import { Injector, computed, isSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { SignalInput, SignalInputSignal } from '../signal-input';
+import { ReactiveSource, ReactiveSignal } from '../reactive-source';
 import { hasKey } from './utilities';
-import { isToSignalInput } from './signal-input-utilities';
+import { isToSignalInput } from './reactive-source-utilities';
 
 export interface CoerceSignalOptions<T> {
-  /** This is only used if toSignal is needed to convert to a signal.  If not passed it as assumed the source is sync. */
+  /**
+   * This is only used if {@link https://angular.dev/api/core/rxjs-interop/toSignal | toSignal} is needed to convert to a signal.
+   * If not passed it as assumed the source is sync.
+   */
   initialValue?: T;
-  /** This is only used if toSignal is needed to convert to a signal OR to get destroyedRef. */
+  /** This is only used if {@link https://angular.dev/api/core/rxjs-interop/toSignal | toSignal} is needed to convert to a signal. */
   injector?: Injector;
 }
 
@@ -35,17 +38,17 @@ export interface CoerceSignalOptions<T> {
  * });
  * ```
  */
-export function coerceSignal<T, S extends SignalInput<T>>(source: S, options?: CoerceSignalOptions<T>): SignalInputSignal<S> {
+export function coerceSignal<T, S extends ReactiveSource<T>>(source: S, options?: CoerceSignalOptions<T>): ReactiveSignal<S> {
   if (isSignal(source)) {
-    return source as SignalInputSignal<S>;
+    return source as ReactiveSignal<S>;
   }
   else if (isToSignalInput(source)) {
     // if there is no initialValue then assume the observable has an initial value and set requireSync as true.
     return (hasKey(options, 'initialValue'))
-      ? toSignal(source, options) as SignalInputSignal<S>
-      : toSignal(source, { injector: options?.injector, requireSync: true }) as SignalInputSignal<S>;
+      ? toSignal(source, options) as ReactiveSignal<S>
+      : toSignal(source, { injector: options?.injector, requireSync: true }) as ReactiveSignal<S>;
   }
-  return computed(source) as SignalInputSignal<S> ;
+  return computed(source) as ReactiveSignal<S> ;
 }
 
 

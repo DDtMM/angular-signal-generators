@@ -33,10 +33,10 @@ export interface TimerSignal extends Signal<number> {
 /**
  * Creates a signal that acts either a timer or interval.
  * Emitting increasing numbers for each iteration, starting with an initial 0.
- * Using a {@link SignalInput} as a parameter will cause the timer to immediately emit if it is reduced to an amount that would
+ * Using a {@link ReactiveSource} as a parameter will cause the timer to immediately emit if it is reduced to an amount that would
  * move due time into the past.
- * @param timerTime A constant or {@link SignalInput} that emits how long until the timer is due.
- * @param intervalTime An optional constant or {@link SignalInput} that emits how long until the timer is due after the initial time was emitted.
+ * @param timerTime A constant or {@link ReactiveSource} that emits how long until the timer is due.
+ * @param intervalTime An optional constant or {@link ReactiveSource} that emits how long until the timer is due after the initial time was emitted.
  * @param options An optional object that affects behavior of the signal.
  * @example
  * ```ts

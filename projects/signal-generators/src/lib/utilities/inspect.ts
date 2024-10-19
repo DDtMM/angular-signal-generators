@@ -1,12 +1,13 @@
-import { CreateEffectOptions, effect, isDevMode } from '@angular/core';
+import { effect, Injector, isDevMode } from '@angular/core';
 import { nestSignal, NestSignalOptions, NestSignalValue } from '../signals/nest-signal';
-
 
 /**
  * Options that control the behavior of {@link inspect}.
  * Options specific to inspect can be set globally from {@link INSPECT_DEFAULTS}.
  */
-export interface InspectOptions<T> extends CreateEffectOptions, NestSignalOptions<T> {
+export interface InspectOptions<T> extends NestSignalOptions<T> {
+  /** Needed if not created in an injection context. */
+  injector?: Injector;
   /** Overrides the default reporter.*/
   reporter?: (value: NestSignalValue<T>) => void;
   /** By default inspect will only work in dev mode.  Set to true to run in prod mode. */
@@ -57,5 +58,5 @@ export function inspect<T>(subject: T, options?: InspectOptions<T>): void {
     reporter = () => reporter = nextReporter;
   }
   const $input = nestSignal(subject, options);
-  effect(() => reporter($input()), options);
+  effect(() => reporter($input()), { ...options, manualCleanup: true });
 }

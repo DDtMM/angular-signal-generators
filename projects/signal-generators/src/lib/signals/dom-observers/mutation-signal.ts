@@ -1,6 +1,6 @@
 import { ElementRef, Injector, Signal, signal } from '@angular/core';
 import { getInjector } from '../../internal/utilities';
-import { SignalInput } from '../../signal-input';
+import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
 
@@ -26,7 +26,7 @@ export type MutationSignal = Signal<MutationRecord[]> & {
 
 export function mutationSignal(source: MutationSignalValue, options?: MutationSignalOptions): MutationSignal;
 export function mutationSignal(
-  source: SignalInput<MutationSignalValue>,
+  source: ReactiveSource<MutationSignalValue>,
   options?: MutationSignalOptions
 ): Signal<MutationRecord[]>;
 /**

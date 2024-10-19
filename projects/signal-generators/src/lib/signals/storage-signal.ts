@@ -17,6 +17,7 @@ export interface StorageSignalStore<T> {
  * @param key The key to use for storage.  This should be unique to avoid conflicts when deserializing values.
  * @param storageProvider The provider of storage.
  * @param options Standard create signal options.
+ * @typeParam T The type of the value that should be stored and deserialized.
  * @returns A writable signal
  * @example
  * ```ts
@@ -50,7 +51,10 @@ export function storageSignal<T>(initialValue: T, key: string, storageProvider: 
   return $output;
 }
 
-/** Options for localStorageSignal and sessionStorageSignal. */
+/**
+ * Options for {@link localStorageSignal} and {@link sessionStorageSignal}.
+ * @typeParam T The type of the value that should be stored and deserialized.
+ */
 export interface WebStorageOptions<T> extends CreateSignalOptions<T> {
   /** An optional function to use when serializing a value with JSON.parse. */
   replacer?: (key: string, value: unknown) => unknown;
@@ -69,6 +73,7 @@ let SESSION_STORAGE_FALLBACK: Storage;
  * @param initialValue the initial value for the signal
  * @param key the key to use in localStorage
  * @param options optional options to configure the signal and underlying storage.
+ * @typeParam T The type of the value that should be stored and deserialized.
  * @returns the writable signal generated from storageSignal.
  * @example
  * ```ts
@@ -91,6 +96,7 @@ export function localStorageSignal<T>(initialValue: T, key: string, options?: We
  * @param initialValue the initial value for the signal
  * @param key the key to use in sessionStorage
  * @param options optional options to configure the signal and underlying storage.
+ * @typeParam T The type of the value that should be stored and deserialized.
  * @returns the writable signal generated from storageSignal.
  * @example
  * ```ts

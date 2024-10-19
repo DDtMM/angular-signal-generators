@@ -1,11 +1,12 @@
 import { effect, Injector, untracked } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, SignalNode, signalSetFn } from '@angular/core/primitives/signals';
-import { TransformedSignal, ValueSource } from 'signal-generators';
 import { DestroyableSignal } from '../destroyable-signal';
+import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
+import { TransformedSignal } from '../internal/transformed-signal';
 import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
-import { SignalInput } from '../signal-input';
+import { ReactiveSource } from '../reactive-source';
+import { ValueSource } from '../value-source';
 
 /** The latest state of a MediaQueryList. */
 export type MediaQueryState = Pick<MediaQueryList, 'matches' | 'media'>;
@@ -30,14 +31,14 @@ export interface MediaQueryWriteableSignalOptions {
 export interface MediaQuerySignal extends TransformedSignal<string, MediaQueryState>, DestroyableSignal<MediaQueryState> { }
 
 export function mediaQuerySignal(
-  querySource: SignalInput<string>,
+  querySource: ReactiveSource<string>,
   options?: MediaQuerySignalOptions
 ): DestroyableSignal<MediaQueryState>;
 export function mediaQuerySignal(querySource: string, options?: MediaQueryWriteableSignalOptions): MediaQuerySignal;
 /**
  * Creates a signal that determines if a document matches a given media query.
  * This uses {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia | window.matchMedia} internally.
- * @param querySource For a writable signal pass a string, otherwise a {@link SignalInput} that returns queries as a string.
+ * @param querySource For a writable signal pass a string, otherwise a {@link ReactiveSource} that returns queries as a string.
  * @param options An optional object that affects behavior of the signal.
  * @example
  * ```ts
@@ -59,20 +60,20 @@ export function mediaQuerySignal(
   }
 
   /** The cleanup function for the active MediaQueryList.change eventListener. */
-  let cleanupFn: () => void = () => {};
+  let cleanupFn: () => void = () => { /* do nothing */ };
   /** When true, no more changes should be observed. */
   let isDestroyed = false;
-  return isSignalInput(querySource) ? createFromSignalInput(querySource) : createFromValue(querySource);
+  return isReactive(querySource) ? createFromReactiveSource(querySource) : createFromValue(querySource);
 
   /**
-   * Creates the output signal from a SignalInput.
+   * Creates the output signal from a {@link ReactiveSource}.
    * This is currently done with an effect, but it might be okay if it were done from a computed signal.
    * The only caveat is that there would have to be a side-effect every time the query changed:
    * A new matchMedia query would have to be created, and the event subscribed to.
    * This is probably okay because it should be asynchronous.
    */
-  function createFromSignalInput(querySignalInput: SignalInput<string>): DestroyableSignal<MediaQueryState> {
-    const $query = coerceSignal(querySignalInput, options);
+  function createFromReactiveSource(queryReactiveSource: ReactiveSource<string>): DestroyableSignal<MediaQueryState> {
+    const $query = coerceSignal(queryReactiveSource, options);
     let currentQuery = untracked($query);
     const $output = initOutput(currentQuery) as SignalGetter<MediaQueryState> & DestroyableSignal<MediaQueryState>;
     const outputNode = $output[SIGNAL];
@@ -151,8 +152,8 @@ function createDummyOutput(query: string): MediaQuerySignal {
   const $output = createSignal<MediaQueryState>({ matches: false, media: query }) as SignalGetter<MediaQueryState> &
     MediaQuerySignal;
   $output.asReadonly = asReadonlyFnFactory($output);
-  $output.destroy = () => {};
-  $output.set = () => {};
-  $output.update = () => {};
+  $output.destroy = () => { /* do nothing */ };
+  $output.set = () => { /* do nothing */ };
+  $output.update = () => { /* do nothing */ };
   return $output;
 }

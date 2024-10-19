@@ -1,8 +1,8 @@
 import { Injector, untracked, WritableSignal } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
-import { SignalInput } from '../signal-input';
+import { isReactive } from '../internal/reactive-source-utilities';
+import { ReactiveSource } from '../reactive-source';
 import { ValueSource } from '../value-source';
 
 const NO_ELEMENTS = 'Sequence contains no elements.';
@@ -128,8 +128,8 @@ export interface SequenceSignal<T> extends WritableSignal<T> {
  * ```
  */
 export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>>, options: SequenceSignalOptions = {}): SequenceSignal<T> {
-  const sequenceCursorGetter = isSignalInput(sequence)
-    ? createCursorGetterFromSignalInput(sequence)
+  const sequenceCursorGetter = isReactive(sequence)
+    ? createCursorGetterFromReactiveSource(sequence)
     : createCursorGetterFromValue(sequence)
 
   const $output = createSignal(getFirstValue(sequenceCursorGetter())) as SignalGetter<T> & SequenceSignal<T>;
@@ -147,10 +147,10 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
   return $output;
 
   /**
-   * Creates function that gets the current cursor from a SignalInput.
+   * Creates function that gets the current cursor from a {@link ReactiveSource}.
    * This is done in lieu of using an effect.
    */
-  function createCursorGetterFromSignalInput(inputSource: SignalInput<ArrayLike<T> | Cursor<T>>): () => Cursor<T> {
+  function createCursorGetterFromReactiveSource(inputSource: ReactiveSource<ArrayLike<T> | Cursor<T>>): () => Cursor<T> {
     const $input = coerceSignal(inputSource, options);
     let lastSequence = untracked($input);
     let cachedCursor = getCursor(lastSequence);

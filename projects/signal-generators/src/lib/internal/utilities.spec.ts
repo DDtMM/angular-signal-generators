@@ -51,7 +51,7 @@ describe('getInjector', () => {
 });
 
 describe('hasKey', () => {
-  type Something = { keyX?: number };
+  interface Something { keyX?: number; }
   it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBeTrue());
   it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBeFalse());
   it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBeFalse());
