@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, LOCALE_ID, signal, viewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { eventSignal } from 'projects/signal-generators/src/public-api';
+import { eventSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-from-signal-demo',

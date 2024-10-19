@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { sequenceSignal } from 'projects/signal-generators/src/public-api';
+import { sequenceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-toggle-demo',

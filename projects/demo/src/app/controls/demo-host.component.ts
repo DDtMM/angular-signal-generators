@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
-import { mapSignal } from 'projects/signal-generators/src/public-api';
+import { mapSignal } from '@ddtmm/angular-signal-generators';
 import { DemoService, SourceFile } from '../services/demo.service';
 import { CopyButtonComponent } from './copy-button.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';

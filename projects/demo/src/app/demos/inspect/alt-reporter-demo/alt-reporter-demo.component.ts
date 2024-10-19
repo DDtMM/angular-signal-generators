@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { inspect, sequenceSignal } from 'projects/signal-generators/src/public-api';
+import { inspect, sequenceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-alt-reporter-demo',
@@ -16,21 +16,20 @@ export class AltReporterDemoComponent {
   readonly $name = signal('Danny');
   readonly $loggingEnabled = sequenceSignal([true, false]);
   constructor() {
-    inspect({ enabled: this.$loggingEnabled, luckyNumbers: this.$luckyNumbers, name: this.$name }, {
-      reporter: (subject) => {
-        if (subject.enabled) {
-          console.log(`%cCHANGE\n%o`, 'color: red; background: yellow', subject);
-        }
-      },
-      runInProdMode: true,
-      skipInitial: true
-    });
+    inspect(
+      { enabled: this.$loggingEnabled, luckyNumbers: this.$luckyNumbers, name: this.$name },
+      {
+        reporter: (subject) => subject.enabled && console.log(`%cCHANGE\n%o`, 'color: red; background: yellow', subject),
+        runInProdMode: true,
+        skipInitial: true
+      }
+    );
     afterNextRender(() => Array(3).fill(0).forEach(() => this.addLuckyNumber()));
   }
   addLuckyNumber() {
-    this.$luckyNumbers.update(numbers => [...numbers, signal(Math.floor(Math.random() * 49) + 1)]);
+    this.$luckyNumbers.update((numbers) => [...numbers, signal(Math.floor(Math.random() * 49) + 1)]);
   }
   reroll() {
-    this.$luckyNumbers().forEach(x => x.set(Math.floor(Math.random() * 49) + 1));
+    this.$luckyNumbers().forEach((x) => x.set(Math.floor(Math.random() * 49) + 1));
   }
 }

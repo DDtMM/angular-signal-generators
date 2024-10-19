@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angular/core';
-import { intersectionSignal } from 'projects/signal-generators/src/public-api';
+import { intersectionSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-intersection-signal-demo',

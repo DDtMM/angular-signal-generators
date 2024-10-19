@@ -77,7 +77,7 @@ describe('asyncSignal', () => {
 
   });
 
-  describe('from a signalInput', () => {
+  describe('from a ReactiveSource', () => {
     it('updates output from a signal', fakeAsync(() => {
       const source = autoDetectChangesSignal(fixture, signal(Promise.resolve(1)));
       const sut = asyncSignal(source, { injector });

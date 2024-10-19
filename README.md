@@ -1,6 +1,6 @@
-# <img src="https://raw.githubusercontent.com/DDtMM/angular-signal-generators/main/projects/demo/src/assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" width="32" height="32" style="width: 32px; height: 32px" /> Angular Signal Generators
+# Angular Signal Generators 
 
-Streamline your Angular development with Angular Signal Generators,
+ Streamline your Angular development with Angular Signal Generators,
 a library of signals and utilities designed to replace common patterns for faster, cleaner code.
 
 Check out the **[demos](https://ddtmm.github.io/angular-signal-generators/)** to learn more.
@@ -16,7 +16,7 @@ npm install @ddtmm/angular-signal-generators
 ```
 
 ## Usage
-You can import the signals and utilities from `'@ddtmm/angular-signal-generators`.  Like regular signals, the library's signals are used just like ordinary functions. 
+You can import the signals and utilities from `@ddtmm/angular-signal-generators`.  Like regular signals, the library's signals are used just like ordinary functions. 
 
 ```ts
 import { debounceSignal, liftSignal, timerSignal } from '@ddtmm/angular-signal-generators';
@@ -123,14 +123,14 @@ Converts a signal to an AsyncIterator.  Once created, changes are retained until
 
 ## Conventions
 
-### SignalInput and ValueSource
+### ReactiveSource and ValueSource
 As much as possible signals the functions provided try to create signals from either values or other signals.
-To accommodate this, many arguments are of type **SignalInput&lt;T&gt;** or **ValueSource&lt;T&gt;**.
+To accommodate this, many arguments are of type **ReactiveSource&lt;T&gt;** or **ValueSource&lt;T&gt;**.
 
-*SignalInput* can be either something that can be either converted to a signal with *toSignal*, a function that can be passed to *computed* or a regular old *signal*.  The purpose of this is to make things just a bit more convenient.
+*ReactiveSource* can be either something that can be either converted to a signal with *toSignal*, a function that can be passed to *computed* or a regular old *signal*.  The purpose of this is to make things just a bit more convenient.
 
 ### ValueSource
-A *ValueSource* is a *SignalSource* ***or a value***.  The limiting factor here is that if you wanted to use a *SignalSource* as a value, then you'd have to wrap that in a *signal*.
+A *ValueSource* is a *ReactiveSource* ***or a value***.  The limiting factor here is that if you wanted to use a *SignalSource* as a value, then you'd have to wrap that in a *signal*.
 
 ```ts
 const timerFromValue = timerSignal(1000);
@@ -144,10 +144,11 @@ const timerSource$ = new BehaviorSubject(1000);
 const timerFromObservable = timer(timerSource$);
 ```
 ### Overloads
-Several generators that accept a traditional value and a *SignalInput* will have different return types.  Those that accept a *SignalInput* will return a read only signal, whereas those with a traditional value will have methods to update the signal, though not necessarily the same as a *WritableSignal*.
+Several generators that accept a traditional value and a *ReactiveSource* will have different return types.  Those that accept a *ReactiveSource* will return a read only signal, whereas those with a traditional value will have methods to update the signal, though not necessarily the same as a *WritableSignal*.
 
 ### Injector
-All signal generators have an options parameter that accept injector.  This is either because *effect* is needed sometimes or if you *toSignal* is used.
+All signal generators have an options parameter that accept injector.  This is either because *effect* is needed sometimes or it passed
+along if an observable is converted to an signal.
 
 
 ## Issues or Ideas?

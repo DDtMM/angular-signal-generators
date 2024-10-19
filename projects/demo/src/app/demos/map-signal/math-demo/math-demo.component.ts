@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { mapSignal } from 'projects/signal-generators/src/public-api';
+import { mapSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-math-demo',

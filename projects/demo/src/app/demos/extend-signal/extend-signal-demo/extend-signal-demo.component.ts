@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { extendSignal } from 'projects/signal-generators/src/public-api';
+import { extendSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-extend-signal-demo',

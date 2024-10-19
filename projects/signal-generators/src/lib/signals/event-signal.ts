@@ -10,8 +10,8 @@ import {
   untracked,
   ValueEqualityFn
 } from '@angular/core';
+import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
 import { getInjector } from '../internal/utilities';
 import { ValueSource } from '../value-source';
 
@@ -26,7 +26,6 @@ export interface EventSignalOptions<T> {
 }
 
 /** Anything Renderer2 can listen to plus ElementRef. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EventSignalTarget = 'window' | 'document' | 'body' | ElementRef | any;
 
 const DUMMY_FN = () => { /* do nothing */ };
@@ -111,7 +110,7 @@ export function eventSignal<T>(
   const renderer = injector.get(RendererFactory2).createRenderer(null, null);
   let destroyEventListener: () => void = DUMMY_FN;
 
-  if (isSignalInput(source)) {
+  if (isReactive(source)) {
     listenToSignal(coerceSignal(source, options));
   } else {
     listenToValue(source);

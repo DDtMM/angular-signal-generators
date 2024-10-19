@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { sessionStorageSignal } from 'projects/signal-generators/src/public-api';
+import { sessionStorageSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-built-in-storage-demo',

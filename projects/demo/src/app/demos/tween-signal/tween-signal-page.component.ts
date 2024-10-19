@@ -40,7 +40,7 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
 <h2>Easings</h2>
 <p>
   As a convenience a collection of easing functions are provided such as <b>easeInBack</b>.
-  They can also be retrieved as a collection of all easing functions by importing <b>easings</b>.
+  These can be imported from the submodule, <code class="inline">&#64;ddtmm/angular-signal-generators/easings</code>.
 </p>
 <p>
   You can pass your own easing function.

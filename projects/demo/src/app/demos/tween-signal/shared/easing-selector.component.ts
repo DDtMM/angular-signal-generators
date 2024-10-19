@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { EasingFn, easeInBack, easings } from 'projects/signal-generators/src/public-api';
+import { EasingFn } from '@ddtmm/angular-signal-generators';
+import * as easings from '@ddtmm/angular-signal-generators/easings';
 
 type EasingFnName = keyof typeof easings;
 
@@ -19,7 +20,7 @@ type EasingFnName = keyof typeof easings;
 })
 export class EasingSelectorComponent {
   readonly easingNames = Object.keys(easings) as EasingFnName[];
-  readonly $easingFn = model<EasingFn>(easeInBack, { alias: 'easingFn'});
+  readonly $easingFn = model<EasingFn>(easings.easeInBack, { alias: 'easingFn'});
   readonly $easingFnName = computed<EasingFnName>(() => this.getEasingName(this.$easingFn()));
 
   /** Retrieves the name of the easing function based on the provided easing function or returns "linear". */

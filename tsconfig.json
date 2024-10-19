@@ -16,11 +16,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "importHelpers": true,
-    "paths": {
-      "signal-generators": [
-        "dist/signal-generators"
-      ]
-    },
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
@@ -38,13 +33,5 @@
 
   "exclude": [
     "scripts/**/*.*"
-  ],
-  "typedocOptions": {
-    "categorizeByGroup": true,
-    "entryPoints": ["projects/signal-generators/src/public-api.ts"],
-    "groupOrder": ["Functions", "*"],
-    "requiredToBeDocumented": ["Function"],
-    "out": "projects/demo/src/api",
-    "sourceLinkTemplate": "https://github.com/DDtMM/angular-signal-generators/blob/main/{path}?at={gitRevision}#line={line}",
-  }
+  ]
 }

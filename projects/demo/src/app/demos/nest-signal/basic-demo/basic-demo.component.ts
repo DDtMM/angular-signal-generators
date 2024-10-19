@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { nestSignal } from 'projects/signal-generators/src/public-api';
+import { nestSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-basic-demo',

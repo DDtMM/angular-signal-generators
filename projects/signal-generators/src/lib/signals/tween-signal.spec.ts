@@ -5,7 +5,7 @@ import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
 import { tickAndAssertValues } from '../../testing/testing-utilities';
 import { tweenSignal } from './tween-signal';
-import { easeOutQuart } from '../utilities/easings';
+import { easeOutQuart } from '../../easings/src/easings';
 
 describe('tweenSignal', () => {
 

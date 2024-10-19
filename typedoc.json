@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "categorizeByGroup": false,
+  "compilerOptions": {
+    "paths": {
+      "@ddtmm/angular-signal-generators": ["projects/signal-generators/src/public_api"],
+      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/src/easings/src/public_api"]
+    }
+  },
+  "entryPoints": ["projects/signal-generators/src/public_api.ts", "projects/signal-generators/src/easings/src/public_api.ts"],
+  "groupOrder": ["Functions", "*"],
+  "headings": {
+    "document": true,
+    "readme": false
+  },
+  "name": "Angular Signal Generators",
+  "requiredToBeDocumented": ["Function"],
+  "out": "projects/demo/src/api",
+  "sourceLinkTemplate": "https://github.com/DDtMM/angular-signal-generators/blob/main/{path}?at={gitRevision}#line={line}"
+}

@@ -1,10 +1,10 @@
 import { Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, untracked } from '@angular/core';
 import { SIGNAL, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { isReactiveSourceFunction } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInputFunction } from '../internal/signal-input-utilities';
-import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
-import { ToSignalInput } from '../signal-input';
 import { TransformedSignal } from '../internal/transformed-signal';
+import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
+import { ToSignalInput } from '../reactive-source';
 
 /** Either something with a .subscribe() function or a promise. */
 export type AsyncSource<T> = ToSignalInput<T> | Promise<T>;
@@ -43,11 +43,7 @@ interface AsyncSignalState<T> {
 
 export function asyncSignal<T>(
   valueSource: AsyncSource<T>,
-  options: AsyncSignalOptions<T> & { defaultValue: T; requireSync?: false }
-): AsyncSignal<T>;
-export function asyncSignal<T>(
-  valueSource: AsyncSource<T>,
-  options: AsyncSignalOptions<T> & { defaultValue?: undefined; requireSync: true }
+  options: AsyncSignalOptions<T> & ({ defaultValue: T; requireSync?: false } | { defaultValue?: undefined; requireSync: true })
 ): AsyncSignal<T>;
 export function asyncSignal<T>(
   valueSource: AsyncSource<T>,
@@ -55,11 +51,7 @@ export function asyncSignal<T>(
 ): AsyncSignal<T | undefined>;
 export function asyncSignal<T>(
   valueSource: Signal<AsyncSource<T>> | (() => AsyncSource<T>),
-  options: AsyncSignalOptions<T> & { defaultValue: T; requireSync?: false }
-): Signal<T>;
-export function asyncSignal<T>(
-  valueSource: Signal<AsyncSource<T>> | (() => AsyncSource<T>),
-  options: AsyncSignalOptions<T> & { defaultValue?: undefined; requireSync: true }
+  options: AsyncSignalOptions<T> & ({ defaultValue: T; requireSync?: false } | { defaultValue?: undefined; requireSync: true })
 ): Signal<T>;
 export function asyncSignal<T>(
   valueSource: Signal<AsyncSource<T>> | (() => AsyncSource<T>),
@@ -94,17 +86,17 @@ export function asyncSignal<T>(
 ): Signal<T | undefined> {
   return isSignal(valueSource)
     ? createFromSignal(valueSource, options)
-    : isSignalInputFunction(valueSource)
-    ? createFromSignalInputFunction(valueSource, options)
+    : isReactiveSourceFunction(valueSource)
+    ? createFromReactiveSourceFunction(valueSource, options)
     : createFromValue(valueSource, options);
 }
 
 /** Called if this is a function that's NOT a signal to create a readonly AsyncSignal. */
-function createFromSignalInputFunction<T>(
-  signalInput: () => AsyncSource<T>,
+function createFromReactiveSourceFunction<T>(
+  reactiveFn: () => AsyncSource<T>,
   options: AsyncSignalOptions<T | undefined>
 ): Signal<T | undefined> {
-  const $input = coerceSignal(signalInput, { initialValue: undefined as AsyncSource<T> | undefined, injector: options.injector });
+  const $input = coerceSignal(reactiveFn, { initialValue: undefined as AsyncSource<T> | undefined, injector: options.injector });
   return createFromSignal($input, options);
 }
 

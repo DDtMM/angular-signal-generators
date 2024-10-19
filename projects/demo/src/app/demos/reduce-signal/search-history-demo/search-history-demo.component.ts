@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { reduceSignal } from 'projects/signal-generators/src/public-api';
+import { reduceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-search-history-demo',

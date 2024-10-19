@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { easeInBounce, tweenSignal } from 'projects/signal-generators/src/public-api';
+import { tweenSignal } from '@ddtmm/angular-signal-generators';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { HomeBoxComponent } from '../controls/home-box.component';
+import { easeInBounce } from '@ddtmm/angular-signal-generators/easings';
 
 @Component({
   standalone: true,

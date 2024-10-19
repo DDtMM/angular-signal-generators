@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { timerSignal } from 'projects/signal-generators/src/public-api';
+import { timerSignal } from '@ddtmm/angular-signal-generators';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { HomeBoxComponent } from '../controls/home-box.component';
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { asyncSignal } from 'projects/signal-generators/src/public-api';
+import { asyncSignal } from '@ddtmm/angular-signal-generators';
 import { of, startWith } from 'rxjs';
 import { ShopService } from './shop.service';
 

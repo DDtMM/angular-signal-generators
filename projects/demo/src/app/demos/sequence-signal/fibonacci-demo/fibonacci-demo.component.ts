@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { sequenceSignal } from 'projects/signal-generators/src/public-api';
+import { sequenceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-fibonacci-demo',

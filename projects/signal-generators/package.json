@@ -1,6 +1,6 @@
 {
   "name": "@ddtmm/angular-signal-generators",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "license": "MIT",
   "description": "Specialized Angular signals to help with frequently encountered situations.",
   "peerDependencies": {
@@ -14,7 +14,7 @@
     "url": "https://github.com/DDtMM/angular-signal-generators/issues"
   },
   "homepage":  "https://ddtmm.github.io/angular-signal-generators/",
-  "keywords": ["angular", "signals"],
+  "keywords": ["angular", "signals", "library"],
   "repository": {
     "type": "git",
     "url": "https://github.com/DDtMM/angular-signal-generators.git"

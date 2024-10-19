@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { liftSignal } from 'projects/signal-generators/src/public-api';
+import { liftSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-array-demo',

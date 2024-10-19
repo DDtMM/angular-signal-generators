@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { inspect } from 'projects/signal-generators/src/public-api';
+import { inspect } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-basic-demo',

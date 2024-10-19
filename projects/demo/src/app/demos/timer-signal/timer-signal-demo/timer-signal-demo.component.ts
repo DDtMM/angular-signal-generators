@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { sequenceSignal, timerSignal } from 'projects/signal-generators/src/public-api';
+import { sequenceSignal, timerSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-timer-signal-demo',

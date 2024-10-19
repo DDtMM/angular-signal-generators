@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, model, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { resizeSignal } from 'projects/signal-generators/src/public-api';
+import { resizeSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-resize-signal-demo',

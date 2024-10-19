@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { timerSignal } from 'projects/signal-generators/src/public-api';
+import { timerSignal } from '@ddtmm/angular-signal-generators';
 
 /** Can copy element or text to clipboard by clicking the button. */
 @Component({

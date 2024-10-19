@@ -49,8 +49,8 @@
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.4",
     "@types/node": "^18.18.0",
-    "@typescript-eslint/eslint-plugin": "^8.8.1",
-    "@typescript-eslint/parser": "^8.8.1",
+    "@typescript-eslint/eslint-plugin": "^8.9.0",
+    "@typescript-eslint/parser": "^8.9.0",
     "angular-eslint": "^18.3.1",
     "autoprefixer": "^10.4.19",
     "browser-sync": "^3.0.0",
@@ -59,7 +59,7 @@
     "eslint": "^9.12.0",
     "glob": "^10.4.5",
     "istanbul-badges-readme": "^1.9.0",
-    "jasmine-core": "~5.3.0",
+    "jasmine-core": "~5.4.0",
     "karma": "~6.4.3",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
@@ -69,9 +69,9 @@
     "ng-packagr": "^18.0.0",
     "postcss": "^8.4.47",
     "sonicware-tdt": "^20.0.0",
-    "tailwindcss": "^3.4.13",
-    "typedoc": "^0.26.9",
+    "tailwindcss": "^3.4.14",
+    "typedoc": "^0.26.10",
     "typescript": "~5.4.5",
-    "typescript-eslint": "^8.8.1"
+    "typescript-eslint": "^8.9.0"
   }
 }

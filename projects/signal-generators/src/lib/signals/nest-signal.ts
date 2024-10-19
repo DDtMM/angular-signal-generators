@@ -1,18 +1,21 @@
 import { computed, Injector, isSignal, Signal, ValueEqualityFn } from '@angular/core';
 import { createSignal, SIGNAL, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
-import { isSignalInput } from '../internal/signal-input-utilities';
-import { ValueSource } from '../value-source';
 import { TransformedSignal } from '../internal/transformed-signal';
 import { asReadonlyFnFactory } from '../internal/utilities';
-import { SignalInput } from '../signal-input';
+import { ReactiveSource } from '../reactive-source';
+import { ValueSource } from '../value-source';
 
+/** Options for {@link nestSignal}. */
 export interface NestSignalOptions<T> {
   /** An equality function to run to check to see if the value changed. */
   equal?: ValueEqualityFn<NestSignalValue<T>>;
   /** Needed if not created in injection context and an Subscribable is passed as source. */
   injector?: Injector;
 }
+
+/** The value returned by {@link nestSignal} that recursively replaces signals with their value types.  */
 export type NestSignalValue<T> = T extends Signal<infer R>
   ? NestSignalValue<R>
   : T extends []
@@ -25,7 +28,7 @@ export type NestSignalValue<T> = T extends Signal<infer R>
   : T;
 
 
-export function nestSignal<T>(source: SignalInput<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>>
+export function nestSignal<T>(source: ReactiveSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>>
 export function nestSignal<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>>
 /**
  * Creates a signal whose value may have several, deeply nested signals.
@@ -45,13 +48,13 @@ export function nestSignal<T>(initialValue: T, options?: NestSignalOptions<T>): 
  * ```
  */
 export function nestSignal<T>(source: ValueSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>> | TransformedSignal<T, NestSignalValue<T>> {
-  return (isSignalInput(source))
-    ? createFromSignal(source, options)
+  return (isReactive(source))
+    ? createFromReactiveSource(source, options)
     : createFromValue(source, options);
 }
 
-function createFromSignal<T>(sourceInput: SignalInput<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>> {
-  const $input = coerceSignal(sourceInput, options);
+function createFromReactiveSource<T>(reactiveSource: ReactiveSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>> {
+  const $input = coerceSignal(reactiveSource, options);
   return computed(() => deNest($input()), options);
 }
 
