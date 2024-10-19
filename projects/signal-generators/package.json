@@ -14,7 +14,7 @@
     "url": "https://github.com/DDtMM/angular-signal-generators/issues"
   },
   "homepage":  "https://ddtmm.github.io/angular-signal-generators/",
-  "keywords": ["angular", "signals"],
+  "keywords": ["angular", "signals", "library"],
   "repository": {
     "type": "git",
     "url": "https://github.com/DDtMM/angular-signal-generators.git"

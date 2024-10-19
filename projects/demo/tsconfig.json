@@ -3,8 +3,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@ddtmm/angular-signal-generators": ["projects/signal-generators/src/public-api"],
-      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/src/lib/easings/src/public_api"]
+      "@ddtmm/angular-signal-generators": ["projects/signal-generators/src/public_api"],
+      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/src/easings/src/public_api"]
     }
-  },
+  }
 }
