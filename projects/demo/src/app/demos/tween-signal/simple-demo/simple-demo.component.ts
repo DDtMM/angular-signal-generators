@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { EasingFn, easeInBack , tweenSignal } from 'projects/signal-generators/src/public-api';
+import { EasingFn, tweenSignal } from '@ddtmm/angular-signal-generators';
+import { easeInBack } from '@ddtmm/angular-signal-generators/easings';
 import { EasingSelectorComponent } from '../shared/easing-selector.component';
 
 @Component({

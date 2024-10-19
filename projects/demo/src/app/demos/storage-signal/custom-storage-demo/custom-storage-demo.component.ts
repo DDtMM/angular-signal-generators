@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { StorageSignalStore, storageSignal } from 'projects/signal-generators/src/public-api';
+import { StorageSignalStore, storageSignal } from '@ddtmm/angular-signal-generators';
 import { Subject, scan } from 'rxjs';
 
 @Component({

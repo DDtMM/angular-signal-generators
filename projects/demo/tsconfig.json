@@ -1,0 +1,10 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@ddtmm/angular-signal-generators": ["projects/signal-generators/src/public-api"],
+      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/src/lib/easings/src/public_api"]
+    }
+  },
+}

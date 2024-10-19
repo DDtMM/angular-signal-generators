@@ -1,6 +1,6 @@
 import { ElementRef, Injector, Signal, signal } from '@angular/core';
 import { getInjector } from '../../internal/utilities';
-import { SignalInput } from '../../signal-input';
+import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
 import { domObserverSignalFactory } from './dom-observer-base';
 
@@ -26,7 +26,7 @@ export type ResizeSignal = Signal<ResizeObserverEntry[]> & {
 
 export function resizeSignal(source: ResizeSignalValue, options?: ResizeSignalOptions): ResizeSignal;
 export function resizeSignal(
-  source: SignalInput<ResizeSignalValue>,
+  source: ReactiveSource<ResizeSignalValue>,
   options?: ResizeSignalOptions
 ): Signal<ResizeObserverEntry[]>;
 /**

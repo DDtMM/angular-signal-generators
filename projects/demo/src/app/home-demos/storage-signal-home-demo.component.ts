@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { localStorageSignal } from 'projects/signal-generators/src/public-api';
+import { localStorageSignal } from '@ddtmm/angular-signal-generators';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { HomeBoxComponent } from '../controls/home-box.component';
 

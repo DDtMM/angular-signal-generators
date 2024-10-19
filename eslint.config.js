@@ -13,7 +13,7 @@ module.exports = tsEslint.config(
   {
     // Everything in this config object targets our TypeScript files (Components, Directives, Pipes etc)
     files: ['**/*.ts'],
-    ignores: ['**/*.spec.ts'],
+    ignores: ['**/*.spec.ts', '**/testing/**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tsEslint.configs.strict,
@@ -45,7 +45,7 @@ module.exports = tsEslint.config(
     }
   },
   {
-    files: ['**/*.spec.ts'],
+    files: ['**/*.spec.ts, **/testing/**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tsEslint.configs.recommended,
@@ -61,6 +61,8 @@ module.exports = tsEslint.config(
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility
     ],
-    rules: {}
+    rules: {
+      '@typescript-eslint/consistent-indexed-object-style': 'off'
+    }
   },
 );

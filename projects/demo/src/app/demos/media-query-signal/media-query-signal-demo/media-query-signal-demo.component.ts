@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { mediaQuerySignal, MediaQueryState } from 'projects/signal-generators/src/public-api';
+import { mediaQuerySignal, MediaQueryState } from '@ddtmm/angular-signal-generators';
 
 interface QueryOption {
   formatFn: (value: MediaQueryState) => string;

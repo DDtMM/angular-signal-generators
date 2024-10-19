@@ -1,9 +1,9 @@
 import { effect, ElementRef, Injector, Signal, untracked } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
+import { isReactive } from '../../internal/reactive-source-utilities';
 import { coerceSignal } from '../../internal/signal-coercion';
-import { isSignalInput } from '../../internal/signal-input-utilities';
 import { asReadonlyFnFactory, getDestroyRef } from '../../internal/utilities';
-import { SignalInput } from '../../signal-input';
+import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
 
 
@@ -56,7 +56,7 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
   const destroyRef = getDestroyRef(domObserverSignalFactory, injector);
   destroyRef.onDestroy(() => observer.disconnect());
 
-  if (isSignalInput(source)) {
+  if (isReactive(source)) {
     domObserverComputedSignalSetup(observer, source, options, nativeObservedTransformFn, injector);
     return $observerOutput;
   }
@@ -99,7 +99,7 @@ function domObserverWritableSignalFactory<D extends DomObserver, I extends DomSi
 /** Sets up watching changes to the source signal and routes it to the observer. */
 function domObserverComputedSignalSetup<D extends DomObserver, I extends DomSignalValue<D>, S extends DomObserverTarget<D>>(
   observer: D,
-  subjectSource: SignalInput<I>,
+  subjectSource: ReactiveSource<I>,
   options: DomObserverOptions<D>,
   nativeObservedTransformFn: (element: I) => S | undefined,
   injector: Injector

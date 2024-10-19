@@ -1,9 +1,8 @@
 import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
-import { WebObjectStore } from '../internal/web-object-store';
-import { MapBasedStorage } from '../internal/map-based-storage';
-import { localStorageSignal, sessionStorageSignal, storageSignal } from './storage-signal';
 import { replaceGlobalProperty } from '../../testing/testing-utilities';
-
+import { MapBasedStorage } from '../internal/map-based-storage';
+import { WebObjectStore } from '../internal/web-object-store';
+import { localStorageSignal, sessionStorageSignal, storageSignal } from './storage-signal';
 
 describe('storageSignal', () => {
   setupTypeGuardTests(() => storageSignal(1, 'test', createStorage()));

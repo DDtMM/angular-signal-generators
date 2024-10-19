@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { InterpolateStepFn, sequenceSignal, tweenSignal } from 'projects/signal-generators/src/public-api';
+import { InterpolateStepFn, sequenceSignal, tweenSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-interpolation-demo',

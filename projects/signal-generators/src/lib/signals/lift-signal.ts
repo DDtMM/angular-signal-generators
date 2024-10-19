@@ -1,5 +1,6 @@
 import { Signal, ValueEqualityFn, WritableSignal, isSignal, signal } from '@angular/core';
 
+/** Options for {@link liftSignal}. */
 export interface LiftSignalOptions<T> {
   /**
    * Because signals only place nice with mutable objects, all mutations work by first cloning.
@@ -16,7 +17,7 @@ export interface LiftSignalOptions<T> {
 export type MethodKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => unknown ? K : never] : K } & keyof T;
 export type UpdaterKey<T> = keyof { [K in keyof T as T[K] extends (...args: any[]) => T ? K : never] : K } & keyof T;
 /* eslint-enable @typescript-eslint/no-explicit-any */
-type MethodParameters<T, K extends MethodKey<T> | UpdaterKey<T>> = T[K] extends ( ...args: infer P ) => unknown ? P : never;
+export type MethodParameters<T, K extends MethodKey<T> | UpdaterKey<T>> = T[K] extends ( ...args: infer P ) => unknown ? P : never;
 type MethodKeyFn<T, K extends MethodKey<T>> = T[K] extends ( ...args: infer P ) => infer R ? (...args: P) => R : never;
 type UpdaterKeyFn<T, K extends UpdaterKey<T>> = T[K] extends ( ...args: infer P ) => T ? (...args: P) => T : never;
 export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[]> = { [Key in K[number]]: (...args: MethodParameters<T, Key>) => void };

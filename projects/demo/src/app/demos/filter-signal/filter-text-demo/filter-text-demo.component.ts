@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { filterSignal } from 'projects/signal-generators/src/public-api';
+import { filterSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-filter-text-demo',

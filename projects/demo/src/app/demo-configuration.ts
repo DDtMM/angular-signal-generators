@@ -60,10 +60,11 @@ export interface DemoConfigurationItem<FnName extends string> {
   readonly sourceUrl: string;
   readonly usages: UsageType[];
 }
+const DOC_URL_PREFIX = './api/functions/_ddtmm_angular_signal_generators.';
 
 export const DUMMY_CONFIGURATION: DemoConfigurationItem<string> = {
   homeDemo: AsyncSignalHomeDemoComponent,
-  docUrl: './api/functions/dummy.html',
+  docUrl: `${DOC_URL_PREFIX}dummy.html`,
   fnName: 'dummy' as const,
   name: 'dummy',
   page: AsyncSignalPageComponent,
@@ -71,10 +72,11 @@ export const DUMMY_CONFIGURATION: DemoConfigurationItem<string> = {
   sourceUrl: 'dummy.ts',
   usages: ['generator', 'writableSignal', 'utility']
 };
+
 export const DEMO_CONFIGURATIONS = [
   {
     homeDemo: AsyncSignalHomeDemoComponent,
-    docUrl: './api/functions/asyncSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}asyncSignal-1.html`,
     fnName: 'asyncSignal' as const,
     name: 'asyncSignal',
     page: AsyncSignalPageComponent,
@@ -84,7 +86,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: DebounceSignalHomeDemoComponent,
-    docUrl: './api/functions/debounceSignal.html',
+    docUrl: `${DOC_URL_PREFIX}debounceSignal.html`,
     fnName: 'debounceSignal' as const,
     name: 'debounceSignal',
     page: DebounceSignalPageComponent,
@@ -94,7 +96,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: EventSignalHomeDemoComponent,
-    docUrl: './api/functions/eventSignal.html',
+    docUrl: `${DOC_URL_PREFIX}eventSignal.html`,
     fnName: 'eventSignal' as const,
     name: 'eventSignal',
     page: EventSignalPageComponent,
@@ -104,7 +106,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: ExtendSignalHomeDemoComponent,
-    docUrl: './api/functions/extendSignal.html',
+    docUrl: `${DOC_URL_PREFIX}extendSignal.html`,
     fnName: 'extendSignal' as const,
     isExcludedFromHomePage: true,
     name: 'extendSignal',
@@ -115,7 +117,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: FilterSignalHomeDemoComponent,
-    docUrl: './api/functions/filterSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}filterSignal-1.html`,
     fnName: 'filterSignal' as const,
     name: 'filterSignal',
     page: FilterSignalPageComponent,
@@ -125,7 +127,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: InspectHomeDemoComponent,
-    docUrl: './api/functions/inspect.html',
+    docUrl: `${DOC_URL_PREFIX}inspect.html`,
     fnName: 'inspect' as const,
     name: 'inspect',
     page: InspectPageComponent,
@@ -135,7 +137,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: IntersectionSignalHomeDemoComponent,
-    docUrl: './api/functions/intersectionSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}intersectionSignal-1.html`,
     fnName: 'intersectionSignal' as const,
     name: 'intersectionSignal',
     page: IntersectionSignalPageComponent,
@@ -145,7 +147,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: LiftSignalHomeDemoComponent,
-    docUrl: './api/functions/liftSignal.html',
+    docUrl: `${DOC_URL_PREFIX}liftSignal.html`,
     fnName: 'liftSignal' as const,
     name: 'liftSignal',
     page: LiftSignalPageComponent,
@@ -155,7 +157,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: MapSignalHomeDemoComponent,
-    docUrl: './api/functions/mapSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}mapSignal-1.html`,
     fnName: 'mapSignal' as const,
     name: 'mapSignal',
     page: MapSignalPageComponent,
@@ -165,7 +167,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: MediaQuerySignalHomeDemoComponent,
-    docUrl: './api/functions/mediaQuerySignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}mediaQuerySignal-1.html`,
     fnName: 'mediaQuerySignal' as const,
     name: 'mediaQuerySignal',
     page: MediaQuerySignalPageComponent,
@@ -175,7 +177,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: MutationSignalHomeDemoComponent,
-    docUrl: './api/functions/mutationSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}mutationSignal-1.html`,
     fnName: 'mutationSignal' as const,
     name: 'mutationSignal',
     page: MutationSignalPageComponent,
@@ -185,7 +187,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: NestSignalHomeDemoComponent,
-    docUrl: './api/functions/nestSignal.html',
+    docUrl: `${DOC_URL_PREFIX}nestSignal.html`,
     fnName: 'nestSignal' as const,
     name: 'nestSignal',
     page: NestSignalPageComponent,
@@ -195,7 +197,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: ReduceSignalHomeDemoComponent,
-    docUrl: './api/functions/reduceSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}reduceSignal-1.html`,
     fnName: 'reduceSignal' as const,
     name: 'reduceSignal',
     page: ReduceSignalPageComponent,
@@ -205,7 +207,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: ResizeSignalHomeDemoComponent,
-    docUrl: './api/functions/resizeSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}resizeSignal-1.html`,
     fnName: 'resizeSignal' as const,
     name: 'resizeSignal',
     page: ResizeSignalPageComponent,
@@ -215,7 +217,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: SequenceSignalHomeDemoComponent,
-    docUrl: './api/functions/sequenceSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}sequenceSignal-1.html`,
     fnName: 'sequenceSignal' as const,
     name: 'sequenceSignal',
     page: SequenceSignalPageComponent,
@@ -225,7 +227,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: SignalToIteratorHomeDemoComponent,
-    docUrl: './api/functions/signalToIterator.html',
+    docUrl: `${DOC_URL_PREFIX}signalToIterator.html`,
     fnName: 'signalToIterator' as const,
     name: 'signalToIterator',
     page: SignalToIteratorPageComponent,
@@ -235,7 +237,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: StorageSignalHomeDemoComponent,
-    docUrl: './api/functions/storageSignal.html',
+    docUrl: `${DOC_URL_PREFIX}storageSignal.html`,
     fnName: 'storageSignal' as const,
     name: 'storageSignal',
     page: StorageSignalPageComponent,
@@ -245,7 +247,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: TimerSignalHomeDemoComponent,
-    docUrl: './api/functions/timerSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}timerSignal-1.html`,
     fnName: 'timerSignal' as const,
     name: 'timerSignal',
     page: TimerSignalPageComponent,
@@ -255,7 +257,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: TweenSignalHomeDemoComponent,
-    docUrl: './api/functions/tweenSignal-1.html',
+    docUrl: `${DOC_URL_PREFIX}tweenSignal-1.html`,
     fnName: 'tweenSignal' as const,
     name: 'tweenSignal',
     page: TweenSignalPageComponent,
