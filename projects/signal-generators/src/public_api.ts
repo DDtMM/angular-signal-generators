@@ -11,7 +11,6 @@ export * from './lib/signals/async-signal';
 export * from './lib/signals/debounce-signal';
 export * from './lib/signals/dom-observers/public-api';
 export * from './lib/signals/event-signal';
-export * from './lib/signals/extend-signal';
 export * from './lib/signals/filter-signal';
 export * from './lib/signals/lift-signal';
 export * from './lib/signals/map-signal';
@@ -28,6 +27,5 @@ export * from './lib/utilities/inspect';
 // common types
 export * from './lib/reactive-source';
 export * from './lib/internal/transformed-signal'; // Another "internal" module.
-export { SignalFunction, SignalFunctions, SignalProxy } from './lib/signal-proxy';
 export { ValueSource, ValueSourceValue }  from './lib/value-source';
 export { DestroyableSignal } from './lib/destroyable-signal';

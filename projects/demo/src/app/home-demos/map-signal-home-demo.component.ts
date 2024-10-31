@@ -5,10 +5,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [FormsModule, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
   <app-home-box fnName="mapSignal">
     <div>
       Creates a signal whose input value is immediately mapped to a different value based on a selector.
@@ -27,7 +26,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     </div>
   </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapSignalHomeDemoComponent {
   readonly $mapSource = signal(1);

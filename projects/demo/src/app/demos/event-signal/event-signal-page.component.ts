@@ -7,17 +7,16 @@ import { FromSignalDemoComponent } from './from-signal-demo/from-signal-demo.com
 import { FromStringLiteralDemoComponent } from './from-string-literal-demo/from-string-literal-demo.component';
 
 @Component({
-  selector: 'app-event-signal-page',
-  standalone: true,
-  imports: [
-    CommonModule,
-    DemoHostComponent,
-    DemoPageHeaderComponent,
-    FontAwesomeModule,
-    FromSignalDemoComponent,
-    FromStringLiteralDemoComponent
-  ],
-  template: `
+    selector: 'app-event-signal-page',
+    imports: [
+        CommonModule,
+        DemoHostComponent,
+        DemoPageHeaderComponent,
+        FontAwesomeModule,
+        FromSignalDemoComponent,
+        FromStringLiteralDemoComponent
+    ],
+    template: `
 <app-demo-page-header fnName="eventSignal" />
 <p>
   Uses Angular's <a href="https://angular.dev/api/core/Renderer2" class="link">Renderer2</a> service to listen to events from DOM elements.
@@ -37,6 +36,6 @@ import { FromStringLiteralDemoComponent } from './from-string-literal-demo/from-
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventSignalPageComponent {}

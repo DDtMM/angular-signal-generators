@@ -1,16 +1,16 @@
 import { Injector, signal } from '@angular/core';
-import { TestBed, fakeAsync } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { DomObserverSignal, DomSignalValue, domObserverSignalFactory } from './dom-observer-base';
-import { MutationSignalValue } from './mutation-signal';
-import { MockObserver } from './mock-observer.spec';
+import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { runComputedAndEffectTests, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from 'projects/signal-generators/src/testing/common-signal-tests';
+import { createFixture } from 'projects/signal-generators/src/testing/testing-utilities';
 import { ValueSource } from '../../value-source';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from 'projects/signal-generators/src/testing/common-signal-tests';
+import { DomObserverSignal, DomSignalValue, domObserverSignalFactory } from './dom-observer-base';
+import { MockObserver } from './mock-observer.spec';
+import { MutationSignalValue } from './mutation-signal';
 
 
 describe('domObserverSignalFactory', () => {
   // this was created outside the other tests because the function relies on creating its own fixture.
-  setupDoesNotCauseReevaluationsSimplyWhenNested(
+  runDoesNotCauseReevaluationsSimplyWhenNested(
     () => {
       const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
       const sut = createObserverSignalForTest(observer, document.createElement('div'));
@@ -22,14 +22,14 @@ describe('domObserverSignalFactory', () => {
 
 describe('domObserverSignalFactory', () => {
 
-  let fixture: MockedComponentFixture<void, void>;
+  let fixture: ComponentFixture<unknown>;
 
-  beforeEach(() => fixture = MockRender());
+  beforeEach(() => fixture = createFixture());
 
-  setupTypeGuardTests(() => createObserverSignalForTest(new MockObserver(), document.createElement('div')));
+  runTypeGuardTests(() => createObserverSignalForTest(new MockObserver(), document.createElement('div')));
 
   describe('for value source', () => {
-    setupComputedAndEffectTests(
+    runComputedAndEffectTests(
       () => {
         const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
         const sut = createObserverSignalForTest(observer, document.createElement('div'));
@@ -39,7 +39,7 @@ describe('domObserverSignalFactory', () => {
   });
 
   describe('for signal input source', () => {
-    setupComputedAndEffectTests(
+    runComputedAndEffectTests(
       () => {
         const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
         const $source = signal(document.createElement('div'));
@@ -116,6 +116,7 @@ function createObserverSignalForTest<D extends MockObserver>(observer: D, source
     source,
     {},
     getNode,
+    undefined,
     TestBed.inject(Injector)) as DomObserverSignal<MutationObserver, Node>;
 
   function getNode(value: MutationSignalValue): Node | undefined {

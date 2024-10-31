@@ -5,10 +5,9 @@ import { MediaQuerySignalDemoComponent } from '../demos/media-query-signal/media
 
 
 @Component({
-  standalone: true,
-  imports: [HomeBoxComponent, MediaQuerySignalDemoComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [HomeBoxComponent, MediaQuerySignalDemoComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
 <app-home-box fnName="mediaQuerySignal">
   <div>
     Takes a media query, and updates its value whenever the state of that query being matched changes.
@@ -17,6 +16,6 @@ import { MediaQuerySignalDemoComponent } from '../demos/media-query-signal/media
   <app-media-query-signal-demo />
 </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaQuerySignalHomeDemoComponent { }

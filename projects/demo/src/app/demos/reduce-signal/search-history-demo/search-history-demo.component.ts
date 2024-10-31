@@ -3,11 +3,10 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { reduceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-search-history-demo',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './search-history-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-search-history-demo',
+    imports: [CommonModule],
+    templateUrl: './search-history-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchHistoryDemoComponent {
   readonly $searchText = signal('')

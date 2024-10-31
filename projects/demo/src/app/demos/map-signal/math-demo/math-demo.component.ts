@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { mapSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-math-demo',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './math-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-math-demo',
+    imports: [FormsModule],
+    templateUrl: './math-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MathDemoComponent {
   /** A value directly mapped.  */

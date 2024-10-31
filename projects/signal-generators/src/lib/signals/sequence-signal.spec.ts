@@ -1,10 +1,8 @@
 import { signal } from '@angular/core';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { Cursor, sequenceSignal } from './sequence-signal';
 
 describe('sequenceSignal', () => {
-
-  setupTypeGuardTests(() => sequenceSignal([1, 2, 3]));
 
   describe('when array passed as first parameter', () => {
     /** A common source of values usable in each test. */
@@ -13,11 +11,13 @@ describe('sequenceSignal', () => {
       sequenceItems = [Math.random(), 1 + Math.random(), 2 + Math.random()];
     });
 
-    setupComputedAndEffectTests(() => {
+    runDebugNameOptionTest((debugName) => sequenceSignal(sequenceItems, { debugName }));
+    runTypeGuardTests(() => sequenceSignal(sequenceItems));
+    runComputedAndEffectTests(() => {
       const sut = sequenceSignal(sequenceItems);
       return [sut, () => { sut.next() }];
     });
-    setupDoesNotCauseReevaluationsSimplyWhenNested(
+    runDoesNotCauseReevaluationsSimplyWhenNested(
       () => sequenceSignal(sequenceItems),
       (sut) => sut.next()
     );
@@ -89,14 +89,17 @@ describe('sequenceSignal', () => {
     beforeEach(() => {
       sequenceItems = [Math.random(), 1 + Math.random(), 2 + Math.random()];
     });
+    runDebugNameOptionTest((debugName) => sequenceSignal(signal(sequenceItems), { debugName }));
+    runInjectorOptionTest((injector) => sequenceSignal(signal(sequenceItems), { injector }));
+    runTypeGuardTests(() => sequenceSignal(signal(sequenceItems)));
 
-    setupComputedAndEffectTests(() => {
+    runComputedAndEffectTests(() => {
       const source = signal(sequenceItems);
       const sut = sequenceSignal(source);
       return [sut, () => { source.set([3 + Math.random()]); sut.next(); }]; // only calling next will change the value
     });
 
-    setupDoesNotCauseReevaluationsSimplyWhenNested(
+    runDoesNotCauseReevaluationsSimplyWhenNested(
       () => {
         const source = signal(sequenceItems);
         const sut = sequenceSignal(source);

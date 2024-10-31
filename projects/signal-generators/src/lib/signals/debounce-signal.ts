@@ -3,7 +3,7 @@ import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from 
 import { coerceSignal } from '../internal/signal-coercion';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { TimerInternal } from '../internal/timer-internal';
-import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
+import { asReadonlyFnFactory, getDestroyRef, setEqualOnNode } from '../internal/utilities';
 import { ReactiveSource } from '../reactive-source';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
@@ -37,7 +37,7 @@ export type DebouncedSignal<T> = Signal<T> & Pick<WritableSignal<T>, 'set' | 'up
  * setTimeout(() => console.log(original(), debounced()), 500) // changed, changed.
  * ```
  */
-export function debounceSignal<T>(source: ReactiveSource<T>, debounceTime: ValueSource<number>, options?: DebounceSignalOptions): Signal<T>
+export function debounceSignal<T>(source: ReactiveSource<T>, debounceTime: ValueSource<number>, options?: DebounceSignalOptions & Pick<CreateSignalOptions<T>, 'debugName'>): Signal<T>
 /**
  * Creates a signal whose changes are debounced after a period of time from when the signal was updated.
  * @param initialValue The initial value like a regular signal.
@@ -70,11 +70,14 @@ export function debounceSignal<T>(
 /** Creates a signal that debounces the srcSignal the given debounceTime. */
 function createFromReactiveSource<T>(sourceInput: ReactiveSource<T>,
   debounceTime: ValueSource<number>,
-  options?: DebounceSignalOptions): Signal<T> {
+  options?: DebounceSignalOptions & CreateSignalOptions<T>): Signal<T> {
 
+  // QUESTION: Why are we explicitly ignore the options.equal function for the reactive source version?
+  // We are even omitting it from the overload of the main function.
+  // Is it because the equal function is running on the source signal in the value version?
   const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
   const $source = coerceSignal(sourceInput, options);
-  const $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T>;;
+  const $output = signal(untracked($source), { debugName: options?.debugName }) as SignalGetter<T> & WritableSignal<T>;;
   const outputNode = $output[SIGNAL];
   const timer = new TimerInternal(timerTimeFn(), undefined, { onTick: () => signalSetFn(outputNode, untracked($source)) });
   // setup cleanup actions.
@@ -95,10 +98,7 @@ function createFromValue<T>(initialValue: T,
 
   const $source = createSignal(initialValue);
   const sourceNode = $source[SIGNAL];
-  if (options?.equal) {
-    sourceNode.equal = options.equal;
-  }
-
+  setEqualOnNode(sourceNode, options?.equal);
   const $debounced = createFromReactiveSource($source, debounceTime, options) as DebouncedSignal<T>;
   $debounced.asReadonly = asReadonlyFnFactory($debounced);
   $debounced.set = (value: T) => signalSetFn(sourceNode, value);

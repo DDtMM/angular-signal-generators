@@ -38,10 +38,9 @@ const TIP_UI: Record<UsageType, UsageUiInfo> = {
 };
 
 @Component({
-  selector: 'app-signal-type-badge',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-signal-type-badge',
+    imports: [CommonModule],
+    template: `
 <!-- badges didn't look great -->
 <div class="rounded-xl text-center w-8 text-sm tooltip z-50 font-semibold " [ngClass]="$uiInfo().class"
   role="status"
@@ -50,7 +49,7 @@ const TIP_UI: Record<UsageType, UsageUiInfo> = {
   {{$uiInfo().label}}
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalTypeBadgeComponent {
   readonly $type = input.required<UsageType>({ alias: 'type' });

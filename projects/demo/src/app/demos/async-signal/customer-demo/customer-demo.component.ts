@@ -5,10 +5,9 @@ import { of, startWith } from 'rxjs';
 import { ShopService } from './shop.service';
 
 @Component({
-  selector: 'app-customer-demo',
-  standalone: true,
-  templateUrl: './customer-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-customer-demo',
+    templateUrl: './customer-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomerDemoComponent {
   private readonly shopSvc = inject(ShopService);

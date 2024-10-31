@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  CreateSignalOptions,
   DestroyRef,
   effect,
   ElementRef,
@@ -16,7 +17,7 @@ import { getInjector } from '../internal/utilities';
 import { ValueSource } from '../value-source';
 
 /** Options for {@link eventSignal}. */
-export interface EventSignalOptions<T> {
+export interface EventSignalOptions<T> extends Pick<CreateSignalOptions<T>, 'debugName'> {
   /** An equal function put on the selector result. */
   equal?: ValueEqualityFn<T | undefined>;
   /** The initial value until the first emission. */

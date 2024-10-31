@@ -6,11 +6,10 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
 
 @Component({
-  selector: 'app-home-box',
-  standalone: true,
-  imports: [RouterLink, SignalTypeBadgeComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    selector: 'app-home-box',
+    imports: [RouterLink, SignalTypeBadgeComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
   @if ($demoConfig(); as demoConfig) {
     <li class="card card-compact bg-base-100 hover:bg-base-200 shadow-lg">
       <div class="card-body">
@@ -25,7 +24,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
     </li>
   }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeBoxComponent {
   readonly $demoConfig = computed(() => DEMO_CONFIG_MAP[this.$fnName()] ?? DUMMY_CONFIGURATION);

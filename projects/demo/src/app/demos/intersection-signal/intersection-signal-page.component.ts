@@ -5,10 +5,9 @@ import { IntersectionSignalDemoComponent } from './intersection-signal-demo/inte
 import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
-  selector: 'app-intersection-signal-page',
-  standalone: true,
-  imports: [CommonModule, DemoHostComponent, IntersectionSignalDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-intersection-signal-page',
+    imports: [CommonModule, DemoHostComponent, IntersectionSignalDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="intersectionSignal" />
 <p>
   Uses IntersectionObserver to observe changes to elements passed to the signal.
@@ -22,6 +21,6 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
   <app-intersection-signal-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IntersectionSignalPageComponent { }

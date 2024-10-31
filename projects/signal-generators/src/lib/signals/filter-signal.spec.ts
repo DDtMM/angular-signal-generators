@@ -1,16 +1,16 @@
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { filterSignal } from './filter-signal';
 
 describe('filterSignal', () => {
+  runDebugNameOptionTest((debugName) => filterSignal<number>(1, x => x < 5, { debugName }));
+  runTypeGuardTests(() => filterSignal<number>(1, x => x < 5));
 
-  setupTypeGuardTests(() => filterSignal<number>(1, x => x < 5));
-
-  setupDoesNotCauseReevaluationsSimplyWhenNested(
+  runDoesNotCauseReevaluationsSimplyWhenNested(
     () => filterSignal<number>(1, x => x < 5),
     (sut) => sut.set(4)
   );
 
-  setupComputedAndEffectTests(() => {
+  runComputedAndEffectTests(() => {
     const sut = filterSignal<number>(1, x => x < 5);
     return [sut, () => sut.set(2)];
   });

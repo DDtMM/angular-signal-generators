@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { inspect } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-basic-demo',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './basic-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-basic-demo',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './basic-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasicDemoComponent {
   /** This is a very contrived demonstration using nested signals. */

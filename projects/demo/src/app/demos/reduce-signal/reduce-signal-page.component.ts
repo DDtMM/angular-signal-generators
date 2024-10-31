@@ -4,10 +4,9 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
 import { SearchHistoryDemoComponent } from './search-history-demo/search-history-demo.component';
 
 @Component({
-  selector: 'app-reduce-signal-page',
-  standalone: true,
-  imports: [DemoHostComponent, SearchHistoryDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-reduce-signal-page',
+    imports: [DemoHostComponent, SearchHistoryDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="reduceSignal" />
 <p>
   Creates a signal similar to <code class="inline">Array.reduce</code> or Rxjs's <code class="inline">scan</code> operator. When
@@ -18,6 +17,6 @@ import { SearchHistoryDemoComponent } from './search-history-demo/search-history
   <app-search-history-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReduceSignalPageComponent {}

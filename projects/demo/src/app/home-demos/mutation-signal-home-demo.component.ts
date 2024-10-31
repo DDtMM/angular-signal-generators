@@ -4,10 +4,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { MutationSignalDemoComponent } from '../demos/mutation-signal/mutation-signal-demo/mutation-signal-demo.component';
 
 @Component({
-  standalone: true,
-  imports: [HomeBoxComponent, MutationSignalDemoComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [HomeBoxComponent, MutationSignalDemoComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
 <app-home-box fnName="mutationSignal">
   <div>
   Wraps MutationObserver so changes made to the properties of an element can be observed.
@@ -16,6 +15,6 @@ import { MutationSignalDemoComponent } from '../demos/mutation-signal/mutation-s
   <app-mutation-signal-demo></app-mutation-signal-demo>
 </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MutationSignalHomeDemoComponent {}

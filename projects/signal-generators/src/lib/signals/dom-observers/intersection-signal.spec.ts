@@ -1,40 +1,34 @@
-import { ElementRef, Injector } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../../testing/common-signal-tests';
 import { setupEnsureSignalWorksWhenObserverIsMissing } from './common-dom-observer-tests.spec';
 import { IntersectionSignal, IntersectionSignalValue, intersectionSignal } from './intersection-signal';
 import { MockIntersectionObserver } from './mock-observer.spec';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
 
 describe('intersectionSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
-  let injector: Injector;
   let restoreObserver: () => void;
 
   beforeEach(() => {
-    fixture = MockRender();
-    injector = fixture.componentRef.injector;
     restoreObserver = replaceGlobalProperty('IntersectionObserver', MockIntersectionObserver);
   });
   afterEach(() => {
     restoreObserver();
   });
-
-  setupTypeGuardTests(() => intersectionSignal(null, { injector }));
-  setupComputedAndEffectTests(
+  runDebugNameOptionTest((debugName) => intersectionSignal(null, { debugName }));
+  runInjectorOptionTest((injector) => intersectionSignal(null, { injector }));
+  runTypeGuardTests(() => intersectionSignal(null));
+  runComputedAndEffectTests(
     () => {
-      const sut = intersectionSignal(document.createElement('div'), { injector });
+      const sut = intersectionSignal(document.createElement('div'));
       return [sut, () => {
         MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
       }];
-    },
-    undefined,
-    () => fixture
+    }
   );
 
   setupEnsureSignalWorksWhenObserverIsMissing('IntersectionObserver',
-    () => intersectionSignal(document.createElement('div'), { injector }),
+    () => intersectionSignal(document.createElement('div')),
     () => MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]));
 
 
@@ -54,26 +48,26 @@ describe('intersectionSignal', () => {
 
   it('observes changes to a element', fakeAsync(() => {
     const el = document.createElement('div');
-    const sut = intersectionSignal(el, { injector });
+    const sut = TestBed.runInInjectionContext(() => intersectionSignal(el));
     MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
     flush();
     expect(sut()[0]?.isIntersecting).toBeTrue();
   }));
   it('observes changes to a elementRef', fakeAsync(() => {
     const el = new ElementRef(document.createElement('div'));
-    const sut = intersectionSignal(el, { injector });
+    const sut = TestBed.runInInjectionContext(() => intersectionSignal(el));
     MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
     flush();
     expect(sut()[0]?.isIntersecting).toBeTrue();
   }));
   it('observes nothing if the source is null', fakeAsync(() => {
-    const sut = intersectionSignal(null, { injector });
+    const sut = TestBed.runInInjectionContext(() => intersectionSignal(null));
     MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
     flush();
     expect(sut()).toEqual([]);
   }));
   it('observes nothing if the source is undefined', fakeAsync(() => {
-    const sut = intersectionSignal(undefined, { injector });
+    const sut = TestBed.runInInjectionContext(() => intersectionSignal(undefined));
     MockIntersectionObserver.currentInstance?.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
     flush();
     expect(sut()).toEqual([]);
@@ -81,13 +75,13 @@ describe('intersectionSignal', () => {
 
   it('passes along observer options from function options', () => {
     const root = document.createElement('div');
-    intersectionSignal(null, { injector, root });
+    TestBed.runInInjectionContext(() => intersectionSignal(null, { root }));
     expect(MockIntersectionObserver.currentInstance?.initOptions?.root).toBe(root);
   });
 
   it('converts the root option to an element when passed as an elementRef', () => {
     const rootRef = new ElementRef(document.createElement('div'));
-    intersectionSignal(null, { injector, root: rootRef });
+    TestBed.runInInjectionContext(() => intersectionSignal(null, { root: rootRef }));
     expect(MockIntersectionObserver.currentInstance?.initOptions?.root).toBe(rootRef.nativeElement);
   });
   [
@@ -99,7 +93,7 @@ describe('intersectionSignal', () => {
 
       const el1 = document.createElement('div');
       const el2 = document.createElement('div');
-      const sut = intersectionSignal(el1, { injector });
+      const sut = TestBed.runInInjectionContext(() => intersectionSignal(el1));
       const mockObserver = MockIntersectionObserver.currentInstance!
       mockObserver.simulateObservation([{ isIntersecting: true } as IntersectionObserverEntry]);
       flush();

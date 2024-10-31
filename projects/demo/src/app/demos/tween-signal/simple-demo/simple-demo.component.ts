@@ -4,11 +4,10 @@ import { easeInBack } from '@ddtmm/angular-signal-generators/easings';
 import { EasingSelectorComponent } from '../shared/easing-selector.component';
 
 @Component({
-  selector: 'app-simple-demo',
-  standalone: true,
-  imports: [EasingSelectorComponent],
-  templateUrl: './simple-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-simple-demo',
+    imports: [EasingSelectorComponent],
+    templateUrl: './simple-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SimpleDemoComponent {
   readonly $easingFn = signal<EasingFn>(easeInBack);

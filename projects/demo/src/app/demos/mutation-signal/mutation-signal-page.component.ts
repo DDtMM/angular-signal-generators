@@ -5,10 +5,9 @@ import { MutationSignalDemoComponent } from './mutation-signal-demo/mutation-sig
 import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
-  selector: 'app-mutation-signal-page',
-  standalone: true,
-  imports: [CommonModule, DemoHostComponent, MutationSignalDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-mutation-signal-page',
+    imports: [CommonModule, DemoHostComponent, MutationSignalDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="mutationSignal" />
 <p>
   Uses MutationObserver to observe changes to elements passed to the signal.
@@ -22,6 +21,6 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
   <app-mutation-signal-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MutationSignalPageComponent { }

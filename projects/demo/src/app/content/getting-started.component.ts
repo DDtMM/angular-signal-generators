@@ -3,10 +3,9 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { CopyButtonComponent } from '../controls/copy-button.component';
 
 @Component({
-  selector: 'app-getting-started',
-  standalone: true,
-  imports: [CopyButtonComponent, HighlightModule],
-  template: `
+    selector: 'app-getting-started',
+    imports: [CopyButtonComponent, HighlightModule],
+    template: `
 <div>
   <div class="doc-header">
     <h1>Getting Started</h1>
@@ -69,7 +68,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   </ul>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GettingStartedComponent {
 

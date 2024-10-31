@@ -5,10 +5,9 @@ import { ResizeSignalDemoComponent } from './resize-signal-demo/resize-signal-de
 import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
-  selector: 'app-resize-signal-page',
-  standalone: true,
-  imports: [CommonModule, DemoHostComponent, ResizeSignalDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-resize-signal-page',
+    imports: [CommonModule, DemoHostComponent, ResizeSignalDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="resizeSignal" />
 <p>
   Uses ResizeObserver to observe changes to elements passed to the signal.
@@ -22,6 +21,6 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
   <app-resize-signal-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResizeSignalPageComponent { }

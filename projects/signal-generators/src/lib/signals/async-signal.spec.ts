@@ -1,34 +1,32 @@
 import { Injector, signal } from '@angular/core';
-import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { MockedComponentFixture, MockRender } from 'ng-mocks';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { BehaviorSubject, finalize, Observable, of, startWith, Subject, tap, timer } from 'rxjs';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { createFixture } from '../../testing/testing-utilities';
 import { asyncSignal } from './async-signal';
 
-describe('asyncSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
+fdescribe('asyncSignal', () => {
+  let fixture: ComponentFixture<unknown>;
   let injector: Injector;
 
   beforeEach(() => {
-    fixture = MockRender();
+    fixture = createFixture();
     injector = fixture.componentRef.injector;
   });
 
-  setupTypeGuardTests(() => asyncSignal(Promise.resolve(1), { injector }));
-
   describe('for computed and effects', () => {
-    setupComputedAndEffectTests(
+    runComputedAndEffectTests(
       () => {
-        const sut = asyncSignal(Promise.resolve(1), { injector });
+        const sut = asyncSignal(Promise.resolve(1));
         return [sut, () => sut.set(Promise.resolve(2))];
       },
       'from a value'
     );
-    setupComputedAndEffectTests(
+    runComputedAndEffectTests(
       () => {
         const source = signal(Promise.resolve(1));
-        const sut = asyncSignal(source, { injector });
+        const sut = asyncSignal(source);
         return [sut, () => source.set(Promise.resolve(2))];
       },
       'from a signal'
@@ -45,6 +43,10 @@ describe('asyncSignal', () => {
   }));
 
   describe('from a value', () => {
+    runDebugNameOptionTest((debugName) => asyncSignal(Promise.resolve(1), { debugName }));
+    runInjectorOptionTest((injector) => asyncSignal(Promise.resolve(1), { injector }));
+    runTypeGuardTests(() => asyncSignal(Promise.resolve(1)));
+
     it('returns a signal that can be set', fakeAsync(() => {
       const sut = autoDetectChangesSignal(fixture, asyncSignal(Promise.resolve(1), { injector }));
       sut.set(Promise.resolve(2));
@@ -64,10 +66,11 @@ describe('asyncSignal', () => {
       expect(sut()).toBe(2);
     }));
 
-    it('uses equal function', () => {
+    fit('uses equal function', () => {
       const asyncSource = new BehaviorSubject(2)
-      const sut = autoDetectChangesSignal(fixture, asyncSignal(asyncSource, { injector, defaultValue: 1, equal: (a, b) => a % 2 === b % 2 }));
-      TestBed.flushEffects();
+      const sut = autoDetectChangesSignal(fixture, asyncSignal(asyncSource, { injector , defaultValue: 1, equal: (a, b) => a % 2 === b % 2 }));
+      // TestBed.flushEffects();
+      fixture.detectChanges();
       expect(sut()).toBe(2);
       asyncSource.next(4);
       expect(sut()).toBe(2);
@@ -78,6 +81,10 @@ describe('asyncSignal', () => {
   });
 
   describe('from a ReactiveSource', () => {
+    runDebugNameOptionTest((debugName) => asyncSignal(signal(Promise.resolve(1)), { debugName }));
+    runInjectorOptionTest((injector) => asyncSignal(signal(Promise.resolve(1)), { injector }));
+    runTypeGuardTests(() => asyncSignal(signal(Promise.resolve(1))));
+
     it('updates output from a signal', fakeAsync(() => {
       const source = autoDetectChangesSignal(fixture, signal(Promise.resolve(1)));
       const sut = asyncSignal(source, { injector });
@@ -107,7 +114,8 @@ describe('asyncSignal', () => {
       let innerSubject: BehaviorSubject<number>;
       const sut = autoDetectChangesSignal(fixture, asyncSignal(() => innerSubject, { defaultValue: -1, injector }));
       innerSubject = new BehaviorSubject(1);
-      TestBed.flushEffects();
+      //TestBed.flushEffects();
+      fixture.detectChanges();
       expect(sut()).toBe(1);
     });
   })

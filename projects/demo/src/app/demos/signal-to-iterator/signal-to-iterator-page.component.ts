@@ -5,10 +5,9 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 
 
 @Component({
-  selector: 'app-signal-to-iterator-page',
-  standalone: true,
-  imports: [CommonModule, HighlightModule, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-signal-to-iterator-page',
+    imports: [CommonModule, HighlightModule, DemoPageHeaderComponent],
+    template: `
 <!-- for some reason the API docs come out with -1 at the end -->
 <app-demo-page-header fnName="signalToIterator" />
 <p>
@@ -22,7 +21,7 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
   <pre><code [highlight]="simpleExample" language="typescript"></code></pre>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalToIteratorPageComponent {
   readonly simpleExample = `const source = signal('start');

@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { sequenceSignal, timerSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-timer-signal-demo',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './timer-signal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-timer-signal-demo',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './timer-signal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerSignalDemoComponent {
 

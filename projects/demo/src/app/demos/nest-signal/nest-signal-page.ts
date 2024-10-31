@@ -4,10 +4,9 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 import { BasicDemoComponent } from './basic-demo/basic-demo.component';
 
 @Component({
-  selector: 'app-nest-signal-page',
-  standalone: true,
-  imports: [BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-nest-signal-page',
+    imports: [BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="nestSignal"/>
 <p>
   Takes a value that contains one or more nested signals and emits their resolved values.
@@ -20,6 +19,6 @@ import { BasicDemoComponent } from './basic-demo/basic-demo.component';
 </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NestSignalPageComponent { }

@@ -5,10 +5,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [FormsModule, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
   <app-home-box fnName="sequenceSignal">
     <div>
       The Sequence Signal is useful for situations where you want to easily cycle between options.
@@ -30,7 +29,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     </div>
   </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SequenceSignalHomeDemoComponent {
   readonly sequenceChoices = sequenceSignal(['a', 'b', 'c']);

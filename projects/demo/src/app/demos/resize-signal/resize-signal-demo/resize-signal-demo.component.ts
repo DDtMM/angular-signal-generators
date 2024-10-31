@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { resizeSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-resize-signal-demo',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './resize-signal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-resize-signal-demo',
+    imports: [FormsModule],
+    templateUrl: './resize-signal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResizeSignalDemoComponent {
   readonly $target = viewChild<ElementRef>('targetEl');

@@ -5,10 +5,9 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 import { MediaQuerySignalDemoComponent } from './media-query-signal-demo/media-query-signal-demo.component';
 
 @Component({
-  selector: 'app-media-query-signal-page',
-  standalone: true,
-  imports: [CommonModule, DemoHostComponent, DemoPageHeaderComponent, MediaQuerySignalDemoComponent],
-  template: `
+    selector: 'app-media-query-signal-page',
+    imports: [CommonModule, DemoHostComponent, DemoPageHeaderComponent, MediaQuerySignalDemoComponent],
+    template: `
 <app-demo-page-header fnName="mediaQuerySignal" />
 <p>
   Takes a media query, and updates its value whenever the state of that query being matched changes.
@@ -25,6 +24,6 @@ import { MediaQuerySignalDemoComponent } from './media-query-signal-demo/media-q
   <app-media-query-signal-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaQuerySignalPageComponent { }

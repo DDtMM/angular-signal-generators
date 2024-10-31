@@ -1,8 +1,7 @@
-import { ElementRef, Injector } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
 import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../../testing/common-signal-tests';
 import { setupEnsureSignalWorksWhenObserverIsMissing } from './common-dom-observer-tests.spec';
 import { MockMutationObserver } from './mock-observer.spec';
 import { MutationSignal, MutationSignalValue, mutationSignal } from './mutation-signal';
@@ -10,32 +9,28 @@ import { MutationSignal, MutationSignalValue, mutationSignal } from './mutation-
 
 describe('mutationSignal', () => {
 
-  let fixture: MockedComponentFixture<void, void>;
-  let injector: Injector;
   let restoreObserver: () => void;
 
   beforeEach(() => {
-    fixture = MockRender();
-    injector = fixture.componentRef.injector;
     restoreObserver = replaceGlobalProperty('MutationObserver', MockMutationObserver);
   });
   afterEach(() => {
     restoreObserver();
   });
 
-  setupTypeGuardTests(() => mutationSignal(document.createElement('div'), { injector }));
-  setupComputedAndEffectTests(
+  runDebugNameOptionTest((debugName) => mutationSignal(document.createElement('div'), { debugName }));
+  runInjectorOptionTest((injector) => mutationSignal(document.createElement('div'), { injector }));
+  runTypeGuardTests(() => mutationSignal(document.createElement('div')));
+  runComputedAndEffectTests(
     () => {
-      const sut = mutationSignal(document.createElement('div'), { injector });
+      const sut = mutationSignal(document.createElement('div'));
       return [sut, () => {
         MockMutationObserver.currentInstance?.simulateObservation([{ attributeName: 'data-blah' } as MutationRecord]);
       }];
-    },
-    undefined,
-    () => fixture
+    }
   );
   setupEnsureSignalWorksWhenObserverIsMissing('MutationObserver',
-    () => mutationSignal(document.createElement('div'), { injector }),
+    () => mutationSignal(document.createElement('div')),
     () => MockMutationObserver.currentInstance?.simulateObservation([{ attributeName: 'data-blah' } as MutationRecord])
   );
 
@@ -47,39 +42,39 @@ describe('mutationSignal', () => {
   }));
   it('observes changes to a node', fakeAsync(() => {
     const el = document.createTextNode('howdy');
-    const sut = mutationSignal(el, { injector });
+    const sut = TestBed.runInInjectionContext(() => mutationSignal(el));
     MockMutationObserver.currentInstance?.simulateObservation([{ attributeName: 'data-happy' } as MutationRecord]);
     flush();
     expect(sut()[0]?.attributeName).toBe('data-happy');
   }));
   it('observes changes to a elementRef', fakeAsync(() => {
     const el = new ElementRef(document.createElement('div'));
-    const sut = mutationSignal(el, { injector });
+    const sut = TestBed.runInInjectionContext(() => mutationSignal(el));
     MockMutationObserver.currentInstance?.simulateObservation([{ attributeName: 'data-happy' } as MutationRecord]);
     flush();
     expect(sut()[0]?.attributeName).toBe('data-happy');
   }));
 
   it('observes nothing if the source is null', fakeAsync(() => {
-    const sut = mutationSignal(null, { injector });
+    const sut = TestBed.runInInjectionContext(() => mutationSignal(null));
     MockMutationObserver.currentInstance?.simulateObservation([{ attributeName: 'data-happy' } as MutationRecord]);
     flush();
     expect(sut()).toEqual([]);
   }));
   it('observes nothing if the source is undefined', fakeAsync(() => {
-    const sut = mutationSignal(undefined, { injector });
+    const sut = TestBed.runInInjectionContext(() => mutationSignal(undefined));
     MockMutationObserver.currentInstance?.simulateObservation([{ attributeName: 'data-happy' } as MutationRecord]);
     flush();
     expect(sut()).toEqual([]);
   }));
   it('passes along observer options from function options', () => {
     // by default content-box is observed, so changing to border-box will allow us to observe border changes.
-    mutationSignal(document.createElement('div'), { injector, attributes: true});
+    TestBed.runInInjectionContext(() => mutationSignal(document.createElement('div'), { attributes: true}));
     expect(MockMutationObserver.currentInstance?.observed[0][1]?.attributes).toBe(true);
   });
 
   it('should use new options when provided with set',() => {
-    const sut = mutationSignal(null, { injector, attributes: false });
+    const sut = TestBed.runInInjectionContext(() => mutationSignal(null, { attributes: false }));
     sut.set(document.createElement('div'), { attributes: true });
     expect(MockMutationObserver.currentInstance?.observed[0][1]?.attributes).toBe(true);
   });
@@ -93,7 +88,7 @@ describe('mutationSignal', () => {
 
       const el1 = document.createElement('div');
       const el2 = document.createElement('div');
-      const sut = mutationSignal(el1, { injector });
+      const sut = TestBed.runInInjectionContext(() => mutationSignal(el1));
       const mockObserver = MockMutationObserver.currentInstance!
       mockObserver.simulateObservation([{ attributeName: 'data-friend' } as MutationRecord]);
       flush();

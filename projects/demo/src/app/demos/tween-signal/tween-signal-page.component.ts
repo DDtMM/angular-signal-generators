@@ -10,19 +10,18 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
 
 
 @Component({
-  selector: 'app-tween-signal-page',
-  standalone: true,
-  imports: [
-    CommonModule,
-    DemoHostComponent,
-    FormsModule,
-    HighlightModule,
-    DemoPageHeaderComponent,
-    InterpolationDemoComponent,
-    MultipleNumbersDemoComponent,
-    SimpleDemoComponent
-  ],
-  template: `
+    selector: 'app-tween-signal-page',
+    imports: [
+        CommonModule,
+        DemoHostComponent,
+        FormsModule,
+        HighlightModule,
+        DemoPageHeaderComponent,
+        InterpolationDemoComponent,
+        MultipleNumbersDemoComponent,
+        SimpleDemoComponent
+    ],
+    template: `
 <!-- for some reason the API docs come out with -1 at the end -->
 <app-demo-page-header fnName="tweenSignal" />
 <p>
@@ -65,6 +64,6 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TweenSignalPageComponent {}

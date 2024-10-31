@@ -2,7 +2,6 @@ import { Type } from '@angular/core';
 import { AsyncSignalPageComponent } from './demos/async-signal/async-signal-page.component';
 import { DebounceSignalPageComponent } from './demos/debounce-signal/debounce-signal-page.component';
 import { EventSignalPageComponent } from './demos/event-signal/event-signal-page.component';
-import { ExtendSignalPageComponent } from './demos/extend-signal/extend-signal-page.component';
 import { FilterSignalPageComponent } from './demos/filter-signal/filter-signal-page.component';
 import { InspectPageComponent } from './demos/inspect/inspect-page.component';
 import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
@@ -21,7 +20,6 @@ import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page
 import { AsyncSignalHomeDemoComponent } from './home-demos/async-signal-home-demo.component';
 import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-home-demo.component';
 import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
-import { ExtendSignalHomeDemoComponent } from './home-demos/extend-signal-home-demo.component';
 import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
 import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.component';
 import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
@@ -103,17 +101,6 @@ export const DEMO_CONFIGURATIONS = [
     route: 'event-signal',
     sourceUrl: 'signals/event-signal.ts',
     usages: ['generator']
-  },
-  {
-    homeDemo: ExtendSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}extendSignal.html`,
-    fnName: 'extendSignal' as const,
-    isExcludedFromHomePage: true,
-    name: 'extendSignal',
-    page: ExtendSignalPageComponent,
-    route: 'extend-signal',
-    sourceUrl: 'signals/extends-signal.ts',
-    usages: ['generator', 'obsolete', 'writableSignal']
   },
   {
     homeDemo: FilterSignalHomeDemoComponent,

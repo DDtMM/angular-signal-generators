@@ -1,13 +1,14 @@
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { reduceSignal } from './reduce-signal';
 
 describe('reduceSignal', () => {
-  setupTypeGuardTests(() => reduceSignal(1, (p, c) => p + c));
-  setupComputedAndEffectTests(() => {
+  runDebugNameOptionTest((debugName) => reduceSignal(1, (p, c) => p + c, { debugName }));
+  runTypeGuardTests(() => reduceSignal(1, (p, c) => p + c));
+  runComputedAndEffectTests(() => {
     const sut = reduceSignal(1, (p, c) => p + c);
     return [sut, () => { sut.set(1) }];
   });
-  setupDoesNotCauseReevaluationsSimplyWhenNested(
+  runDoesNotCauseReevaluationsSimplyWhenNested(
     () => reduceSignal(1, (p, c) => p + c),
     (sut) => sut.set(1)
   );

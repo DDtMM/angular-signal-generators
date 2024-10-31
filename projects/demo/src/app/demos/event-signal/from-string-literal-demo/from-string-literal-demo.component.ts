@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { eventSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-from-string-literal-demo',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './from-string-literal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-from-string-literal-demo',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './from-string-literal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FromStringLiteralDemoComponent {
   readonly $bodyInteraction = eventSignal('body', 'click',

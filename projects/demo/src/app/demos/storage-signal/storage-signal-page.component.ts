@@ -5,10 +5,9 @@ import { BuiltInStorageDemoComponent } from './built-in-storage-demo/built-in-st
 import { CustomStorageDemoComponent } from './custom-storage-demo/custom-storage-demo.component';
 
 @Component({
-  selector: 'app-storage-signal-page',
-  standalone: true,
-  imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-storage-signal-page',
+    imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="storageSignal" />
 <p>
 A signal that uses a secondary storage system to store values, ideally beyond the lifetime of the application.
@@ -27,6 +26,6 @@ but two built-in implementations exist: <b>localStorageSignal</b> and <b>session
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StorageSignalPageComponent { }

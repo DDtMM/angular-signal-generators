@@ -1,38 +1,37 @@
-import { Injector, signal } from '@angular/core';
-import { fakeAsync } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { signal } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
-import { tickAndAssertValues } from '../../testing/testing-utilities';
+import { createFixture, tickAndAssertValues } from '../../testing/testing-utilities';
 import { debounceSignal } from './debounce-signal';
 
 describe('debounceSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
-  let injector: Injector;
+  let fixture: ComponentFixture<unknown>;
 
   beforeEach(() => {
-    fixture = MockRender();
-    injector = fixture.componentRef.injector;
+    fixture = createFixture();
   });
 
-  setupTypeGuardTests(() => debounceSignal(1, 500, { injector }));
-
   describe('when created with a signal', () => {
-    setupComputedAndEffectTests(() => {
+    runDebugNameOptionTest((debugName) => debounceSignal(signal(1), 500, { debugName }));
+    runInjectorOptionTest((injector) => debounceSignal(signal(1), 500, { injector }));
+    runTypeGuardTests(() => debounceSignal(signal(1), 500));
+
+    runComputedAndEffectTests(() => {
       const $source = signal(1);
-      return [debounceSignal($source, 500, { injector }), () => $source.set(2)];
+      return [debounceSignal($source, 500), () => $source.set(2)];
     });
 
     it('initially shows the source value', () => {
       const $source = signal(1);
-      const sut = debounceSignal($source, 500, { injector });
+      const sut = TestBed.runInInjectionContext(() => debounceSignal($source, 500));
       expect(sut()).toBe($source());
     });
 
     it('should not change value until time of last source change equals debounce time', fakeAsync(() => {
       const originalValue = 1;
       const $source = autoDetectChangesSignal(fixture, signal(originalValue));
-      const sut = debounceSignal($source, 500, { injector });
+      const sut = TestBed.runInInjectionContext(() => debounceSignal($source, 500));
       tickAndAssertValues(sut, [[100, originalValue]]);
       $source.set(2);
       tickAndAssertValues(sut, [[499, originalValue], [1, $source()]]);
@@ -44,7 +43,7 @@ describe('debounceSignal', () => {
       const originalValue = 1;
       const $debounceTime = autoDetectChangesSignal(fixture, signal(500));
       const $source = autoDetectChangesSignal(fixture, signal(originalValue));
-      const sut = autoDetectChangesSignal(fixture, debounceSignal($source, $debounceTime, { injector }));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal($source, $debounceTime)));
       tickAndAssertValues(sut, [[100, originalValue]]);
       $source.set(2);
       $debounceTime.set(5000);
@@ -54,31 +53,35 @@ describe('debounceSignal', () => {
 
 
   describe('when created from a value', () => {
-    setupComputedAndEffectTests(() => {
-      const sut = debounceSignal(1, 500, { injector });
+    runDebugNameOptionTest((debugName) => debounceSignal(1, 500, { debugName }));
+    runInjectorOptionTest((injector) => debounceSignal(1, 500, { injector }));
+    runTypeGuardTests(() => debounceSignal(1, 500));
+
+    runComputedAndEffectTests(() => {
+      const sut = debounceSignal(1, 500);
       return [sut, () => sut.set(2)];
     });
     it('should respect the equals option if passed', fakeAsync(() => {
-      const sut = debounceSignal(4, 500, { injector, equal: (a, b) => (a % 2) === (b % 2) });
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal(4, 500, { equal: (a, b) => (a % 2) === (b % 2) })));
       sut.set(8); // should be skipped since equal function checks on evenness.
       tickAndAssertValues(sut, [[500, 4]]);
       sut.set(7);
       tickAndAssertValues(sut, [[500, 7]]);
     }));
     it('#set should be debounced', fakeAsync(() => {
-      const sut = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal('x', 500)));
       tickAndAssertValues(sut, [[100, 'x']]);
       sut.set('z');
       tickAndAssertValues(sut, [[499, 'x'], [1, 'z']]);
     }));
     it('#update should be debounced', fakeAsync(() => {
-      const sut = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal('x', 500)));
       tickAndAssertValues(sut, [[100, 'x']]);
       sut.update((x) => x + 'z');
       tickAndAssertValues(sut, [[499, 'x'], [1, 'xz']]);
     }));
     it('#asReadonly returns signal that reflects source signal value', fakeAsync(() => {
-      const sut = autoDetectChangesSignal(fixture, debounceSignal('x', 500, { injector }));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal('x', 500)));
       const $readonly = sut.asReadonly();
       expect($readonly()).toEqual(sut());
       sut.set('y')

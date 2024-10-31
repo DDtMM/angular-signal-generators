@@ -1,27 +1,29 @@
 import { Injector, signal } from '@angular/core';
-import { fakeAsync, tick } from '@angular/core/testing';
-import { MockRender, MockedComponentFixture } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
-import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
-import { tickAndAssertValues } from '../../testing/testing-utilities';
-import { tweenSignal } from './tween-signal';
+import { ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { easeOutQuart } from '../../easings/src/easings';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
+import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { createFixture, tickAndAssertValues } from '../../testing/testing-utilities';
+import { tweenSignal } from './tween-signal';
 
 describe('tweenSignal', () => {
 
-  let fixture: MockedComponentFixture<void, void>;
+  let fixture: ComponentFixture<unknown>;
   let injector: Injector;
 
   beforeEach(() => {
-    fixture = MockRender();
+    fixture = createFixture();
     injector = fixture.componentRef.injector;
   });
 
-  setupTypeGuardTests(() => tweenSignal(1, { injector }));
-
   describe('when passed a value', () => {
-    setupComputedAndEffectTests(() => {
-      const sut = tweenSignal(1, { injector,  duration: 500 });
+
+    runDebugNameOptionTest((debugName) => tweenSignal(1, { debugName, duration: 0 }));
+    runInjectorOptionTest((injector) => tweenSignal(1, { injector, duration: 0 }));
+    runTypeGuardTests(() => tweenSignal(1));
+
+    runComputedAndEffectTests(() => {
+      const sut = tweenSignal(1, { duration: 500 });
       return [sut, () => { sut.set(2); fixture.detectChanges(); tick(500); }];
     });
 
@@ -161,7 +163,11 @@ describe('tweenSignal', () => {
   });
 
   describe('when passed a signal', () => {
-    setupComputedAndEffectTests(() => {
+    runDebugNameOptionTest((debugName) => tweenSignal(signal(1), { debugName, duration: 0 }));
+    runInjectorOptionTest((injector) => tweenSignal(signal(1), { injector, duration: 0 }));
+    runTypeGuardTests(() => tweenSignal(signal(1)));
+
+    runComputedAndEffectTests(() => {
       const source = signal(1);
       const sut = tweenSignal(source, { injector,  duration: 500 });
       return [sut, () => { source.set(2); fixture.detectChanges(); tick(500); }];

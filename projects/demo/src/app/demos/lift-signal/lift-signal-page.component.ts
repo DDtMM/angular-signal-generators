@@ -6,10 +6,9 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 import { ArrayDemoComponent } from './array-demo/array-demo.component';
 
 @Component({
-  selector: 'app-lift-signal-page',
-  standalone: true,
-  imports: [ArrayDemoComponent, DemoHostComponent, FaIconComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-lift-signal-page',
+    imports: [ArrayDemoComponent, DemoHostComponent, FaIconComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="liftSignal"/>
 <p>
   "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
@@ -35,7 +34,7 @@ import { ArrayDemoComponent } from './array-demo/array-demo.component';
 </app-demo-host>
 
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LiftSignalPageComponent {
   readonly faTriangleExclamation = faTriangleExclamation;

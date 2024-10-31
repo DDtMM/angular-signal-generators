@@ -6,10 +6,9 @@ import { ToggleDemoComponent } from './toggle-demo/toggle-demo.component';
 
 
 @Component({
-  selector: 'app-timer-signal-page',
-  standalone: true,
-  imports: [DemoHostComponent, FibonacciDemoComponent, ToggleDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-timer-signal-page',
+    imports: [DemoHostComponent, FibonacciDemoComponent, ToggleDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="sequenceSignal" />
 <p>
   This accepts a sequence of values, and moves to the next value after every call to next.
@@ -24,6 +23,6 @@ import { ToggleDemoComponent } from './toggle-demo/toggle-demo.component';
   </app-demo-host>
 </div>
 `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SequenceSignalPageComponent { }

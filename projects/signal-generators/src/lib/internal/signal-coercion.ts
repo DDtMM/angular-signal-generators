@@ -44,8 +44,9 @@ export function coerceSignal<T, S extends ReactiveSource<T>>(source: S, options?
   }
   else if (isToSignalInput(source)) {
     // if there is no initialValue then assume the observable has an initial value and set requireSync as true.
+    // Options are explicitly passed to avoid unintended values from effecting output.
     return (hasKey(options, 'initialValue'))
-      ? toSignal(source, options) as ReactiveSignal<S>
+      ? toSignal(source, { injector: options.injector, initialValue: options.initialValue }) as ReactiveSignal<S>
       : toSignal(source, { injector: options?.injector, requireSync: true }) as ReactiveSignal<S>;
   }
   return computed(source) as ReactiveSignal<S> ;

@@ -6,10 +6,9 @@ import { TimerSignalDemoComponent } from './timer-signal-demo/timer-signal-demo.
 
 
 @Component({
-  selector: 'app-timer-signal-page',
-  standalone: true,
-  imports: [CommonModule, DemoHostComponent, DemoPageHeaderComponent, TimerSignalDemoComponent],
-  template: `
+    selector: 'app-timer-signal-page',
+    imports: [CommonModule, DemoHostComponent, DemoPageHeaderComponent, TimerSignalDemoComponent],
+    template: `
 <app-demo-page-header fnName="timerSignal" />
 <p>
   This is very similar to rxjs's <i>timer</i> operator.
@@ -24,7 +23,7 @@ import { TimerSignalDemoComponent } from './timer-signal-demo/timer-signal-demo.
   <app-timer-signal-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerSignalPageComponent {
 

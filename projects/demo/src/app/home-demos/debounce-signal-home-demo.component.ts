@@ -5,10 +5,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [FormsModule, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
   <app-home-box fnName="debounceSignal">
     <div>
       Creates a signal whose value isn't changed until it a certain has passed since the last update.
@@ -26,7 +25,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     </div>
   </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DebounceSignalHomeDemoComponent {
   readonly $debounced = debounceSignal('', 500);

@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { debounceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-direct-demo',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './direct-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-direct-demo',
+    imports: [FormsModule],
+    templateUrl: './direct-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DirectDemoComponent {
   readonly $debounceTime = signal(500);

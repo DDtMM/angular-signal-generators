@@ -5,10 +5,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { easeInBounce } from '@ddtmm/angular-signal-generators/easings';
 
 @Component({
-  standalone: true,
-  imports: [HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
   <app-home-box fnName="tweenSignal">
     <div>
       Tween animations that allow a signal to transform between values over a set duration.
@@ -24,7 +23,7 @@ import { easeInBounce } from '@ddtmm/angular-signal-generators/easings';
     </div>
   </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TweenSignalHomeDemoComponent {
   readonly $tween = tweenSignal(0, { duration: 1000, easing: easeInBounce });

@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import {
-  setupComputedAndEffectTests,
-  setupDoesNotCauseReevaluationsSimplyWhenNested,
-  setupTypeGuardTests
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runInjectorOptionTest,
+  runTypeGuardTests
 } from '../../testing/common-signal-tests';
-import { replaceGlobalProperty } from '../../testing/testing-utilities';
+import { createFixture, replaceGlobalProperty } from '../../testing/testing-utilities';
 import { mediaQuerySignal } from './media-query-signal';
 import { FakeEventListener } from '../../testing/fake-event-listener';
 import { signal } from '@angular/core';
-import { MockRender } from 'ng-mocks';
 
 describe('mediaQuerySignal', () => {
-  setupTypeGuardTests(() => mediaQuerySignal('(max-width: 600px)'));
 
   describe('with faked matchMedia', () => {
     let restoreMatchMedia: () => void;
@@ -23,16 +23,20 @@ describe('mediaQuerySignal', () => {
     });
     afterEach(() => restoreMatchMedia());
 
-    setupComputedAndEffectTests(() => {
+    runComputedAndEffectTests(() => {
       const sut = mediaQuerySignal('(max-width: 600px)');
       return [sut, () => sut.set('(max-width: 1200px)') ];
     });
-    setupDoesNotCauseReevaluationsSimplyWhenNested(
+    runDoesNotCauseReevaluationsSimplyWhenNested(
       () => mediaQuerySignal('(max-width: 600px)'),
       (sut) => sut.set('(max-width: 1200px)')
     );
 
     describe('from a value', () => {
+      runDebugNameOptionTest((debugName) => mediaQuerySignal('(max-width: 600px)', { debugName }));
+      runInjectorOptionTest((injector) => mediaQuerySignal('(max-width: 600px)', { injector }));
+      runTypeGuardTests(() => mediaQuerySignal('(max-width: 600px)'));
+
       it('should update its value when the query is matched', () => {
         const sut = TestBed.runInInjectionContext(() => mediaQuerySignal('(max-width: 600px)'));
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
@@ -73,6 +77,10 @@ describe('mediaQuerySignal', () => {
     });
 
     describe('from a signal', () => {
+      runDebugNameOptionTest((debugName) => mediaQuerySignal(signal('(max-width: 600px)'), { debugName }));
+      runInjectorOptionTest((injector) => mediaQuerySignal(signal('(max-width: 600px)'), { injector }));
+      runTypeGuardTests(() => mediaQuerySignal(signal('(max-width: 600px)')));
+
       it('should update its value when the query is matched', () => {
         const $source = signal('(max-width: 600px)');
         const sut = TestBed.runInInjectionContext(() => mediaQuerySignal($source));
@@ -102,7 +110,7 @@ describe('mediaQuerySignal', () => {
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
       });
       it('should ignore future changes after injection context is destroyed.', () => {
-        const fixture = MockRender();
+        const fixture = createFixture();
         const $source = signal('(max-width: 600px)');
         const sut = mediaQuerySignal($source, { injector: fixture.componentRef.injector});
         fixture.destroy();

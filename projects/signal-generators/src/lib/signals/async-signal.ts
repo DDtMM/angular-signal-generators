@@ -1,4 +1,4 @@
-import { Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, untracked } from '@angular/core';
+import { CreateSignalOptions, Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, untracked } from '@angular/core';
 import { SIGNAL, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { isReactiveSourceFunction } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
@@ -10,10 +10,10 @@ import { ToSignalInput } from '../reactive-source';
 export type AsyncSource<T> = ToSignalInput<T> | Promise<T>;
 
 /** Options for {@link asyncSignal}. */
-export interface AsyncSignalOptions<T> {
+export interface AsyncSignalOptions<T> extends Pick<CreateSignalOptions<T>, 'debugName'> {
   /** The default value before the first emission. */
   defaultValue?: T;
-  /** Equal functions for values emitted from async sources */
+  /** Equal functions run on values emitted from async sources. */
   equal?: ValueEqualityFn<T>;
   /** This is only used if a signal is created from an observable. */
   injector?: Injector;
@@ -178,7 +178,7 @@ function createFromSignal<T>(
           return value;
       }
     },
-    { equal: options.equal }
+    options // pass along the debugName and equal options.
   );
 
   /** Starts listening to the new async value, and returns the cleanup function. */

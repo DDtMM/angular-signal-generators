@@ -6,10 +6,9 @@ import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/fr
 import { DEMO_CONFIGURATIONS } from './demo-configuration';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, RouterOutlet],
-  template: `
+    selector: 'app-root',
+    imports: [CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, RouterOutlet],
+    template: `
 
   <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur drawer drawer-end">
     <div class="flex-1">

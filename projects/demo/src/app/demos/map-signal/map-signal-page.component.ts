@@ -4,10 +4,9 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 import { MathDemoComponent } from './math-demo/math-demo.component';
 
 @Component({
-  selector: 'app-map-signal-page',
-  standalone: true,
-  imports: [DemoHostComponent, MathDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-map-signal-page',
+    imports: [DemoHostComponent, MathDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="mapSignal" />
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
@@ -22,6 +21,6 @@ import { MathDemoComponent } from './math-demo/math-demo.component';
   <app-math-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapSignalPageComponent { }

@@ -4,10 +4,9 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
 import { FilterTextDemoComponent } from './filter-text-demo/filter-text-demo.component';
 
 @Component({
-  selector: 'app-filter-signal-page',
-  standalone: true,
-  imports: [DemoHostComponent, FilterTextDemoComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-filter-signal-page',
+    imports: [DemoHostComponent, FilterTextDemoComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="filterSignal" />
 <p>
   Filters values set to this signal directly upon the result of a filter function.
@@ -17,7 +16,7 @@ import { FilterTextDemoComponent } from './filter-text-demo/filter-text-demo.com
   <app-filter-text-demo />
 </app-demo-host>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterSignalPageComponent {
 

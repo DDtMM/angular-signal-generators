@@ -5,10 +5,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [FormsModule, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
    <app-home-box fnName="reduceSignal">
     <div>
       Creates a signal similar to <code class="inline">Array.reduce</code> or Rxjs's <code class="inline">scan</code> operator,
@@ -25,7 +24,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     </div>
   </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReduceSignalHomeDemoComponent {
   readonly $reduceSource = signal(1);

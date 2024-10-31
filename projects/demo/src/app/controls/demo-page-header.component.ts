@@ -6,10 +6,9 @@ import { DEMO_CONFIG_MAP, DUMMY_CONFIGURATION, SignalFunctionName } from '../dem
 import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
 @Component({
-  selector: 'app-demo-page-header',
-  standalone: true,
-  imports: [CommonModule, FontAwesomeModule, SignalTypeBadgeComponent],
-  template: `
+    selector: 'app-demo-page-header',
+    imports: [CommonModule, FontAwesomeModule, SignalTypeBadgeComponent],
+    template: `
 <div class="flex flex-row items-center gap-3 doc-header">
   @if($demoConfig(); as demoConfig) {
     <h1>{{demoConfig.name}}</h1>
@@ -36,7 +35,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
   }
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoPageHeaderComponent {
   readonly $demoConfig = computed(() => DEMO_CONFIG_MAP[this.$fnName()] ?? DUMMY_CONFIGURATION);

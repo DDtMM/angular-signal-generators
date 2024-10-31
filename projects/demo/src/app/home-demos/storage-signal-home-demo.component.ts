@@ -5,10 +5,9 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { HomeBoxComponent } from '../controls/home-box.component';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [FormsModule, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
     <app-home-box fnName="storageSignal">
       <div>
         A signal that uses a secondary store to persist values beyond an application's lifetime.
@@ -22,7 +21,7 @@ import { HomeBoxComponent } from '../controls/home-box.component';
       <div class="italic">Refresh page to see value persist</div>
     </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StorageSignalHomeDemoComponent {
   readonly $storageValue = localStorageSignal('', '_storage_signal_demo');

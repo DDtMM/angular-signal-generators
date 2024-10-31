@@ -4,10 +4,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [ExampleCodeComponent, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [ExampleCodeComponent, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
 <app-home-box fnName="inspect">
   <div>
     Outputs any changes to deeply nested signals.
@@ -21,6 +20,6 @@ $age.set(102); // [LOG]: {{'{'}} age: 102, name: 'Danny' {{'}'}}
 </pre></app-example-code>
 </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectHomeDemoComponent {}

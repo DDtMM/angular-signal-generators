@@ -1,15 +1,26 @@
-import { Component, Injector, computed, signal } from '@angular/core';
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
+import { Component, computed, Injector, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { runInjectorOptionTest } from '../../testing/common-signal-tests';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { createFixture } from '../../testing/testing-utilities';
 import { signalToIterator } from './signal-to-iterator';
 
 describe('signalToIterator', () => {
+  runInjectorOptionTest(injector =>  {
+    const source = signal(1);
+    const sut = signalToIterator(signal(1), { injector });
+    return () => {
+      source.set(2);
+      sut.next();
+    }
+  });
+
   describe('manual injector context', () => {
-    let fixture: MockedComponentFixture<void, void>;
+    let fixture: ComponentFixture<unknown>;
     let injector: Injector;
 
     beforeEach(() => {
-      fixture = MockRender();
+      fixture = createFixture();
       injector = fixture.componentRef.injector;
     });
 
@@ -207,15 +218,14 @@ describe('signalToIterator', () => {
   });
 
   describe('in component injector context', () => {
-    @Component({ standalone: true })
+    @Component({})
     class TestComponent {
       source = signal(1);
       iterator = signalToIterator(this.source);
     }
     it('will work without passing injector', (done) => {
-      MockBuilder(TestComponent);
-      const fixture = MockRender(TestComponent);
-      const { iterator, source } = fixture.point.componentInstance;
+      const fixture = TestBed.createComponent(TestComponent);
+      const { iterator, source } = fixture.componentInstance;
       Promise.all([
         iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
         iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 }))

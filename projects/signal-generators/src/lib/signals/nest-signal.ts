@@ -1,4 +1,4 @@
-import { computed, Injector, isSignal, Signal, ValueEqualityFn } from '@angular/core';
+import { computed, CreateSignalOptions, Injector, isSignal, Signal } from '@angular/core';
 import { createSignal, SIGNAL, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
@@ -8,9 +8,7 @@ import { ReactiveSource } from '../reactive-source';
 import { ValueSource } from '../value-source';
 
 /** Options for {@link nestSignal}. */
-export interface NestSignalOptions<T> {
-  /** An equality function to run to check to see if the value changed. */
-  equal?: ValueEqualityFn<NestSignalValue<T>>;
+export interface NestSignalOptions<T> extends CreateSignalOptions<NestSignalValue<T>> {
   /** Needed if not created in injection context and an Subscribable is passed as source. */
   injector?: Injector;
 }
@@ -42,9 +40,9 @@ export function nestSignal<T>(initialValue: T, options?: NestSignalOptions<T>): 
  * const $text = signal('hello');
  * const $why = signal({ count: computed(() => $count() + 1), text: [$text] })
  * const $nested = nestSignal({ count: $count, text: $text, why: $why });
- * console.log($nested()); // { count: 0, text: 'hello', why: { count: 1, text: ['hello'] } }
+ * console.log($nested()); // [LOG]: { count: 0, text: 'hello', why: { count: 1, text: ['hello'] } }
  * $count.set(1);
- * console.log($nested()); // { count: 1, text: 'hello', why: { count: 2, text: ['hello'] } }
+ * console.log($nested()); // [LOG]: { count: 1, text: 'hello', why: { count: 2, text: ['hello'] } }
  * ```
  */
 export function nestSignal<T>(source: ValueSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>> | TransformedSignal<T, NestSignalValue<T>> {

@@ -6,10 +6,9 @@ import { AltReporterDemoComponent } from './alt-reporter-demo/alt-reporter-demo.
 import { InspectComponentSignalsDemoComponent } from './inspect-component-signals-demo/inspect-component-signals-demo.component';
 
 @Component({
-  selector: 'app-inspect-page',
-  standalone: true,
-  imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent, InspectComponentSignalsDemoComponent],
-  template: `
+    selector: 'app-inspect-page',
+    imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent, InspectComponentSignalsDemoComponent],
+    template: `
 <app-demo-page-header fnName="inspect"/>
 <p>
 Reports the latest state of a subject by resolving all the values deeply contained within by using <a href="./nestSignal">nestSignal</a>.
@@ -33,6 +32,6 @@ The Subject can be anything, but to be effective it should be a signal, an objec
 </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectPageComponent { }

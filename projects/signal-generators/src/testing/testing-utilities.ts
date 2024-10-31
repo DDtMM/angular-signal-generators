@@ -1,4 +1,19 @@
-import { tick } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+
+/**
+ * Creates a {@link ComponentFixture} from a dummy component.
+ * This is probably temporary as ngMocks is not working since moving to Angular 19 beta.
+ * We ***don't*** want to be maintaining our own testing library.
+*/
+export function createFixture(): ComponentFixture<unknown> {
+  @Component({
+    template: '<div></div>',
+    changeDetection: ChangeDetectionStrategy.Default
+  })
+  class DummyComponent { }
+  return TestBed.createComponent(DummyComponent);
+}
 
 /** It is a pretty common pattern in these tests to tick, and then expect a value.
  * @param selector gets value from a function.

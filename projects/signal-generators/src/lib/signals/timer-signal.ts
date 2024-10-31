@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Injector, PLATFORM_ID, Signal, WritableSignal, signal } from '@angular/core';
+import { CreateSignalOptions, Injector, PLATFORM_ID, Signal, WritableSignal, signal } from '@angular/core';
 import { TimerInternal, TimerStatus } from '../internal/timer-internal';
 import { getDestroyRef, getInjector } from '../internal/utilities';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
@@ -8,7 +8,7 @@ import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-sour
 export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
 
 /** Options for {@link timerSignal}. */
-export interface TimerSignalOptions {
+export interface TimerSignalOptions extends Pick<CreateSignalOptions<number>, 'debugName'> {
   /** pass injector if this is not created in Injection Context */
   injector?: Injector;
   /**
@@ -56,7 +56,7 @@ export function timerSignal(timerTime: ValueSource<number>, intervalTime?: Value
   const timerTimeFn = createGetValueFn(timerTime, injector);
   const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, injector) : undefined;
   /** The signal that will be returned. */
-  const $output = signal(0);
+  const $output = signal(0, options);
   /** Keeps track of the state of the timer. */
   const $state = signal<TimerSignalStatus>('stopped');
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), {

@@ -6,10 +6,9 @@ import { DirectDemoComponent } from './direct-demo/direct-demo.component';
 import { IndirectDemoComponent } from './indirect-demo/indirect-demo.component';
 
 @Component({
-  selector: 'app-debounce-signal-page',
-  standalone: true,
-  imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-debounce-signal-page',
+    imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
+    template: `
 <app-demo-page-header fnName="debounceSignal" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
@@ -25,7 +24,7 @@ and one where it has a <i>set</i> and <i>update</i> method and the change of the
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DebounceSignalPageComponent {
 
