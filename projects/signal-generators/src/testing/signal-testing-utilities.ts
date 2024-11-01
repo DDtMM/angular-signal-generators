@@ -7,7 +7,7 @@ import { ComponentFixture } from '@angular/core/testing';
  * Does not initially call detectChanges when created - this would have an impact on signals that depend on effects.
  * Don't know if this a good idea or not.
 */
-export function autoDetectChangesSignal<T, S extends Signal<T>>(fixture: ComponentFixture<unknown>, $source: S): S {
+export function autoDetectChangesSignal<T, S extends Signal<T>>($source: S, fixture: ComponentFixture<unknown>): S {
 
   const proxy = new Proxy($source, {
     get(target, propName: string | symbol, receiver) {

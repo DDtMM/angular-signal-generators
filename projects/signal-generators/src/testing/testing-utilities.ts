@@ -7,10 +7,7 @@ import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
  * We ***don't*** want to be maintaining our own testing library.
 */
 export function createFixture(): ComponentFixture<unknown> {
-  @Component({
-    template: '<div></div>',
-    changeDetection: ChangeDetectionStrategy.Default
-  })
+  @Component({ template: '', changeDetection: ChangeDetectionStrategy.OnPush })
   class DummyComponent { }
   return TestBed.createComponent(DummyComponent);
 }

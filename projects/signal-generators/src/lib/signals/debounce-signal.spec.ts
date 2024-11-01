@@ -30,7 +30,7 @@ describe('debounceSignal', () => {
 
     it('should not change value until time of last source change equals debounce time', fakeAsync(() => {
       const originalValue = 1;
-      const $source = autoDetectChangesSignal(fixture, signal(originalValue));
+      const $source = autoDetectChangesSignal(signal(originalValue), fixture);
       const sut = TestBed.runInInjectionContext(() => debounceSignal($source, 500));
       tickAndAssertValues(sut, [[100, originalValue]]);
       $source.set(2);
@@ -41,9 +41,9 @@ describe('debounceSignal', () => {
 
     it('should adjust debounce time when time from a signal changes', fakeAsync(() => {
       const originalValue = 1;
-      const $debounceTime = autoDetectChangesSignal(fixture, signal(500));
-      const $source = autoDetectChangesSignal(fixture, signal(originalValue));
-      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal($source, $debounceTime)));
+      const $debounceTime = autoDetectChangesSignal(signal(500), fixture);
+      const $source = autoDetectChangesSignal(signal(originalValue), fixture);
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(debounceSignal($source, $debounceTime), fixture));
       tickAndAssertValues(sut, [[100, originalValue]]);
       $source.set(2);
       $debounceTime.set(5000);
@@ -62,26 +62,26 @@ describe('debounceSignal', () => {
       return [sut, () => sut.set(2)];
     });
     it('should respect the equals option if passed', fakeAsync(() => {
-      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal(4, 500, { equal: (a, b) => (a % 2) === (b % 2) })));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(debounceSignal(4, 500, { equal: (a, b) => (a % 2) === (b % 2) }), fixture));
       sut.set(8); // should be skipped since equal function checks on evenness.
       tickAndAssertValues(sut, [[500, 4]]);
       sut.set(7);
       tickAndAssertValues(sut, [[500, 7]]);
     }));
     it('#set should be debounced', fakeAsync(() => {
-      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal('x', 500)));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(debounceSignal('x', 500), fixture));
       tickAndAssertValues(sut, [[100, 'x']]);
       sut.set('z');
       tickAndAssertValues(sut, [[499, 'x'], [1, 'z']]);
     }));
     it('#update should be debounced', fakeAsync(() => {
-      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal('x', 500)));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(debounceSignal('x', 500), fixture));
       tickAndAssertValues(sut, [[100, 'x']]);
       sut.update((x) => x + 'z');
       tickAndAssertValues(sut, [[499, 'x'], [1, 'xz']]);
     }));
     it('#asReadonly returns signal that reflects source signal value', fakeAsync(() => {
-      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(fixture, debounceSignal('x', 500)));
+      const sut = TestBed.runInInjectionContext(() => autoDetectChangesSignal(debounceSignal('x', 500), fixture));
       const $readonly = sut.asReadonly();
       expect($readonly()).toEqual(sut());
       sut.set('y')

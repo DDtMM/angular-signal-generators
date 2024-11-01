@@ -191,7 +191,7 @@ function createFromSignal<T>(
       const unsubscribe = asyncSource.subscribe({ error: setError, next: setValue });
       return () => unsubscribe.unsubscribe();
     }
-    asyncSource.then(setValue, setError);
+    asyncSource.then(setValue, setError).catch(setError);
     return VOID_FN; // there is no way to cleanup a promise that I know of.
 
     /** Sets the state of errored if an error hadn't already occurred. */

@@ -1,7 +1,8 @@
-import { Component, WritableSignal, signal } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+import { Component, signal, WritableSignal } from '@angular/core';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
+import { ngMocks } from 'ng-mocks';
 import { BehaviorSubject } from 'rxjs';
 import {
   runComputedAndEffectTests,
@@ -32,12 +33,7 @@ describe('mapSignal', () => {
     runComputedAndEffectTests(() => {
       const source = signal(1);
       const sut = mapSignal(source, (x) => x + 1);
-      return [
-        sut,
-        () => {
-          source.set(2);
-        }
-      ];
+      return [sut, () => source.set(2)];
     });
     runDoesNotCauseReevaluationsSimplyWhenNested(
       () => mapSignal(signal1, (x) => x + 1),
@@ -84,44 +80,32 @@ describe('mapSignal', () => {
 
     runComputedAndEffectTests(() => {
       const sut = mapSignal(1, (x) => x + 1);
-      return [
-        sut,
-        () => {
-          sut.set(2);
-        }
-      ];
+      return [sut, () => sut.set(2)];
     });
+
     runDoesNotCauseReevaluationsSimplyWhenNested(
       () => mapSignal(1, (x) => x + 1),
       (sut) => sut.set(4)
     );
-    it('works with ngModel when bound to input', async () => {
+
+    it('works with ngModel when bound to input', fakeAsync(() => {
       @Component({
-        imports: [FormsModule],
+        imports: [CommonModule, FormsModule],
         selector: 'app-test',
         standalone: true,
-        template: `<input data-test="sutInput" type="number" [(ngModel)]="$sut.input" />`,
+        template: `<input type="number" data-test="sutInput" [(ngModel)]="$sut.input" />`
       })
       class TestComponent {
         readonly $sut = mapSignal(6, (x) => x + 2);
       }
-      @Component({
-        imports: [TestComponent],
-        template: `<app-test />`,
-      })
-      class TestParentComponent { }
-      TestBed.configureTestingModule({ providers: [FormsModule]});
       const fixture = TestBed.createComponent(TestComponent);
       const sut = fixture.componentInstance.$sut;
-      expect(sut()).toBe(8);
-      const inputElem = fixture.debugElement.query(By.css('[data-test="sutInput"]')).nativeElement as HTMLInputElement;
-      inputElem.value = '13';
-      inputElem.dispatchEvent(new Event('change'));
-      console.log(inputElem.value);
+      fixture.detectChanges(); // why did this fix things?
+      ngMocks.change('[data-test="sutInput"]', 13);
+      tick();
       fixture.detectChanges();
-      console.log(inputElem.value);
       expect(sut()).toBe(15);
-    });
+    }));
     it('initially returns mapped value', () => {
       const source = mapSignal(1, (x) => x * 3);
       expect(source()).toBe(3);
