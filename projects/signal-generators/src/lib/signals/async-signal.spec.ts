@@ -190,7 +190,7 @@ describe('asyncSignal', () => {
   });
 
   describe('when requireSync is true', () => {
-    it('does not resubscribe to an async if the same source is passed again', () => {
+    it('does not resubscribe to an async if the same source is passed again', fakeAsync(() => {
       const source = new BehaviorSubject(1);
       const subscribeSpy = spyOn(source, 'subscribe').and.callThrough();
       const sut = TestBed.runInInjectionContext(() => asyncSignal(source, { requireSync: true }));
@@ -198,9 +198,10 @@ describe('asyncSignal', () => {
       source.next(2);
       expect(sut()).toBe(2);
       sut.set(source);
+      flush();
       expect(subscribeSpy).toHaveBeenCalledTimes(1);
       expect(sut()).toBe(2);
-    });
+    }));
 
     it('throws if there has been no emission', () => {
       const source = new Subject<number>();
