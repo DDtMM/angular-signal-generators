@@ -2,8 +2,7 @@ import { Directive, HostBinding } from '@angular/core';
 
 /** Adds contents to host. */
 @Directive({
-  selector: '[appContentsClass]',
-  standalone: true
+    selector: '[appContentsClass]'
 })
 export class ContentsClassDirective {
   @HostBinding('class.contents') contentsClass = true;

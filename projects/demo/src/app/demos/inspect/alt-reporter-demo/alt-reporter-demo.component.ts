@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { inspect, sequenceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-alt-reporter-demo',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './alt-reporter-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-alt-reporter-demo',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './alt-reporter-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AltReporterDemoComponent {
   /** This is a very contrived demonstration using nested signals. */

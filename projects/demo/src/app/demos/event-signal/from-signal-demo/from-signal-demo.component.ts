@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { eventSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-from-signal-demo',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './from-signal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-from-signal-demo',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './from-signal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FromSignalDemoComponent {
   private readonly locale = inject(LOCALE_ID);

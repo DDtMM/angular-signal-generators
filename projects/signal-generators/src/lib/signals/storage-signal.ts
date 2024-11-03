@@ -2,6 +2,7 @@ import { CreateSignalOptions, WritableSignal } from '@angular/core';
 import { SIGNAL, SignalGetter, createSignal, signalSetFn } from '@angular/core/primitives/signals';
 import { MapBasedStorage } from '../internal/map-based-storage';
 import { WebObjectStore } from '../internal/web-object-store';
+import { setDebugNameOnNode } from '../internal/utilities';
 
 /** A simple provider of persistent storage for {@link storageSignal}. */
 export interface StorageSignalStore<T> {
@@ -25,15 +26,16 @@ export interface StorageSignalStore<T> {
  * const signal1 = storageSignal(1, 'someKey', storageProvider);
  * signal1.set(100);
  * const signal2 = storageSignal(1, 'someKey', storageProvider);
- * console.log(signal1(), signal2()); // 100, 100
+ * console.log(signal1(), signal2()); // [LOG]: 100, 100
  * ```
  */
-export function storageSignal<T>(initialValue: T, key: string, storageProvider: StorageSignalStore<T>, options?: CreateSignalOptions<T>): WritableSignal<T> {
+export function storageSignal<T>(initialValue: T, key: string, storageProvider: StorageSignalStore<T>, options: CreateSignalOptions<T> = {}): WritableSignal<T> {
   const storageValue = storageProvider.get(key);
   const $output = createSignal(storageValue === undefined ? initialValue : storageValue) as SignalGetter<T> & WritableSignal<T>;
   const outputNode = $output[SIGNAL];
-  // the equal function needs to be checked BEFORE setting storage or the value will be inconsistent.
-  const equalFn = options?.equal ?? outputNode.equal;
+  // The equal function needs to be checked BEFORE setting storage or the value will be inconsistent.
+  const equalFn = options.equal ?? outputNode.equal;
+  setDebugNameOnNode(outputNode, options.debugName);
   $output.asReadonly = () => $output;
   $output.set = (value: T) => {
     if (!equalFn(value, outputNode.value)) {
@@ -84,9 +86,9 @@ let SESSION_STORAGE_FALLBACK: Storage;
  * ```
  * @see {@link storageSignal}
  */
-export function localStorageSignal<T>(initialValue: T, key: string, options?: WebStorageOptions<T>): WritableSignal<T> {
+export function localStorageSignal<T>(initialValue: T, key: string, options: WebStorageOptions<T> = {}): WritableSignal<T> {
   const storage = globalThis.localStorage ?? (LOCAL_STORAGE_FALLBACK ??= new MapBasedStorage());
-  const store = new WebObjectStore<T>(storage, options?.replacer, options?.reviver);
+  const store = new WebObjectStore<T>(storage, options.replacer, options.reviver);
   return storageSignal<T>(initialValue, key, store, options);
 }
 
@@ -107,8 +109,8 @@ export function localStorageSignal<T>(initialValue: T, key: string, options?: We
  * ```
  * @see {@link storageSignal}
  */
-export function sessionStorageSignal<T>(initialValue: T, key: string, options?: WebStorageOptions<T>): WritableSignal<T> {
+export function sessionStorageSignal<T>(initialValue: T, key: string, options: WebStorageOptions<T> = {}): WritableSignal<T> {
   const storage = globalThis.sessionStorage ?? (SESSION_STORAGE_FALLBACK ??= new MapBasedStorage());
-  const store = new WebObjectStore<T>(storage, options?.replacer, options?.reviver);
+  const store = new WebObjectStore<T>(storage, options.replacer, options.reviver);
   return storageSignal<T>(initialValue, key, store, options);
 }

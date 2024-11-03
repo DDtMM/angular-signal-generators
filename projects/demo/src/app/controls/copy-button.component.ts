@@ -7,10 +7,9 @@ import { timerSignal } from '@ddtmm/angular-signal-generators';
 
 /** Can copy element or text to clipboard by clicking the button. */
 @Component({
-  selector: 'app-copy-button',
-  standalone: true,
-  imports: [ClipboardModule, CommonModule, FontAwesomeModule],
-  template: `
+    selector: 'app-copy-button',
+    imports: [ClipboardModule, CommonModule, FontAwesomeModule],
+    template: `
     <button type="button" class="btn btn-ghost btn-square btn-sm opacity-50 hover:opacity-100 "
       [cdkCopyToClipboard]="$content() ?? ''"
       [attr.aria-label]="$description()"
@@ -18,7 +17,7 @@ import { timerSignal } from '@ddtmm/angular-signal-generators';
       <fa-icon [icon]="faCopy" [ngClass]="$clickAnimationClass()" />
     </button>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CopyButtonComponent {
   /** Raw string content to copy from. */

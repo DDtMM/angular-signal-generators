@@ -1,4 +1,4 @@
-import { ElementRef, Injector, Signal, signal } from '@angular/core';
+import { CreateSignalOptions, ElementRef, Injector, Signal, signal } from '@angular/core';
 import { getInjector } from '../../internal/utilities';
 import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
@@ -8,7 +8,7 @@ import { domObserverSignalFactory } from './dom-observer-base';
  * Optional injector reference if created outside injector context and IntersectionObserver options.
  * If no IntersectionObserver options are passed then only all attributes are observed.
  */
-export interface IntersectionObserverOptions extends Omit<IntersectionObserverInit, 'root'> {
+export interface IntersectionObserverOptions extends Omit<IntersectionObserverInit, 'root'>, Pick<CreateSignalOptions<unknown>, 'debugName'> {
   /** This signal must either be created in an injection context or passed an injector. */
   injector?: Injector;
   /** The root element where intersections will be observed. */
@@ -49,7 +49,7 @@ export function intersectionSignal(
   options?: IntersectionObserverOptions
 ): Signal<IntersectionObserverEntry[]> | IntersectionSignal {
   if (typeof IntersectionObserver === 'undefined') {
-    return signal([]); // return a dummy signal that never changes if there is no IntersectionObserver (like in SSR).
+    return signal([], options); // return a dummy signal that never changes if there is no IntersectionObserver (like in SSR).
   }
   const injector = options?.injector ?? getInjector(intersectionSignal);
   return domObserverSignalFactory<IntersectionObserver, IntersectionSignalValue, Element>(
@@ -60,6 +60,7 @@ export function intersectionSignal(
     source,
     undefined, // intersection observer options never change
     getElement,
+    options?.debugName,
     injector);
 
 }

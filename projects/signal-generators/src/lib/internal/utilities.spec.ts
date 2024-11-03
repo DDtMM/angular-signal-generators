@@ -1,11 +1,12 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, Injector, signal } from '@angular/core';
+import { createSignal, SIGNAL } from '@angular/core/primitives/signals';
 import { TestBed } from '@angular/core/testing';
-import { MockBuilder, MockRender } from 'ng-mocks';
-import { setupTypeGuardTests } from '../../testing/common-signal-tests';
-import { asReadonlyFnFactory, getDestroyRef, getInjector, hasKey, isMethodKey } from './utilities';
+import { runTypeGuardTests } from '../../testing/common-signal-tests';
+import { setProdMode } from '../../testing/dev-mode-utilities';
+import { asReadonlyFnFactory, getDestroyRef, getInjector, hasKey, isMethodKey, setDebugNameOnNode, setEqualOnNode } from './utilities';
 
 describe('asReadonlyFnFactory', () => {
-  setupTypeGuardTests(() => asReadonlyFnFactory(signal(1))());
+  runTypeGuardTests(() => asReadonlyFnFactory(signal(1))());
   it('returns as signal without other methods', () => {
     const $result = asReadonlyFnFactory(signal(1))();
     expect(Object.keys($result)).toEqual([]);
@@ -24,7 +25,7 @@ describe('getDestroyRef', () => {
     expect(() => getDestroyRef(() => 1)).toThrowError();
   });
   it('returns destroyed ref from passed injector', () => {
-    const injector = MockRender().componentRef.injector;
+    const injector = TestBed.inject(Injector);
     const destroyRef = getDestroyRef(() => 1, injector);
     expect(destroyRef).toBeDefined();
   });
@@ -39,13 +40,11 @@ describe('getInjector', () => {
     expect(() => getInjector(() => 1)).toThrowError();
   });
   describe('when in injector context', () => {
-    @Injectable()
     class TestHarness {
       injectorRef = getInjector(() => 1);
     }
-    beforeEach(() => MockBuilder(TestHarness));
     it('returns injector', () => {
-      expect(MockRender(TestHarness).point.componentInstance.injectorRef).toBeDefined();
+      expect(TestBed.configureTestingModule({ providers: [TestHarness] }).inject(TestHarness).injectorRef).toBeDefined();
     });
   });
 });
@@ -63,3 +62,41 @@ describe('isMethodKey', () => {
   it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBeFalse());
   it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBeFalse());
 });
+
+describe('setDebugNameOnNode', () => {
+  it('sets debugName if is defined and in devMode', () => {
+    const target = createSignal(1);
+    const debugName = `debugName_${Math.random() * Number.MAX_SAFE_INTEGER}`;
+    setDebugNameOnNode(target[SIGNAL], debugName);
+    expect(target[SIGNAL].debugName).toBe(debugName);
+  });
+  it('does not set debugName is defined but NOT in devMode', () => {
+    setProdMode(true);
+    const target = createSignal(1);
+    target[SIGNAL].debugName = 'UNCHANGED';
+    const debugName = `debugName_${Math.random() * Number.MAX_SAFE_INTEGER}`;
+    setDebugNameOnNode(target[SIGNAL], debugName);
+    expect(target[SIGNAL].debugName).toBe('UNCHANGED');
+    setProdMode(false);
+  });
+  it('does not set debugName if it is undefined', () => {
+    const target = createSignal(1);
+    target[SIGNAL].debugName = 'UNCHANGED';
+    setEqualOnNode(target[SIGNAL], undefined);
+    expect(target[SIGNAL].debugName).toBe('UNCHANGED');
+  });
+});
+describe('setEqualOnNode', () => {
+  it('sets equal from options if options.equal is defined', () => {
+    const target = createSignal(1);
+    const equalFn = (x: number, y: number) => x === y;
+    setEqualOnNode(target[SIGNAL], equalFn);
+    expect(target[SIGNAL].equal).toBe(equalFn);
+  });
+  it('does not set equal on a node if equalFn is undefined', () => {
+    const target = createSignal(1);
+    const expectedEqual = target[SIGNAL].equal;
+    setEqualOnNode(target[SIGNAL], undefined);
+    expect(target[SIGNAL].equal).toBe(expectedEqual);
+  });
+})

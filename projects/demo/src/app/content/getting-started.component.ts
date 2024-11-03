@@ -3,10 +3,9 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { CopyButtonComponent } from '../controls/copy-button.component';
 
 @Component({
-  selector: 'app-getting-started',
-  standalone: true,
-  imports: [CopyButtonComponent, HighlightModule],
-  template: `
+    selector: 'app-getting-started',
+    imports: [CopyButtonComponent, HighlightModule],
+    template: `
 <div>
   <div class="doc-header">
     <h1>Getting Started</h1>
@@ -15,7 +14,6 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   <p>
     Angular Signal Generators are compatible with Angular 16 and 17.
     You can install it from npm by running the following:
-
   </p>
   <div class="relative">
     <span class="absolute right-0 p-1">
@@ -35,6 +33,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
     </tr>
     </thead>
     <tbody>
+      <tr><td>3.x.x</td><td>^19.0.0</td></tr>
       <tr><td>2.x.x</td><td>&gt;=17.0.0 ^18.0.0</td></tr>
       <tr><td>1.x.x</td><td>&gt;=16.0.0 ^17.0.0</td></tr>
 </tbody>
@@ -69,7 +68,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   </ul>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GettingStartedComponent {
 

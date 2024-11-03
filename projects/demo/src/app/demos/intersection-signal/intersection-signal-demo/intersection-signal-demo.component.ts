@@ -3,11 +3,10 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angu
 import { intersectionSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-intersection-signal-demo',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './intersection-signal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-intersection-signal-demo',
+    imports: [CommonModule],
+    templateUrl: './intersection-signal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IntersectionSignalDemoComponent {
   readonly $root = viewChild<ElementRef>('rootEl');

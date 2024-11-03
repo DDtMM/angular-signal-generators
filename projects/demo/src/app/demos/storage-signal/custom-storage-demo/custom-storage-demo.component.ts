@@ -5,11 +5,10 @@ import { StorageSignalStore, storageSignal } from '@ddtmm/angular-signal-generat
 import { Subject, scan } from 'rxjs';
 
 @Component({
-  selector: 'app-custom-storage-demo',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './custom-storage-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-custom-storage-demo',
+    imports: [FormsModule],
+    templateUrl: './custom-storage-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomStorageDemoComponent {
   private readonly storageProvider = new StorageSpy();

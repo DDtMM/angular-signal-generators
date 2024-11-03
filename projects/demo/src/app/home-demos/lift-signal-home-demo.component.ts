@@ -4,10 +4,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [ExampleCodeComponent, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [ExampleCodeComponent, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
 <app-home-box fnName="liftSignal">
   <div>
     "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
@@ -20,7 +19,7 @@ console.log(liftedArray()); // [1, 2, 3, 4];
 </pre></app-example-code>
 </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LiftSignalHomeDemoComponent {
 

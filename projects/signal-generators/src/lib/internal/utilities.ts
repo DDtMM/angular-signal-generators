@@ -1,5 +1,5 @@
-import { DestroyRef, Injector, Signal, assertInInjectionContext, inject } from '@angular/core';
-import { SIGNAL } from '@angular/core/primitives/signals';
+import { DestroyRef, Injector, Signal, ValueEqualityFn, assertInInjectionContext, inject, isDevMode } from '@angular/core';
+import { ReactiveNode, SIGNAL, SignalNode } from '@angular/core/primitives/signals';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunctionType = (...args: any[]) => void;
@@ -49,3 +49,15 @@ export function isMethodKey<T extends object>(obj: T | null | undefined, key: un
   return obj != null && (typeof obj[key as keyof T] === 'function');
 }
 
+/** Sets the debugName on a {@link ReactiveNode} from debugName property if it is set and if {@link isDevMode} returns true. */
+export function setDebugNameOnNode(node: ReactiveNode, debugName: string | undefined): void {
+  if (isDevMode() && debugName != null) {
+    node.debugName = debugName;
+  }
+}
+/** Sets the equal on a {@link SignalNode} if equalFn is defined. */
+export function setEqualOnNode<T>(node: SignalNode<T>, equalFn: ValueEqualityFn<T> | undefined): void {
+  if (equalFn != null) {
+    node.equal = equalFn;
+  }
+}

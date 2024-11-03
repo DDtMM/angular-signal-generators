@@ -1,13 +1,9 @@
 import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { INSPECT_DEFAULTS, inspect } from './inspect';
+import { setProdMode } from '../../testing/dev-mode-utilities';
 import { replaceGlobalProperty } from '../../testing/testing-utilities';
+import { INSPECT_DEFAULTS, inspect } from './inspect';
 
-declare let ngDevMode: object | false;
-if (typeof ngDevMode === 'undefined' || !ngDevMode) {
-  throw new Error('These tests must be launched in dev mode.  There is no way to manually enable dev mode in tests.');
-}
-const originalDevMode = ngDevMode;
 const originalDefaults = { ...INSPECT_DEFAULTS };
 
 describe('inspect', () => {
@@ -81,8 +77,8 @@ describe('inspect', () => {
       }));
 
     describe('in prod mode', () => {
-      beforeEach(() => (ngDevMode = false));
-      afterEach(() => (ngDevMode = originalDevMode));
+      beforeEach(() => (setProdMode(true)));
+      afterEach(() => (setProdMode(false)));
       it('should do nothing', () => {
         const source = signal('hello there');
         inspect(source);

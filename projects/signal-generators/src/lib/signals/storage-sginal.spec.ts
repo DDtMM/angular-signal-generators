@@ -1,16 +1,17 @@
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { replaceGlobalProperty } from '../../testing/testing-utilities';
 import { MapBasedStorage } from '../internal/map-based-storage';
 import { WebObjectStore } from '../internal/web-object-store';
 import { localStorageSignal, sessionStorageSignal, storageSignal } from './storage-signal';
 
 describe('storageSignal', () => {
-  setupTypeGuardTests(() => storageSignal(1, 'test', createStorage()));
-  setupComputedAndEffectTests(() => {
+  runDebugNameOptionTest((debugName) => storageSignal(1, 'test', createStorage(), { debugName }));
+  runTypeGuardTests(() => storageSignal(1, 'test', createStorage()));
+  runComputedAndEffectTests(() => {
     const sut = storageSignal(1, 'test', createStorage());
     return [sut, () => { sut.set(2) }];
   });
-  setupDoesNotCauseReevaluationsSimplyWhenNested(
+  runDoesNotCauseReevaluationsSimplyWhenNested(
     () => storageSignal(1, 'test', createStorage()),
     (sut) => sut.set(2)
   );

@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { BasicDemoComponent } from './basic-demo/basic-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { BasicDemoComponent } from '../../demos/nest-signal/basic-demo/basic-demo.component';
 
 @Component({
-  selector: 'app-nest-signal-page',
-  standalone: true,
-  imports: [BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
-  template: `
-<app-demo-page-header fnName="nestSignal"/>
+    selector: 'app-nest-signal-page',
+    imports: [BasicDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
+    template: `
+<app-member-page-header fnName="nestSignal"/>
 <p>
   Takes a value that contains one or more nested signals and emits their resolved values.
   Any type of value can be passed into it.
@@ -20,6 +19,6 @@ import { BasicDemoComponent } from './basic-demo/basic-demo.component';
 </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NestSignalPageComponent { }

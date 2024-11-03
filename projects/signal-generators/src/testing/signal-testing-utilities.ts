@@ -1,5 +1,5 @@
 import { CreateComputedOptions, CreateEffectOptions, EffectCleanupFn, EffectRef, Signal, computed, effect } from '@angular/core';
-import { ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 
 /**
@@ -7,9 +7,9 @@ import { ComponentFixture } from '@angular/core/testing';
  * Does not initially call detectChanges when created - this would have an impact on signals that depend on effects.
  * Don't know if this a good idea or not.
 */
-export function autoDetectChangesSignal<T, S extends Signal<T>>(fixture: ComponentFixture<unknown>, source: S): S {
+export function autoDetectChangesSignal<T, S extends Signal<T>>($source: S, fixture: ComponentFixture<unknown>): S {
 
-  const proxy = new Proxy(source, {
+  const proxy = new Proxy($source, {
     get(target, propName: string | symbol, receiver) {
       const propVal = Reflect.get(target, propName, receiver);
       if (typeof propVal === 'function') {

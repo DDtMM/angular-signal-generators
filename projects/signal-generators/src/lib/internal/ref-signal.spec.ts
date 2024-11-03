@@ -1,11 +1,11 @@
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { refSignal } from './ref-signal';
 
 describe('refSignal', () => {
-  setupTypeGuardTests(() => refSignal(1));
+  runTypeGuardTests(() => refSignal(1));
 
   describe('when initial value is value', () => {
-    setupComputedAndEffectTests(() => {
+    runComputedAndEffectTests(() => {
       const sut = refSignal(1);
       return [sut, () => { sut.set(1); }];
     });

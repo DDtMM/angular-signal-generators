@@ -1,17 +1,19 @@
 import { PLATFORM_ID, signal } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { MockBuilder, MockInstance, MockRender, MockedComponentFixture } from 'ng-mocks';
-import { setupComputedAndEffectTests, setupTypeGuardTests } from '../../testing/common-signal-tests';
-import { tickAndAssertValues } from '../../testing/testing-utilities';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
+import { createFixture, tickAndAssertValues } from '../../testing/testing-utilities';
 import { ValueSource } from '../value-source';
 import { TimerSignal, timerSignal } from './timer-signal';
 
 describe('timerSignal', () => {
-  let fixture: MockedComponentFixture<void, void>;
+  let fixture: ComponentFixture<unknown>;
 
-  beforeEach(() => fixture = MockRender());
+  beforeEach(() => fixture = createFixture());
 
-  setupTypeGuardTests(() => timerSignal(500, undefined, { injector: fixture.componentRef.injector }));
+  runDebugNameOptionTest((debugName) => timerSignal(500, undefined, { debugName }));
+  runInjectorOptionTest((injector) => timerSignal(500, undefined, { injector }));
+  runTypeGuardTests(() => timerSignal(500, undefined));
 
   it('should use injector when not passed as a parameter', fakeAsync(() => {
     TestBed.runInInjectionContext(() => {
@@ -20,7 +22,7 @@ describe('timerSignal', () => {
       sut.pause();
     });
   }));
-  describe('as a sut', () => {
+  describe('as a timer', () => {
 
     it('emits once after specified time.', testTimer(100, undefined, (sut) => {
       tickAndAssertValues(() => sut(), [[0, 0], [ 1000, 1 ], [ 2000, 1 ]]);
@@ -48,7 +50,7 @@ describe('timerSignal', () => {
     });
 
     describe('with a number for timerSource parameter', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
         return [sut, () => { tick(500); }];
       });
@@ -60,7 +62,7 @@ describe('timerSignal', () => {
 
 
     describe('with a signal for timerSource parameter', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = timerSignal(signal(500), null, { injector: fixture.componentRef.injector });
         return [sut, () => { tick(500); sut.pause(); }];
       });
@@ -122,7 +124,7 @@ describe('timerSignal', () => {
     }));
 
     describe('with a number for intervalSource parameter', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = timerSignal(500, 500, { injector: fixture.componentRef.injector });
         return [sut, () => { tick(2000); sut.pause(); }];
       });
@@ -133,7 +135,7 @@ describe('timerSignal', () => {
     });
 
     describe('with a signal for intervalSource parameter', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = timerSignal(500, signal(500), { injector: fixture.componentRef.injector });
         return [sut, () => { tick(2000); sut.pause(); }];
       });
@@ -208,7 +210,7 @@ describe('timerSignal', () => {
   MockInstance.scope();
   it('should start running after creation when platform is browser', fakeAsync(() => {
     MockInstance(PLATFORM_ID, () => 'browser');
-    const fixture = MockRender();
+    const fixture = createFixture();
     const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
     expect(sut.state()).toBe('running');
     tickAndAssertValues(sut, [[ 500, 1 ]]);
@@ -216,7 +218,7 @@ describe('timerSignal', () => {
 
   it('should be stopped after creation when platform is not browser', fakeAsync(() => {
     MockInstance(PLATFORM_ID, () => 'not browser');
-    const fixture = MockRender();
+    const fixture = createFixture();
     const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
     expect(sut.state()).toBe('stopped');
     tickAndAssertValues(sut, [[ 500, 0 ]]);

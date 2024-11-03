@@ -2,23 +2,22 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { FromSignalDemoComponent } from './from-signal-demo/from-signal-demo.component';
-import { FromStringLiteralDemoComponent } from './from-string-literal-demo/from-string-literal-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { FromSignalDemoComponent } from '../../demos/event-signal/from-signal-demo/from-signal-demo.component';
+import { FromStringLiteralDemoComponent } from '../../demos/event-signal/from-string-literal-demo/from-string-literal-demo.component';
 
 @Component({
-  selector: 'app-event-signal-page',
-  standalone: true,
-  imports: [
-    CommonModule,
-    DemoHostComponent,
-    DemoPageHeaderComponent,
-    FontAwesomeModule,
-    FromSignalDemoComponent,
-    FromStringLiteralDemoComponent
-  ],
-  template: `
-<app-demo-page-header fnName="eventSignal" />
+    selector: 'app-event-signal-page',
+    imports: [
+        CommonModule,
+        DemoHostComponent,
+        MemberPageHeaderComponent,
+        FontAwesomeModule,
+        FromSignalDemoComponent,
+        FromStringLiteralDemoComponent
+    ],
+    template: `
+<app-member-page-header fnName="eventSignal" />
 <p>
   Uses Angular's <a href="https://angular.dev/api/core/Renderer2" class="link">Renderer2</a> service to listen to events from DOM elements.
 </p>
@@ -37,6 +36,6 @@ import { FromStringLiteralDemoComponent } from './from-string-literal-demo/from-
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventSignalPageComponent {}

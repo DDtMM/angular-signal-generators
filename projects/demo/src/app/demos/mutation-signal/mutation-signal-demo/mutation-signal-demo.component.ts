@@ -3,11 +3,10 @@ import { ChangeDetectionStrategy, Component, ElementRef, computed, signal, viewC
 import { mutationSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-mutation-signal-demo',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './mutation-signal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-mutation-signal-demo',
+    imports: [CommonModule],
+    templateUrl: './mutation-signal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MutationSignalDemoComponent {
   readonly $color = signal<string>('');

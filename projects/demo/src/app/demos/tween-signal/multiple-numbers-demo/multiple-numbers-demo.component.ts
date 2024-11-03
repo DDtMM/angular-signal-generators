@@ -5,11 +5,10 @@ import { easeInBack } from '@ddtmm/angular-signal-generators/easings';
 import { EasingSelectorComponent } from '../shared/easing-selector.component';
 
 @Component({
-  selector: 'app-multiple-numbers-demo',
-  standalone: true,
-  imports: [CommonModule, EasingSelectorComponent],
-  templateUrl: './multiple-numbers-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-multiple-numbers-demo',
+    imports: [CommonModule, EasingSelectorComponent],
+    templateUrl: './multiple-numbers-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultipleNumbersDemoComponent {
   readonly $easingFn = signal<EasingFn>(easeInBack);

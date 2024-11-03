@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { InterpolateStepFn, sequenceSignal, tweenSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-interpolation-demo',
-  standalone: true,
-  templateUrl: './interpolation-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-interpolation-demo',
+    templateUrl: './interpolation-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InterpolationDemoComponent {
   readonly $stringInterpolationSequence = sequenceSignal([

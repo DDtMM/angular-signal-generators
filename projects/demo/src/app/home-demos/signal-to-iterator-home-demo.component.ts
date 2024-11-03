@@ -4,9 +4,8 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 
 
 @Component({
-  standalone: true,
-  imports: [ExampleCodeComponent, HomeBoxComponent],
-  template: `
+    imports: [ExampleCodeComponent, HomeBoxComponent],
+    template: `
 <app-home-box fnName="signalToIterator">
   <div>
   This converts a signal into an AsyncIterator where is can be used in a <code class="inline">for async</code> loop.
@@ -21,7 +20,7 @@ source.next('next');
 </pre></app-example-code>
 </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalToIteratorHomeDemoComponent {
 

@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DEMO_CONFIGURATIONS } from '../demo-configuration';
+import { DEMO_CONFIGURATIONS, DemoConfigurationItem } from '../demo-configuration';
 
 
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
-  template: `
+    selector: 'app-home',
+    imports: [CommonModule, RouterLink],
+    template: `
 <div class="hero bg-gradient-to-br from-base-200 via-base-100 to-primary from-[-20%] via-[80%] to-[320%] ">
   <div class="hero-content text-center md:p-6 w-full">
     <div class="max-w-lg">
@@ -40,8 +39,8 @@ import { DEMO_CONFIGURATIONS } from '../demo-configuration';
   }
 </ul>
 `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
-  readonly demos = DEMO_CONFIGURATIONS;
+  readonly demos: DemoConfigurationItem<string>[] = DEMO_CONFIGURATIONS;
 }

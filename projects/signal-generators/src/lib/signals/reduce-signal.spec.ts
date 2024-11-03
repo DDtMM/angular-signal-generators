@@ -1,13 +1,14 @@
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { reduceSignal } from './reduce-signal';
 
 describe('reduceSignal', () => {
-  setupTypeGuardTests(() => reduceSignal(1, (p, c) => p + c));
-  setupComputedAndEffectTests(() => {
+  runDebugNameOptionTest((debugName) => reduceSignal(1, (p, c) => p + c, { debugName }));
+  runTypeGuardTests(() => reduceSignal(1, (p, c) => p + c));
+  runComputedAndEffectTests(() => {
     const sut = reduceSignal(1, (p, c) => p + c);
     return [sut, () => { sut.set(1) }];
   });
-  setupDoesNotCauseReevaluationsSimplyWhenNested(
+  runDoesNotCauseReevaluationsSimplyWhenNested(
     () => reduceSignal(1, (p, c) => p + c),
     (sut) => sut.set(1)
   );
@@ -15,7 +16,7 @@ describe('reduceSignal', () => {
     const sut = reduceSignal(1, (p, c) => p + c);
     expect(sut()).toBe(1);
   });
-  it('should respect the equals option if passed', () => {
+  it('should respect the equal option if passed', () => {
     const sut = reduceSignal(2, (p, c) => p + c, { equal: (a, b) => a % 2 === b % 2 });
     sut.set(1);
     expect(sut()).toBe(3);

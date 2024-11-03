@@ -6,17 +6,16 @@ import * as easings from '@ddtmm/angular-signal-generators/easings';
 type EasingFnName = keyof typeof easings;
 
 @Component({
-  selector: 'app-easing-selector',
-  standalone: true,
-  imports: [FormsModule],
-  template: `
+    selector: 'app-easing-selector',
+    imports: [FormsModule],
+    template: `
   <select class="select select-primary select-sm" [ngModel]="$easingFnName()" (ngModelChange)="setEasingFn($event)">
     @for (easing of easingNames; track easing) {
       <option [value]="easing">{{easing}}</option>
     }
   </select>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EasingSelectorComponent {
   readonly easingNames = Object.keys(easings) as EasingFnName[];

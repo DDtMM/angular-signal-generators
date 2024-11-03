@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { sequenceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-fibonacci-demo',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './fibonacci-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-fibonacci-demo',
+    imports: [FormsModule],
+    templateUrl: './fibonacci-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FibonacciDemoComponent {
   readonly $fibonacci = sequenceSignal((() => {

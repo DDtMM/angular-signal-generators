@@ -1,27 +1,7 @@
 import { Type } from '@angular/core';
-import { AsyncSignalPageComponent } from './demos/async-signal/async-signal-page.component';
-import { DebounceSignalPageComponent } from './demos/debounce-signal/debounce-signal-page.component';
-import { EventSignalPageComponent } from './demos/event-signal/event-signal-page.component';
-import { ExtendSignalPageComponent } from './demos/extend-signal/extend-signal-page.component';
-import { FilterSignalPageComponent } from './demos/filter-signal/filter-signal-page.component';
-import { InspectPageComponent } from './demos/inspect/inspect-page.component';
-import { IntersectionSignalPageComponent } from './demos/intersection-signal/intersection-signal-page.component';
-import { LiftSignalPageComponent } from './demos/lift-signal/lift-signal-page.component';
-import { MapSignalPageComponent } from './demos/map-signal/map-signal-page.component';
-import { MediaQuerySignalPageComponent } from './demos/media-query-signal/media-query-signal-page.component';
-import { MutationSignalPageComponent } from './demos/mutation-signal/mutation-signal-page.component';
-import { NestSignalPageComponent } from './demos/nest-signal/nest-signal-page';
-import { ReduceSignalPageComponent } from './demos/reduce-signal/reduce-signal-page.component';
-import { ResizeSignalPageComponent } from './demos/resize-signal/resize-signal-page.component';
-import { SequenceSignalPageComponent } from './demos/sequence-signal/sequence-signal-page.component';
-import { SignalToIteratorPageComponent } from './demos/signal-to-iterator/signal-to-iterator-page.component';
-import { StorageSignalPageComponent } from './demos/storage-signal/storage-signal-page.component';
-import { TimerSignalPageComponent } from './demos/timer-signal/timer-signal-page.component';
-import { TweenSignalPageComponent } from './demos/tween-signal/tween-signal-page.component';
 import { AsyncSignalHomeDemoComponent } from './home-demos/async-signal-home-demo.component';
 import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-home-demo.component';
 import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
-import { ExtendSignalHomeDemoComponent } from './home-demos/extend-signal-home-demo.component';
 import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
 import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.component';
 import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
@@ -52,8 +32,8 @@ export interface DemoConfigurationItem<FnName extends string> {
   readonly isExcludedFromHomePage?: boolean;
   /** Display name */
   readonly name: string;
-  /** The demo page component type */
-  readonly page: Type<unknown>;
+  /** The lazily demo page component type.  */
+  readonly page: () => Promise<Type<unknown>>;
   /** The route from the root of the app. */
   readonly route: string;
   /** The partial url from the lib folder to link to source in github. */
@@ -67,7 +47,7 @@ export const DUMMY_CONFIGURATION: DemoConfigurationItem<string> = {
   docUrl: `${DOC_URL_PREFIX}dummy.html`,
   fnName: 'dummy' as const,
   name: 'dummy',
-  page: AsyncSignalPageComponent,
+  page: () => import('./content/signal-factories/dummy-page.component').then(x => x.DummyPageComponent),
   route: 'dummy',
   sourceUrl: 'dummy.ts',
   usages: ['generator', 'writableSignal', 'utility']
@@ -79,7 +59,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}asyncSignal-1.html`,
     fnName: 'asyncSignal' as const,
     name: 'asyncSignal',
-    page: AsyncSignalPageComponent,
+    page: () => import('./content/signal-factories/async-signal-page.component').then(x => x.AsyncSignalPageComponent),
     route: 'async-signal',
     sourceUrl: 'signals/async-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -89,7 +69,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}debounceSignal.html`,
     fnName: 'debounceSignal' as const,
     name: 'debounceSignal',
-    page: DebounceSignalPageComponent,
+    page: () => import('./content/signal-factories/debounce-signal-page.component').then(x => x.DebounceSignalPageComponent),
     route: 'debounce-signal',
     sourceUrl: 'signals/debounce-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -99,28 +79,17 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}eventSignal.html`,
     fnName: 'eventSignal' as const,
     name: 'eventSignal',
-    page: EventSignalPageComponent,
+    page: () => import('./content/signal-factories/event-signal-page.component').then(x => x.EventSignalPageComponent),
     route: 'event-signal',
     sourceUrl: 'signals/event-signal.ts',
     usages: ['generator']
-  },
-  {
-    homeDemo: ExtendSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}extendSignal.html`,
-    fnName: 'extendSignal' as const,
-    isExcludedFromHomePage: true,
-    name: 'extendSignal',
-    page: ExtendSignalPageComponent,
-    route: 'extend-signal',
-    sourceUrl: 'signals/extends-signal.ts',
-    usages: ['generator', 'obsolete', 'writableSignal']
   },
   {
     homeDemo: FilterSignalHomeDemoComponent,
     docUrl: `${DOC_URL_PREFIX}filterSignal-1.html`,
     fnName: 'filterSignal' as const,
     name: 'filterSignal',
-    page: FilterSignalPageComponent,
+    page: () => import('./content/signal-factories/filter-signal-page.component').then(x => x.FilterSignalPageComponent),
     route: 'filter-signal',
     sourceUrl: 'signals/filter-signal.ts',
     usages: ['writableSignal']
@@ -130,7 +99,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}inspect.html`,
     fnName: 'inspect' as const,
     name: 'inspect',
-    page: InspectPageComponent,
+    page: () => import('./content/signal-utilities/inspect-page.component').then(x => x.InspectPageComponent),
     route: 'inspect',
     sourceUrl: 'utilities/inspect.ts',
     usages: ['utility']
@@ -140,7 +109,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}intersectionSignal-1.html`,
     fnName: 'intersectionSignal' as const,
     name: 'intersectionSignal',
-    page: IntersectionSignalPageComponent,
+    page: () => import('./content/signal-factories/intersection-signal-page.component').then(x => x.IntersectionSignalPageComponent),
     route: 'intersection-signal',
     sourceUrl: 'signals/dom-observers/intersection-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -150,7 +119,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}liftSignal.html`,
     fnName: 'liftSignal' as const,
     name: 'liftSignal',
-    page: LiftSignalPageComponent,
+    page: () => import('./content/signal-factories/lift-signal-page.component').then(x => x.LiftSignalPageComponent),
     route: 'lift-signal',
     sourceUrl: 'signals/lift-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -160,7 +129,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}mapSignal-1.html`,
     fnName: 'mapSignal' as const,
     name: 'mapSignal',
-    page: MapSignalPageComponent,
+    page: () => import('./content/signal-factories/map-signal-page.component').then(x => x.MapSignalPageComponent),
     route: 'map-signal',
     sourceUrl: 'signals/map-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -170,7 +139,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}mediaQuerySignal-1.html`,
     fnName: 'mediaQuerySignal' as const,
     name: 'mediaQuerySignal',
-    page: MediaQuerySignalPageComponent,
+    page: () => import('./content/signal-factories/media-query-signal-page.component').then(x => x.MediaQuerySignalPageComponent),
     route: 'media-query-signal',
     sourceUrl: 'signals/media-query-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -180,7 +149,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}mutationSignal-1.html`,
     fnName: 'mutationSignal' as const,
     name: 'mutationSignal',
-    page: MutationSignalPageComponent,
+    page: () => import('./content/signal-factories/mutation-signal-page.component').then(x => x.MutationSignalPageComponent),
     route: 'mutation-signal',
     sourceUrl: 'signals/dom-observers/mutation-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -190,7 +159,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}nestSignal.html`,
     fnName: 'nestSignal' as const,
     name: 'nestSignal',
-    page: NestSignalPageComponent,
+    page: () => import('./content/signal-factories/nest-signal-page.component').then(x => x.NestSignalPageComponent),
     route: 'nest-signal',
     sourceUrl: 'signals/nest-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -200,7 +169,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}reduceSignal-1.html`,
     fnName: 'reduceSignal' as const,
     name: 'reduceSignal',
-    page: ReduceSignalPageComponent,
+    page: () => import('./content/signal-factories/reduce-signal-page.component').then(x => x.ReduceSignalPageComponent),
     route: 'reduce-signal',
     sourceUrl: 'signals/reduce-signal.ts',
     usages: ['writableSignal']
@@ -210,7 +179,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}resizeSignal-1.html`,
     fnName: 'resizeSignal' as const,
     name: 'resizeSignal',
-    page: ResizeSignalPageComponent,
+    page: () => import('./content/signal-factories/resize-signal-page.component').then(x => x.ResizeSignalPageComponent),
     route: 'resize-signal',
     sourceUrl: 'signals/dom-observers/resize-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -220,7 +189,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}sequenceSignal-1.html`,
     fnName: 'sequenceSignal' as const,
     name: 'sequenceSignal',
-    page: SequenceSignalPageComponent,
+    page: () => import('./content/signal-factories/sequence-signal-page.component').then(x => x.SequenceSignalPageComponent),
     route: 'sequence-signal',
     sourceUrl: 'signals/sequence-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -230,7 +199,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}signalToIterator.html`,
     fnName: 'signalToIterator' as const,
     name: 'signalToIterator',
-    page: SignalToIteratorPageComponent,
+    page: () => import('./content/signal-utilities/signal-to-iterator-page.component').then(x => x.SignalToIteratorPageComponent),
     route: 'signal-to-iterator',
     sourceUrl: 'utilities/signal-to-iterator.ts',
     usages: ['utility']
@@ -240,7 +209,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}storageSignal.html`,
     fnName: 'storageSignal' as const,
     name: 'storageSignal',
-    page: StorageSignalPageComponent,
+    page: () => import('./content/signal-factories/storage-signal-page.component').then(x => x.StorageSignalPageComponent),
     route: 'storage-signal',
     sourceUrl: 'signals/storage-signal.ts',
     usages: ['writableSignal']
@@ -250,7 +219,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}timerSignal-1.html`,
     fnName: 'timerSignal' as const,
     name: 'timerSignal',
-    page: TimerSignalPageComponent,
+    page: () => import('./content/signal-factories/timer-signal-page.component').then(x => x.TimerSignalPageComponent),
     route: 'timer-signal',
     sourceUrl: 'signals/timer-signal.ts',
     usages: ['generator', 'writableSignal']
@@ -260,7 +229,7 @@ export const DEMO_CONFIGURATIONS = [
     docUrl: `${DOC_URL_PREFIX}tweenSignal-1.html`,
     fnName: 'tweenSignal' as const,
     name: 'tweenSignal',
-    page: TweenSignalPageComponent,
+    page: () => import('./content/signal-factories/tween-signal-page.component').then(x => x.TweenSignalPageComponent),
     route: 'tween-signal',
     sourceUrl: 'signals/tween-signal.ts',
     usages: ['generator', 'writableSignal']

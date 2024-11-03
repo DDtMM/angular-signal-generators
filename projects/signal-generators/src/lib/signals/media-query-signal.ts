@@ -1,10 +1,10 @@
-import { effect, Injector, untracked } from '@angular/core';
+import { CreateSignalOptions, effect, Injector, untracked } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, SignalNode, signalSetFn } from '@angular/core/primitives/signals';
 import { DestroyableSignal } from '../destroyable-signal';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
 import { TransformedSignal } from '../internal/transformed-signal';
-import { asReadonlyFnFactory, getDestroyRef } from '../internal/utilities';
+import { asReadonlyFnFactory, getDestroyRef, setDebugNameOnNode } from '../internal/utilities';
 import { ReactiveSource } from '../reactive-source';
 import { ValueSource } from '../value-source';
 
@@ -12,12 +12,13 @@ import { ValueSource } from '../value-source';
 export type MediaQueryState = Pick<MediaQueryList, 'matches' | 'media'>;
 
 /** Options for {@link mediaQuerySignal} when generating values from another reactive source. */
-export interface MediaQuerySignalOptions {
+export interface MediaQuerySignalOptions extends Pick<CreateSignalOptions<unknown>, 'debugName'> {
   /** When passed another reactive source then this needs to be passed if outside injector context since this signal relies on effect.  */
   injector?: Injector;
 }
+
 /** Options for {@link mediaQuerySignal} when using writeable overload. */
-export interface MediaQueryWriteableSignalOptions {
+export interface MediaQueryWriteableSignalOptions extends Pick<CreateSignalOptions<unknown>, 'debugName'> {
   /** This is only necessary if called outside injector context and {@link manualDestroy} is not true. */
   injector?: Injector;
   /**
@@ -86,7 +87,7 @@ export function mediaQuerySignal(
           onQueryChange(outputNode, currentQuery);
         }
       },
-      { ...options, allowSignalWrites: true, manualCleanup: true } // cleanup is handled in onQueryChange, destroy and destroyRef.
+      { ...options, manualCleanup: true } // cleanup is handled in onQueryChange, destroy and destroyRef.
     );
     $output.destroy = () => {
       effectRef.destroy(); // make sure the effect is destroyed.
@@ -122,6 +123,7 @@ export function mediaQuerySignal(
   function initOutput(initialQuery: string): SignalGetter<MediaQueryState> {
     const mql = globalThis.matchMedia(initialQuery);
     const $output = createSignal<MediaQueryState>({ matches: mql.matches, media: mql.media }) as SignalGetter<MediaQueryState>;
+    setDebugNameOnNode($output[SIGNAL], options?.debugName);
     updateQueryListener($output[SIGNAL], mql);
     return $output;
   }

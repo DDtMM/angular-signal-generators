@@ -1,17 +1,22 @@
-import { Component, WritableSignal, signal } from '@angular/core';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
-import { mapSignal } from './map-signal';
+import { CommonModule } from '@angular/common';
+import { Component, signal, WritableSignal } from '@angular/core';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
+import { ngMocks } from 'ng-mocks';
 import { BehaviorSubject } from 'rxjs';
-import { TestBed } from '@angular/core/testing';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runInjectorOptionTest,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
+import { mapSignal } from './map-signal';
 
 describe('mapSignal', () => {
-  setupTypeGuardTests(() => mapSignal(1, (x) => x + 1));
-
   it('throws if not enough parameters are passed', () => {
     expect(() => (mapSignal as unknown as (x: number) => void)(1)).toThrow();
-  })
+  });
 
   describe('when passed signals', () => {
     let signal1: WritableSignal<number>;
@@ -20,13 +25,18 @@ describe('mapSignal', () => {
       signal1 = signal(3);
       signal2 = signal(5);
     });
-    setupComputedAndEffectTests(() => {
+
+    runDebugNameOptionTest((debugName) => mapSignal(signal1, (x) => x + 1, { debugName }));
+    runInjectorOptionTest((injector) => mapSignal(signal1, (x) => x + 1, { injector }));
+    runTypeGuardTests(() => mapSignal(signal1, (x) => x + 1));
+
+    runComputedAndEffectTests(() => {
       const source = signal(1);
-      const sut = mapSignal(source, x => x + 1);
-      return [sut, () => { source.set(2) }];
+      const sut = mapSignal(source, (x) => x + 1);
+      return [sut, () => source.set(2)];
     });
-    setupDoesNotCauseReevaluationsSimplyWhenNested(
-      () => mapSignal(signal1, x => x + 1),
+    runDoesNotCauseReevaluationsSimplyWhenNested(
+      () => mapSignal(signal1, (x) => x + 1),
       () => signal1.set(4)
     );
 
@@ -39,7 +49,7 @@ describe('mapSignal', () => {
       expect(source()).toBe(16);
     });
     it('can be mapped from value sources of different types.', () => {
-      const number$ = new BehaviorSubject<number>(5)
+      const number$ = new BehaviorSubject<number>(5);
       const $text = signal<string>('The value of a + b is: ');
       const source = TestBed.runInInjectionContext(() => mapSignal(signal1, number$, $text, (a, b, text) => `${text}${a + b}`));
       signal1.set(10);
@@ -64,36 +74,44 @@ describe('mapSignal', () => {
     });
   });
   describe('when passed a value', () => {
-    setupComputedAndEffectTests(() => {
-      const sut = mapSignal(1, x => x + 1);
-      return [sut, () => { sut.set(2) }];
+    runDebugNameOptionTest((debugName) => mapSignal(1, (x) => x + 1, { debugName }));
+    runInjectorOptionTest((injector) => mapSignal(1, (x) => x + 1, { injector }));
+    runTypeGuardTests(() => mapSignal(1, (x) => x + 1));
+
+    runComputedAndEffectTests(() => {
+      const sut = mapSignal(1, (x) => x + 1);
+      return [sut, () => sut.set(2)];
     });
-    setupDoesNotCauseReevaluationsSimplyWhenNested(
-      () => mapSignal(1, x => x + 1),
+
+    runDoesNotCauseReevaluationsSimplyWhenNested(
+      () => mapSignal(1, (x) => x + 1),
       (sut) => sut.set(4)
     );
-    it('works with ngModel when bound to input', async() => {
+
+    it('works with ngModel when bound to input', fakeAsync(() => {
       @Component({
-        imports: [FormsModule],
+        imports: [CommonModule, FormsModule],
         selector: 'app-test',
-        template: `<input data-test="sutInput" type="number" [(ngModel)]="$sut.input" />`,
+        standalone: true,
+        template: `<input type="number" data-test="sutInput" [(ngModel)]="$sut.input" />`
       })
       class TestComponent {
-        readonly $sut = mapSignal(6, x => x + 2);
-      };
-      await MockBuilder(TestComponent).keep(FormsModule);
-      MockRender('<app-test />');
-      const sut = ngMocks.find(TestComponent).componentInstance.$sut;
-      expect(sut()).toBe(8);
+        readonly $sut = mapSignal(6, (x) => x + 2);
+      }
+      const fixture = TestBed.createComponent(TestComponent);
+      const sut = fixture.componentInstance.$sut;
+      fixture.detectChanges(); // why did this fix things?
       ngMocks.change('[data-test="sutInput"]', 13);
+      tick();
+      fixture.detectChanges();
       expect(sut()).toBe(15);
-    });
+    }));
     it('initially returns mapped value', () => {
       const source = mapSignal(1, (x) => x * 3);
       expect(source()).toBe(3);
     });
     it('#asReadonly returns a signal that reflects the original', () => {
-      const source = mapSignal({ value: 1 }, (x) => ( { value: x.value * 3 }));
+      const source = mapSignal({ value: 1 }, (x) => ({ value: x.value * 3 }));
       const readOnly = source.asReadonly();
       expect(source()).toBe(readOnly());
       source.set({ value: 3 });

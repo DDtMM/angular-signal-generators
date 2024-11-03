@@ -1,5 +1,5 @@
 import { Signal } from '@angular/core';
-import { fakeAsync, flush } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
 
 /**
@@ -12,7 +12,7 @@ export function setupEnsureSignalWorksWhenObserverIsMissing<T>(observerName: str
   it(`should return an empty signal that doesn't respond to changes if ${observerName} doesn't exist.`, fakeAsync(() => {
     expect(observerName in globalThis).toBeTrue(); // the observer should exist.
     const restoreProperty = replaceGlobalProperty(observerName, undefined);
-    const sut = signalFn();
+    const sut = TestBed.runInInjectionContext(() => signalFn());
     const initialValue = sut();
     actionFn();
     flush();

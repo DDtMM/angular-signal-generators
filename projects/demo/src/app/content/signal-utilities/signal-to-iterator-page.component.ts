@@ -1,16 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
 
 
 @Component({
-  selector: 'app-signal-to-iterator-page',
-  standalone: true,
-  imports: [CommonModule, HighlightModule, DemoPageHeaderComponent],
-  template: `
+    selector: 'app-signal-to-iterator-page',
+    imports: [CommonModule, HighlightModule, MemberPageHeaderComponent],
+    template: `
 <!-- for some reason the API docs come out with -1 at the end -->
-<app-demo-page-header fnName="signalToIterator" />
+<app-member-page-header fnName="signalToIterator" />
 <p>
   This converts a signal into an AsyncIterator.
   The emissions from the signal will build up, and then released each time next is called.
@@ -22,7 +21,7 @@ import { DemoPageHeaderComponent } from '../../controls/demo-page-header.compone
   <pre><code [highlight]="simpleExample" language="typescript"></code></pre>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalToIteratorPageComponent {
   readonly simpleExample = `const source = signal('start');

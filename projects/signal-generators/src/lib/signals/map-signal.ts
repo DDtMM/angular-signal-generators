@@ -1,4 +1,4 @@
-import { Injector, Signal, ValueEqualityFn, WritableSignal, computed, signal } from '@angular/core';
+import { CreateSignalOptions, Injector, Signal, ValueEqualityFn, WritableSignal, computed, signal } from '@angular/core';
 import { SIGNAL, SignalGetter, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
@@ -7,7 +7,7 @@ import { asReadonlyFnFactory } from '../internal/utilities';
 import { ReactiveSignal, ReactiveSource, ReactiveValue } from '../reactive-source';
 
 /** Options for {@link mapSignal}. */
-export interface MapSignalOptions<R>  {
+export interface MapSignalOptions<R> extends Pick<CreateSignalOptions<R>, 'debugName'> {
   /** An equal function put on the selector result. */
   equal?: ValueEqualityFn<R>;
   /** This is only used if toSignal is needed to convert to a signal OR to get destroyedRef. */
@@ -87,12 +87,12 @@ export function mapSignal<T, R, const TTpl extends T extends FromReactiveTupleTy
     throw new Error('Invalid param count.  At least two are required.');
   }
 
-  return (isFromSignalParameters(params))
+  return (isFromReactiveParameters(params))
     ? createFromReactiveParameters(...params)
     : createFromValue(params[0], params[1], params[2]);
 
 
-  function isFromSignalParameters(value: typeof params): value is FromReactiveParameters<TTpl, R> | FromReactiveParametersWithOptions<TTpl, R>{
+  function isFromReactiveParameters(value: typeof params): value is FromReactiveParameters<TTpl, R> | FromReactiveParametersWithOptions<TTpl, R>{
     return isReactive(value[0])
   }
 }
@@ -129,7 +129,7 @@ function createFromReactiveParameters<T extends FromReactiveTupleType, R>(...par
 function createFromValue<T, R>(initialValue: T, selector: (x:T) => R, options: MapSignalOptions<R> = {}): MapSignal<T, R> {
   const $input = signal<T>(initialValue) as SignalGetter<T> & WritableSignal<T>;
   const inputNode = $input[SIGNAL];
-  const $output = computed(() => selector($input()), { equal: options.equal }) as MapSignal<T, R>;
+  const $output = computed(() => selector($input()), options) as MapSignal<T, R>;
   $output.asReadonly = asReadonlyFnFactory($output);
   $output.input = $input;
   $output.set = (value: T) => signalSetFn(inputNode, value);

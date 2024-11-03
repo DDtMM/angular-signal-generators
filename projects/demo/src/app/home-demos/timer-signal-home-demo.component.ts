@@ -4,10 +4,9 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
 import { HomeBoxComponent } from '../controls/home-box.component';
 
 @Component({
-  standalone: true,
-  imports: [HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
     <app-home-box fnName="timerSignal">
       <div>Creates a signal that emits based on a timer or interval.</div>
       <div class="divider">Example</div>
@@ -22,7 +21,7 @@ import { HomeBoxComponent } from '../controls/home-box.component';
       </div>
     </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerSignalHomeDemoComponent {
   /** A little delay is added to the timer for hydration. */

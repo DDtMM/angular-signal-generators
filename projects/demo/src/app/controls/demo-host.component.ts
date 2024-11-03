@@ -13,10 +13,9 @@ interface DemoHostSourceFile extends SourceFile {
 }
 /** Renders a demo with sources.  The demo component should be passed as content. */
 @Component({
-  selector: 'app-demo-host',
-  standalone: true,
-  imports: [CopyButtonComponent, CommonModule, FontAwesomeModule, HighlightModule],
-  template: `
+    selector: 'app-demo-host',
+    imports: [CopyButtonComponent, CommonModule, FontAwesomeModule, HighlightModule],
+    template: `
   <div class="flex flex-row gap-3">
     <div class="mb-1 text-xl text-secondary">{{$name()}}</div>
     <button type="button" class="btn btn-secondary btn-outline btn-sm" (click)="openProject()" title="Open in StackBlitz">
@@ -56,7 +55,7 @@ interface DemoHostSourceFile extends SourceFile {
     }
   </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoHostComponent {
   private readonly demoSvc = inject(DemoService);

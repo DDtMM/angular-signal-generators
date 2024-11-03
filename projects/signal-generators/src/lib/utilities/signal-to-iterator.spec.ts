@@ -1,15 +1,26 @@
-import { Component, Injector, computed, signal } from '@angular/core';
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
+import { Component, computed, Injector, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { runInjectorOptionTest } from '../../testing/common-signal-tests';
 import { autoDetectChangesSignal } from '../../testing/signal-testing-utilities';
+import { createFixture } from '../../testing/testing-utilities';
 import { signalToIterator } from './signal-to-iterator';
 
 describe('signalToIterator', () => {
+  runInjectorOptionTest(injector =>  {
+    const source = signal(1);
+    const sut = signalToIterator(signal(1), { injector });
+    return () => {
+      source.set(2);
+      sut.next();
+    }
+  });
+
   describe('manual injector context', () => {
-    let fixture: MockedComponentFixture<void, void>;
+    let fixture: ComponentFixture<unknown>;
     let injector: Injector;
 
     beforeEach(() => {
-      fixture = MockRender();
+      fixture = createFixture();
       injector = fixture.componentRef.injector;
     });
 
@@ -20,7 +31,7 @@ describe('signalToIterator', () => {
     });
 
     it('will emit the current value for a late subscriber', (done) => {
-      const source = autoDetectChangesSignal(fixture, signal(1));
+      const source = autoDetectChangesSignal(signal(1), fixture);
       (async () => {
         const emissions: number[] = [];
         for await (const item of signalToIterator(source, { injector })) {
@@ -43,7 +54,7 @@ describe('signalToIterator', () => {
     });
 
     it('will retain changes for later emission', (done) => {
-      const source = autoDetectChangesSignal(fixture, signal(1));
+      const source = autoDetectChangesSignal(signal(1), fixture);
       const iterator = signalToIterator(source, { injector });
       source.set(2);
       source.set(3);
@@ -55,7 +66,7 @@ describe('signalToIterator', () => {
     });
 
     it('will defer emission until they are received', (done) => {
-      const source = autoDetectChangesSignal(fixture, signal(1));
+      const source = autoDetectChangesSignal(signal(1), fixture);
       const iterator = signalToIterator(source, { injector });
       Promise.all([
         iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
@@ -67,7 +78,7 @@ describe('signalToIterator', () => {
     });
 
     it('will work with computed signals', (done) => {
-      const source = autoDetectChangesSignal(fixture, signal(1));
+      const source = autoDetectChangesSignal(signal(1), fixture);
       const inBetween = computed(() => source() + 1);
       const iterator = signalToIterator(inBetween, { injector });
       (async () => {
@@ -84,7 +95,7 @@ describe('signalToIterator', () => {
     });
 
     it('will work with multiple loops as once', (done) => {
-      const source = autoDetectChangesSignal(fixture, signal(1));
+      const source = autoDetectChangesSignal(signal(1), fixture);
       const testFn = async (iterator: AsyncIterableIterator<number>) => {
         const emissions: number[] = [];
         for await (const item of iterator) {
@@ -103,7 +114,7 @@ describe('signalToIterator', () => {
 
     describe('when calling return', () => {
       it('will stop if iterator.return is called', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         (async () => {
           let res: IteratorResult<number>;
@@ -121,7 +132,7 @@ describe('signalToIterator', () => {
       });
 
       it('will return done from calls to next that have not been resolved yet', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         Promise.all([
           iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
@@ -131,7 +142,7 @@ describe('signalToIterator', () => {
       });
 
       it('will return done from calls to next after iterator is already completed', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         source.set(2);
         iterator.return('plop');
@@ -146,7 +157,7 @@ describe('signalToIterator', () => {
 
     describe('when calling throw', () => {
       it('will reject waiting calls when iterator is thrown', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         Promise.all([
           iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
@@ -155,7 +166,7 @@ describe('signalToIterator', () => {
         ]).then(() => done());
       });
       it('will stop and return rejected promise', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         (async () => {
           let res: IteratorResult<number> | undefined;
@@ -177,7 +188,7 @@ describe('signalToIterator', () => {
 
     describe('when injector is destroyed', () => {
       it('will stop emitting once injector is destroyed', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         (async () => {
           const emissions: number[] = [];
@@ -193,7 +204,7 @@ describe('signalToIterator', () => {
         source.set(4);
       });
       it('will resolve outstanding calls to next when destroyed', (done) => {
-        const source = autoDetectChangesSignal(fixture, signal(1));
+        const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         Promise.all([
           iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
@@ -207,15 +218,14 @@ describe('signalToIterator', () => {
   });
 
   describe('in component injector context', () => {
-    @Component({ standalone: true })
+    @Component({})
     class TestComponent {
       source = signal(1);
       iterator = signalToIterator(this.source);
     }
     it('will work without passing injector', (done) => {
-      MockBuilder(TestComponent);
-      const fixture = MockRender(TestComponent);
-      const { iterator, source } = fixture.point.componentInstance;
+      const fixture = TestBed.createComponent(TestComponent);
+      const { iterator, source } = fixture.componentInstance;
       Promise.all([
         iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
         iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 }))

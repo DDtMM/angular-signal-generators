@@ -9,15 +9,14 @@ import { HighlightModule } from 'ngx-highlightjs';
  * This works in a strange way where it takes the inner text projected into it and copies it to the highlight directive.
  */
 @Component({
-  selector: 'app-example-code',
-  standalone: true,
-  imports: [CommonModule, HighlightModule],
-  preserveWhitespaces: true,
-  template: `
+    selector: 'app-example-code',
+    imports: [CommonModule, HighlightModule],
+    preserveWhitespaces: true,
+    template: `
 <pre class="h-full w-full">@if ($text(); as text) {<code class="h-full w-full" [highlight]="text" language="typescript"></code>}</pre>
 <div #contentWrapper class="hidden"><ng-content /></div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExampleCodeComponent {
   /** Wraps transcluded content. */

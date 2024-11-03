@@ -1,9 +1,10 @@
-import { Injector, untracked, WritableSignal } from '@angular/core';
+import { CreateSignalOptions, Injector, untracked, WritableSignal } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
 import { coerceSignal } from '../internal/signal-coercion';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { ReactiveSource } from '../reactive-source';
 import { ValueSource } from '../value-source';
+import { setDebugNameOnNode } from '../internal/utilities';
 
 const NO_ELEMENTS = 'Sequence contains no elements.';
 
@@ -72,7 +73,7 @@ class ArrayCursor<T> implements Cursor<T> {
   }
 }
 
-export interface SequenceSignalOptions {
+export interface SequenceSignalOptions extends Pick<CreateSignalOptions<unknown>, 'debugName'> {
   /** If true, then the sequence will not loop and restart needs to be called. */
   disableAutoReset?: boolean;
   /** injector should only be necessary if passing in an observable outside injector context. */
@@ -134,6 +135,7 @@ export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>
 
   const $output = createSignal(getFirstValue(sequenceCursorGetter())) as SignalGetter<T> & SequenceSignal<T>;
   const outputNode = $output[SIGNAL];
+  setDebugNameOnNode(outputNode, options.debugName);
   $output.next = (relativeChange = 1) => {
     const res = sequenceCursorGetter().next(relativeChange);
     if (res.hasValue) {

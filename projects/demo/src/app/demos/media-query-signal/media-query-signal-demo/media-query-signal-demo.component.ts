@@ -9,11 +9,10 @@ interface QueryOption {
   queryType: 'minWidth' | 'orientation';
 }
 @Component({
-  selector: 'app-media-query-signal-demo',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './media-query-signal-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-media-query-signal-demo',
+    imports: [CommonModule],
+    templateUrl: './media-query-signal-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaQuerySignalDemoComponent {
   readonly queries = [

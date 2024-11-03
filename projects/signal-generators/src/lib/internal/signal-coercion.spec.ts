@@ -1,5 +1,5 @@
 import { Injector, isSignal, signal } from '@angular/core';
-import { MockRender } from 'ng-mocks';
+import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { coerceSignal } from './signal-coercion';
 
@@ -26,7 +26,7 @@ describe('coerceSignal', () => {
 
   describe('when passed an observable', () => {
     let injector: Injector;
-    beforeEach(() => injector = MockRender().componentRef.injector);
+    beforeEach(() => injector = TestBed.inject(Injector));
     describe('and that observable emits immediately', () => {
       it('should return a signal that returns the value of the observable', () => {
         const source = new BehaviorSubject(generateValue());
@@ -53,7 +53,7 @@ describe('coerceSignal', () => {
     });
   });
   function generateValue() {
-    return Math.floor(Math.random()) * Number.MAX_SAFE_INTEGER;
+    return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
   }
 });
 

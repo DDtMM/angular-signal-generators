@@ -1,4 +1,4 @@
-import { ElementRef, Injector, Signal, signal } from '@angular/core';
+import { CreateSignalOptions, ElementRef, Injector, Signal, signal } from '@angular/core';
 import { getInjector } from '../../internal/utilities';
 import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
@@ -8,7 +8,7 @@ import { domObserverSignalFactory } from './dom-observer-base';
  * Optional injector reference if created outside injector context and MutationObserver options.
  * If no MutationObserver options are passed then only all attributes are observed.
  */
-export interface ResizeSignalOptions extends ResizeObserverOptions {
+export interface ResizeSignalOptions extends ResizeObserverOptions, Pick<CreateSignalOptions<unknown>, 'debugName'> {
   /** This signal must either be created in an injection context or passed an injector. */
   injector?: Injector;
 }
@@ -55,6 +55,7 @@ export function resizeSignal(
     source,
     options,
     getElement,
+    options?.debugName,
     injector);
 
 }

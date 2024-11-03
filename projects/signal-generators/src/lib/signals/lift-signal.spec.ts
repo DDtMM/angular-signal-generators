@@ -1,9 +1,14 @@
 import { signal } from '@angular/core';
-import { setupComputedAndEffectTests, setupDoesNotCauseReevaluationsSimplyWhenNested, setupTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { liftSignal } from './lift-signal';
 
 class DummyClass {
-  constructor(public value: number) { }
+  constructor(public value: number) {}
 
   /** for testing mutations */
   double(): void {
@@ -19,7 +24,8 @@ class DummyClass {
 }
 
 describe('liftSignal', () => {
-  setupTypeGuardTests(() => liftSignal([1, 2, 3], []));
+  runDebugNameOptionTest((debugName) => liftSignal([1, 2, 3], [], null, { debugName }));
+  runTypeGuardTests(() => liftSignal([1, 2, 3], []));
 
   it('initially returns the initial value', () => {
     const sut = liftSignal([1, 2, 3], []);
@@ -27,14 +33,14 @@ describe('liftSignal', () => {
   });
 
   it('should use custom clone function when passed in options', () => {
-    const sut = liftSignal(new DummyClass(1), null, ['double', 'triple'], { cloneFn: (x) => new DummyClass(x.value * -1)});
+    const sut = liftSignal(new DummyClass(1), null, ['double', 'triple'], { cloneFn: (x) => new DummyClass(x.value * -1) });
     sut.double();
     expect(sut()).toEqual(new DummyClass(-2));
   });
 
-  setupDoesNotCauseReevaluationsSimplyWhenNested(
+  runDoesNotCauseReevaluationsSimplyWhenNested(
     () => liftSignal([1, 2, 3], ['map']),
-    (sut) => sut.map(x => x + 2)
+    (sut) => sut.map((x) => x + 2)
   );
 
   [
@@ -42,22 +48,21 @@ describe('liftSignal', () => {
     { factory: () => signal(new DummyClass(5)), label: 'object signal' }
   ].forEach(({ factory, label }) => {
     describe('mutators', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), null, ['double']);
-        return [sut, () => { sut.double(); }];
+        return [ sut, () => { sut.double(); } ];
       });
 
       it(`adds methods from a passed ${label} that mutate the value when called`, () => {
         const sut = liftSignal(factory(), null, ['double', 'triple']);
-        sut.double()
+        sut.double();
         expect(sut()).toEqual(new DummyClass(10));
-        sut.triple()
+        sut.triple();
         expect(sut()).toEqual(new DummyClass(30));
       });
     });
     describe('updaters', () => {
-
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), ['getQuad']);
         return [sut, () => { sut.getQuad(); }];
       });
@@ -68,7 +73,6 @@ describe('liftSignal', () => {
         expect(sut()).toEqual(new DummyClass(20));
       });
     });
-
   });
 
   [
@@ -76,7 +80,7 @@ describe('liftSignal', () => {
     { factory: () => signal([1, 2, 3]), label: 'array signal' }
   ].forEach(({ factory, label }) => {
     describe('mutators', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), null, ['push']);
         return [sut, () => { sut.push(5); }];
       });
@@ -94,18 +98,16 @@ describe('liftSignal', () => {
       });
     });
     describe('updaters', () => {
-      setupComputedAndEffectTests(() => {
+      runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), ['concat']);
         return [sut, () => { sut.concat([5]); }];
       });
 
       it(`adds methods from a passed ${label} that update the value when called`, () => {
         const sut = liftSignal(factory(), ['filter']);
-        sut.filter(x => x === 2);
+        sut.filter((x) => x === 2);
         expect(sut()).toEqual([2]);
       });
     });
-
   });
-
 });

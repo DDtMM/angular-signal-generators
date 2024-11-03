@@ -5,10 +5,9 @@ import { HomeBoxComponent } from '../controls/home-box.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
 
 @Component({
-  standalone: true,
-  imports: [FormsModule, HomeBoxComponent],
-  hostDirectives: [ContentsClassDirective],
-  template: `
+    imports: [FormsModule, HomeBoxComponent],
+    hostDirectives: [ContentsClassDirective],
+    template: `
     <app-home-box fnName="filterSignal">
       <div>Filters values set directly on the signal.</div>
       <div class="divider">Example</div>
@@ -24,7 +23,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
       </div>
     </app-home-box>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterSignalHomeDemoComponent {
   readonly $filtered = filterSignal<string>('no upper case letters please', (x) => !/[A-Z]/.test(x));

@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { filterSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-filter-text-demo',
-  standalone: true,
-  templateUrl: './filter-text-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-filter-text-demo',
+    templateUrl: './filter-text-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterTextDemoComponent {
   readonly maxLengthFilter = filterSignal<string>('', x => x.length < 5);

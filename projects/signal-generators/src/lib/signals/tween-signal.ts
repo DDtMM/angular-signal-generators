@@ -1,4 +1,4 @@
-import { Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
+import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
 import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
@@ -32,7 +32,7 @@ export interface TweenOptions<T> {
 }
 
 /** Options for {@link tweenSignal}. */
-export interface TweenSignalOptions<T> extends TweenOptions<T> {
+export interface TweenSignalOptions<T> extends TweenOptions<T>, Pick<CreateSignalOptions<T>, 'debugName'> {
   /** This is only used if a signal is created from an observable. */
   injector?: Injector;
   /** The interpolator is required unless numeric values are used. */
@@ -173,7 +173,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   function createFromReactiveSource(reactiveSource: ReactiveSource<T>, options: Partial<TweenSignalOptions<T>> | undefined):
     [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
     const $source = coerceSignal(reactiveSource, options);
-    const $output = signal(untracked($source)) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
+    const $output = signal(untracked($source), options) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
     $output.setOptions = setOptions;
     const signalValueFn = () => [$source(), undefined] as const;
     return [$output, signalValueFn];
@@ -183,7 +183,7 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
   function createFromValue(sourceValue: T):
     [output: SignalGetter<T> & WritableTweenSignal<T>, valueFn: () => Readonly<[value: T, options: TweenOptions<T> | undefined]> ] {
 
-    const $output = signal(sourceValue) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
+    const $output = signal(sourceValue, options) as SignalGetter<T> & WritableSignal<T> & TweenSignal<T>;
     const $source = createSignal<Readonly<[value: T, options: TweenOptions<T> | undefined]>>([sourceValue as T, undefined]);
     const sourceNode = $source[SIGNAL];
     $output.set = (x: T, options?: TweenOptions<T>) => signalSetFn(sourceNode, [x, options] as const);

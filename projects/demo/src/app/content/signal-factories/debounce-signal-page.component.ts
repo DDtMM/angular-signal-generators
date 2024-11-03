@@ -1,16 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { DirectDemoComponent } from './direct-demo/direct-demo.component';
-import { IndirectDemoComponent } from './indirect-demo/indirect-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { DirectDemoComponent } from '../../demos/debounce-signal/direct-demo/direct-demo.component';
+import { IndirectDemoComponent } from '../../demos/debounce-signal/indirect-demo/indirect-demo.component';
 
 @Component({
-  selector: 'app-debounce-signal-page',
-  standalone: true,
-  imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
-  template: `
-<app-demo-page-header fnName="debounceSignal" />
+    selector: 'app-debounce-signal-page',
+    imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
+    template: `
+<app-member-page-header fnName="debounceSignal" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
 This has two overloads - one where it accepts a signal and the value is debounced in a readonly signal,
@@ -25,7 +24,7 @@ and one where it has a <i>set</i> and <i>update</i> method and the change of the
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DebounceSignalPageComponent {
 

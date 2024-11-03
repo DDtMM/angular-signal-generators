@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { BuiltInStorageDemoComponent } from './built-in-storage-demo/built-in-storage-demo.component';
-import { CustomStorageDemoComponent } from './custom-storage-demo/custom-storage-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { BuiltInStorageDemoComponent } from '../../demos/storage-signal/built-in-storage-demo/built-in-storage-demo.component';
+import { CustomStorageDemoComponent } from '../../demos/storage-signal/custom-storage-demo/custom-storage-demo.component';
 
 @Component({
-  selector: 'app-storage-signal-page',
-  standalone: true,
-  imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, DemoPageHeaderComponent],
-  template: `
-<app-demo-page-header fnName="storageSignal" />
+    selector: 'app-storage-signal-page',
+    imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
+    template: `
+<app-member-page-header fnName="storageSignal" />
 <p>
 A signal that uses a secondary storage system to store values, ideally beyond the lifetime of the application.
 When the signal is initialized it will check the store for an existing value and fallback to the initialValue if it wasn't present.
@@ -27,6 +26,6 @@ but two built-in implementations exist: <b>localStorageSignal</b> and <b>session
   </app-demo-host>
 </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StorageSignalPageComponent { }

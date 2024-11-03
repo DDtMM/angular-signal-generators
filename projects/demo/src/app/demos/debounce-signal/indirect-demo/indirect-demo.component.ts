@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { debounceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  selector: 'app-indirect-demo',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './indirect-demo.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-indirect-demo',
+    imports: [FormsModule],
+    templateUrl: './indirect-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IndirectDemoComponent {
   readonly $inputText = signal('')
