@@ -16,7 +16,7 @@ describe('reduceSignal', () => {
     const sut = reduceSignal(1, (p, c) => p + c);
     expect(sut()).toBe(1);
   });
-  it('should respect the equals option if passed', () => {
+  it('should respect the equal option if passed', () => {
     const sut = reduceSignal(2, (p, c) => p + c, { equal: (a, b) => a % 2 === b % 2 });
     sut.set(1);
     expect(sut()).toBe(3);

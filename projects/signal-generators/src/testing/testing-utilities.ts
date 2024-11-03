@@ -17,7 +17,7 @@ export function createFixture(): ComponentFixture<unknown> {
  * @param pattern A tuple of tick times and expected values.
  * @example
  * fakeAsync(() => {
- *   const sut = autoDetectChangesSignal(fixture, tweenSignal(1, { injector, duration: 500 }));
+ *   const sut = tweenSignal(1, { injector, duration: 500 });
  *   sut.set(5);
  *   tickAndAssertValue(() => Math.round(sut()), [[0, 1], [250, 3]]);
  * }));

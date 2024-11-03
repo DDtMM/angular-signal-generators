@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { IntersectionSignalDemoComponent } from './intersection-signal-demo/intersection-signal-demo.component';
 import { DemoHostComponent } from '../../controls/demo-host.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { IntersectionSignalDemoComponent } from '../../demos/intersection-signal/intersection-signal-demo/intersection-signal-demo.component';
 
 @Component({
     selector: 'app-intersection-signal-page',
-    imports: [CommonModule, DemoHostComponent, IntersectionSignalDemoComponent, DemoPageHeaderComponent],
+    imports: [CommonModule, DemoHostComponent, IntersectionSignalDemoComponent, MemberPageHeaderComponent],
     template: `
-<app-demo-page-header fnName="intersectionSignal" />
+<app-member-page-header fnName="intersectionSignal" />
 <p>
   Uses IntersectionObserver to observe changes to elements passed to the signal.
   All of the same options that can be passed to an IntersectionObserver can be passed to this signal.

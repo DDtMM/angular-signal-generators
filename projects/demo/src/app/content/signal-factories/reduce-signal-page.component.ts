@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { SearchHistoryDemoComponent } from './search-history-demo/search-history-demo.component';
+import { SearchHistoryDemoComponent } from '../../demos/reduce-signal/search-history-demo/search-history-demo.component';
 
 @Component({
     selector: 'app-reduce-signal-page',
-    imports: [DemoHostComponent, SearchHistoryDemoComponent, DemoPageHeaderComponent],
+    imports: [DemoHostComponent, SearchHistoryDemoComponent, MemberPageHeaderComponent],
     template: `
-<app-demo-page-header fnName="reduceSignal" />
+<app-member-page-header fnName="reduceSignal" />
 <p>
   Creates a signal similar to <code class="inline">Array.reduce</code> or Rxjs's <code class="inline">scan</code> operator. When
   the signal is set, the callback function is executed with the prior and currently set value as arguments, returning a new value.

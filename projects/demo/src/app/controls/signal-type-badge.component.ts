@@ -42,10 +42,13 @@ const TIP_UI: Record<UsageType, UsageUiInfo> = {
     imports: [CommonModule],
     template: `
 <!-- badges didn't look great -->
-<div class="rounded-xl text-center w-8 text-sm tooltip z-50 font-semibold " [ngClass]="$uiInfo().class"
-  role="status"
-  [attr.data-tip]="$uiInfo().tipText"
-  [attr.aria-description]="$uiInfo().description">
+<div class="rounded-xl text-center w-8 text-sm font-semibold relative" [ngClass]="$uiInfo().class"
+  role="status">
+  <!-- This is a rig so that the tool tip appears on top of any other elements. -->
+  <div class="tooltip z-50 absolute top-0 left-0 right-0 bottom-0"
+    [attr.data-tip]="$uiInfo().tipText"
+    [attr.aria-description]="$uiInfo().description">
+  </div>
   {{$uiInfo().label}}
 </div>
   `,

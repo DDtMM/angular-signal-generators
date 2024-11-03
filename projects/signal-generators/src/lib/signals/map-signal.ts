@@ -87,12 +87,12 @@ export function mapSignal<T, R, const TTpl extends T extends FromReactiveTupleTy
     throw new Error('Invalid param count.  At least two are required.');
   }
 
-  return (isFromSignalParameters(params))
+  return (isFromReactiveParameters(params))
     ? createFromReactiveParameters(...params)
     : createFromValue(params[0], params[1], params[2]);
 
 
-  function isFromSignalParameters(value: typeof params): value is FromReactiveParameters<TTpl, R> | FromReactiveParametersWithOptions<TTpl, R>{
+  function isFromReactiveParameters(value: typeof params): value is FromReactiveParameters<TTpl, R> | FromReactiveParametersWithOptions<TTpl, R>{
     return isReactive(value[0])
   }
 }

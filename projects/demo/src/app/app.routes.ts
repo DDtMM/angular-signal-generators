@@ -7,7 +7,8 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'getting-started', component: GettingStartedComponent, title: 'Getting Started' },
   // demos
-  ...DEMO_CONFIGURATIONS.map(x => ({ path: x.route, component: x.page, title: x.name } as Route)),
+  ...DEMO_CONFIGURATIONS.map(x => ({ path: x.route, loadComponent: x.page, title: x.name } as Route)),
   // redirect
   { path: '**', redirectTo: '' }
 ];
+

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { BasicDemoComponent } from './basic-demo/basic-demo.component';
-import { AltReporterDemoComponent } from './alt-reporter-demo/alt-reporter-demo.component';
-import { InspectComponentSignalsDemoComponent } from './inspect-component-signals-demo/inspect-component-signals-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { AltReporterDemoComponent } from '../../demos/inspect/alt-reporter-demo/alt-reporter-demo.component';
+import { BasicDemoComponent } from '../../demos/inspect/basic-demo/basic-demo.component';
+import { InspectComponentSignalsDemoComponent } from '../../demos/inspect/inspect-component-signals-demo/inspect-component-signals-demo.component';
 
 @Component({
     selector: 'app-inspect-page',
-    imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, DemoPageHeaderComponent, InspectComponentSignalsDemoComponent],
+    imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, MemberPageHeaderComponent, InspectComponentSignalsDemoComponent],
     template: `
-<app-demo-page-header fnName="inspect"/>
+<app-member-page-header fnName="inspect"/>
 <p>
 Reports the latest state of a subject by resolving all the values deeply contained within by using <a href="./nestSignal">nestSignal</a>.
 By default the output is generated using a <code class="inline">console.log</code>, but this can be changed with the <code class="inline">reporter</code> option.

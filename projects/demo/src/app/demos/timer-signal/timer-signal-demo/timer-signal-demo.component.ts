@@ -29,7 +29,7 @@ export class TimerSignalDemoComponent {
       if (timerValue !== 0) {
         this.$executions.update(x => ++x);
       }
-    }, { allowSignalWrites: true });
+    });
   }
 
   toggleMode(): void {

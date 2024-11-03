@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { TimerSignalDemoComponent } from './timer-signal-demo/timer-signal-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { TimerSignalDemoComponent } from '../../demos/timer-signal/timer-signal-demo/timer-signal-demo.component';
 
 
 @Component({
     selector: 'app-timer-signal-page',
-    imports: [CommonModule, DemoHostComponent, DemoPageHeaderComponent, TimerSignalDemoComponent],
+    imports: [CommonModule, DemoHostComponent, MemberPageHeaderComponent, TimerSignalDemoComponent],
     template: `
-<app-demo-page-header fnName="timerSignal" />
+<app-member-page-header fnName="timerSignal" />
 <p>
   This is very similar to rxjs's <i>timer</i> operator.
   It will be have like setTimeout or interval depending on the parameters passed.

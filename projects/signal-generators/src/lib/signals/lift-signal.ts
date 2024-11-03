@@ -9,12 +9,12 @@ export interface LiftSignalOptions<T> {
   cloneFn?: (source: T) => T;
   /**
    * A debug name for the signal. Used in Angular DevTools to identify the signal.
-   * Only used if a {@link WritableSignal} is NOT passed as the first argument.
+   * Only used if a {@link https://angular.dev/api/core/WritableSignal WritableSignal} is NOT passed as the first argument.
    */
   debugName?: string;
   /**
    * Custom equality function.
-   * Only used if a value and not a {@link WritableSignal} is passed as the first argument.
+   * Only used if a value and not a {@link https://angular.dev/api/core/WritableSignal WritableSignal} is passed as the first argument.
    */
   equal?: ValueEqualityFn<T>;
 }
@@ -45,7 +45,8 @@ export type BoundMethods<T, K extends readonly (MethodKey<T> | UpdaterKey<T>)[]>
  * @param valueSource Either a value or a Writable signal.
  * @param updaters A tuple that contains the names that will return a new value.
  * @param mutators A tuple that contains the names that will modify the signal's value directly.
- * To guarantee this will return a new value, structuredClone or object.assign is used to create a brand new object, so used with caution.
+ * To guarantee this will return a new value, structuredClone or object.assign is used to create a brand new object,
+ * so use with caution.
  * @typeParam T the type of the signal's value as well as the type where the functions are lifted from.
  * @typeParam U A tuple that contains the names of methods appropriate for updating.
  * @typeParam M A tuple that contains the names of methods appropriate for mutating.

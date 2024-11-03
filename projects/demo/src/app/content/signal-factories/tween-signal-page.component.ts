@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HighlightModule } from 'ngx-highlightjs';
 import { DemoHostComponent } from '../../controls/demo-host.component';
-import { DemoPageHeaderComponent } from '../../controls/demo-page-header.component';
-import { InterpolationDemoComponent } from './interpolation-demo/interpolation-demo.component';
-import { MultipleNumbersDemoComponent } from './multiple-numbers-demo/multiple-numbers-demo.component';
-import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
+import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
+import { InterpolationDemoComponent } from '../../demos/tween-signal/interpolation-demo/interpolation-demo.component';
+import { MultipleNumbersDemoComponent } from '../../demos/tween-signal/multiple-numbers-demo/multiple-numbers-demo.component';
+import { SimpleDemoComponent } from '../../demos/tween-signal/simple-demo/simple-demo.component';
 
 
 @Component({
@@ -16,14 +16,14 @@ import { SimpleDemoComponent } from './simple-demo/simple-demo.component';
         DemoHostComponent,
         FormsModule,
         HighlightModule,
-        DemoPageHeaderComponent,
+        MemberPageHeaderComponent,
         InterpolationDemoComponent,
         MultipleNumbersDemoComponent,
         SimpleDemoComponent
     ],
     template: `
 <!-- for some reason the API docs come out with -1 at the end -->
-<app-demo-page-header fnName="tweenSignal" />
+<app-member-page-header fnName="tweenSignal" />
 <p>
   This function is heavily inspired by Svelte's <i>tweened</i> function.
   It allows you to create engaging simple transition animations with just a signal.
