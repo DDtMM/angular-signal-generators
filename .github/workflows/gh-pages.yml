@@ -32,7 +32,7 @@ jobs:
       - name: User Node
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -40,7 +40,7 @@ jobs:
       - name: Install Dependencies
         if:
           steps.cache-nodemodules.outputs.cache-hit != 'true' # if cache hits the skip this step.
-        run: npm ci --force
+        run: npm ci --force --legacy-peer-deps
 
       - name: Add demo site source files and StackBlitz templates
         run: node scripts/create-demo-file-collections.mjs
