@@ -18,16 +18,20 @@ export type NestSignalValue<T> = T extends Signal<infer R>
   ? NestSignalValue<R>
   : T extends []
   ? NestSignalValue<T[number]>[]
-  // we don't want to traverse built-in dates.  I'm sure there are other built-in types that are typeof object, that we don't want to traverse.
+  : // Begin built in types where we want to control traversal.
+  T extends Set<infer R>
+  ? Iterable<NestSignalValue<R>> // currently this is just an array, but in the future it could be something else.
+  : T extends Map<infer K, infer V>
+  ? Iterable<NestSignalValue<K>, NestSignalValue<V>> // currently this is just an array, but in the future it could be something else.
   : T extends Date
   ? T
-  : T extends object
+  : // Objects should be traversed, and remaining non-object types should be returned as-is.
+  T extends object
   ? { [K in keyof T]: NestSignalValue<T[K]> }
   : T;
 
-
-export function nestSignal<T>(source: ReactiveSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>>
-export function nestSignal<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>>
+export function nestSignal<T>(source: ReactiveSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>>;
+export function nestSignal<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>>;
 /**
  * Creates a signal whose value may have several, deeply nested signals.
  * Any time any of the nested signals are updated, the signal will be updated as well.
@@ -45,13 +49,17 @@ export function nestSignal<T>(initialValue: T, options?: NestSignalOptions<T>): 
  * console.log($nested()); // [LOG]: { count: 1, text: 'hello', why: { count: 2, text: ['hello'] } }
  * ```
  */
-export function nestSignal<T>(source: ValueSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>> | TransformedSignal<T, NestSignalValue<T>> {
-  return (isReactive(source))
-    ? createFromReactiveSource(source, options)
-    : createFromValue(source, options);
+export function nestSignal<T>(
+  source: ValueSource<T>,
+  options?: NestSignalOptions<T>
+): Signal<NestSignalValue<T>> | TransformedSignal<T, NestSignalValue<T>> {
+  return isReactive(source) ? createFromReactiveSource(source, options) : createFromValue(source, options);
 }
 
-function createFromReactiveSource<T>(reactiveSource: ReactiveSource<T>, options?: NestSignalOptions<T>): Signal<NestSignalValue<T>> {
+function createFromReactiveSource<T>(
+  reactiveSource: ReactiveSource<T>,
+  options?: NestSignalOptions<T>
+): Signal<NestSignalValue<T>> {
   const $input = coerceSignal(reactiveSource, options);
   return computed(() => deNest($input()), options);
 }
@@ -71,6 +79,14 @@ function deNest<T>(input: T): NestSignalValue<T> {
     return deNest(input()) as NestSignalValue<T>;
   } else if (Array.isArray(input)) {
     return input.map(deNest) as NestSignalValue<T>;
+  } else if (input instanceof Set) {
+    const result: unknown[] = [];
+    input.forEach((value) => result.push(deNest(value)));
+    return result as NestSignalValue<T>;
+  } else if (input instanceof Map) {
+    const result: [unknown, unknown][] = [];
+    input.forEach((value, key) => result.push([deNest(key), deNest(value)]));
+    return result as NestSignalValue<T>;
   } else if (input instanceof Date) {
     return input as NestSignalValue<T>;
   } else if (typeof input === 'object' && input !== null) {
