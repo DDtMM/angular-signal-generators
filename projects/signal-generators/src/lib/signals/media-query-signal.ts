@@ -151,8 +151,7 @@ export function mediaQuerySignal(
 }
 
 function createDummyOutput(query: string): MediaQuerySignal {
-  const $output = createSignal<MediaQueryState>({ matches: false, media: query }) as SignalGetter<MediaQueryState> &
-    MediaQuerySignal;
+  const $output = createSignal<MediaQueryState>({ matches: false, media: query }) as MediaQuerySignal;
   $output.asReadonly = asReadonlyFnFactory($output);
   $output.destroy = () => { /* do nothing */ };
   $output.set = () => { /* do nothing */ };
