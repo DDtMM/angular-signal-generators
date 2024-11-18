@@ -4,10 +4,10 @@
   "compilerOptions": {
     "paths": {
       "@ddtmm/angular-signal-generators": ["projects/signal-generators/src/public_api"],
-      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/src/easings/src/public_api"]
+      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/easings/src/public_api"]
     }
   },
-  "entryPoints": ["projects/signal-generators/src/public_api.ts", "projects/signal-generators/src/easings/src/public_api.ts"],
+  "entryPoints": ["projects/signal-generators/src/public_api.ts", "projects/signal-generators/easings/src/public_api.ts"],
   "groupOrder": ["Functions", "*"],
   "headings": {
     "document": true,

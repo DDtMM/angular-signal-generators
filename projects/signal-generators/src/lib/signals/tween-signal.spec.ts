@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { easeOutQuart } from '../../easings/src/easings';
+import { easeOutQuart } from '../../../easings/src/easings';
 import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { createFixture, tickAndAssertValues } from '../../testing/testing-utilities';
 import { tweenSignal } from './tween-signal';
