@@ -12,7 +12,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   </div>
   <h2>Installation</h2>
   <p>
-    Angular Signal Generators are compatible with Angular versions 16 and later.
+    Angular Signal Generators is compatible with Angular versions 16 and up.
     You can install it from npm by running the following:
   </p>
   <div class="relative">

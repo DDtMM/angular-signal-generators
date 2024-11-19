@@ -137,7 +137,7 @@ describe('mediaQuerySignal', () => {
   });
 });
 
-class FakeMediaQueryList extends FakeEventListener<keyof MediaQueryListEventMap, MediaQueryListEventMap>  implements Pick<MediaQueryList, 'matches' | 'media'> {
+class FakeMediaQueryList extends FakeEventListener<keyof MediaQueryListEventMap, MediaQueryListEventMap> implements Pick<MediaQueryList, 'matches' | 'media'> {
   private _matches = false;
 
   get matches() {

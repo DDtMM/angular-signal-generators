@@ -11,13 +11,7 @@ import {
 import { nestSignal } from './nest-signal';
 
 describe('nestSignal', () => {
-  describe('from a simple source', () => {
-    it('converts a signal to its value', () => expect(nestSignal(signal({ a: 1 }))()).toEqual({ a: 1 }));
-    it('converts a Date to itself', () => expect(nestSignal(new Date(2001, 1, 1))()).toEqual(new Date(2001, 1, 1)));
-    it('converts an array of primitives to itself', () => expect(nestSignal([1, 2, 3])()).toEqual([1, 2, 3]));
-    it('converts a primitive to itself', () => expect(nestSignal('test')()).toEqual('test'));
-    it('converts an object to itself', () => expect(nestSignal({ a: 1 })()).toEqual({ a: 1 }));
-  });
+
   describe('when created as writable signal', () => {
     runDebugNameOptionTest((debugName) => nestSignal({ a: signal(1) }, { debugName }));
     runInjectorOptionTest((injector) => nestSignal({ a: signal(1) }, { injector }));
@@ -147,4 +141,35 @@ describe('nestSignal', () => {
       expect($sut()).toEqual({ count: 1, text: 'hello', why: { count: 2, text: ['hello'] } });
     });
   });
+
+  describe('simple value conversions', () => {
+    it('converts a signal to its value', () => expect(nestSignal(signal({ a: 1 }))()).toEqual({ a: 1 }));
+    it('converts a Date to itself', () => {
+      const value = new Date(2001, 1, 1);
+      expect(nestSignal(value)()).toBe(value);
+    });
+    it('converts an array of primitives to an array of equal values', () => expect(nestSignal([1, 2, 3])()).toEqual([1, 2, 3]));
+    it('converts a set to an iterable of equal values', () => expect(nestSignal(new Set([1, 2, 3]))()).toEqual([1, 2, 3]));
+    it('converts a map to an array of key value pairs', () => {
+      const value = new Map<string | symbol, number>([['a', 1], ['b', 2], [Symbol.iterator, 3]]);
+      expect(nestSignal(value)()).toEqual([['a', 1], ['b', 2], [Symbol.iterator, 3]]);
+    });
+    it('converts a built in primitive to itself', () => {
+      const value = 'test';
+      expect(nestSignal(value)()).toBe(value);
+    });
+    it('converts an object to itself', () => expect(nestSignal({ a: 1 })()).toEqual({ a: 1 }));
+  });
+
+  describe('Conversions from Map', () => {
+    it('converts a key that is a signal to its value and listens to changes', () => {
+      const $key = signal('x');
+      const value = new Map([[$key, 'y']]);
+      const sut = nestSignal(value);
+      expect(sut()).toEqual([['x', 'y']]);
+      $key.set('z');
+      expect(sut()).toEqual([['z', 'y']]);
+    });
+  });
+
 });

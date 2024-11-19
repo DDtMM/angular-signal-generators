@@ -6,7 +6,7 @@
     "signal-generators": {
       "projectType": "library",
       "root": "projects/signal-generators",
-      "sourceRoot": "projects/signal-generators/src",
+      "sourceRoot": "projects/signal-generators",
       "prefix": "lib",
       "architect": {
         "build": {
