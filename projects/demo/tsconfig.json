@@ -4,7 +4,7 @@
   "compilerOptions": {
     "paths": {
       "@ddtmm/angular-signal-generators": ["projects/signal-generators/src/public_api"],
-      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/src/easings/src/public_api"]
+      "@ddtmm/angular-signal-generators/easings": ["projects/signal-generators/easings/src/public_api"]
     }
   }
 }
