@@ -1,9 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, viewChild } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
 import { DEMO_CONFIGURATIONS } from './demo-configuration';
+import { inspect, mapSignal, mediaQuerySignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
     selector: 'app-root',
@@ -107,7 +108,19 @@ export class AppComponent {
   readonly signalFactories = DEMO_CONFIGURATIONS.filter(x => x.usages.some(x => x === 'generator' || x === 'writableSignal'))
   readonly utilities = DEMO_CONFIGURATIONS.filter(x => x.usages.some(x => x === 'utility'));
 
+
+  constructor() {
+    const rootElem = inject(DOCUMENT).documentElement;
+    const $prefersDark = mediaQuerySignal(`(prefers-color-scheme: dark)`);
+    effect(() => {
+      rootElem.setAttribute('data-theme', $prefersDark().matches ? 'night' : 'garden');
+    });
+  }
+
   closeDrawer() {
     this.$drawerToggle().nativeElement.checked = false;
   }
+
+
+
 }

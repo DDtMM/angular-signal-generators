@@ -8,7 +8,8 @@ module.exports = {
     require('daisyui')
   ],
   daisyui: {
-    themes: ["light", "dark", "garden"],
-  }
+    themes: [ "garden", "night"]
+  },
+  darkMode: ['selector', '[data-theme="night"]']
 }
 

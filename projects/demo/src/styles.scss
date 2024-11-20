@@ -5,6 +5,8 @@
 //@import '~highlight.js/styles/stackoverflow-light.css';
 // build didn't like ~ path.
 @import '../../../node_modules/highlight.js/styles/stackoverflow-light.css';
+@import '../../../node_modules/highlight.js/styles/stackoverflow-dark.css'  (prefers-color-scheme: dark);
+
 @layer base {
   h1 {
     @apply pt-3;
