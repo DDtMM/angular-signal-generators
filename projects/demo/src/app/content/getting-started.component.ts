@@ -19,7 +19,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
     <span class="absolute right-0 p-1">
       <app-copy-button [content]="installCode.innerText"></app-copy-button>
     </span>
-    <code class="bg-slate-50 p-3 my-2 shadow-sm" #installCode>
+    <code class="bg-slate-50 dark:bg-slate-800 p-3 my-2 shadow-sm" #installCode>
       npm install &#64;ddtmm/angular-signal-generators
     </code>
   </div>
@@ -78,7 +78,6 @@ import { FormsModule } from '@angular/forms';
 import { debounceSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
-  standalone: true,
   imports: [FormsModule],
   template: \`
     <input [(ngModel)]="$debounced" />
