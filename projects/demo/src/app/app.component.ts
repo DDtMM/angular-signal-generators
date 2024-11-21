@@ -110,17 +110,13 @@ export class AppComponent {
 
 
   constructor() {
+    // dark mode is initially set by a script on the index.html page, but this will respond to any changes.
     const rootElem = inject(DOCUMENT).documentElement;
     const $prefersDark = mediaQuerySignal(`(prefers-color-scheme: dark)`);
-    effect(() => {
-      rootElem.setAttribute('data-theme', $prefersDark().matches ? 'night' : 'garden');
-    });
+    effect(() => rootElem.setAttribute('data-theme', $prefersDark().matches ? 'night' : 'garden'));
   }
 
   closeDrawer() {
     this.$drawerToggle().nativeElement.checked = false;
   }
-
-
-
 }
