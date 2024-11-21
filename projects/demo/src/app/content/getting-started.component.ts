@@ -45,8 +45,8 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
     To include them in your project, just import them as needed from <b>&#64;ddtmm/angular-signal-generators</b>:
   </p>
 
-  <div class="border-base-300 bg-slate-50 whitespace-pre-wrap w-full overflow-clip shadow-sm">
-    <code class="h-full w-full bg-slate-50 " [highlight]="source" language="typescript"></code>
+  <div class="border-base-300 whitespace-pre-wrap w-full overflow-clip shadow-sm">
+    <code class="h-full w-full" [highlight]="source" language="typescript"></code>
   </div>
   <div class="divider"></div>
   <p>
