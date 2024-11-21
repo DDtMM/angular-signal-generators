@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { $$DemoClass$$ } from './$$DemoPath$$';
 import { bootstrapApplication } from '@angular/platform-browser';
 import 'zone.js';
@@ -12,4 +12,4 @@ import 'zone.js';
 })
 export class AppComponent { }
 
-bootstrapApplication(AppComponent);
+bootstrapApplication(AppComponent, { providers: [provideExperimentalZonelessChangeDetection()] });

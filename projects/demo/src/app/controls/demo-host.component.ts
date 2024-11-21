@@ -24,7 +24,7 @@ interface DemoHostSourceFile extends SourceFile {
     </button>
   </div>
   <div class="grid grid-flow-row pt-3">
-    <div role="tablist" class="tabs tabs-boxed z-10  justify-self-start">
+    <div role="tablist" class="tabs tabs-boxed z-10 justify-self-start mb-1">
       <button role="tab" class="tab"
           [ngClass]="{ 'tab-active': $selectedTab() === demoTabId }"
           (click)="$selectedTab.set(demoTabId)">
@@ -39,18 +39,20 @@ interface DemoHostSourceFile extends SourceFile {
       }
     </div>
     @if ($selectedTab() === demoTabId) {
-      <div role="tab" class="border border-base-300 bg-slate-50 dark:bg-slate-800 w-full p-3 shadow-lg">
+      <div role="tab" class="border border-base-300 bg-slate-50 dark:bg-slate-800  w-full p-3 shadow-lg">
         <ng-content />
       </div>
     }
     @if($selectedSource(); as src) {
-      <div role="tab" class="relative border border-base-300 bg-slate-50 dark:bg-slate-800 whitespace-pre-wrap w-full max-w-full max-h-[400px] overflow-auto shadow-lg ">
-        <div class="sticky top-0">
-          <div class="absolute top-0 right-0 p-1">
-            <app-copy-button [content]="src.code" />
+ 
+      <div role="tab" class="relative border border-base-300 bg-slate-50 dark:bg-slate-800  whitespace-pre-wrap w-full max-w-full max-h-[400px] overflow-auto shadow-lg ">
+        <div class="sticky top-0 left-0">
+          <div class="absolute p-1 right-0 ">
+            <app-copy-button [content]="src.code" [description]="'Copy content from ' + src.name" />
           </div>
         </div>
-        <code class="h-full w-full bg-slate-50 dark:bg-slate-800 whitespace-pre" [highlight]="src.code" [language]="src.type"></code>
+
+        <code class="h-full w-full whitespace-pre  bg-slate-50 dark:bg-slate-800  " [highlight]="src.code" [language]="src.type"></code>
       </div>
     }
   </div>

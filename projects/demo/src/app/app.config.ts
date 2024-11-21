@@ -1,9 +1,9 @@
 import { ApplicationConfig } from '@angular/core';
+import { provideClientHydration } from '@angular/platform-browser';
 import { TitleStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHighlightOptions } from 'ngx-highlightjs';
-import { routes } from './app.routes';
-import { provideClientHydration } from '@angular/platform-browser';
 import { AppTitleStrategyService } from './app-title-strategy.service';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
