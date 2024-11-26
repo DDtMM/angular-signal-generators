@@ -10,7 +10,8 @@ import {
 import { createFixture, tickAndAssertValues } from '../../../testing/testing-utilities';
 import { AnimatedSignal, animatedSignalFactory, AnimatedSignalOptions, AnimationOptions, AnimationStepFn, WritableAnimatedSignal } from './animated-signal-base';
 import { ValueSource } from '../../value-source';
-import { ReactiveSource } from 'dist/signal-generators';
+import { ReactiveSource } from '../../reactive-source';
+
 
 describe('animatedSignalFactory', () => {
   describe('when passed a value', () => {
