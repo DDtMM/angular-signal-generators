@@ -13,7 +13,7 @@ import { easeInBounce } from '@ddtmm/angular-signal-generators/easings';
       Tween animations that allow a signal to transform between values over a set duration.
     </div>
     <div class="divider">Example</div>
-    <input type="range" class="range range-primary" [value]="$tween()" min="0" max="100" />
+    <input type="range" class="range range-primary" [value]="$tween()" min="0" max="100"  step=".0001" />
     <div class="flex flex-row gap-3 justify-center">
       <div class="join">
         <button type="button" class="btn btn-primary join-item" (click)="$tween.set(0)">0%</button>

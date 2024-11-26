@@ -14,6 +14,7 @@ import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-d
 import { ResizeSignalHomeDemoComponent } from './home-demos/resize-signal-home-demo.component';
 import { SequenceSignalHomeDemoComponent } from './home-demos/sequence-signal-home-demo.component';
 import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterator-home-demo.component';
+import { SpringSignalHomeDemoComponent } from './home-demos/spring-signal-home-demo.component';
 import { StorageSignalHomeDemoComponent } from './home-demos/storage-signal-home-demo.component';
 import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-demo.component';
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
@@ -185,6 +186,16 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
+    homeDemo: SpringSignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}springSignal-1.html`,
+    fnName: 'springSignal' as const,
+    name: 'springSignal',
+    page: () => import('./content/signal-factories/spring-signal-page.component').then(x => x.SpringSignalPageComponent),
+    route: 'spring-signal',
+    sourceUrl: 'signals/dom-observers/spring-signal.ts',
+    usages: ['generator', 'writableSignal']
+  },
+  {
     homeDemo: SequenceSignalHomeDemoComponent,
     docUrl: `${DOC_URL_PREFIX}sequenceSignal-1.html`,
     fnName: 'sequenceSignal' as const,
@@ -222,7 +233,7 @@ export const DEMO_CONFIGURATIONS = [
     page: () => import('./content/signal-factories/timer-signal-page.component').then(x => x.TimerSignalPageComponent),
     route: 'timer-signal',
     sourceUrl: 'signals/timer-signal.ts',
-    usages: ['generator', 'writableSignal']
+    usages: ['generator', 'writableSignal'],
   },
   {
     homeDemo: TweenSignalHomeDemoComponent,

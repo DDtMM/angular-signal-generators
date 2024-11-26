@@ -51,7 +51,6 @@ export interface TimerSignal extends Signal<number> {
  * ```
  */
 export function timerSignal(timerTime: ValueSource<number>, intervalTime?: ValueSource<number> | null, options?: TimerSignalOptions): TimerSignal {
-  // To make thinks easy to access values, make TimeSources functions.
   const injector = options?.injector ?? getInjector(timerSignal);
   const timerTimeFn = createGetValueFn(timerTime, injector);
   const intervalTimeFn = intervalTime != null ? createGetValueFn(intervalTime, injector) : undefined;

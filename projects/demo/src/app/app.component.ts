@@ -1,10 +1,10 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { mediaQuerySignal } from '@ddtmm/angular-signal-generators';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
 import { DEMO_CONFIGURATIONS } from './demo-configuration';
-import { inspect, mapSignal, mediaQuerySignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
     selector: 'app-root',

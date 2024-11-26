@@ -14,6 +14,7 @@ export const appConfig: ApplicationConfig = {
         coreLibraryLoader: () => import('highlight.js/lib/core'),
         languages: {
           html: () => import('highlight.js/lib/languages/xml'),
+          plaintext: () => import('highlight.js/lib/languages/plaintext'),
           typescript: () => import('highlight.js/lib/languages/typescript')
         },
     }),

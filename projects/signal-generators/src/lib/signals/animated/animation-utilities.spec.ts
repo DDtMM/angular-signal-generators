@@ -1,6 +1,6 @@
 import { fakeAsync, flush } from '@angular/core/testing';
 import { getRequestAnimationFrame } from './animation-utilities';
-import { replaceGlobalProperty } from '../../testing/testing-utilities';
+import { replaceGlobalProperty } from '../../../testing/testing-utilities';
 
 describe('getRequestAnimationFrame', () => {
   it('returns globalThis.requestAnimationFrame if set', () => {

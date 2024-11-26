@@ -1,34 +1,30 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HighlightModule } from 'ngx-highlightjs';
+import { RouterLink } from '@angular/router';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
 import { InterpolationDemoComponent } from '../../demos/tween-signal/interpolation-demo/interpolation-demo.component';
 import { MultipleNumbersDemoComponent } from '../../demos/tween-signal/multiple-numbers-demo/multiple-numbers-demo.component';
-import { SimpleDemoComponent } from '../../demos/tween-signal/simple-demo/simple-demo.component';
+import { SimpleTweenDemoComponent } from '../../demos/tween-signal/simple-tween-demo/simple-tween-demo.component';
 
 
 @Component({
     selector: 'app-tween-signal-page',
     imports: [
-        CommonModule,
         DemoHostComponent,
-        FormsModule,
-        HighlightModule,
         MemberPageHeaderComponent,
         InterpolationDemoComponent,
         MultipleNumbersDemoComponent,
-        SimpleDemoComponent
+        RouterLink,
+        SimpleTweenDemoComponent
     ],
     template: `
 <!-- for some reason the API docs come out with -1 at the end -->
 <app-member-page-header fnName="tweenSignal" />
 <p>
-  This function is heavily inspired by Svelte's <i>tweened</i> function.
-  It allows you to create engaging simple transition animations with just a signal.
-  By default this can automatically tween between a number, array of numbers, or Record of numbers.
-  You can also pass an interpolation function to tween between objects of any type.
+  The <i>tweenSignal</i> and <i><a routerLink="/spring-signal" class="link">springSignal</a></i> functions are heavily inspired by Svelte's <i>motion</i> functions.
+  They allow you to create engaging transition animations with just a signal.
+  By default, they can automatically transition between a number, array of numbers, or Record of numbers.
+  An interpolation function can be passed to enable transitioning between values of any type.
 </p>
 <h2>Animation Options</h2>
 <p>
@@ -48,15 +44,13 @@ import { SimpleDemoComponent } from '../../demos/tween-signal/simple-demo/simple
 </p>
 <div class="flex flex-col gap-6">
   <app-demo-host name="Simple Value Changes"
-    pattern="tween-signal/(simple-demo|shared)"
-    hiddenPattern="easing-selector"
-    primaryComponentPattern="demo\\.component" >
-    <app-simple-demo />
+    pattern="tween-signal/(simple-tween-demo|shared)"
+    hiddenPattern="easing-selector">
+    <app-simple-tween-demo />
   </app-demo-host>
   <app-demo-host name="Multiple Value Changes"
     pattern="tween-signal/(multiple-numbers-demo|shared)"
-    hiddenPattern="easing-selector"
-    primaryComponentPattern="demo\\.component" >
+    hiddenPattern="easing-selector">
     <app-multiple-numbers-demo />
   </app-demo-host>
   <app-demo-host name="Fun with Interpolation" pattern="tween-signal/interpolation-demo/">

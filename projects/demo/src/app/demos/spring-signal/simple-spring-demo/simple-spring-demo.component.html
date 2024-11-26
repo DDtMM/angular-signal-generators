@@ -1,6 +1,5 @@
 <div class="flex flex-row gap-3 items-center pb-3">
-  <span>Easing Function</span>
-  <app-easing-selector [(easingFn)]="$easingFn" (easingFnChange)="$sliderValue.setOptions({ easing: $easingFn() })" />
+  <app-spring-options [(springOptions)]="$springOptions" (springOptionsChange)="$sliderValue.setOptions($springOptions())" />
 </div>
 <div class="flex flex-col w-full sm:flex-row items-center gap-3">
   <div class="flex-none">
@@ -11,6 +10,6 @@
     </div>
   </div>
   <div>
-    <input class="range range-primary" type="range" [value]="$sliderValue()" min="0" max="100" />
+    <input class="range range-primary" type="range" [value]="$sliderValue()" min="0" max="100" step=".0001" />
   </div>
 </div>

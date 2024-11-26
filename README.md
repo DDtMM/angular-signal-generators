@@ -48,6 +48,11 @@ export class SignalDemoComponent {
 ```
 
 ## Signals
+
+### Animation Signals - springSignal / tweenSignal
+
+These are directly inspired by Svelte's *spring* and *tweened* functions.  When the signal value changes, the observed value slowly morphs over time.  So if the original value was **1** and the next value was set to **5**, then the observed value will be something like *1*, *1.512*, *2.12*, *2.6553*, *3* over a set duration.
+
 ### asyncSignal
 
 Takes an async source (Promise, Observable) or signal/function that returns an async source and returns that source's values as part of a signal.  Kind of like an rxjs flattening operator.
@@ -106,10 +111,6 @@ Signals that uses a secondary storage system to store values, ideally beyond the
 ### timerSignal
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
-
-### tweenSignal
-
-This was directly inspired by Svelte's *tweened* function.  When the signal value is change, the observed value slowly morphs over time.  So if the original value was **1** and the next value was set to **5**, then the observed value will be something like *1*, *1.512*, *2.12*, *2.6553*, *3* over a set duration.
 
 ## Utilities
 

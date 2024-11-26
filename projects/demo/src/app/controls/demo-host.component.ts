@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
-import { HighlightModule } from 'ngx-highlightjs';
 import { mapSignal } from '@ddtmm/angular-signal-generators';
-import { DemoService, SourceFile } from '../services/demo.service';
-import { CopyButtonComponent } from './copy-button.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HighlightModule } from 'ngx-highlightjs';
+import { DemoService, SourceFile } from '../services/demo.service';
+import { CodeBlockComponent } from './code-block.component';
 
 
 interface DemoHostSourceFile extends SourceFile {
@@ -14,7 +14,7 @@ interface DemoHostSourceFile extends SourceFile {
 /** Renders a demo with sources.  The demo component should be passed as content. */
 @Component({
     selector: 'app-demo-host',
-    imports: [CopyButtonComponent, CommonModule, FontAwesomeModule, HighlightModule],
+    imports: [CodeBlockComponent, CommonModule, FontAwesomeModule, HighlightModule],
     template: `
   <div class="flex flex-row gap-3">
     <div class="mb-1 text-xl text-secondary">{{$name()}}</div>
@@ -23,7 +23,7 @@ interface DemoHostSourceFile extends SourceFile {
       <span class="hidden sm:inline">StackBlitz</span>
     </button>
   </div>
-  <div class="grid grid-flow-row pt-3">
+  <div class="pt-3 max-w-full">
     <div role="tablist" class="tabs tabs-boxed z-10 justify-self-start mb-1">
       <button role="tab" class="tab"
           [ngClass]="{ 'tab-active': $selectedTab() === demoTabId }"
@@ -39,21 +39,14 @@ interface DemoHostSourceFile extends SourceFile {
       }
     </div>
     @if ($selectedTab() === demoTabId) {
-      <div role="tab" class="border border-base-300 bg-slate-50 dark:bg-slate-800  w-full p-3 shadow-lg">
+      <div role="tab" class="border border-base-300 bg-slate-50 dark:bg-slate-800 w-full p-3 shadow-lg">
         <ng-content />
       </div>
     }
     @if($selectedSource(); as src) {
- 
-      <div role="tab" class="relative border border-base-300 bg-slate-50 dark:bg-slate-800  whitespace-pre-wrap w-full max-w-full max-h-[400px] overflow-auto shadow-lg ">
-        <div class="sticky top-0 left-0">
-          <div class="absolute p-1 right-0 ">
-            <app-copy-button [content]="src.code" [description]="'Copy content from ' + src.name" />
-          </div>
-        </div>
-
-        <code class="h-full w-full whitespace-pre  bg-slate-50 dark:bg-slate-800  " [highlight]="src.code" [language]="src.type"></code>
-      </div>
+      <div role="tab" class="relative border border-base-300 w-full shadow-lg">
+        <app-code-block [content]="src.code" [language]="src.type" [name]="src.name" class="max-h-[400px]" />
+      </div> 
     }
   </div>
   `,
@@ -63,13 +56,13 @@ export class DemoHostComponent {
   private readonly demoSvc = inject(DemoService);
 
   readonly demoTabId = '_demo_';
-  /** A regex pattern to hide sources from the demo that should be included the full project. */
+  /** A regex pattern run on a file's name to hide sources from the demo that should be included the full project. */
   readonly $hiddenPattern = input<string | undefined>(undefined, { alias: 'hiddenPattern' });
   /** Displayed name of demo. */
   readonly $name = input.required<string>({ alias: 'name' });
-  /** A string that will be used to construct a regex to match the source names */
+  /** A string that will be used to construct a regex to match the source paths that include files that are relevant to the demo. */
   readonly $pattern = input.required<string>({ alias: 'pattern' });
-  /** Optional input to detect primary component.  If not passed then the first typescript file is used. */
+  /** Optional input to detect primary component by name.  If not passed then the first typescript file is used. */
   readonly $primaryComponentPattern = input<string | undefined>(undefined, { alias: 'primaryComponentPattern' });
   /** Currently visible tab */
   readonly $selectedTab = signal<string | number>(this.demoTabId);
