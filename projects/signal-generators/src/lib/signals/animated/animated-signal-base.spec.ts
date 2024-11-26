@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ReactiveSource, ValueSource } from 'dist/signal-generators';
+
 import {
   runComputedAndEffectTests,
   runDebugNameOptionTest,
@@ -9,6 +9,8 @@ import {
 } from '../../../testing/common-signal-tests';
 import { createFixture, tickAndAssertValues } from '../../../testing/testing-utilities';
 import { AnimatedSignal, animatedSignalFactory, AnimatedSignalOptions, AnimationOptions, AnimationStepFn, WritableAnimatedSignal } from './animated-signal-base';
+import { ValueSource } from '../../value-source';
+import { ReactiveSource } from 'dist/signal-generators';
 
 describe('animatedSignalFactory', () => {
   describe('when passed a value', () => {
