@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { HighlightModule } from 'ngx-highlightjs';
-import { CopyButtonComponent } from '../controls/copy-button.component';
+import { CodeBlockComponent } from "../controls/code-block.component";
 
 @Component({
     selector: 'app-getting-started',
-    imports: [CopyButtonComponent, HighlightModule],
+    imports: [CodeBlockComponent],
     template: `
 <div>
   <div class="doc-header">
@@ -15,14 +14,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
     Angular Signal Generators is compatible with Angular versions 16 and up.
     You can install it from npm by running the following:
   </p>
-  <div class="relative">
-    <span class="absolute right-0 p-1">
-      <app-copy-button [content]="installCode.innerText"></app-copy-button>
-    </span>
-    <code class="bg-slate-50 dark:bg-slate-800 p-3 my-2 shadow-sm" #installCode>
-      npm install &#64;ddtmm/angular-signal-generators
-    </code>
-  </div>
+  <app-code-block content="npm install @ddtmm/angular-signal-generators" language="plaintext"  name="npm install snippet" />
   <div class="divider"></div>
   <h2>Versions</h2>
   <p>The following is a table of compatibility for library versions with respect to Angular versions:</p>
@@ -36,7 +28,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
       <tr><td>3.x.x</td><td>^19.0.0</td></tr>
       <tr><td>2.x.x</td><td>&gt;=17.0.0 ^18.0.0</td></tr>
       <tr><td>1.x.x</td><td>&gt;=16.0.0 ^17.0.0</td></tr>
-</tbody>
+    </tbody>
   </table>
   <div class="divider"></div>
   <h2>Usage</h2>
@@ -46,7 +38,7 @@ import { CopyButtonComponent } from '../controls/copy-button.component';
   </p>
 
   <div class="border-base-300 whitespace-pre-wrap w-full overflow-clip shadow-sm">
-    <code class="h-full w-full" [highlight]="source" language="typescript"></code>
+    <app-code-block [content]="source" language="typescript" name="Getting Started Example" />
   </div>
   <div class="divider"></div>
   <p>

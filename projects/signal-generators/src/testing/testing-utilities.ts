@@ -22,7 +22,7 @@ export function createFixture(): ComponentFixture<unknown> {
  *   tickAndAssertValue(() => Math.round(sut()), [[0, 1], [250, 3]]);
  * }));
  */
-export function tickAndAssertValues<T>(selector: () => T, pattern: [elapsedMs: number, expectedValue: T][]): void {
+export function tickAndAssertValues<T>(selector: () => T, pattern: readonly(readonly [elapsedMs: number, expectedValue: T])[]): void {
   // instead of having expect in loop, store them all and have one assertion at the end.
   const results: T[] = [];
   for (const [elapsedMs] of pattern) {
@@ -33,6 +33,21 @@ export function tickAndAssertValues<T>(selector: () => T, pattern: [elapsedMs: n
   expect(results)
     .withContext(`At times ${times.join(', ')}`)
     .toEqual(pattern.map((x) => x[1]));
+}
+
+/**
+ * Returns an array of tuples of elapsedMs and the value observed at that time.
+ * @param selector gets value from a function.
+ * @param elapsedMsTimes The amount of time from the last tick until the next tick.
+ */
+export function tickAndRecordValues<T>(selector: () => T, elapsedMsTimes: number[]): [elapsedMs: number, recordedValue: T][] {
+  // instead of having expect in loop, store them all and have one assertion at the end.
+  const results: [elapsedMs: number, recordedValue: T][] = [];
+  for (const elapsedMs of elapsedMsTimes) {
+    tick(elapsedMs);
+    results.push([elapsedMs, selector()]);
+  }
+  return results;
 }
 
 /**

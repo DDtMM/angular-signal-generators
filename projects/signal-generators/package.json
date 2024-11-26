@@ -1,6 +1,6 @@
 {
   "name": "@ddtmm/angular-signal-generators",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "MIT",
   "description": "Specialized Angular signals to help with frequently encountered situations.",
   "peerDependencies": {
