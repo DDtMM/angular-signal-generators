@@ -93,7 +93,7 @@ export function mediaQuerySignal(
       effectRef.destroy(); // make sure the effect is destroyed.
       handleDestroy();
     };
-    getDestroyRef(mediaQuerySignal, options?.injector).onDestroy(handleDestroy);
+    getDestroyRef(mediaQuerySignal, options?.injector).onDestroy($output.destroy);
     return $output;
   }
 

@@ -56,11 +56,9 @@ export function springSignal<T>(source: ValueSource<T>, options: SpringSignalOpt
  * is passed then this is not required.  Otherwise an interpolator is required to translate the change of the value.
  * @example
  * ```ts
- * const fastLinearChange = springSignal(1);
- * const slowEaseInChange = springSignal(1, { duration: 5000, easing: easeInQuad });
+ * const $animatedValue = springSignal(1, { damping: 3, stiffness: 100 });
  * function demo(): void {
- *   fastLinearChange.set(5); // in 400ms will display something like 1, 1.453, 2.134, 3.521, 4.123, 5.
- *   slowEaseInChange.set(5, { duration: 10000 }); // in 10000ms will display something like 1, 1.21, 1.4301...
+ *   $animatedValue.set(5); 
  * }
  * ```
  */

@@ -1,10 +1,10 @@
 import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
 import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
-import { AnimationFrameFn, getRequestAnimationFrame } from './animation-utilities';
 import { isReactive } from '../../internal/reactive-source-utilities';
 import { coerceSignal } from '../../internal/signal-coercion';
 import { ReactiveSource } from '../../reactive-source';
 import { ValueSource } from '../../value-source';
+import { AnimationFrameFn, getRequestAnimationFrame } from './animation-utilities';
 import { InterpolateFactoryFn, NumericValues, createInterpolator } from './interpolation';
 
 /** Request animation frame function */
@@ -46,21 +46,21 @@ export type AnimatedSignalOptions<TVal, TOpt extends AnimationOptions> = Partial
   };
 
 /** Same as regular {@link AnimatedSignalOptions}, but interpolator is not required. */
-export type AnimatedNumericSignalOptions<T extends NumericValues, TOpt extends AnimationOptions> = Omit<
-  AnimatedSignalOptions<T, TOpt>,
+export type AnimatedNumericSignalOptions<TVal extends NumericValues, TOpt extends AnimationOptions> = Omit<
+  AnimatedSignalOptions<TVal, TOpt>,
   'interpolator'
 > &
-  Partial<Pick<AnimatedSignalOptions<T, TOpt>, 'interpolator'>>;
+  Partial<Pick<AnimatedSignalOptions<TVal, TOpt>, 'interpolator'>>;
 
 export interface AnimatedSignal<TVal, TOpt extends AnimationOptions> extends Signal<TVal> {
-  /** Sets the default animation parameters for the signal.  This won't updated a running animation. */
-  setOptions(options: Partial<TOpt & { interpolator: InterpolateFactoryFn<TVal> }>): void;
+  /** Sets the default animation parameters for the signal. */
+  setOptions(options: Partial<AnimationOptionsWithInterpolator<TVal, TOpt>>): void;
 }
 export interface WritableAnimatedSignal<TVal, TOpt extends AnimationOptions> extends AnimatedSignal<TVal, TOpt> {
-  /** Sets the value of signal with optional options. */
-  set(value: TVal, options?: Partial<TOpt> & { interpolator?: InterpolateFactoryFn<TVal> }): void;
-  /** Update the value of the signal based on its current value.  */
-  update(updateFn: (value: TVal) => TVal, options?: Partial<TOpt & { interpolator: InterpolateFactoryFn<TVal> }>): void;
+  /** Sets the value of signal with optional animation options during the next transition. */
+  set(value: TVal, oneTimeOptions?: Partial<AnimationOptionsWithInterpolator<TVal, TOpt>>): void;
+  /** Update the value of the signal based on its current value, with optional animation options used during the next transition.  */
+  update(updateFn: (value: TVal) => TVal, oneTimeOptions?: Partial<AnimationOptionsWithInterpolator<TVal, TOpt>>): void;
   /** Returns a readonly version of this signal */
   asReadonly(): Signal<TVal>;
 }
@@ -124,18 +124,19 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
 
   let delayTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
   let instanceId = 0;
-
+  let state: AnimationState<TState>;
   effect((onCleanup) => {
     const priorValue = untracked($output);
     const [nextValue, overrideOptions] = signalValueFn();
     if (nextValue === priorValue) {
-      return; // this should only occur at the initial effect run.
+      // since an array is being passed from signalValueFn, it could be the same value was sent.
+      return;
     }
     const animationOptions = overrideOptions ? { ...overwriteProperties({ ...defaults }, overrideOptions) } : defaults;
     const interpolate = (overrideOptions?.interpolator || defaults.interpolator)(priorValue, nextValue);
     const thisInstanceId = ++instanceId;
 
-    let state: AnimationState<TState>;
+
 
     // in case a previous animation was delayed then clear it before it starts.
     clearTimeout(delayTimeoutId);
@@ -145,17 +146,21 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
       start();
     }
 
+
+
     function start(): void {
       const timeCurrent = Date.now();
       state = {
+        ...initialState,
+        ...state,
         isDone: false,
         progress: 0,
         timeCurrent,
         timeElapsed: 0,
         timeDelta: 0,
         timeStart: timeCurrent,
-        ...initialState
       };
+
       stepFn(state, animationOptions); // run initial step function in case animation isn't necessary.
       if (state.isDone) {
         // don't bother with the animation since its done already.
@@ -195,36 +200,34 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
   /** Coerces a source signal from signal input and creates the output signal.. */
   function createFromReactiveSource(
     reactiveSource: ReactiveSource<T>,
-    options: Partial<AnimatedSignalOptions<T, O>> | undefined
+    signalOptions: Partial<AnimatedSignalOptions<T, O>> | undefined
   ): [
     output: SignalGetter<T> & WritableAnimatedSignal<T, O>,
-    valueFn: () => Readonly<[value: T, options: Partial<O & { interpolator: InterpolateFactoryFn<T> }> | undefined]>
+    valueFn: () => Readonly<[value: T]>
   ] {
-    const $source = coerceSignal(reactiveSource, options);
-    const $output = signal(untracked($source), options) as SignalGetter<T> & WritableSignal<T> & AnimatedSignal<T, O>;
+    const $source = coerceSignal(reactiveSource, signalOptions);
+    const $output = signal(untracked($source), signalOptions) as SignalGetter<T> & WritableSignal<T> & AnimatedSignal<T, O>;
     $output.setOptions = (options) => overwriteProperties(defaults, options);
-    const signalValueFn = () => [$source(), undefined] as const;
+    const signalValueFn = () => [$source()] as const;
     return [$output, signalValueFn];
   }
 
   /** Creates a writable source signal and output signal from the initial value. */
   function createFromValue(
     sourceValue: T,
-    options: Partial<AnimatedSignalOptions<T, O>> | undefined
+    signalOptions: Partial<AnimatedSignalOptions<T, O>> | undefined
   ): [
     output: SignalGetter<T> & WritableAnimatedSignal<T, O>,
-    valueFn: () => Readonly<[value: T, options: Partial<O & { interpolator: InterpolateFactoryFn<T> }> | undefined]>
+    valueFn: () => Readonly<[value: T, oneTimeOptions: Partial<AnimationOptionsWithInterpolator<T, O>> | undefined]>
   ] {
-    const $output = signal(sourceValue, options) as SignalGetter<T> & WritableSignal<T> & AnimatedSignal<T, O>;
+    const $output = signal(sourceValue, signalOptions) as SignalGetter<T> & WritableSignal<T> & AnimatedSignal<T, O>;
     const $source = createSignal<
-      Readonly<[value: T, options: Partial<O & { interpolator: InterpolateFactoryFn<T> }> | undefined]>
+      Readonly<[value: T, options: Partial<AnimationOptionsWithInterpolator<T, O>> | undefined]>
     >([sourceValue as T, undefined]);
     const sourceNode = $source[SIGNAL];
-    $output.set = (x, options?: Partial<O & { interpolator: InterpolateFactoryFn<T> }>) =>
+    $output.set = (x, options?: Partial<AnimationOptionsWithInterpolator<T, O>>) =>
       signalSetFn(sourceNode, [x, options] as const);
     $output.setOptions = (options) => overwriteProperties(defaults, options);
-    
-      
     $output.update = (updateFn: (value: T) => T, options?: Partial<O & { interpolator: InterpolateFactoryFn<T> }>) =>
       signalUpdateFn(sourceNode, ([value]) => [updateFn(value), options] as const);
     const signalValueFn = $source;
@@ -236,7 +239,7 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
  * Different then spread operator as it will ignore undefined values.
  * @returns The value of {@link target}.
  */
-export function overwriteProperties<T extends object>(target: T, values: Partial<T>): T {
+function overwriteProperties<T extends object>(target: T, values: Partial<T>): T {
   Object.entries(values).forEach(([key, value]) => {
     if (key in target && value !== undefined) {
       target[key as keyof T] = value as T[keyof T];
