@@ -48,7 +48,7 @@ import { SimpleTweenDemoComponent } from '../../demos/tween-signal/simple-tween-
     hiddenPattern="easing-selector">
     <app-simple-tween-demo />
   </app-demo-host>
-  <app-demo-host name="Multiple Value Changes"
+  <app-demo-host name="Animation Multiple Values"
     pattern="tween-signal/(multiple-numbers-demo|shared)"
     hiddenPattern="easing-selector">
     <app-multiple-numbers-demo />

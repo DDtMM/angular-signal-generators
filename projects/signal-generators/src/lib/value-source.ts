@@ -34,6 +34,6 @@ export function watchValueSourceFn<T>(
   injector?: Injector
 ): void {
   if (isSignal(valueSrcFn)) {
-    effect(() => callback(valueSrcFn()), { injector: injector, manualCleanup: true });
+    effect(() => callback(valueSrcFn()), { injector: injector });
   }
 }

@@ -192,7 +192,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'springSignal',
     page: () => import('./content/signal-factories/spring-signal-page.component').then(x => x.SpringSignalPageComponent),
     route: 'spring-signal',
-    sourceUrl: 'signals/dom-observers/spring-signal.ts',
+    sourceUrl: 'signals/animation/spring-signal.ts',
     usages: ['generator', 'writableSignal']
   },
   {
@@ -242,7 +242,7 @@ export const DEMO_CONFIGURATIONS = [
     name: 'tweenSignal',
     page: () => import('./content/signal-factories/tween-signal-page.component').then(x => x.TweenSignalPageComponent),
     route: 'tween-signal',
-    sourceUrl: 'signals/tween-signal.ts',
+    sourceUrl: 'signals/animation/tween-signal.ts',
     usages: ['generator', 'writableSignal']
   }
 ] satisfies DemoConfigurationItem<string>[];

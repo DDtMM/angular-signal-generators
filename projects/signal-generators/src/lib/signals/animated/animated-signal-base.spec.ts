@@ -8,10 +8,17 @@ import {
   runTypeGuardTests
 } from '../../../testing/common-signal-tests';
 import { createFixture, tickAndAssertValues } from '../../../testing/testing-utilities';
-import { AnimatedSignal, animatedSignalFactory, AnimatedSignalOptions, AnimationOptions, AnimationStepFn, WritableAnimatedSignal } from './animated-signal-base';
+import {
+  AnimatedSignal,
+  animatedSignalFactory,
+  AnimatedSignalOptions,
+  AnimationOptions,
+  AnimationState,
+  AnimationStepFn,
+  WritableAnimatedSignal
+} from './animated-signal-base';
 import { ValueSource } from '../../value-source';
 import { ReactiveSource } from '../../reactive-source';
-
 
 describe('animatedSignalFactory', () => {
   describe('when passed a value', () => {
@@ -90,7 +97,7 @@ describe('animatedSignalFactory', () => {
         ]
       );
     }));
-    
+
     it('returns an interpolated value when interpolator is passed', fakeAsync(() => {
       const sut = TestBed.runInInjectionContext(() =>
         createAnimationSignalForTest(1, {
@@ -158,11 +165,35 @@ describe('animatedSignalFactory', () => {
           ]
         );
       }));
-      it('updates after next effect if duration is less than 0', fakeAsync(() => {
+      it('updates to final value after first effect if step function determines it should be done.', fakeAsync(() => {
         const sut = TestBed.runInInjectionContext(() => createAnimationSignalForTest(1, { duration: -100 }));
         sut.set(5);
         tick();
         expect(sut()).toBe(5);
+      }));
+      it('maintains the previous state if a new animation starts before the previous one is finished', fakeAsync(() => {
+        /* 
+        Because state is not immutable spy.toHaveBeenCalledWith will just contain the state of the last call. 
+        So, we keep track of the tickCount in the step function and use that to determine that the state was maintained.
+        */
+        const initialState = { tickCount: 0 };
+        let tickCountOuter = 0;
+
+        const stepFn = jasmine.createSpy().and.callFake((state: AnimationState<typeof initialState>, options: TestAnimationOptions) => {
+          state.progress = options.duration > 0 ? Math.min(1, state.timeElapsed / options.duration) : 1;
+          state.isDone = state.progress === 1;
+          tickCountOuter = ++state.tickCount;
+        });
+        const sut = TestBed.runInInjectionContext(() => createAnimationSignalForTest(1, { duration: 100 }, stepFn, initialState));
+        sut.set(5);
+        tick(50);
+        const tickCountAtChange = tickCountOuter;
+        expect(tickCountAtChange).toBeGreaterThan(0);
+        expect(stepFn).toHaveBeenCalledWith(jasmine.objectContaining({ tickCount: tickCountAtChange }), jasmine.anything());
+        sut.set(9);
+        tick(0);
+        expect(tickCountOuter).toBe(tickCountAtChange + 1);
+        
       }));
       // fit('updates predictably if for some reason multiple frames occur within the same time interval', fakeAsync(() => {
       //   const sut = TestBed.runInInjectionContext(() => createAnimationSignalForTest(1, { duration: 500 }));
@@ -278,7 +309,9 @@ describe('animatedSignalFactory', () => {
     }));
 
     it('returns the end value if there are not a matching property to transition from in the original object', fakeAsync(() => {
-      const sut = TestBed.runInInjectionContext(() => createAnimationSignalForTest<Record<string, number>>({ x: 0 }, { duration: 500 }));
+      const sut = TestBed.runInInjectionContext(() =>
+        createAnimationSignalForTest<Record<string, number>, {}>({ x: 0 }, { duration: 500 })
+      );
       sut.set({ x: 10, y: -10 });
       tickAndAssertValues(
         () => ({ x: Math.round(sut()['x']), y: Math.round(sut()['y']) }),
@@ -339,27 +372,27 @@ describe('animatedSignalFactory', () => {
   });
 });
 
-function createStepFunctionSpy(): jasmine.Spy<AnimationStepFn<any, AnimationOptions>> {
-  return jasmine.createSpy<AnimationStepFn<any, AnimationOptions>>('stepFunction').and.callFake((progress: number) => progress);
-}
-
 interface TestAnimationOptions extends AnimationOptions {
   duration: number;
 }
+
 /**
  * Creates an animated signal for testing.
  * @param source The value source for the signal
  * @param signalOptions Animation options to the signal that came from the user.
  * @param stepFn A step function to use, if none is passed a linear step function will be used.
  * @param initialState A state bag, if none is provided then an empty object will be used.
- * @returns 
+ * @returns
  */
-function createAnimationSignalForTest<T>(
-  source: ValueSource<T>, 
-  signalOptions?: Partial<AnimatedSignalOptions<T, TestAnimationOptions>>,
-  stepFn?: AnimationStepFn<{ duration: number }, TestAnimationOptions>,
+function createAnimationSignalForTest<TVal, TState extends object>(
+  source: ValueSource<TVal>,
+  signalOptions?: Partial<AnimatedSignalOptions<TVal, TestAnimationOptions>>,
+  stepFn?: AnimationStepFn<TState, TestAnimationOptions>,
   initialState?: any
-): typeof source extends ReactiveSource<any> ? AnimatedSignal<T, TestAnimationOptions> : WritableAnimatedSignal<T, TestAnimationOptions> {
+): typeof source extends ReactiveSource<TVal>
+  ? AnimatedSignal<TVal, TestAnimationOptions>
+  : WritableAnimatedSignal<TVal, TestAnimationOptions> {
+
   return animatedSignalFactory(
     source,
     signalOptions,

@@ -58,5 +58,5 @@ export function inspect<T>(subject: T, options?: InspectOptions<T>): void {
     reporter = () => reporter = nextReporter;
   }
   const $input = nestSignal(subject, options);
-  effect(() => reporter($input()), { ...options, manualCleanup: true });
+  effect(() => reporter($input()), { ...options });
 }

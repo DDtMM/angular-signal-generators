@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
 import { SimpleSpringDemoComponent } from '../../demos/spring-signal/simple-spring-demo/simple-spring-demo.component';
+import { MultipleSpringNumbersDemoComponent } from '../../demos/spring-signal/multiple-spring-numbers-demo/multiple-spring-numbers-demo.component';
 
 
 @Component({
@@ -10,6 +11,7 @@ import { SimpleSpringDemoComponent } from '../../demos/spring-signal/simple-spri
     imports: [
         DemoHostComponent,
         MemberPageHeaderComponent,
+        MultipleSpringNumbersDemoComponent,
         RouterLink,
         SimpleSpringDemoComponent
     ],
@@ -41,7 +43,11 @@ import { SimpleSpringDemoComponent } from '../../demos/spring-signal/simple-spri
     hiddenPattern="spring-options" >
     <app-simple-spring-demo />
   </app-demo-host>
-
+  <app-demo-host name="Animating Multiple Values"
+    pattern="spring-signal/(multiple-spring-numbers-demo|shared)"
+    hiddenPattern="spring-options" >
+    <app-multiple-spring-numbers-demo />
+  </app-demo-host>
 </div>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush

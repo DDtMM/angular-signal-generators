@@ -1,0 +1,16 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<div class="flex flex-row gap-3 items-center pb-3">
+  <app-spring-options [(springOptions)]="$springOptions" (springOptionsChange)="$coords.setOptions($springOptions())" />
+</div>
+<div #target class="relative cursor-pointer w-36 h-36 bg-green-600 rounded-lg border-slate-900 border-solid border overflow-hidden"
+  (click)="setCords($event, target)"
+  (mousemove)="setCords($event, target)" >
+  <div class="w-4 h-4 bg-slate-900 rounded-full"
+    [ngStyle]="{ 'translate': $coords()[0] + 'px ' + $coords()[1] + 'px' }">
+  </div>
+  <div class="text-sm absolute bottom-2 right-2 pointer-events-none">
+    ({{$coords()[0] | number: '1.1-2'}}, {{$coords()[1] | number: '1.1-2'}})
+  </div>
+</div>
+
