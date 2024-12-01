@@ -186,16 +186,6 @@ export const DEMO_CONFIGURATIONS = [
     usages: ['generator', 'writableSignal']
   },
   {
-    homeDemo: SpringSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}springSignal-1.html`,
-    fnName: 'springSignal' as const,
-    name: 'springSignal',
-    page: () => import('./content/signal-factories/spring-signal-page.component').then(x => x.SpringSignalPageComponent),
-    route: 'spring-signal',
-    sourceUrl: 'signals/animation/spring-signal.ts',
-    usages: ['generator', 'writableSignal']
-  },
-  {
     homeDemo: SequenceSignalHomeDemoComponent,
     docUrl: `${DOC_URL_PREFIX}sequenceSignal-1.html`,
     fnName: 'sequenceSignal' as const,
@@ -214,6 +204,16 @@ export const DEMO_CONFIGURATIONS = [
     route: 'signal-to-iterator',
     sourceUrl: 'utilities/signal-to-iterator.ts',
     usages: ['utility']
+  },
+  {
+    homeDemo: SpringSignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}springSignal-1.html`,
+    fnName: 'springSignal' as const,
+    name: 'springSignal',
+    page: () => import('./content/signal-factories/spring-signal-page.component').then(x => x.SpringSignalPageComponent),
+    route: 'spring-signal',
+    sourceUrl: 'signals/animation/spring-signal.ts',
+    usages: ['generator', 'writableSignal']
   },
   {
     homeDemo: StorageSignalHomeDemoComponent,
