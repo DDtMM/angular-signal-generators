@@ -53,45 +53,90 @@ export function nestSignal<T>(
   source: ValueSource<T>,
   options?: NestSignalOptions<T>
 ): Signal<NestSignalValue<T>> | TransformedSignal<T, NestSignalValue<T>> {
+
+
   return isReactive(source) ? createFromReactiveSource(source, options) : createFromValue(source, options);
-}
 
-function createFromReactiveSource<T>(
-  reactiveSource: ReactiveSource<T>,
-  options?: NestSignalOptions<T>
-): Signal<NestSignalValue<T>> {
-  const $input = coerceSignal(reactiveSource, options);
-  return computed(() => deNest($input()), options);
-}
+  function createFromReactiveSource<T>(
+    reactiveSource: ReactiveSource<T>,
+    options?: NestSignalOptions<T>
+  ): Signal<NestSignalValue<T>> {
+    const $input = coerceSignal(reactiveSource, options);
+    return computed(() => deNestRoot($input()), options);
+  }
+  
+  function createFromValue<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>> {
+    const $source = createSignal(initialValue);
+    const sourceNode = $source[SIGNAL];
+    const $unwrapped = computed(() => deNestRoot($source()), options) as TransformedSignal<T, NestSignalValue<T>>;
+    $unwrapped.asReadonly = asReadonlyFnFactory($unwrapped);
+    $unwrapped.set = (value: T) => signalSetFn(sourceNode, value);
+    $unwrapped.update = (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn);
+    return $unwrapped;
+  }
 
-function createFromValue<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>> {
-  const $source = createSignal(initialValue);
-  const sourceNode = $source[SIGNAL];
-  const $unwrapped = computed(() => deNest($source()), options) as TransformedSignal<T, NestSignalValue<T>>;
-  $unwrapped.asReadonly = asReadonlyFnFactory($unwrapped);
-  $unwrapped.set = (value: T) => signalSetFn(sourceNode, value);
-  $unwrapped.update = (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn);
-  return $unwrapped;
-}
-/** Recursively converts and signals in a value into their values. */
-function deNest<T>(input: T): NestSignalValue<T> {
-  if (isSignal(input)) {
-    return deNest(input()) as NestSignalValue<T>;
-  } else if (Array.isArray(input)) {
-    return input.map(deNest) as NestSignalValue<T>;
-  } else if (input instanceof Set) {
-    const result: unknown[] = [];
-    input.forEach((value) => result.push(deNest(value)));
-    return result as NestSignalValue<T>;
-  } else if (input instanceof Map) {
-    const result: [unknown, unknown][] = [];
-    input.forEach((value, key) => result.push([deNest(key), deNest(value)]));
-    return result as NestSignalValue<T>;
-  } else if (input instanceof Date) {
-    return input as NestSignalValue<T>;
-  } else if (typeof input === 'object' && input !== null) {
-    return Object.fromEntries(Object.entries(input).map(([key, value]) => [key, deNest(value)])) as NestSignalValue<T>;
-  } else {
-    return input as NestSignalValue<T>;
+  function deNestRoot<T>(input: T): NestSignalValue<T> {
+    /** To prevent infinite loops, the results of denesting objects are cached. */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nestCache = new WeakMap<any, unknown>();
+    const stack: [input: unknown, output: unknown][] = [];
+    return deNest(input) as NestSignalValue<T> ;
+
+    function deNest<T>(input: T): unknown {
+      const stackEntryOutput = stack.find(([stackInput]) => stackInput === input)?.[1];
+      if (stackEntryOutput) {
+        // to prevent recursion, we need to return the output if the input was found in the stack.
+        return stackEntryOutput;
+      }
+      else if (isSignal(input)) {
+        return getOrSetInCache(input, () => deNest(input()));
+      } else if (Array.isArray(input)) {
+        return getOrSetInCache(input, () => {
+          const output: unknown[] = [];
+          stack.push([input, output]);
+          input.forEach(x => output.push(deNest(x)));
+          stack.pop();
+          return output;
+        });
+      } else if (input instanceof Set) {
+        return getOrSetInCache(input, () => {
+          const output: unknown[] = [];
+          stack.push([input, output]);
+          input.forEach((value) => output.push(deNest(value)));
+          stack.pop();
+          return output;  
+        });
+      } else if (input instanceof Map) {
+        return getOrSetInCache(input, () => {
+          const output: [unknown, unknown][] = [];
+          stack.push([input, output]);
+          input.forEach((value, key) => output.push([deNest(key), deNest(value)]));
+          stack.pop();
+          return output;
+        });
+      } else if (input instanceof Date) {
+        return input as NestSignalValue<T>;
+      } else if (typeof input === 'object' && input !== null) {
+        return getOrSetInCache(input, () => {
+          const output: Record<string, unknown> = {};
+          stack.push([input, output]);
+          Object.entries(input).forEach(([key, value]) => output[key] = deNest(value));
+          stack.pop();  
+          return output;
+        });
+      } else {
+        return input;
+      }
+    }
+
+    function getOrSetInCache<T>(input: T, resolver: () => unknown): unknown {
+      if (nestCache.has(input)) {
+        return nestCache.get(input);
+      } else {
+        const value = resolver();
+        nestCache.set(input, value);
+        return value;
+      }
+    }
   }
 }

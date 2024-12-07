@@ -41,6 +41,7 @@ module.exports = tsEslint.config(
           style: 'kebab-case',
         },
       ],
+      '@angular-eslint/no-input-rename': 'off',
       '@typescript-eslint/no-extraneous-class': 'off'
     }
   },

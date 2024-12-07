@@ -1,6 +1,6 @@
 import { PLATFORM_ID, signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
+import { MockBuilder, MockInstance } from 'ng-mocks';
 import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
 import { createFixture, tickAndAssertValues } from '../../testing/testing-utilities';
 import { ValueSource } from '../value-source';

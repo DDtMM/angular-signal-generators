@@ -1,4 +1,4 @@
-import { computed, Injector, signal, WritableSignal } from '@angular/core';
+import { computed, Injector, Signal, signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import {
@@ -9,6 +9,7 @@ import {
   runTypeGuardTests
 } from '../../testing/common-signal-tests';
 import { nestSignal } from './nest-signal';
+
 
 describe('nestSignal', () => {
 
@@ -61,6 +62,54 @@ describe('nestSignal', () => {
     });
   });
 
+  describe('recursion tests', () => {
+    it('processes recursive arrays without an infinite loop', () => {
+      const problematicItem: unknown[] = [signal(5)];
+      problematicItem.push(problematicItem);
+      const problematicSignal = signal(problematicItem);
+      const expected: unknown[] = [5];
+      expected.push(expected);
+      const sut = nestSignal(problematicSignal);
+      expect(sut()).toEqual(expected);
+    });
+
+    it('processes recursive Map without an infinite loop', () => {
+      const problematicItem: Map<unknown, unknown> = new Map([['notRecursive', signal(5)]]);
+      problematicItem.set('recursive', problematicItem);
+      const problematicSignal = signal(problematicItem);
+      const expected: [string, unknown][] = [['notRecursive', 5]];
+      expected.push(['recursive', expected]);
+      const sut = nestSignal(problematicSignal);
+      expect(sut()).toEqual(expected);
+    });
+    it('processes recursive objects without an infinite loop', () => {
+      const problematicItem: Record<string, unknown> = { notRecursive: signal(5) };
+      problematicItem['recursive'] = problematicItem;
+      const problematicSignal = signal(problematicItem);
+      const expected: Record<string, unknown> = { notRecursive: 5 };
+      expected['recursive'] = expected
+      const sut = nestSignal(problematicSignal);
+      expect(sut()).toEqual(expected);
+    });
+    it('processes recursive Sets without an infinite loop', () => {
+      const problematicItem: Set<unknown> = new Set([signal(5)]);
+      problematicItem.add(problematicItem);
+      const problematicSignal = signal(problematicItem);
+      const expected: unknown[] = [5];
+      expected.push(expected);
+      const sut = nestSignal(problematicSignal);
+      expect(sut()).toEqual(expected);
+    });
+    it('processes recursive signals without an infinite loop', () => {
+      const problematicItem: unknown[] = [signal(5)];
+      problematicItem.push(signal(problematicItem));
+      const problematicSignal = signal(problematicItem);
+      const expected: unknown[] = [5];
+      expected.push(expected);
+      const sut = nestSignal(problematicSignal);
+      expect(sut()).toEqual(expected);
+    });
+  })
   describe('when created as readonly signal', () => {
     describe('common tests', () => {
       let $nested: WritableSignal<number>;
@@ -123,14 +172,19 @@ describe('nestSignal', () => {
     });
 
     it('is updated when a signal is added to an array of signals and the new signal changes', () => {
-      const source = [signal({ inner: [signal(1)] })];
+      const source = [signal({ inner: [signal(1)] }, { debugName: 'source' })];
       const sut = nestSignal(source);
       source[0].update((x) => ({ ...x, inner: [...x.inner, signal(5)] }));
       expect(sut()).toEqual([{ inner: [1, 5] }]);
       source[0]().inner[1].set(7);
       expect(sut()).toEqual([{ inner: [1, 7] }]);
     });
-
+    it('caches objects and reuses their denested values', () => {
+      const duplicateObject = { someValue: signal(6) };
+      const source = [signal(duplicateObject), signal(duplicateObject)];
+      const sut = nestSignal(signal(source));
+      expect(sut()[0]).toBe(sut()[1]);
+    });
     it('can do crazy things', () => {
       const $count = signal(0);
       const $text = signal('hello');
