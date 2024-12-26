@@ -71,7 +71,6 @@ export function tweenSignal<T, V extends ValueSource<T>>(source: V, options?: Pa
       state.isDone = timeProgress === 1;
       state.progress = options.easing(timeProgress);
     });
-
 }
 
 

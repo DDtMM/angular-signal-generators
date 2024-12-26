@@ -1,4 +1,4 @@
-import { computed, CreateSignalOptions, Injector, isSignal, Signal } from '@angular/core';
+import { computed, CreateSignalOptions, Injector, isDevMode, isSignal, Signal } from '@angular/core';
 import { createSignal, SIGNAL, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
@@ -9,6 +9,8 @@ import { ValueSource } from '../value-source';
 
 /** Options for {@link nestSignal}. */
 export interface NestSignalOptions<T> extends CreateSignalOptions<NestSignalValue<T>> {
+  /** If true, errors will be caught, and the value will be set to undefined. */
+  ignoreErrors?: boolean;
   /** Needed if not created in injection context and an Subscribable is passed as source. */
   injector?: Injector;
 }
@@ -80,21 +82,22 @@ export function nestSignal<T>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nestCache = new WeakMap<any, unknown>();
     const stack: [input: unknown, output: unknown][] = [];
-    return deNest(input) as NestSignalValue<T> ;
+    const deNestFn = options?.ignoreErrors ? deNestSafe : deNestUnsafe;
+    return deNestFn(input) as NestSignalValue<T> ;
 
-    function deNest<T>(input: T): unknown {
+    function deNestUnsafe<T>(input: T): unknown {
       const stackEntryOutput = stack.find(([stackInput]) => stackInput === input)?.[1];
       if (stackEntryOutput) {
         // to prevent recursion, we need to return the output if the input was found in the stack.
         return stackEntryOutput;
       }
       else if (isSignal(input)) {
-        return getOrSetInCache(input, () => deNest(input()));
+        return getOrSetInCache(input, () => deNestFn(input()));
       } else if (Array.isArray(input)) {
         return getOrSetInCache(input, () => {
           const output: unknown[] = [];
           stack.push([input, output]);
-          input.forEach(x => output.push(deNest(x)));
+          input.forEach(x => output.push(deNestFn(x)));
           stack.pop();
           return output;
         });
@@ -102,7 +105,7 @@ export function nestSignal<T>(
         return getOrSetInCache(input, () => {
           const output: unknown[] = [];
           stack.push([input, output]);
-          input.forEach((value) => output.push(deNest(value)));
+          input.forEach((value) => output.push(deNestFn(value)));
           stack.pop();
           return output;  
         });
@@ -110,7 +113,7 @@ export function nestSignal<T>(
         return getOrSetInCache(input, () => {
           const output: [unknown, unknown][] = [];
           stack.push([input, output]);
-          input.forEach((value, key) => output.push([deNest(key), deNest(value)]));
+          input.forEach((value, key) => output.push([deNestFn(key), deNestFn(value)]));
           stack.pop();
           return output;
         });
@@ -120,12 +123,24 @@ export function nestSignal<T>(
         return getOrSetInCache(input, () => {
           const output: Record<string, unknown> = {};
           stack.push([input, output]);
-          Object.entries(input).forEach(([key, value]) => output[key] = deNest(value));
+          Object.entries(input).forEach(([key, value]) => output[key] = deNestFn(value));
           stack.pop();  
           return output;
         });
       } else {
         return input;
+      }
+    }
+
+    function deNestSafe<T>(input: T): unknown {
+      try {
+        return deNestUnsafe(input);
+      } catch (err) {
+        if (isDevMode()) {
+          console.warn('An error was caught that would be ignored in production.');
+          console.error(err);
+        }
+        return undefined;
       }
     }
 

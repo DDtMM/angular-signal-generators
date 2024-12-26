@@ -75,7 +75,19 @@ describe('inspect', () => {
         expect(reporterSpy).toHaveBeenCalledTimes(0);
         expect(altReporter).toHaveBeenCalledWith('hello there');
       }));
-
+    it('should ignore any errors', () =>
+      TestBed.runInInjectionContext(() => {
+        const trap = {
+          get someValue() { throw new Error('someValue will always throw'); }
+        };
+        const consoleSpyObj = jasmine.createSpyObj('console', ['error', 'warn']);
+        const restoreConsole = replaceGlobalProperty('console', consoleSpyObj);
+        inspect([signal({ trap, value: 1 })], { ignoreErrors: true });
+        TestBed.flushEffects();
+        expect(reporterSpy).toHaveBeenCalledWith([{ trap: undefined, value: 1 } as any]);
+        expect(consoleSpyObj.warn).toHaveBeenCalled();
+        restoreConsole();
+      }));
     describe('in prod mode', () => {
       beforeEach(() => (setProdMode(true)));
       afterEach(() => (setProdMode(false)));
