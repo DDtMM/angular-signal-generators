@@ -136,8 +136,6 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
     const interpolate = (overrideOptions?.interpolator || defaults.interpolator)(priorValue, nextValue);
     const thisInstanceId = ++instanceId;
 
-
-
     // in case a previous animation was delayed then clear it before it starts.
     clearTimeout(delayTimeoutId);
     if (animationOptions.delay) {
@@ -146,10 +144,8 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
       start();
     }
 
-
-
     function start(): void {
-      const timeCurrent = Date.now();
+      const timeCurrent = Date.now(); // performance.now can't be tested [SAD EMOJI] (switch to Jest?)
       state = {
         ...initialState,
         ...state,
@@ -181,7 +177,7 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
       //   requestAnimationFrame(step); // no time elapsed.
       //   return;
       // }
-      const timeCurrent = Date.now();
+      const timeCurrent = Date.now(); // performance.now can't be tested [SAD EMOJI] (switch to Jest?)
       state.timeDelta = timeCurrent - state.timeCurrent;
       state.timeCurrent = timeCurrent;
       state.timeElapsed = timeCurrent - state.timeStart;

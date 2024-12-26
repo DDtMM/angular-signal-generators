@@ -9,6 +9,7 @@ import {
   runTypeGuardTests
 } from '../../testing/common-signal-tests';
 import { nestSignal } from './nest-signal';
+import { replaceGlobalProperty } from '../../testing/testing-utilities';
 
 
 describe('nestSignal', () => {
@@ -60,6 +61,27 @@ describe('nestSignal', () => {
       sut.set([signal(2)]);
       expect($readonly()).toEqual([2]);
     });
+
+
+  });
+  describe('ignoreErrors option tests', () => {
+    const trap = {
+      get someValue() { throw new Error('someValue will always throw'); }
+    };
+
+    it('ignores errors when ignoreErrors option is true', () => {
+      const consoleSpyObj = jasmine.createSpyObj('console', ['error', 'warn']);
+      const restoreConsole = replaceGlobalProperty('console', consoleSpyObj);
+      const sut = nestSignal([signal({ trap, value: 1 })], { ignoreErrors: true });
+      expect(sut()).toEqual([{ trap: undefined, value: 1 } as any]);
+      expect(consoleSpyObj.warn).toHaveBeenCalled();
+      restoreConsole();
+    });
+
+    it('throws on errors when ignoreErrors option is false', () => {
+      const sut = nestSignal([signal({ trap, value: 1 })], { ignoreErrors: false });
+      expect(sut).toThrow();
+    });
   });
 
   describe('recursion tests', () => {
@@ -109,7 +131,8 @@ describe('nestSignal', () => {
       const sut = nestSignal(problematicSignal);
       expect(sut()).toEqual(expected);
     });
-  })
+  });
+
   describe('when created as readonly signal', () => {
     describe('common tests', () => {
       let $nested: WritableSignal<number>;
