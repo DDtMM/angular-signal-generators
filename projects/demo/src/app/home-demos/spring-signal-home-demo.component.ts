@@ -9,7 +9,7 @@ import { HomeBoxComponent } from '../controls/home-box.component';
   template: `
   <app-home-box fnName="springSignal">
     <div>
-      Tween animations that allow a signal to transform between values over a set duration.
+      Animates changes to a signal's value with a realistic spring transition.
     </div>
     <div class="divider">Example</div>
     <div class="flex flex-col w-full sm:flex-row items-center gap-3">
