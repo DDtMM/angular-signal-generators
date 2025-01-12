@@ -4,8 +4,11 @@
     <div class="text-lg">{{$fibonacci()}}</div>
   </div>
   <div class="px-3">
-    <label for="fibonacciStepSize" class="label">Step Size: {{fibonacciStepSize}}</label>
-    <input id="fibonacciStepSize" class="range" type="range" min="-10" max="10" [(ngModel)]="fibonacciStepSize" />
+    <label for="fibonacciStepSize" class="label">Step Size: {{$fibonacciStepSize()}}</label>
+    <input id="fibonacciStepSize" class="range" type="range" min="0" max="10" [(ngModel)]="$fibonacciStepSize" />
   </div>
-  <button type="button" class="btn btn-primary" (click)="$fibonacci.next(fibonacciStepSize)">Next</button>
+  <div class="join">
+    <button type="button" class="btn btn-primary join-item" (click)="$fibonacci.next($fibonacciStepSize())">Next</button>
+    <button type="button" class="btn btn-primary join-item" (click)="$fibonacci.reset()">Reset</button>
+  </div>
 </div>

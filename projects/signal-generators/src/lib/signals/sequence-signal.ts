@@ -1,90 +1,44 @@
-import { CreateSignalOptions, Injector, untracked, WritableSignal } from '@angular/core';
+import { CreateSignalOptions, Injector, Signal, untracked } from '@angular/core';
 import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
-import { coerceSignal } from '../internal/signal-coercion';
 import { isReactive } from '../internal/reactive-source-utilities';
-import { ReactiveSource } from '../reactive-source';
-import { ValueSource } from '../value-source';
+import { coerceSignal } from '../internal/signal-coercion';
 import { setDebugNameOnNode } from '../internal/utilities';
+import { ReactiveSource } from '../reactive-source';
+import { ArrayLikeCursor } from '../support/cursors/array-like-cursor';
+import { Cursor } from '../support/cursors/cursor';
+import { IterableCursor } from '../support/cursors/iterable-cursor';
+import { ValueSource } from '../value-source';
 
-const NO_ELEMENTS = 'Sequence contains no elements.';
+export const ERR_BOUNDS_EXCEEDED = 'Sequence cursor has exceeded bounds.';
+export const ERR_ELEMENT_NOT_PRESENT = 'Element was not present in sequence.';
+export const ERR_NO_ELEMENTS = 'Sequence contains no elements.';
+export const ERR_INVALID_SOURCE = 'Invalid source type passed to sequence signal.';
 
-export type CursorResult<T> = {
-  /** If false there was no value, possibly because it went past a boundary or has no elements. */
-  hasValue: false;
-} | {
-  /** If true, then the value property should be set. */
-  hasValue: true;
-  /** The current value after last move. */
-  value: T;
-};
-
-/**
- * Iterators can't be reset, so here's a cursor.
- */
-export interface Cursor<T> {
-  /**
-   * Should move to the next element if relativeChange isn't passed,
-   * otherwise it should move the amount of relativeChange.
-   * If not at edge and moving past edge, it should return the edge value.
-   */
-  next(relativeChange?: number): CursorResult<T>;
-  /**
-   * Should set it to as though it hasn't reached the first element.
-   */
-  reset(): void;
-}
-
-/** distinguishes between arrayLike and cursor */
-function isCursor<T>(obj: Cursor<T> | ArrayLike<T>): obj is Cursor<T> {
-  return 'next' in obj;
-}
-
-class ArrayCursor<T> implements Cursor<T> {
-  private index = -1;
-
-  constructor(private data: ArrayLike<T>, private autoReset: boolean) {}
-  next(relativeChange = 1): CursorResult<T> {
-
-    if (this.data.length === 0) {
-      return { hasValue: false };
-    }
-    if (relativeChange === 0 && this.index === -1) {
-      // auto move forward if relativeChange is 0, and we haven't moved forward yet.
-      return { hasValue: true, value: this.data[this.index = 0] };
-    }
-
-    if (this.autoReset) {
-      this.index = (this.index + relativeChange) % this.data.length;
-    }
-    else if (this.index <= 0 && relativeChange < 0) { // if at start, put in reset position
-      this.index = -1;
-    }
-    else if (this.index >= this.data.length - 1 && relativeChange > 0) { // if at end, put at complete position.
-      this.index = this.data.length;
-    }
-    else {
-      this.index = Math.max(0, Math.min(this.index + relativeChange, this.data.length - 1)); // stay constrained
-    }
-
-    return { hasValue: this.index > -1 && this.index < this.data.length, value: this.data[this.index] };
-  }
-  reset(): void {
-    this.index = -1;
-  }
-}
+/** Types that can be used in conjunction with {@link sequenceSignal}. */
+export type SequenceSource<T> = ArrayLike<T> | Cursor<T> | Iterable<T>;
 
 export interface SequenceSignalOptions extends Pick<CreateSignalOptions<unknown>, 'debugName'> {
-  /** If true, then the sequence will not loop and restart needs to be called. */
+  /** 
+   * If true, then the sequence will not loop and restart needs to be called. 
+   * This is used when creating a cursor internally.  If a cursor is provided as a source, then this will be ignored.
+   */
   disableAutoReset?: boolean;
   /** injector should only be necessary if passing in an observable outside injector context. */
   injector?: Injector;
 }
 
-export interface SequenceSignal<T> extends WritableSignal<T> {
-  /** Updates the signal to the next item in sequence.  If at end and autoRestart is not disabled, then it will return to start. */
-  next: (relativeChange?: number) => void;
+export interface SequenceSignal<T> extends Signal<T> {
+  /** 
+   * Updates the signal to the next item in sequence.  
+   * If at end and the option {@link SequenceSignalOptions.disableAutoReset} was passed as true, then it will move to the start. 
+   */
+  next(relativeChange?: number): void;
   /** Updates the signal to the first item in sequence. */
-  reset: () => void;
+  reset(): void;
+  /** Moves the sequence to the next element that matches the passed value, ignoring the current element.  Will throw if not found. */
+  set(value: T): void;
+  /** Moves the sequence to the next element that matches the passed value, ignoring the current element.  Will throw if not found. */
+  update(updateFn: (value: T) => T): void;
 }
 
 /**
@@ -128,59 +82,97 @@ export interface SequenceSignal<T> extends WritableSignal<T> {
  * console.log(fibSeq()); // 2;
  * ```
  */
-export function sequenceSignal<T>(sequence: ValueSource<ArrayLike<T> | Cursor<T>>, options: SequenceSignalOptions = {}): SequenceSignal<T> {
+export function sequenceSignal<T>(
+  sequence: ValueSource<SequenceSource<T>>,
+  options: SequenceSignalOptions = {}
+): SequenceSignal<T> {
   const sequenceCursorGetter = isReactive(sequence)
     ? createCursorGetterFromReactiveSource(sequence)
-    : createCursorGetterFromValue(sequence)
+    : createCursorGetterFromValue(sequence);
 
   const $output = createSignal(getFirstValue(sequenceCursorGetter())) as SignalGetter<T> & SequenceSignal<T>;
   const outputNode = $output[SIGNAL];
   setDebugNameOnNode(outputNode, options.debugName);
   $output.next = (relativeChange = 1) => {
     const res = sequenceCursorGetter().next(relativeChange);
-    if (res.hasValue) {
-      signalSetFn(outputNode, res.value);
+    if (!res.hasValue) {
+      throw new Error(ERR_BOUNDS_EXCEEDED);
     }
+    signalSetFn(outputNode, res.value);
   };
   $output.reset = () => {
     sequenceCursorGetter().reset();
     $output.next();
-  }
+  };
+  $output.set = (value: T) => {
+    const res = sequenceCursorGetter().moveTo(value);
+    if (!res.hasValue) {
+      throw new Error(ERR_ELEMENT_NOT_PRESENT);
+    }
+    signalSetFn(outputNode, value);
+  };
+  $output.update = (updateFn: (value: T) => T) => {
+    const nextValue = updateFn(outputNode.value);
+    $output.set(nextValue);
+  };
   return $output;
 
   /**
    * Creates function that gets the current cursor from a {@link ReactiveSource}.
    * This is done in lieu of using an effect.
    */
-  function createCursorGetterFromReactiveSource(inputSource: ReactiveSource<ArrayLike<T> | Cursor<T>>): () => Cursor<T> {
+  function createCursorGetterFromReactiveSource(inputSource: ReactiveSource<SequenceSource<T>>): () => Cursor<T> {
     const $input = coerceSignal(inputSource, options);
     let lastSequence = untracked($input);
-    let cachedCursor = getCursor(lastSequence);
+    let cachedCursor = sequenceSourceToCursor(lastSequence);
     return () => {
       const currentSequence = untracked($input);
       if (currentSequence !== lastSequence) {
         lastSequence = currentSequence;
-        cachedCursor = getCursor(lastSequence);
+        cachedCursor = sequenceSourceToCursor(lastSequence);
       }
       return cachedCursor;
     };
   }
   /** Creates function that gets a cached cursor from a value.  */
-  function createCursorGetterFromValue(value: ArrayLike<T> | Cursor<T>): () => Cursor<T> {
-    const cursor = getCursor(value);
+  function createCursorGetterFromValue(value: SequenceSource<T>): () => Cursor<T> {
+    const cursor = sequenceSourceToCursor(value);
     return () => cursor;
-  }
-  /** This used to do more. */
-  function getCursor(data: ArrayLike<T> | Cursor<T>): Cursor<T> {
-    return isCursor(data) ? data : new ArrayCursor(data, !options.disableAutoReset);
   }
 
   /** Ensure that there's a first value. */
   function getFirstValue(cursor: Cursor<T>): T {
     const res = cursor.next();
     if (!res.hasValue) {
-      throw new Error(NO_ELEMENTS);
+      throw new Error(ERR_NO_ELEMENTS);
     }
     return res.value;
+  }
+
+  /** This should be good enough to narrow down array like objects such as strings. */
+  function isArrayLike(value: ArrayLike<T> | Iterable<T>): value is ArrayLike<T> {
+    return typeof (value as ArrayLike<T>)['length'] === 'number';
+  }
+
+  /** Determines if an object is compatible with a {@link Cursor} by checking for next and rest properties. */
+  function isCursor(value: SequenceSource<T>): value is Cursor<T> {
+    return typeof value === 'object' && 'next' in value && 'reset' in value;
+  }
+
+  /** Converts a {@link SequenceSource} to a {@link Cursor}.  If for some reason it can't be done, throws an error. */
+  function sequenceSourceToCursor(data: SequenceSource<T>): Cursor<T> {
+    if (isCursor(data)) {
+      return data as Cursor<T>;
+    }
+    const cursor = isArrayLike(data)
+      ? new ArrayLikeCursor(data, !options.disableAutoReset)
+      : Symbol.iterator in data
+      ? new IterableCursor(data, !options.disableAutoReset)
+      : undefined;
+
+     if (!cursor) {
+      throw new Error(ERR_INVALID_SOURCE);
+    }
+    return cursor;
   }
 }

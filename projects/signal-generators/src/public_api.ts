@@ -23,6 +23,7 @@ export * from './lib/utilities/signal-to-iterator';
 export * from './lib/utilities/inspect';
 
 // common types
+export { Cursor, CursorResult } from './lib/support/cursors/cursor';
 export * from './lib/reactive-source';
 export * from './lib/internal/transformed-signal'; // Even though it is "internal", this is exported for documentation purposes.
 export { ValueSource, ValueSourceValue }  from './lib/value-source';
