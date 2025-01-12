@@ -14,7 +14,13 @@
     "readme": false
   },
   "name": "Angular Signal Generators",
-  "requiredToBeDocumented": ["Function"],
   "out": "projects/demo/src/api",
-  "sourceLinkTemplate": "https://github.com/DDtMM/angular-signal-generators/blob/main/{path}?at={gitRevision}#line={line}"
+  "requiredToBeDocumented": ["Function"],
+  "sourceLinkTemplate": "https://github.com/DDtMM/angular-signal-generators/blob/main/{path}?at={gitRevision}#line={line}",
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": true,
+  }
 }

@@ -1,0 +1,14 @@
+<div class="flex flex-row gap-3">
+  <div class="flex flex-col gap-1">
+    <div class="flex flex-row items-center gap-3">
+      <input type="radio" class="radio checked:bg-blue-500" value="a" [(ngModel)]="$sequenceChoices" /> Choice A
+    </div>
+    <div class="flex flex-row items-center gap-3">
+      <input type="radio" class="radio checked:bg-blue-500" value="b" [(ngModel)]="$sequenceChoices" /> Choice B
+    </div>
+    <div class="flex flex-row items-center gap-3">
+      <input type="radio" class="radio checked:bg-blue-500" value="c" [(ngModel)]="$sequenceChoices" /> Choice C
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="$sequenceChoices.next()">Next Choice</button>
+</div>
