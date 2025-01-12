@@ -41,7 +41,7 @@ export interface DemoConfigurationItem<FnName extends string> {
   readonly sourceUrl: string;
   readonly usages: UsageType[];
 }
-const DOC_URL_PREFIX = './api/functions/_ddtmm_angular_signal_generators.';
+const DOC_URL_PREFIX = './api/functions/_ddtmm_angular-signal-generators.';
 
 export const DUMMY_CONFIGURATION: DemoConfigurationItem<string> = {
   homeDemo: AsyncSignalHomeDemoComponent,
