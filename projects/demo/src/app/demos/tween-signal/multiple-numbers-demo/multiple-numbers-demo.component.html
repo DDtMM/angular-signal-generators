@@ -1,9 +1,5 @@
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
-<p>
-  You can tween between array values of equal length.
-  Here the array is an set of coordinates that changes with each change of the control surface.
-</p>
 <div class="flex flex-row gap-3 items-center pb-3">
   <span>Easing Function</span>
   <app-easing-selector [(easingFn)]="$easingFn" (easingFnChange)="$coords.setOptions({ easing: $easingFn() })" />

@@ -51,9 +51,16 @@ import { SimpleTweenDemoComponent } from '../../demos/tween-signal/simple-tween-
   <app-demo-host name="Animation Multiple Values"
     pattern="tween-signal/(multiple-numbers-demo|shared)"
     hiddenPattern="easing-selector">
+    <p>
+      You can tween between array values of equal length.
+      Here the array is an set of coordinates that changes with each click of the control surface.
+    </p>
     <app-multiple-numbers-demo />
   </app-demo-host>
   <app-demo-host name="Fun with Interpolation" pattern="tween-signal/interpolation-demo/">
+    <p>
+      You can tween between anything as long as there is an interpolation function that can translate progress into a value.
+    </p>
     <app-interpolation-demo />
   </app-demo-host>
 </div>

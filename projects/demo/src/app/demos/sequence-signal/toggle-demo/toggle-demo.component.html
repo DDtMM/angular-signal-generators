@@ -1,5 +1,5 @@
 <div class="flex flex-row gap-3 items-center">
-  <button type="button" class="btn btn-sm btn-primary" (click)="$trueFalseToggle.next()">TOGGLE ME</button>
+  <input type="checkbox" class="toggle" [(ngModel)]="$trueFalseToggle" aria-label="Bound toggle button" />
   <div class="label">Current Value:</div>
   <div>{{$trueFalseToggle()}}</div>
 </div>
