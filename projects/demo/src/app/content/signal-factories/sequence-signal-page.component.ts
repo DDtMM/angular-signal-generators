@@ -27,6 +27,7 @@ import { ChoicesDemoComponent } from '../../demos/sequence-signal/choices-demo/c
 </p>
 <div class="flex flex-col gap-6">
   <app-demo-host name="Simple Toggle" pattern="sequence-signal/toggle-demo/toggle-demo.component">
+    You can avoid using any template expressions or functions when toggling values with <i>sequenceSignal</i>.
     <app-toggle-demo />
   </app-demo-host>
   <app-demo-host name="Generated Fibonacci Sequence" pattern="sequence-signal/fibonacci-demo/">

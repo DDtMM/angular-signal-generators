@@ -46,6 +46,7 @@ import { MultipleSpringNumbersDemoComponent } from '../../demos/spring-signal/mu
   <app-demo-host name="Animating Multiple Values"
     pattern="spring-signal/(multiple-spring-numbers-demo|shared)"
     hiddenPattern="spring-options" >
+    <p>Click the surface to update the 2D coordinates and see the spring animation.</p>
     <app-multiple-spring-numbers-demo />
   </app-demo-host>
 </div>

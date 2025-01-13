@@ -19,9 +19,11 @@ but two built-in implementations exist: <b>localStorageSignal</b> and <b>session
 </p>
 <div class="flex flex-col gap-6">
   <app-demo-host name="Built-in Browser Storage Signal with Custom Serialization" pattern="storage-signal/built-in-storage-demo">
+    <p>Set the input below and refresh the page to see the value below persisted in session storage.</p>
     <app-built-in-storage-demo />
   </app-demo-host>
   <app-demo-host name="Custom Storage Example" pattern="storage-signal/custom-storage-demo">
+    <p>Custom providers can be used in a storage signal.  In this case a spy functionality is part of the provided store.</p>
     <app-custom-storage-demo />
   </app-demo-host>
 </div>

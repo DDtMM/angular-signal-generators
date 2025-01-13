@@ -30,6 +30,10 @@ import { ArrayDemoComponent } from '../../demos/lift-signal/array-demo/array-dem
   </div>
 </div>
 <app-demo-host name="Lift methods from an array directly to signal" pattern="lift-signal/array-demo/">
+  <p>
+    You can easily lift the methods on from any object to the signal.
+    Here various array methods are lifted and directly accessed.
+  </p>
   <app-array-demo />
 </app-demo-host>
 

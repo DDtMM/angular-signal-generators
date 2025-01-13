@@ -1,13 +1,10 @@
-<p>Custom providers can be used in a storage signal.  In this case a spy functionality is part of the provided store.</p>
 <div class="grid grid-cols-[auto,1fr] gap-3 items-start">
-
-    <label class="label text-nowrap" for="inputVal">Input Value</label>
-    <input type="text" class="input input-bordered " id="inputVal" [(ngModel)]="$stored" />
-    <div class="label">Events</div>
-    <ul class="p-3 border border-neutral-400 rounded-lg bg-neutral-200">
-      @for (l of $eventLog(); track $index) {
-        <li>{{l}}</li>
-      }
-    </ul>
-
+  <label class="label text-nowrap" for="inputVal">Input Value</label>
+  <input type="text" class="input input-bordered " id="inputVal" [(ngModel)]="$stored" />
+  <div class="label">Events</div>
+  <ul class="p-3 border border-neutral-400 rounded-lg bg-neutral-200">
+    @for (l of $eventLog(); track $index) {
+      <li>{{l}}</li>
+    }
+  </ul>
 </div>
