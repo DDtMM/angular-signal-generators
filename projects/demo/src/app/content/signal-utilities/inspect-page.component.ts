@@ -22,12 +22,24 @@ The Subject can be anything, but to be effective it should be a signal, an objec
 </p>
 <div class="flex flex-col gap-6">
 <app-demo-host name="Basic Usage" pattern="inspect/basic-demo/">
+  <p>
+    You'll need to see the browser's console to see output of inspect.
+  </p>
   <app-basic-demo />
 </app-demo-host>
 <app-demo-host name="Using Inspect with a Custom Reporter" pattern="inspect/alt-reporter-demo/">
+  <p>
+    In this demo the custom reporter can be disabled by a signal and the output formatting stands out.
+    You'll need to see the browser's console to see output of inspect.
+  </p>
   <app-alt-reporter-demo />
 </app-demo-host>
 <app-demo-host  name="The easy way to inspect all signals on a component" pattern="inspect/inspect-component-signals-demo/">
+  <p>
+    In this demo the entire state of the component is inspected by calling 
+    <code class="inline">inspect(this)</code>.
+    You'll need to see the browser's console to see output of inspect.
+  </p>
   <app-inspect-component-signals-demo />
 </app-demo-host>
 </div>

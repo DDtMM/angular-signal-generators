@@ -3,8 +3,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DEMO_CONFIGURATIONS, DemoConfigurationItem } from '../demo-configuration';
 
-
-
 @Component({
     selector: 'app-home',
     imports: [CommonModule, RouterLink],
@@ -19,7 +17,6 @@ import { DEMO_CONFIGURATIONS, DemoConfigurationItem } from '../demo-configuratio
           Angular Signal Generators
         </h1>
       </div>
-
       <p class="py-6">
         Streamline your Angular development with Angular Signal Generators,
         a library of signals and utilities designed to replace common patterns <span class="inline-block">for faster, cleaner code.</span>
@@ -28,7 +25,6 @@ import { DEMO_CONFIGURATIONS, DemoConfigurationItem } from '../demo-configuratio
     </div>
   </div>
 </div>
-
 <div class="divider"></div>
 <h2 class="text-3xl text-center">Function Demos</h2>
 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
