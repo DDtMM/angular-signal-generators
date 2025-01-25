@@ -1,5 +1,5 @@
 import { CreateComputedOptions, CreateEffectOptions, EffectCleanupFn, EffectRef, Signal, computed, effect } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture } from '@angular/core/testing';
 
 /**
  * Wraps a signal with a Proxy that calls change detection after each method call.

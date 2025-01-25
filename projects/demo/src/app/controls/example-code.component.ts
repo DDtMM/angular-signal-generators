@@ -22,5 +22,5 @@ export class ExampleCodeComponent {
   /** Wraps transcluded content. */
   readonly content = viewChild<ElementRef<HTMLElement>>('contentWrapper');
   /** Code text from contentWrapper. */
-  readonly $text = computed(() => this.content()?.nativeElement?.innerText.trim() ?? '');
+  readonly $text = computed(() => this.content()?.nativeElement?.textContent?.trim() ?? '');
 }

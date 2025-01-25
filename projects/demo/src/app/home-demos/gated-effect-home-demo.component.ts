@@ -7,20 +7,19 @@ import { HomeBoxComponent } from '../controls/home-box.component';
     imports: [CodeBlockComponent, HomeBoxComponent],
     hostDirectives: [ContentsClassDirective],
     template: `
-<app-home-box fnName="asyncSignal">
+<app-home-box fnName="gatedEffect">
   <div>
-  "Flattens" a source of promises or observables to a signal of result values, switching to the new source as soon as it changes.
+    An effect that starts, stops or runs based on conditions passed to options.
   </div>
   <div class="divider">Example</div>
   <app-code-block language="typescript" ngPreserveWhitespaces [showCopy]="false">
-$id = signal(0);
-// call getCustomer every time $id changes.
-$customer = asyncSignal(() => this.$id() !== 0 ? this.getCustomer(this.$id()) : undefined);
+// This will run only once, after $userInfo is set.
+const $userInfo = signal&lt;UserInfo | undefined&gt;(undefined);
+gatedEffect(() => doSomethingWithRequiredUserInfo($userInfo()!), 
+  {{'{'}} start: () => $userInfo() !== undefined, times: 1 {{'}'}});
   </app-code-block>
 </app-home-box>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AsyncSignalHomeDemoComponent {
-
-}
+export class GatedEffectHomeDemoComponent {}

@@ -3,6 +3,7 @@ import { AsyncSignalHomeDemoComponent } from './home-demos/async-signal-home-dem
 import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-home-demo.component';
 import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
 import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
+import { GatedEffectHomeDemoComponent } from './home-demos/gated-effect-home-demo.component';
 import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.component';
 import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
 import { LiftSignalHomeDemoComponent } from './home-demos/lift-signal-home-demo.component';
@@ -95,6 +96,16 @@ export const DEMO_CONFIGURATIONS = [
     sourceUrl: 'signals/filter-signal.ts',
     usages: ['writableSignal']
   },
+  {
+    homeDemo: GatedEffectHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}gatedEffect.html`,
+    fnName: 'gatedEffect' as const,
+    name: 'gatedEffect',
+    page: () => import('./content/signal-utilities/gated-effect-page.component').then(x => x.GatedEffectPageComponent),
+    route: 'gated-effect',
+    sourceUrl: 'utilities/gated-effect.ts',
+    usages: ['utility']
+  },  
   {
     homeDemo: InspectHomeDemoComponent,
     docUrl: `${DOC_URL_PREFIX}inspect.html`,

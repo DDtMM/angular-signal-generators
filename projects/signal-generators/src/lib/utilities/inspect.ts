@@ -37,6 +37,7 @@ export const INSPECT_DEFAULTS = {
  * Reports the latest state of a subject by resolving all the values deeply contained within by using {@link nestSignal}.
  * By default the output is just a console.log, but this can be changed with the {@link InspectOptions<T>.reporter} option.
  * Subject can be anything, but to be effective it should be a signal, an object that contains signals, or an array of signals.
+ * 
  * @param subject This can be anything, but ideally it is some object that contains signals somewhere.
  * @param options Options that control the behavior of inspect.  Globally, options can be changed from {@link INSPECT_DEFAULTS}.
  * @example

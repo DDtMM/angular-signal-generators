@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 
 /**
