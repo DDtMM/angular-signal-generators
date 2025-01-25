@@ -114,6 +114,10 @@ This is very similar to rxjs's *timer* operator.  It will be have like setTimeou
 
 ## Utilities
 
+### gatedEffect
+
+An effect with options to control when it start, stops or runs.
+
 ### inspect
 
 Inspired by Svelte's $inspect rune, logs the resolved values of signals deeply nested in an object, array or signal.

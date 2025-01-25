@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ExampleCodeComponent } from '../controls/example-code.component';
-import { HomeBoxComponent } from '../controls/home-box.component';
+import { CodeBlockComponent } from '../controls/code-block.component';
 import { ContentsClassDirective } from '../controls/contents-class.directive';
+import { HomeBoxComponent } from '../controls/home-box.component';
 
 @Component({
-    imports: [ExampleCodeComponent, HomeBoxComponent],
+    imports: [CodeBlockComponent, HomeBoxComponent],
     hostDirectives: [ContentsClassDirective],
     template: `
 <app-home-box fnName="liftSignal">
@@ -12,11 +12,11 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
     "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
   </div>
   <div class="divider">Example</div>
-  <app-example-code><pre>
+  <app-code-block language="typescript" ngPreserveWhitespaces [showCopy]="false">
 const liftedArray = liftSignal([1, 2, 3], null, ['push']);
 liftedArray.push(4)
 console.log(liftedArray()); // [1, 2, 3, 4];
-</pre></app-example-code>
+  </app-code-block>
 </app-home-box>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush

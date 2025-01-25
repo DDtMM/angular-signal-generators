@@ -34,7 +34,7 @@
   .doc-header {
     @apply -mx-3 -my-3 mb-3 py-2 px-3 bg-secondary text-secondary-content shadow-sm;
     h1 {
-      @apply p-0 text-xl leading-8;
+      @apply p-0 m-0 text-xl leading-8 text-secondary-content;
     }
   }
 }

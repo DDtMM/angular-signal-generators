@@ -19,6 +19,7 @@ export * from './lib/signals/reduce-signal';
 export * from './lib/signals/sequence-signal';
 export * from './lib/signals/storage-signal';
 export * from './lib/signals/timer-signal';
+export * from './lib/utilities/gated-effect';
 export * from './lib/utilities/signal-to-iterator';
 export * from './lib/utilities/inspect';
 
