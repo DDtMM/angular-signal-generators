@@ -106,12 +106,18 @@ function domObserverComputedSignalSetup<D extends DomObserver, I extends DomSign
   nativeObservedTransformFn: (element: I) => S | undefined,
   injector: Injector
 ): void {
-  const $subject = coerceSignal(subjectSource, { injector });
-  let currentSubject = untracked($subject);
-  observeNextSubject<D, S>(observer, nativeObservedTransformFn(currentSubject), options);
+  const $subject = coerceSignal(subjectSource, { injector }) as SignalGetter<I>;
+  const subjectNode = $subject[SIGNAL];
+  let currentSubject: undefined | I;
+  if (!subjectNode.producerMustRecompute(subjectNode)) {
+    // only start observing immediately IF the signal value is updated.  Otherwise wait for the effect.
+    currentSubject = untracked($subject);
+    observeNextSubject<D, S>(observer, nativeObservedTransformFn(currentSubject), options);
+  }
   effect(() => {
     const nextSubject = $subject();
     if (nextSubject !== currentSubject) {
+      // only update the observer if the subject has Changed.
       currentSubject = nextSubject;
       observeNextSubject(observer, nativeObservedTransformFn(nextSubject), options);
     }

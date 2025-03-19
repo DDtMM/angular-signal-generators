@@ -1,4 +1,4 @@
-import { Injector, signal } from '@angular/core';
+import { Component, ElementRef, Injector, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { runComputedAndEffectTests, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from 'projects/signal-generators/src/testing/common-signal-tests';
 import { createFixture } from 'projects/signal-generators/src/testing/testing-utilities';
@@ -8,18 +8,7 @@ import { MockObserver } from './mock-observer.spec';
 import { MutationSignalValue } from './mutation-signal';
 
 
-describe('domObserverSignalFactory', () => {
-  // this was created outside the other tests because the function relies on creating its own fixture.
-  runDoesNotCauseReevaluationsSimplyWhenNested(
-    () => {
-      const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
-      const sut = createObserverSignalForTest(observer, document.createElement('div'));
-      return sut;
-    },
-    (sut) => sut.set([Math.random()])
-  );
-});
-
+/** These tests use a common dummy fixture. */
 describe('domObserverSignalFactory', () => {
 
   let fixture: ComponentFixture<unknown>;
@@ -48,6 +37,7 @@ describe('domObserverSignalFactory', () => {
       }
     );
   });
+
 
   it('should call disconnect when the context it is in is destroyed', () => {
     const observer = new MockObserver();
@@ -98,14 +88,41 @@ describe('domObserverSignalFactory', () => {
     const observer = new MockObserver();
     const $subject = signal<HTMLElement>(document.createElement('div'));
     createObserverSignalForTest(observer, $subject);
+    fixture.detectChanges(); // cause effect to fire.
     $subject.set(document.createElement('div'));
     fixture.detectChanges(); // cause effect to fire.
     expect(observer.disconnect).toHaveBeenCalledTimes(2);
     expect(observer.observe).toHaveBeenCalledTimes(2);
   }));
-
 });
 
+/** These was created outside the other tests because the function relies on creating its own fixture. */
+describe('domObserverSignalFactory', () => {
+
+  runDoesNotCauseReevaluationsSimplyWhenNested(
+    () => {
+      const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
+      const sut = createObserverSignalForTest(observer, document.createElement('div'));
+      return sut;
+    },
+    (sut) => sut.set([Math.random()])
+  );
+
+  it('should not throw NG0951 (Child query result is required but no value is available) when viewChild.required is used', () => {
+    
+    @Component({
+      selector: 'app-test',
+      template: `<div #testElem>Content</div>`
+    })
+    class TestComponent {
+      readonly observer = new MockObserver();
+      readonly $subject = viewChild.required<ElementRef<HTMLDivElement>>('testElem');
+      readonly $sut = createObserverSignalForTest(this.observer, this.$subject);
+    }
+    const fixture = TestBed.createComponent(TestComponent);
+    expect(fixture.componentInstance.$sut()).toBeTruthy();
+  });
+});
 
 function createObserverSignalForTest<D extends MockObserver>(observer: D, source: ValueSource<DomSignalValue<D>>): DomObserverSignal<D, DomSignalValue<D>> {
   return domObserverSignalFactory<D, DomSignalValue<D>, Node>(
