@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: User Node
         uses: actions/setup-node@v3
@@ -35,7 +35,7 @@ jobs:
           node-version: "20"
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
       - name: Install Dependencies
         if:
@@ -48,7 +48,7 @@ jobs:
       - name: Build Demo site
         run: npx ng build demo --base-href /angular-signal-generators/
 
-      # Can't run KARMA in github automatication because it requires browser.  Maybe there is a work around.
+      # Can't run KARMA in github automation because it requires browser.  Maybe there is a work around.
       # The readme is used in the apidocs, so make sure coverage is correct.
       # - name: Build Coverage
       #  run: npx ng test signal-generators --code-coverage true --watch false
@@ -65,7 +65,7 @@ jobs:
         run: npx cpy ./dist/demo/browser/index.html ./ --rename 404.html
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist/demo/browser
 
@@ -80,4 +80,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
