@@ -7,25 +7,25 @@
     "build": "ng build"
   },
   "dependencies": {
-    "@angular/animations": "^19.0.0",
-    "@angular/common": "^19.0.0",
-    "@angular/compiler": "^19.0.0",
-    "@angular/core": "^19.0.0",
-    "@angular/forms": "^19.0.0",
-    "@angular/platform-browser": "^19.0.0",
+    "@angular/animations": "^20.0.0-rc.1",
+    "@angular/common": "^20.0.0-rc.1",
+    "@angular/compiler": "^20.0.0-rc.1",
+    "@angular/core": "^20.0.0-rc.1",
+    "@angular/forms": "^20.0.0-rc.1",
+    "@angular/platform-browser": "^20.0.0-rc.1",
     "@ddtmm/angular-signal-generators": "^3.0.0",
-    "rxjs": "^7.8.1",
+    "rxjs": "^7.8.2",
     "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.0.0",
-    "@angular/cli": "^19.0.0",
-    "@angular/compiler-cli": "^19.0.0",
+    "@angular/build": "^20.0.0-rc.2",
+    "@angular/cli": "^20.0.0-rc.2",
+    "@angular/compiler-cli": "^20.0.0-rc.1",
     "autoprefixer": "^10.4.19",
-    "daisyui": "^4.12.14",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15",
-    "typescript": "~5.6.3"
+    "daisyui": "^4.12.24",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.8.3"
   },
   "overrides": {
     "@angular-devkit/build-angular": {

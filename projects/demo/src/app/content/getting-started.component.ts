@@ -25,7 +25,7 @@ import { CodeBlockComponent } from "../controls/code-block.component";
     </tr>
     </thead>
     <tbody>
-      <tr><td>3.x.x</td><td>^19.0.0</td></tr>
+      <tr><td>3.x.x</td><td>&gt;=19.0.0 ^20.0.0</td></tr>
       <tr><td>2.x.x</td><td>&gt;=17.0.0 ^18.0.0</td></tr>
       <tr><td>1.x.x</td><td>&gt;=16.0.0 ^17.0.0</td></tr>
     </tbody>

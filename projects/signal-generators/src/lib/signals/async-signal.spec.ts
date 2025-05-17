@@ -61,7 +61,7 @@ describe('asyncSignal', () => {
     it('uses equal function', () => {
       const asyncSource = new BehaviorSubject(2)
       const sut = TestBed.runInInjectionContext(() => asyncSignal(asyncSource, { defaultValue: 1, equal: (a, b) => a % 2 === b % 2 }));
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(sut()).toBe(2);
       asyncSource.next(4);
       expect(sut()).toBe(2);
@@ -105,7 +105,7 @@ describe('asyncSignal', () => {
       let innerSubject: BehaviorSubject<number>;
       const sut = TestBed.runInInjectionContext(() => asyncSignal(() => innerSubject, { defaultValue: -1 }));
       innerSubject = new BehaviorSubject(1);
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(sut()).toBe(1);
     });
   })
@@ -123,12 +123,12 @@ describe('asyncSignal', () => {
       const subscribeSpy1 = spyOn(source1, 'subscribe').and.callThrough();
       const subscribeSpy2 = spyOn(source2, 'subscribe').and.callThrough();
       const sut = TestBed.runInInjectionContext(() => asyncSignal(source1, { defaultValue: -1 }));
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(sut()).toBe(1);
       source1.next(2);
       expect(sut()).toBe(2);
       sut.set(source2);
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(subscribeSpy1).toHaveBeenCalledTimes(1);
       expect(subscribeSpy2).toHaveBeenCalledTimes(1);
       expect(sut()).toBe(5);
@@ -138,10 +138,10 @@ describe('asyncSignal', () => {
       const subjectOne = new BehaviorSubject(1);
       const subjectTwo = new BehaviorSubject(6);
       const sut = TestBed.runInInjectionContext(() => asyncSignal(subjectOne));
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(sut()).toBe(1);
       sut.set(subjectTwo);
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(sut()).toBe(6);
       subjectOne.next(2);
       expect(sut()).toBe(6);
@@ -226,7 +226,7 @@ describe('asyncSignal', () => {
       const asyncSource = createPromiseWithResolvers<number>();
       const sut = TestBed.runInInjectionContext(() => asyncSignal(asyncSource));
       // There's a gap in between when the signal is created an the listener starts.  If the effect doesn't run, the error is missed.
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(sut()).toBe(undefined);
       asyncSource.reject();
       flush(); // need to process the reject.
@@ -237,7 +237,7 @@ describe('asyncSignal', () => {
       const asyncSource = createPromiseWithResolvers<number>();
       const sut = TestBed.runInInjectionContext(() => asyncSignal(asyncSource));
       // There's a gap in between when the signal is created an the listener starts.  If the effect doesn't run, the error is missed.
-      TestBed.flushEffects();
+      TestBed.tick();
       asyncSource.reject();
       flush();
       expect(() => sut()).toThrowError('Error in Async Source'); // initial error.

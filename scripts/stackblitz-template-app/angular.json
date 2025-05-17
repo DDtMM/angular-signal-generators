@@ -1,29 +1,21 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "cli": {
-    "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce"
-  },
   "newProjectRoot": "projects",
   "projects": {
     "demo": {
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "configurations": {
             "development": {
-              "extractLicenses": false,
-              "namedChunks": true,
               "optimization": false,
+              "extractLicenses": false,
               "sourceMap": true
             },
             "production": {
-              "aot": true,
-              "extractLicenses": true,
-              "namedChunks": false,
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false
+              "outputHashing": "all"
             }
+            
           },
           "options": {
             "assets": [],
@@ -36,7 +28,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "development": {
               "buildTarget": "demo:build:development"

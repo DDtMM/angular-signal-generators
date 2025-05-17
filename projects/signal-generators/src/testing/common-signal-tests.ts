@@ -48,7 +48,7 @@ export function runInjectorOptionTest(sutSetup: (injector: Injector) => () => un
   it('should successfully get created when injector is passed in options', () => {
     const injector = TestBed.inject(Injector);
     const sut = sutSetup(injector);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect(() => sut()).not.toThrow();
   });
 }
@@ -140,9 +140,9 @@ export function runComputedAndEffectTests<T>(
       .toBe(initialValue);
     action(); // execute change to signal
     // while computed does not need detectChanges, a signal that relies on effects might.
-    TestBed.flushEffects();
+    TestBed.tick();
     flush();
-    TestBed.flushEffects(); // make sure to detect any asynchronous changes that occur after flush.
+    TestBed.tick(); // make sure to detect any asynchronous changes that occur after flush.
     expect($computedSut.timesUpdated).withContext('when source is updated, computed signal is not immediately updated').toBe(1);
     const updatedValue = $computedSut();
     expect($computedSut.timesUpdated).withContext('when source is updated, computed signal is executed when read').toBe(2);
@@ -155,12 +155,12 @@ export function runComputedAndEffectTests<T>(
     const injector = fixtureFactory?.()?.componentRef.injector ?? TestBed.inject(Injector);
     const [$sut, action] = runInInjectionContext(injector, setup);
     const effectRef = effectSpy(() => $sut(), { injector });
-    TestBed.flushEffects(); // no need to worry about async changes since a signal should immediately have an initial value.
+    TestBed.tick(); // no need to worry about async changes since a signal should immediately have an initial value.
     expect(effectRef.timesUpdated).withContext('effect executes immediately after changed detection').toBe(1);
     action(); // execute change to signal
-    TestBed.flushEffects();
+    TestBed.tick();
     flush();
-    TestBed.flushEffects(); // make sure to detect any asynchronous changes that occur after flush.
+    TestBed.tick(); // make sure to detect any asynchronous changes that occur after flush.
     // This test originally was just checking that the effect was called twice.
     // However, when upgrading to 17.2 it appears that async functions like timers would could effects to trigger.
     expect(effectRef.timesUpdated).withContext('effect executes after signal update is detected').toBeGreaterThanOrEqual(2);

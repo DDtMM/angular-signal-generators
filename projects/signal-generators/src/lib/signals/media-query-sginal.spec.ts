@@ -95,7 +95,7 @@ describe('mediaQuerySignal', () => {
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
         fakeMql.matches = true;
         $source.set('(max-width: 1200px)');
-        TestBed.flushEffects(); // we need to flush effects so that the source signal change is processed.
+        TestBed.tick(); // we need to flush effects so that the source signal change is processed.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 1200px)' });
       });
 
@@ -106,7 +106,7 @@ describe('mediaQuerySignal', () => {
         fakeMql.matches = true; // ignore when event fires.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
         $source.set('(max-width: 1200px)');
-        TestBed.flushEffects(); // we need to flush effects so that the source signal change is processed.
+        TestBed.tick(); // we need to flush effects so that the source signal change is processed.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
       });
       it('should ignore future changes after injection context is destroyed.', () => {
@@ -117,7 +117,7 @@ describe('mediaQuerySignal', () => {
         fakeMql.matches = true; // ignore when event fires.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
         $source.set('(max-width: 1200px)');
-        TestBed.flushEffects(); // we need to flush effects so that the source signal change is processed.
+        TestBed.tick(); // we need to flush effects so that the source signal change is processed.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
       });
     });
