@@ -58,7 +58,7 @@ export const DUMMY_CONFIGURATION: DemoConfigurationItem<string> = {
 export const DEMO_CONFIGURATIONS = [
   {
     homeDemo: AsyncSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}asyncSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}asyncSignal.html`,
     fnName: 'asyncSignal' as const,
     name: 'asyncSignal',
     page: () => import('./content/signal-factories/async-signal-page.component').then(x => x.AsyncSignalPageComponent),
@@ -88,7 +88,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: FilterSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}filterSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}filterSignal.html`,
     fnName: 'filterSignal' as const,
     name: 'filterSignal',
     page: () => import('./content/signal-factories/filter-signal-page.component').then(x => x.FilterSignalPageComponent),
@@ -118,7 +118,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: IntersectionSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}intersectionSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}intersectionSignal.html`,
     fnName: 'intersectionSignal' as const,
     name: 'intersectionSignal',
     page: () => import('./content/signal-factories/intersection-signal-page.component').then(x => x.IntersectionSignalPageComponent),
@@ -138,7 +138,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: MapSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}mapSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}mapSignal.html`,
     fnName: 'mapSignal' as const,
     name: 'mapSignal',
     page: () => import('./content/signal-factories/map-signal-page.component').then(x => x.MapSignalPageComponent),
@@ -148,7 +148,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: MediaQuerySignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}mediaQuerySignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}mediaQuerySignal.html`,
     fnName: 'mediaQuerySignal' as const,
     name: 'mediaQuerySignal',
     page: () => import('./content/signal-factories/media-query-signal-page.component').then(x => x.MediaQuerySignalPageComponent),
@@ -158,7 +158,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: MutationSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}mutationSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}mutationSignal.html`,
     fnName: 'mutationSignal' as const,
     name: 'mutationSignal',
     page: () => import('./content/signal-factories/mutation-signal-page.component').then(x => x.MutationSignalPageComponent),
@@ -178,7 +178,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: ReduceSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}reduceSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}reduceSignal.html`,
     fnName: 'reduceSignal' as const,
     name: 'reduceSignal',
     page: () => import('./content/signal-factories/reduce-signal-page.component').then(x => x.ReduceSignalPageComponent),
@@ -188,7 +188,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: ResizeSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}resizeSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}resizeSignal.html`,
     fnName: 'resizeSignal' as const,
     name: 'resizeSignal',
     page: () => import('./content/signal-factories/resize-signal-page.component').then(x => x.ResizeSignalPageComponent),
@@ -198,7 +198,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: SequenceSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}sequenceSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}sequenceSignal.html`,
     fnName: 'sequenceSignal' as const,
     name: 'sequenceSignal',
     page: () => import('./content/signal-factories/sequence-signal-page.component').then(x => x.SequenceSignalPageComponent),
@@ -218,7 +218,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: SpringSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}springSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}springSignal.html`,
     fnName: 'springSignal' as const,
     name: 'springSignal',
     page: () => import('./content/signal-factories/spring-signal-page.component').then(x => x.SpringSignalPageComponent),
@@ -238,7 +238,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: TimerSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}timerSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}timerSignal.html`,
     fnName: 'timerSignal' as const,
     name: 'timerSignal',
     page: () => import('./content/signal-factories/timer-signal-page.component').then(x => x.TimerSignalPageComponent),
@@ -248,7 +248,7 @@ export const DEMO_CONFIGURATIONS = [
   },
   {
     homeDemo: TweenSignalHomeDemoComponent,
-    docUrl: `${DOC_URL_PREFIX}tweenSignal-1.html`,
+    docUrl: `${DOC_URL_PREFIX}tweenSignal.html`,
     fnName: 'tweenSignal' as const,
     name: 'tweenSignal',
     page: () => import('./content/signal-factories/tween-signal-page.component').then(x => x.TweenSignalPageComponent),
