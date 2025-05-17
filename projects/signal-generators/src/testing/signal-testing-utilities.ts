@@ -14,7 +14,7 @@ export function autoDetectChangesSignal<T, S extends Signal<T>>($source: S, fixt
         return new Proxy(propVal, {
           apply: (targetInner, thisArg, argumentsList) => {
             const res = Reflect.apply(targetInner, thisArg, argumentsList);
-            // At some point this can be changed to TestBed.flushEffects() once we stop supporting Angular 16.
+            // At some point this can be changed to TestBed.tick() once we stop supporting Angular 16.
             // Actually is TestBed.flushEffects enough?
             fixture.detectChanges();
             return res;

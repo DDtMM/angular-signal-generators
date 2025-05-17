@@ -36,7 +36,7 @@ describe('eventSignal', () => {
 
   it('ignores undefined values', () => {
     const sut = TestBed.runInInjectionContext(() => eventSignal(undefined, 'click'));
-    TestBed.flushEffects();
+    TestBed.tick();
     expect(sut()).toBe(undefined);
   });
   it('can listen to a string value', () => {
@@ -156,7 +156,7 @@ describe('eventSignal', () => {
         const sut = TestBed.runInInjectionContext(() =>
           eventSignal(fixture.componentInstance.$buttonOne, 'click', (evt: Event) => (evt.target as HTMLElement).innerText)
         );
-        TestBed.flushEffects();
+        TestBed.tick();
         ngMocks.click('#btn1');
         expect(sut()).toBe('1');
       });
@@ -164,11 +164,11 @@ describe('eventSignal', () => {
         const sut = TestBed.runInInjectionContext(() =>
           eventSignal(fixture.componentInstance.$buttonCurrent, 'click', (evt: Event) => (evt.target as HTMLElement).innerText)
         );
-        TestBed.flushEffects();
+        TestBed.tick();
         ngMocks.click('#btn1');
         expect(sut()).toBe('1');
         fixture.componentInstance.$swapButtons.set(true);
-        TestBed.flushEffects();
+        TestBed.tick();
         ngMocks.click('#btn2');
         expect(sut()).toBe('2');
         ngMocks.click('#btn1');

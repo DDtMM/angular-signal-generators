@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { ChangeDetectionStrategy, Component, provideZonelessChangeDetection } from '@angular/core';
 import { $$DemoClass$$ } from './$$DemoPath$$';
 import { bootstrapApplication } from '@angular/platform-browser';
-import 'zone.js';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +11,4 @@ import 'zone.js';
 })
 export class AppComponent { }
 
-bootstrapApplication(AppComponent, { providers: [provideExperimentalZonelessChangeDetection()] });
+bootstrapApplication(AppComponent, { providers: [provideZonelessChangeDetection()] });

@@ -1,5 +1,5 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, effect, ElementRef, inject, viewChild, DOCUMENT } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { mediaQuerySignal } from '@ddtmm/angular-signal-generators';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';

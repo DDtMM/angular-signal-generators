@@ -8,9 +8,9 @@ describe('gatedEffect', () => {
     const $a = signal(1);
     const $b = signal(1);
     TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1)));
-    TestBed.flushEffects();
+    TestBed.tick();
     $a.set(3);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(4);
   }));
 
@@ -18,10 +18,10 @@ describe('gatedEffect', () => {
     const $a = signal(1);
     const $b = signal(1);
     const effectRef = TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1)));
-    TestBed.flushEffects(); // This must be called so that the first, required effect run occurs.
+    TestBed.tick(); // This must be called so that the first, required effect run occurs.
     $a.set(3);
     effectRef.destroy();
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(2);
   }));
 
@@ -29,13 +29,13 @@ describe('gatedEffect', () => {
     const $a = signal(2);
     const $b = signal(1);
     TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1), { filter: () => $a() % 2 === 0 }));
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(3);
     $a.set(3);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(3);
     $a.set(4);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(5);
   }));
 
@@ -43,14 +43,14 @@ describe('gatedEffect', () => {
     const $a = signal(1);
     const $b = signal(1);
     TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1), { start: () => $a() > 3 }));
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(1);
-    TestBed.flushEffects();
+    TestBed.tick();
     $a.set(2);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(1);
     $a.set(4);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(5);
   }));
 
@@ -58,14 +58,14 @@ describe('gatedEffect', () => {
     const $a = signal(1);
     const $b = signal(1);
     TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1), { times: 2 }));
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(2); // This counts as once.
-    TestBed.flushEffects(); // nothing should run here.
+    TestBed.tick(); // nothing should run here.
     $a.set(3);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(4); // last run
     $a.set(4);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(4); // no change
   }));
 
@@ -73,13 +73,13 @@ describe('gatedEffect', () => {
     const $a = signal(1);
     const $b = signal(1);
     TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1), { until: () => $a() > 3 }));
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(2); 
     $a.set(3);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(4); // last run
     $a.set(4);
-    TestBed.flushEffects();
+    TestBed.tick();
     expect($b()).toBe(4); // no change
   }));
 });

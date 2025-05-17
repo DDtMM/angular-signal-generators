@@ -17,7 +17,7 @@ describe('inspect', () => {
       TestBed.runInInjectionContext(() => {
         const source = signal('hello there');
         inspect(source);
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledWith('hello there');
       }));
 
@@ -25,9 +25,9 @@ describe('inspect', () => {
       TestBed.runInInjectionContext(() => {
         const source = signal('hello there');
         inspect(source);
-        TestBed.flushEffects();
+        TestBed.tick();
         source.set('goodbye');
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledWith('hello there');
         expect(reporterSpy).toHaveBeenCalledWith('goodbye');
       }));
@@ -36,9 +36,9 @@ describe('inspect', () => {
       TestBed.runInInjectionContext(() => {
         const source = signal('hello there');
         inspect(source, { skipInitial: true });
-        TestBed.flushEffects();
+        TestBed.tick();
         source.set('goodbye');
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledTimes(1);
         expect(reporterSpy).toHaveBeenCalledWith('goodbye');
       }));
@@ -47,9 +47,9 @@ describe('inspect', () => {
         INSPECT_DEFAULTS.skipInitial = true;
         const source = signal('hello there');
         inspect(source);
-        TestBed.flushEffects();
+        TestBed.tick();
         source.set('goodbye');
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledTimes(1);
         expect(reporterSpy).toHaveBeenCalledWith('goodbye');
         INSPECT_DEFAULTS.skipInitial = originalDefaults.skipInitial;
@@ -60,9 +60,9 @@ describe('inspect', () => {
         const inner = signal(5);
         const source = signal({ values: [0, { sum: computed(() => inner() + 2) }] });
         inspect(source);
-        TestBed.flushEffects();
+        TestBed.tick();
         inner.set(10);
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledWith({ values: [0, { sum: 12 }] });
       }));
 
@@ -71,7 +71,7 @@ describe('inspect', () => {
         const source = signal('hello there');
         const altReporter = jasmine.createSpy();
         inspect(source, { reporter: altReporter });
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledTimes(0);
         expect(altReporter).toHaveBeenCalledWith('hello there');
       }));
@@ -83,7 +83,7 @@ describe('inspect', () => {
         const consoleSpyObj = jasmine.createSpyObj('console', ['error', 'warn']);
         const restoreConsole = replaceGlobalProperty('console', consoleSpyObj);
         inspect([signal({ trap, value: 1 })], { ignoreErrors: true });
-        TestBed.flushEffects();
+        TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledWith([{ trap: undefined, value: 1 } as any]);
         expect(consoleSpyObj.warn).toHaveBeenCalled();
         restoreConsole();
@@ -94,14 +94,14 @@ describe('inspect', () => {
       it('should do nothing', () => {
         const source = signal('hello there');
         inspect(source);
-        TestBed.flushEffects(); // there should be no effects.  This would throw if there were.
+        TestBed.tick(); // there should be no effects.  This would throw if there were.
         expect(reporterSpy).toHaveBeenCalledTimes(0);
       });
       it('should work if it runInProdMode is passed in options', () =>
         TestBed.runInInjectionContext(() => {
           const source = signal('hello there again');
           inspect(source, { runInProdMode: true });
-          TestBed.flushEffects();
+          TestBed.tick();
           expect(reporterSpy).toHaveBeenCalledWith('hello there again');
         }));
       it('should work if it runInProdMode is true in global defaults', () =>
@@ -109,7 +109,7 @@ describe('inspect', () => {
           INSPECT_DEFAULTS.runInProdMode = true;
           const source = signal('hello there!!');
           inspect(source);
-          TestBed.flushEffects();
+          TestBed.tick();
           expect(reporterSpy).toHaveBeenCalledWith('hello there!!');
           INSPECT_DEFAULTS.runInProdMode = originalDefaults.runInProdMode;
         }));
