@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideClientHydration } from '@angular/platform-browser';
 import { TitleStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHighlightOptions } from 'ngx-highlightjs';
@@ -8,6 +8,7 @@ import { routes } from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })),
+    provideZonelessChangeDetection(),
     { provide: TitleStrategy, useClass: AppTitleStrategyService },
     provideHighlightOptions({
 

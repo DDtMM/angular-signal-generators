@@ -10,8 +10,8 @@ import { BasicDemoComponent } from '../../demos/nest-signal/basic-demo/basic-dem
 <app-member-page-header fnName="nestSignal"/>
 <p>
   Takes a value that contains one or more nested signals and emits their resolved values.
-  Any type of value can be passed into it.
-  It will recursively traverse every property and element and replace any signal with its value after any change.
+  Any type of value can be passed into it -
+  As the signal will recursively traverse every property and element and replace any signal with its value after any change.
 </p>
 <div class="flex flex-col gap-6">
 <app-demo-host name="Basic Usage" pattern="nest-signal/basic-demo/">
