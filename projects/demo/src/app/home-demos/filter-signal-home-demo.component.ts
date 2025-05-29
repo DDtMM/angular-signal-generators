@@ -17,7 +17,7 @@ import { ContentsClassDirective } from '../controls/contents-class.directive';
           <input id="filterSignalHomeDemoInput" type="text" class="input input-bordered input-sm grow" [(ngModel)]="$filtered" />
         </div>
         <div class="flex flex-row gap-3  leading-8">
-          <span>$filtered</span>
+          <span>Filtered</span>
           <span class="border border-solid border-secondary grow rounded-lg px-3 bg-base-100">{{ $filtered() }}</span>
         </div>
       </div>
