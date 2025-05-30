@@ -1,9 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-//@import '~highlight.js/styles/github-dark.css';
-//@import '~highlight.js/styles/stackoverflow-light.css';
-// build didn't like ~ path.
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: garden --default, night --prefersdark;
+};
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/container-queries";
+@config "./tailwind.config.js";
+/* @import '~highlight.js/styles/github-dark.css'; */
+/* @import '~highlight.js/styles/stackoverflow-light.css'; */
+/* build didn't like ~ path. */
 @import '../../../node_modules/highlight.js/styles/stackoverflow-light.css';
 @import '../../../node_modules/highlight.js/styles/stackoverflow-dark.css'  (prefers-color-scheme: dark);
 

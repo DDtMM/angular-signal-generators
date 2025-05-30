@@ -12,7 +12,7 @@ function createDemoSources() {
 }
 
 function createStackblitzTemplate() {
-  const fileNames = glob.sync(`./scripts/stackblitz-template-app/**/*.*`);
+  const fileNames = glob.sync(`./scripts/stackblitz-template-app/**/*.*`, { dot: true });
   const nameTransformFn = (fileName) => fileName.replace(/^.*(\/|\\)stackblitz-template-app(\/|\\)/, '').replaceAll('\\', '/');
   createFileCollection('./projects/demo/src/app/services/stackblitz-templates.ts', fileNames, nameTransformFn);
 }
