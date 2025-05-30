@@ -30,7 +30,6 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-
   "exclude": [
     "scripts/**/*.*"
   ]
