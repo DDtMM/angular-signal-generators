@@ -1,5 +1,5 @@
 import { CreateSignalOptions, Injector, Signal, ValueEqualityFn, computed, effect, isSignal, signal, untracked } from '@angular/core';
-import { SIGNAL, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { createSignal } from '@angular/core/primitives/signals';
 import { isReactiveSourceFunction } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
 import { TransformedSignal } from '../internal/transformed-signal';
@@ -105,12 +105,11 @@ function createFromValue<T>(
   initialSource: AsyncSource<T>,
   options: AsyncSignalOptions<T | undefined>
 ): AsyncSignal<T | undefined> {
-  const $input = createSignal(initialSource);
-  const inputNode = $input[SIGNAL];
-  const $output = createFromSignal($input, options) as AsyncSignal<T | undefined>;
+  const [get, set, update] = createSignal(initialSource);
+  const $output = createFromSignal(get, options) as AsyncSignal<T | undefined>;
   $output.asReadonly = asReadonlyFnFactory($output);
-  $output.set = (value: AsyncSource<T>) => signalSetFn(inputNode, value);
-  $output.update = (updateFn: (value: AsyncSource<T>) => AsyncSource<T>) => signalUpdateFn(inputNode, updateFn);
+  $output.set = set;
+  $output.update = update;
   return $output;
 }
 

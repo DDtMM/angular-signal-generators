@@ -1,8 +1,8 @@
 import { CreateSignalOptions, WritableSignal } from '@angular/core';
-import { SIGNAL, SignalGetter, createSignal, signalSetFn } from '@angular/core/primitives/signals';
+import { SIGNAL, SignalGetter, createSignal } from '@angular/core/primitives/signals';
 import { MapBasedStorage } from '../internal/map-based-storage';
-import { WebObjectStore } from '../internal/web-object-store';
 import { setDebugNameOnNode } from '../internal/utilities';
+import { WebObjectStore } from '../internal/web-object-store';
 
 /** A simple provider of persistent storage for {@link storageSignal}. */
 export interface StorageSignalStore<T> {
@@ -31,7 +31,8 @@ export interface StorageSignalStore<T> {
  */
 export function storageSignal<T>(initialValue: T, key: string, storageProvider: StorageSignalStore<T>, options: CreateSignalOptions<T> = {}): WritableSignal<T> {
   const storageValue = storageProvider.get(key);
-  const $output = createSignal(storageValue === undefined ? initialValue : storageValue) as SignalGetter<T> & WritableSignal<T>;
+  const [get, set] = createSignal(storageValue === undefined ? initialValue : storageValue);
+  const $output = get as SignalGetter<T> & WritableSignal<T>;
   const outputNode = $output[SIGNAL];
   // The equal function needs to be checked BEFORE setting storage or the value will be inconsistent.
   const equalFn = options.equal ?? outputNode.equal;
@@ -40,14 +41,14 @@ export function storageSignal<T>(initialValue: T, key: string, storageProvider: 
   $output.set = (value: T) => {
     if (!equalFn(value, outputNode.value)) {
       storageProvider.set(key, value);
-      signalSetFn(outputNode, value);
+      set(value);
     }
   };
   $output.update =(updateFn: (value: T) => T) => {
     const next = updateFn(outputNode.value);
     if (!equalFn(next, outputNode.value)) {
       storageProvider.set(key, next);
-      signalSetFn(outputNode, next);
+      set(next);
     }
   };
   return $output;

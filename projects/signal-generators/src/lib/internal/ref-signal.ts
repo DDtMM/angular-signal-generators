@@ -1,5 +1,5 @@
 import { Signal } from '@angular/core';
-import { createSignal, SIGNAL, SignalGetter, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { createSignal } from '@angular/core/primitives/signals';
 import { asReadonlyFnFactory } from './utilities';
 
 export interface RefValue<T> {
@@ -15,10 +15,10 @@ export interface RefSignal<T> extends ReadonlyRefSignal<T>  {
 
 /** Wraps values in RefValue so even if the same value is emitted it will be not equal. */
 export function refSignal<T>(initialValue: T): RefSignal<T> {
-  const $output = createSignal({ ref: initialValue }) as SignalGetter<RefValue<T>> & RefSignal<T>;
-  const outputNode = $output[SIGNAL];
+  const [get, set, update] = createSignal({ ref: initialValue });
+  const $output = get as RefSignal<T>;
   $output.asReadonly = asReadonlyFnFactory($output);
-  $output.set = (value: T) => signalSetFn(outputNode, { ref: value });
-  $output.update = (updateFn: (value: T) => T) => signalUpdateFn(outputNode, x => ({ ref: updateFn(x.ref) }));
+  $output.set = (value: T) => set({ ref: value });
+  $output.update = (updateFn: (value: T) => T) => update(x => ({ ref: updateFn(x.ref) }));
   return $output;
 }

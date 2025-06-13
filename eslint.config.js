@@ -58,7 +58,7 @@ module.exports = tsEslint.config(
     // Everything in this config object targets our HTML files (external templates,
     // and inline templates as long as we have the `processor` set on our TypeScript config above)
     files: ['**/*.html'],
-    ignores: ['**/api**/*.html'],
+    ignores: ['**/api/**/*.html'],
     extends: [
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility

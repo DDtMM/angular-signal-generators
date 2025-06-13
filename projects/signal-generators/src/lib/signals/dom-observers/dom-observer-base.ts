@@ -1,5 +1,5 @@
 import { effect, ElementRef, Injector, Signal, untracked } from '@angular/core';
-import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
+import { createSignal, SIGNAL, SignalGetter } from '@angular/core/primitives/signals';
 import { isReactive } from '../../internal/reactive-source-utilities';
 import { coerceSignal } from '../../internal/signal-coercion';
 import { asReadonlyFnFactory, getDestroyRef, setDebugNameOnNode } from '../../internal/utilities';
@@ -50,20 +50,19 @@ export function domObserverSignalFactory<D extends DomObserver, I extends DomSig
   debugName: string | undefined,
   injector: Injector
 ): DomObserverSignal<D, I> | Signal<DomObserverOutput<D>> {
-  const $observerOutput = createSignal<DomObserverOutput<D>>([]);
-  const observerOutputNode = $observerOutput[SIGNAL];
-  setDebugNameOnNode(observerOutputNode, debugName);
-  //const outputSetter = $observerOutput.set; // copy setter in case it is overwritten by writable output.
-  const observer = observerFactoryFn((x) => signalSetFn(observerOutputNode, x));
+  const [get, set] = createSignal<DomObserverOutput<D>>([]);
+  setDebugNameOnNode(get[SIGNAL], debugName);
+
+  const observer = observerFactoryFn(set);
   const destroyRef = getDestroyRef(domObserverSignalFactory, injector);
   destroyRef.onDestroy(() => observer.disconnect());
 
   if (isReactive(source)) {
     domObserverComputedSignalSetup(observer, source, options, nativeObservedTransformFn, injector);
-    return $observerOutput;
+    return get;
   }
   else {
-    return domObserverWritableSignalFactory(observer, $observerOutput, source, options, nativeObservedTransformFn);
+    return domObserverWritableSignalFactory(observer, get, source, options, nativeObservedTransformFn);
   }
 }
 
