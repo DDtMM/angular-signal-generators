@@ -1,5 +1,5 @@
 import { computed, CreateSignalOptions, Injector, isDevMode, isSignal, Signal } from '@angular/core';
-import { createSignal, SIGNAL, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { createSignal } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
 import { TransformedSignal } from '../internal/transformed-signal';
@@ -68,12 +68,11 @@ export function nestSignal<T>(
   }
   
   function createFromValue<T>(initialValue: T, options?: NestSignalOptions<T>): TransformedSignal<T, NestSignalValue<T>> {
-    const $source = createSignal(initialValue);
-    const sourceNode = $source[SIGNAL];
-    const $unwrapped = computed(() => deNestRoot($source()), options) as TransformedSignal<T, NestSignalValue<T>>;
+    const [get, set, update] = createSignal(initialValue);
+    const $unwrapped = computed(() => deNestRoot(get()), options) as TransformedSignal<T, NestSignalValue<T>>;
     $unwrapped.asReadonly = asReadonlyFnFactory($unwrapped);
-    $unwrapped.set = (value: T) => signalSetFn(sourceNode, value);
-    $unwrapped.update = (updateFn: (value: T) => T) => signalUpdateFn(sourceNode, updateFn);
+    $unwrapped.set = set;
+    $unwrapped.update = update;
     return $unwrapped;
   }
 

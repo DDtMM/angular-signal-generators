@@ -1,7 +1,7 @@
 import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
-import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
-import { coerceSignal } from '../internal/signal-coercion';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
+import { coerceSignal } from '../internal/signal-coercion';
 import { TimerInternal } from '../internal/timer-internal';
 import { asReadonlyFnFactory, getDestroyRef, setEqualOnNode } from '../internal/utilities';
 import { ReactiveSource } from '../reactive-source';
@@ -77,8 +77,8 @@ function createFromReactiveSource<T>(sourceInput: ReactiveSource<T>,
   // Is it because the equal function is running on the source signal in the value version?
   const timerTimeFn = createGetValueFn(debounceTime, options?.injector);
   const $source = coerceSignal(sourceInput, options);
-  const $output = signal(untracked($source), { debugName: options?.debugName }) as SignalGetter<T> & WritableSignal<T>;;
-  const outputNode = $output[SIGNAL];
+  const $output = signal(untracked($source), { debugName: options?.debugName });
+  const outputNode = ($output as SignalGetter<T>)[SIGNAL];
   const timer = new TimerInternal(timerTimeFn(), undefined, { onTick: () => signalSetFn(outputNode, untracked($source)) });
   // setup cleanup actions.
   getDestroyRef(createFromReactiveSource, options?.injector).onDestroy(() => timer.destroy());
@@ -96,12 +96,11 @@ function createFromValue<T>(initialValue: T,
   debounceTime: ValueSource<number>,
   options?: DebounceSignalOptions & CreateSignalOptions<T>): DebouncedSignal<T> {
 
-  const $source = createSignal(initialValue);
-  const sourceNode = $source[SIGNAL];
-  setEqualOnNode(sourceNode, options?.equal);
-  const $debounced = createFromReactiveSource($source, debounceTime, options) as DebouncedSignal<T>;
+  const [get, set, update] = createSignal(initialValue);
+  setEqualOnNode(get[SIGNAL], options?.equal);
+  const $debounced = createFromReactiveSource(get, debounceTime, options) as DebouncedSignal<T>;
   $debounced.asReadonly = asReadonlyFnFactory($debounced);
-  $debounced.set = (value: T) => signalSetFn(sourceNode, value);
-  $debounced.update = (updateFn) => signalUpdateFn(sourceNode, updateFn);
+  $debounced.set = set;
+  $debounced.update = update;
   return $debounced;
 }

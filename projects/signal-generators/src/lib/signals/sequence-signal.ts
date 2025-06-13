@@ -1,5 +1,5 @@
 import { CreateSignalOptions, Injector, Signal, untracked } from '@angular/core';
-import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
+import { createSignal, SIGNAL } from '@angular/core/primitives/signals';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
 import { setDebugNameOnNode } from '../internal/utilities';
@@ -90,15 +90,16 @@ export function sequenceSignal<T>(
     ? createCursorGetterFromReactiveSource(sequence)
     : createCursorGetterFromValue(sequence);
 
-  const $output = createSignal(getFirstValue(sequenceCursorGetter())) as SignalGetter<T> & SequenceSignal<T>;
-  const outputNode = $output[SIGNAL];
+  const [get, set] = createSignal(getFirstValue(sequenceCursorGetter()));
+  const $output = get as SequenceSignal<T>;
+  const outputNode = get[SIGNAL];
   setDebugNameOnNode(outputNode, options.debugName);
   $output.next = (relativeChange = 1) => {
     const res = sequenceCursorGetter().next(relativeChange);
     if (!res.hasValue) {
       throw new Error(ERR_BOUNDS_EXCEEDED);
     }
-    signalSetFn(outputNode, res.value);
+    set(res.value);
   };
   $output.reset = () => {
     sequenceCursorGetter().reset();
@@ -109,7 +110,7 @@ export function sequenceSignal<T>(
     if (!res.hasValue) {
       throw new Error(ERR_ELEMENT_NOT_PRESENT);
     }
-    signalSetFn(outputNode, value);
+    set(value);
   };
   $output.update = (updateFn: (value: T) => T) => {
     const nextValue = updateFn(outputNode.value);

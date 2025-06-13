@@ -1,5 +1,5 @@
 import { CreateSignalOptions, effect, Injector, untracked } from '@angular/core';
-import { createSignal, SIGNAL, SignalGetter, SignalNode, signalSetFn } from '@angular/core/primitives/signals';
+import { createSignal, SIGNAL, SignalGetter } from '@angular/core/primitives/signals';
 import { DestroyableSignal } from '../destroyable-signal';
 import { isReactive } from '../internal/reactive-source-utilities';
 import { coerceSignal } from '../internal/signal-coercion';
@@ -76,15 +76,15 @@ export function mediaQuerySignal(
   function createFromReactiveSource(queryReactiveSource: ReactiveSource<string>): DestroyableSignal<MediaQueryState> {
     const $query = coerceSignal(queryReactiveSource, options);
     let currentQuery = untracked($query);
-    const $output = initOutput(currentQuery) as SignalGetter<MediaQueryState> & DestroyableSignal<MediaQueryState>;
-    const outputNode = $output[SIGNAL];
+    const [get, set] = initOutput(currentQuery);
+    const $output = get as DestroyableSignal<MediaQueryState>;
     const effectRef = effect(
       () => {
         const nextQuery = $query();
         if (currentQuery !== nextQuery) {
           // because we eagerly run matchMedia, the value of query could be the same and therefore there's no point to run setup again.
           currentQuery = nextQuery;
-          onQueryChange(outputNode, currentQuery);
+          onQueryChange(currentQuery, set);
         }
       },
       { ...options, manualCleanup: true } // cleanup is handled in onQueryChange, destroy and destroyRef.
@@ -98,12 +98,13 @@ export function mediaQuerySignal(
   }
 
   function createFromValue(query: string): MediaQuerySignal {
-    const $output = initOutput(query) as SignalGetter<MediaQueryState> & MediaQuerySignal;
+    const [get, set] = initOutput(query);
+    const $output = get as SignalGetter<MediaQueryState> & MediaQuerySignal;
     const outputNode = $output[SIGNAL];
     $output.asReadonly = asReadonlyFnFactory($output);
     $output.destroy = handleDestroy;
-    $output.set = (query) => onQueryChange(outputNode, query);
-    $output.update = (updateFn) => onQueryChange(outputNode, updateFn(outputNode.value.media));
+    $output.set = (query) => onQueryChange(query, set);
+    $output.update = (updateFn) => onQueryChange(updateFn(outputNode.value.media), set);
     if (!options?.manualDestroy) {
       getDestroyRef(mediaQuerySignal, options?.injector).onDestroy(handleDestroy);
     }
@@ -120,38 +121,39 @@ export function mediaQuerySignal(
   /**
    * Creates the $output signal and begins listening for media query changes.
    */
-  function initOutput(initialQuery: string): SignalGetter<MediaQueryState> {
+  function initOutput(initialQuery: string): [SignalGetter<MediaQueryState>, set: (newValue: MediaQueryState) => void] {
     const mql = globalThis.matchMedia(initialQuery);
-    const $output = createSignal<MediaQueryState>({ matches: mql.matches, media: mql.media }) as SignalGetter<MediaQueryState>;
-    setDebugNameOnNode($output[SIGNAL], options?.debugName);
-    updateQueryListener($output[SIGNAL], mql);
-    return $output;
+    const [get, set] = createSignal<MediaQueryState>({ matches: mql.matches, media: mql.media });
+    setDebugNameOnNode(get[SIGNAL], options?.debugName);
+    updateQueryListener(set, mql);
+    return [get, set];
   }
 
   /** Will close the current listener, and listen to the new query if the signal isn't already destroyed. */
-  function onQueryChange(outputNode: SignalNode<MediaQueryState>, query: string) {
+  function onQueryChange(query: string, setFn: (value: MediaQueryState) => void): void {
     if (isDestroyed) {
       return;
     }
     const mql = globalThis.matchMedia(query);
-    signalSetFn(outputNode, { matches: mql.matches, media: mql.media });
-    updateQueryListener(outputNode, mql);
+    setFn({ matches: mql.matches, media: mql.media });
+    updateQueryListener(setFn, mql);
   }
 
   /** Lists to a queryList change event, and sets global cleanupFn. */
-  function updateQueryListener(outputNode: SignalNode<MediaQueryState>, queryList: MediaQueryList): void {
+  function updateQueryListener(setFn: (value: MediaQueryState) => void, queryList: MediaQueryList): void {
     // ensure old listener is cleaned up.
     cleanupFn();
     queryList.addEventListener('change', handleMediaQueryListEvent);
     cleanupFn = () => queryList.removeEventListener('change', handleMediaQueryListEvent);
     function handleMediaQueryListEvent(event: MediaQueryListEvent): void {
-      signalSetFn(outputNode, { matches: event.matches, media: event.media });
+      setFn({ matches: event.matches, media: event.media });
     }
   }
 }
 
 function createDummyOutput(query: string): MediaQuerySignal {
-  const $output = createSignal<MediaQueryState>({ matches: false, media: query }) as MediaQuerySignal;
+  const [get] = createSignal<MediaQueryState>({ matches: false, media: query });
+  const $output = get as SignalGetter<MediaQueryState> & MediaQuerySignal;
   $output.asReadonly = asReadonlyFnFactory($output);
   $output.destroy = () => { /* do nothing */ };
   $output.set = () => { /* do nothing */ };

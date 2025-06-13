@@ -1,5 +1,5 @@
 import { CreateSignalOptions, Signal, untracked } from '@angular/core';
-import { createSignal, SIGNAL, SignalGetter, signalSetFn } from '@angular/core/primitives/signals';
+import { createSignal, SIGNAL } from '@angular/core/primitives/signals';
 import { asReadonlyFnFactory, setDebugNameOnNode, setEqualOnNode } from '../internal/utilities';
 
 /** The signal returned from {@link filterSignal}. */
@@ -32,10 +32,10 @@ export function filterSignal<O>(initialValue: O, filterFn: (x: O) => boolean, op
  * @returns A writable signal whose values are only updated when set.
  */
 export function filterSignal<T, O extends T>(initialValue: O, filterFn: (x: T) => boolean, options?: CreateSignalOptions<O>): FilterSignal<T, O> {
-  const $output = createSignal<O>(initialValue) as SignalGetter<O> & FilterSignal<T, O>;
-  const outputNode = $output[SIGNAL];
-  setDebugNameOnNode(outputNode, options?.debugName);
-  setEqualOnNode(outputNode, options?.equal);
+  const [get, set] = createSignal<O>(initialValue);
+  const $output = get as FilterSignal<T, O>;
+  setDebugNameOnNode(get[SIGNAL], options?.debugName);
+  setEqualOnNode(get[SIGNAL], options?.equal);
   $output.asReadonly = asReadonlyFnFactory($output);
   $output.set = setConditionally;
   $output.update = (signalUpdateFn) => setConditionally(signalUpdateFn(untracked($output)));
@@ -44,7 +44,7 @@ export function filterSignal<T, O extends T>(initialValue: O, filterFn: (x: T) =
   /** Sets the signal value only if it passes the filter function. */
   function setConditionally(value: T): void {
     if (filterFn(value)) {
-      signalSetFn(outputNode, value as O);
+      set(value as O);
     }
   }
 }

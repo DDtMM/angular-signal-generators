@@ -1,5 +1,5 @@
 import { CreateSignalOptions, Injector, Signal, WritableSignal, effect, signal, untracked } from '@angular/core';
-import { SIGNAL, SignalGetter, createSignal, signalSetFn, signalUpdateFn } from '@angular/core/primitives/signals';
+import { SIGNAL, SignalGetter, createSignal, signalSetFn } from '@angular/core/primitives/signals';
 import { isReactive } from '../../internal/reactive-source-utilities';
 import { coerceSignal } from '../../internal/signal-coercion';
 import { ReactiveSource } from '../../reactive-source';
@@ -217,17 +217,15 @@ export function animatedSignalFactory<T, V extends ValueSource<T>, O extends Ani
     valueFn: () => Readonly<[value: T, oneTimeOptions: Partial<AnimationOptionsWithInterpolator<T, O>> | undefined]>
   ] {
     const $output = signal(sourceValue, signalOptions) as SignalGetter<T> & WritableSignal<T> & AnimatedSignal<T, O>;
-    const $source = createSignal<
+    const [get, set, update] = createSignal<
       Readonly<[value: T, options: Partial<AnimationOptionsWithInterpolator<T, O>> | undefined]>
     >([sourceValue as T, undefined]);
-    const sourceNode = $source[SIGNAL];
-    $output.set = (x, options?: Partial<AnimationOptionsWithInterpolator<T, O>>) =>
-      signalSetFn(sourceNode, [x, options] as const);
+
+    $output.set = (x, options?: Partial<AnimationOptionsWithInterpolator<T, O>>) => set([x, options] as const);
     $output.setOptions = (options) => overwriteProperties(defaults, options);
     $output.update = (updateFn: (value: T) => T, options?: Partial<O & { interpolator: InterpolateFactoryFn<T> }>) =>
-      signalUpdateFn(sourceNode, ([value]) => [updateFn(value), options] as const);
-    const signalValueFn = $source;
-    return [$output, signalValueFn];
+      update(([value]) => [updateFn(value), options] as const);
+    return [$output, get];
   }
 }
 /**

@@ -65,14 +65,14 @@ describe('isMethodKey', () => {
 
 describe('setDebugNameOnNode', () => {
   it('sets debugName if is defined and in devMode', () => {
-    const target = createSignal(1);
+    const [target] = createSignal(1);
     const debugName = `debugName_${Math.random() * Number.MAX_SAFE_INTEGER}`;
     setDebugNameOnNode(target[SIGNAL], debugName);
     expect(target[SIGNAL].debugName).toBe(debugName);
   });
   it('does not set debugName is defined but NOT in devMode', () => {
     setProdMode(true);
-    const target = createSignal(1);
+    const [target]  = createSignal(1);
     target[SIGNAL].debugName = 'UNCHANGED';
     const debugName = `debugName_${Math.random() * Number.MAX_SAFE_INTEGER}`;
     setDebugNameOnNode(target[SIGNAL], debugName);
@@ -80,7 +80,7 @@ describe('setDebugNameOnNode', () => {
     setProdMode(false);
   });
   it('does not set debugName if it is undefined', () => {
-    const target = createSignal(1);
+    const [target]  = createSignal(1);
     target[SIGNAL].debugName = 'UNCHANGED';
     setEqualOnNode(target[SIGNAL], undefined);
     expect(target[SIGNAL].debugName).toBe('UNCHANGED');
@@ -88,13 +88,13 @@ describe('setDebugNameOnNode', () => {
 });
 describe('setEqualOnNode', () => {
   it('sets equal from options if options.equal is defined', () => {
-    const target = createSignal(1);
+    const [target]  = createSignal(1);
     const equalFn = (x: number, y: number) => x === y;
     setEqualOnNode(target[SIGNAL], equalFn);
     expect(target[SIGNAL].equal).toBe(equalFn);
   });
   it('does not set equal on a node if equalFn is undefined', () => {
-    const target = createSignal(1);
+    const [target]  = createSignal(1);
     const expectedEqual = target[SIGNAL].equal;
     setEqualOnNode(target[SIGNAL], undefined);
     expect(target[SIGNAL].equal).toBe(expectedEqual);
