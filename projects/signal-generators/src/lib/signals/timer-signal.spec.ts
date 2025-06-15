@@ -49,6 +49,20 @@ describe('timerSignal', () => {
       expect(sut.state()).toBe('destroyed');
     });
 
+    describe('with selector option', () => {
+      it('should emit string values using selector', fakeAsync(() => {
+        const sut = timerSignal(500, undefined, { selector: (tick) => `tick-${tick}`, injector: fixture.componentRef.injector });
+        tickAndAssertValues(() => sut(), [[0, 'tick-0'], [500, 'tick-1'], [500, 'tick-1']]);
+        sut.pause();
+      }));
+
+      it('should emit string values for interval using selector', fakeAsync(() => {
+        const sut = timerSignal(500, 500, { selector: (tick) => `tick-${tick}`, injector: fixture.componentRef.injector });
+        tickAndAssertValues(() => sut(), [[0, 'tick-0'], [500, 'tick-1'], [500, 'tick-2'], [500, 'tick-3']]);
+        sut.pause();
+      }));
+    });
+
     describe('with a number for timerSource parameter', () => {
       runComputedAndEffectTests(() => {
         const sut = timerSignal(500, null, { injector: fixture.componentRef.injector });
