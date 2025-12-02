@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, ElementRef, computed, signal, viewChild } from '@angular/core';
 import { mutationSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
     selector: 'app-mutation-signal-demo',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './mutation-signal-demo.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

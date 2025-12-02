@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
@@ -6,7 +6,7 @@ import { IntersectionSignalDemoComponent } from '../../demos/intersection-signal
 
 @Component({
     selector: 'app-intersection-signal-page',
-    imports: [CommonModule, DemoHostComponent, IntersectionSignalDemoComponent, MemberPageHeaderComponent],
+    imports: [DemoHostComponent, IntersectionSignalDemoComponent, MemberPageHeaderComponent],
     template: `
 <app-member-page-header fnName="intersectionSignal" />
 <p>

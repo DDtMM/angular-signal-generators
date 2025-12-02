@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DemoHostComponent } from '../../controls/demo-host.component';
@@ -9,13 +9,12 @@ import { FromStringLiteralDemoComponent } from '../../demos/event-signal/from-st
 @Component({
     selector: 'app-event-signal-page',
     imports: [
-        CommonModule,
-        DemoHostComponent,
-        MemberPageHeaderComponent,
-        FontAwesomeModule,
-        FromSignalDemoComponent,
-        FromStringLiteralDemoComponent
-    ],
+    DemoHostComponent,
+    MemberPageHeaderComponent,
+    FontAwesomeModule,
+    FromSignalDemoComponent,
+    FromStringLiteralDemoComponent
+],
     template: `
 <app-member-page-header fnName="eventSignal" />
 <p>

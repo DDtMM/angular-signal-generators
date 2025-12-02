@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCode, faFile } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,7 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
 @Component({
     selector: 'app-member-page-header',
-    imports: [CommonModule, FontAwesomeModule, SignalTypeBadgeComponent],
+    imports: [FontAwesomeModule, SignalTypeBadgeComponent],
     template: `
 <div class="flex flex-row items-center gap-3 doc-header">
   @if($demoConfig(); as demoConfig) {

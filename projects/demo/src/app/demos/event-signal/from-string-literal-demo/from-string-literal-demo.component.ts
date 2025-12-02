@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { eventSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
     selector: 'app-from-string-literal-demo',
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     templateUrl: './from-string-literal-demo.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

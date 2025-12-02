@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
@@ -7,7 +7,7 @@ import { IndirectDemoComponent } from '../../demos/debounce-signal/indirect-demo
 
 @Component({
     selector: 'app-debounce-signal-page',
-    imports: [CommonModule, DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
+    imports: [DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
     template: `
 <app-member-page-header fnName="debounceSignal" />
 <p>

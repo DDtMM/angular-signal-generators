@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, signal, WritableSignal } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -90,7 +90,7 @@ describe('mapSignal', () => {
 
     it('works with ngModel when bound to input', fakeAsync(() => {
       @Component({
-        imports: [CommonModule, FormsModule],
+        imports: [FormsModule],
         selector: 'app-test',
         standalone: true,
         template: `<input type="number" data-test="sutInput" [(ngModel)]="$sut.input" />`
