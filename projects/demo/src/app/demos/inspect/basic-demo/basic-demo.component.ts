@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { afterNextRender, ChangeDetectionStrategy, Component, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { inspect } from '@ddtmm/angular-signal-generators';
 
 @Component({
     selector: 'app-basic-demo',
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     templateUrl: './basic-demo.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

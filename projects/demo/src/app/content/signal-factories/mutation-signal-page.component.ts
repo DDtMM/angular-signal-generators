@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
 import { MutationSignalDemoComponent } from '../../demos/mutation-signal/mutation-signal-demo/mutation-signal-demo.component';
@@ -6,7 +6,7 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
     selector: 'app-mutation-signal-page',
-    imports: [CommonModule, DemoHostComponent, MutationSignalDemoComponent, MemberPageHeaderComponent],
+    imports: [DemoHostComponent, MutationSignalDemoComponent, MemberPageHeaderComponent],
     template: `
 <app-member-page-header fnName="mutationSignal" />
 <p>

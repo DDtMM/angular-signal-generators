@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DemoHostComponent } from '../../controls/demo-host.component';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
@@ -6,7 +6,7 @@ import { MediaQuerySignalDemoComponent } from '../../demos/media-query-signal/me
 
 @Component({
     selector: 'app-media-query-signal-page',
-    imports: [CommonModule, DemoHostComponent, MemberPageHeaderComponent, MediaQuerySignalDemoComponent],
+    imports: [DemoHostComponent, MemberPageHeaderComponent, MediaQuerySignalDemoComponent],
     template: `
 <app-member-page-header fnName="mediaQuerySignal" />
 <p>

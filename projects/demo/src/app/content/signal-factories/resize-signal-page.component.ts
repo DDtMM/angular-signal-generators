@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MemberPageHeaderComponent } from '../../controls/member-page-header.component';
 import { ResizeSignalDemoComponent } from '../../demos/resize-signal/resize-signal-demo/resize-signal-demo.component';
@@ -6,7 +6,7 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
 
 @Component({
     selector: 'app-resize-signal-page',
-    imports: [CommonModule, DemoHostComponent, ResizeSignalDemoComponent, MemberPageHeaderComponent],
+    imports: [DemoHostComponent, ResizeSignalDemoComponent, MemberPageHeaderComponent],
     template: `
 <app-member-page-header fnName="resizeSignal" />
 <p>

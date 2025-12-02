@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { mediaQuerySignal, MediaQueryState } from '@ddtmm/angular-signal-generators';
 
@@ -10,7 +10,7 @@ interface QueryOption {
 }
 @Component({
     selector: 'app-media-query-signal-demo',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './media-query-signal-demo.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
