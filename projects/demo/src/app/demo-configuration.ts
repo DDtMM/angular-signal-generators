@@ -4,6 +4,7 @@ import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-ho
 import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
 import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
 import { GatedEffectHomeDemoComponent } from './home-demos/gated-effect-home-demo.component';
+import { IdleSignalHomeDemoComponent } from './home-demos/idle-signal-home-demo.component';
 import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.component';
 import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
 import { LiftSignalHomeDemoComponent } from './home-demos/lift-signal-home-demo.component';
@@ -106,6 +107,16 @@ export const DEMO_CONFIGURATIONS = [
     sourceUrl: 'utilities/gated-effect.ts',
     usages: ['utility']
   },  
+  {
+    homeDemo: IdleSignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}idleSignal.html`,
+    fnName: 'idleSignal' as const,
+    name: 'idleSignal',
+    page: () => import('./content/signal-factories/idle-signal-page.component').then(x => x.IdleSignalPageComponent),
+    route: 'idle-signal',
+    sourceUrl: 'signals/idle-signal.ts',
+    usages: ['generator']
+  },
   {
     homeDemo: InspectHomeDemoComponent,
     docUrl: `${DOC_URL_PREFIX}inspect.html`,

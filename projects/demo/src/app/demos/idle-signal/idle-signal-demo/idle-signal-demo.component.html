@@ -1,0 +1,73 @@
+<div class="flex flex-col w-full gap-3">
+  <div>
+    <p>
+      The idle signal detects when the user is idle based on activity.
+      Try interacting with the page (moving the mouse, typing, clicking) and then stopping.
+      After the configured timeout, the signal will report idle state.
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-3">
+
+    <div>
+      <label for="timeoutRange" class="label">Idle Timeout: {{idleTimeoutSeconds}} seconds</label>
+      <input 
+        id="timeoutRange" 
+        class="range range-primary" 
+        type="range" 
+        min="5" 
+        max="120" 
+        [(ngModel)]="idleTimeoutSeconds" />
+      <div class="flex justify-between text-xs px-2">
+        <span>5s</span>
+        <span>30s</span>
+        <span>60s</span>
+        <span>120s</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-3">
+    <div class="card card-compact shadow-lg bg-base-100">
+      <div class="card-body flex flex-col items-center">
+        <h3 class="card-title text-sm">Status</h3>
+        <div class="flex items-center gap-2">
+          <div 
+            class="badge" 
+            [class.badge-success]="!$idle().isIdle" 
+            [class.badge-warning]="$idle().isIdle">
+            {{ $idle().isIdle ? 'IDLE' : 'ACTIVE' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-compact shadow-lg bg-base-100">
+      <div class="card-body flex flex-col items-center">
+        <h3 class="card-title text-sm">Time Since Change</h3>
+        <div class="text-lg font-mono">
+          {{ formatTime($idle().timeSinceLastChange) }}
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-compact shadow-lg bg-base-100">
+      <div class="card-body flex flex-col items-center">
+        <h3 class="card-title text-sm">Last Change Reason</h3>
+        <div class="text-sm font-mono break-all text-center">
+          {{ $idle().changeReason }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info mt-3">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span>
+      The signal listens to these events by default: mousedown, mousemove, keydown, scroll, touchstart, and click.
+      You can customize these events through the <code>events</code> option.
+    </span>
+  </div>
+</div>

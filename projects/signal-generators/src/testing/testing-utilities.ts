@@ -1,4 +1,4 @@
-import { ApplicationRef, ChangeDetectionStrategy, Component } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, Provider } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 
 /**
@@ -6,9 +6,16 @@ import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
  * This is probably temporary as ngMocks is not working since moving to Angular 19 beta.
  * We ***don't*** want to be maintaining our own testing library.
 */
-export function createFixture(): ComponentFixture<unknown> {
+export function createFixture(options?: { providers?: Provider[] }): ComponentFixture<unknown> {
   @Component({ template: '', changeDetection: ChangeDetectionStrategy.OnPush })
   class DummyComponent { }
+  
+  if (options?.providers) {
+    TestBed.configureTestingModule({
+      providers: options.providers
+    });
+  }
+  
   return TestBed.createComponent(DummyComponent);
 }
 

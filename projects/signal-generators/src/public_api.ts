@@ -11,6 +11,7 @@ export * from './lib/signals/debounce-signal';
 export * from './lib/signals/dom-observers/public-api';
 export * from './lib/signals/event-signal';
 export * from './lib/signals/filter-signal';
+export * from './lib/signals/idle-signal';
 export * from './lib/signals/lift-signal';
 export * from './lib/signals/map-signal';
 export * from './lib/signals/media-query-signal';
