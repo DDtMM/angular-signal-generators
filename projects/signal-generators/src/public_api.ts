@@ -20,8 +20,9 @@ export * from './lib/signals/sequence-signal';
 export * from './lib/signals/storage-signal';
 export * from './lib/signals/timer-signal';
 export * from './lib/utilities/gated-effect';
-export * from './lib/utilities/signal-to-iterator';
 export * from './lib/utilities/inspect';
+export * from './lib/utilities/resource-ref-to-promise';
+export * from './lib/utilities/signal-to-iterator';
 
 // common types
 export { Cursor, CursorResult } from './lib/support/cursors/cursor';

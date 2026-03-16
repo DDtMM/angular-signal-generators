@@ -12,6 +12,7 @@ import { MediaQuerySignalHomeDemoComponent } from './home-demos/media-query-sign
 import { MutationSignalHomeDemoComponent } from './home-demos/mutation-signal-home-demo.component';
 import { NestSignalHomeDemoComponent } from './home-demos/nest-signal-home-demo.component';
 import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-demo.component';
+import { ResourceRefToPromiseHomeDemoComponent } from './home-demos/resource-ref-to-promise-home-demo.component';
 import { ResizeSignalHomeDemoComponent } from './home-demos/resize-signal-home-demo.component';
 import { SequenceSignalHomeDemoComponent } from './home-demos/sequence-signal-home-demo.component';
 import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterator-home-demo.component';
@@ -185,6 +186,16 @@ export const DEMO_CONFIGURATIONS = [
     route: 'reduce-signal',
     sourceUrl: 'signals/reduce-signal.ts',
     usages: ['writableSignal']
+  },
+  {
+    homeDemo: ResourceRefToPromiseHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}resourceRefToPromise.html`,
+    fnName: 'resourceRefToPromise' as const,
+    name: 'resourceRefToPromise',
+    page: () => import('./content/signal-utilities/resource-ref-to-promise-page.component').then(x => x.ResourceRefToPromisePageComponent),
+    route: 'resource-ref-to-promise',
+    sourceUrl: 'utilities/resource-ref-to-promise.ts',
+    usages: ['utility']
   },
   {
     homeDemo: ResizeSignalHomeDemoComponent,

@@ -1,0 +1,34 @@
+<div class="flex flex-col gap-4">
+  <div class="grid sm:grid-cols-[auto,1fr] items-center gap-3">
+    <label class="label" for="resourceDelay">Delay (ms)</label>
+    <input id="resourceDelay" class="range range-primary" type="range" min="100" max="3000" step="100" [(ngModel)]="$delayMs" />
+  </div>
+
+  <div class="text-sm text-secondary">Current delay: {{$delayMs()}}ms</div>
+
+  <div class="join">
+    <button type="button" class="btn btn-primary join-item" (click)="runSuccessDemo()">Run Success Resource</button>
+    <button type="button" class="btn btn-secondary join-item" (click)="runErrorDemo()">Run Error Resource</button>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-3">
+    <div class="card card-compact shadow-lg bg-base-100">
+      <div class="card-body">
+        <div class="card-title text-base">Promise status</div>
+        <div>{{$status()}}</div>
+        <div>isLoading: {{$activeResource()?.isLoading() ?? false}}</div>
+        <div>value: {{$activeResource()?.value() || '(none)'}}</div>
+        <div>error: {{$activeResource()?.error()?.toString() || '(none)'}}</div>
+      </div>
+    </div>
+    <div class="card card-compact shadow-lg bg-base-100">
+      <div class="card-body">
+        <div class="card-title text-base">Await result</div>
+        <div>{{$lastResult()}}</div>
+        @if ($lastError()) {
+          <div class="text-error">{{$lastError()}}</div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
