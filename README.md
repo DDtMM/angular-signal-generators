@@ -122,6 +122,10 @@ An effect with options to control when it start, stops or runs.
 
 Inspired by Svelte's $inspect rune, logs the resolved values of signals deeply nested in an object, array or signal.
 
+### resourceRefToPromise
+
+Converts the ResourceRef from `resource` or `httpResource` to a one time promise that resolves after first first emission.
+
 ### signalToIterator
 
 Converts a signal to an AsyncIterator.  Once created, changes are retained until elements are looped through at a later time.
