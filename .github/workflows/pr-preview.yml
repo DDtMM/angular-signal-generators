@@ -1,0 +1,50 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Allow only one preview build per PR at a time, cancelling any in-progress run
+# when a new one is triggered.
+concurrency:
+  group: "pr-preview-${{ github.event.pull_request.number }}"
+  cancel-in-progress: true
+
+# Restrict the GITHUB_TOKEN to only the permissions required for this workflow.
+permissions:
+  contents: read
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm ci --force --legacy-peer-deps
+
+      - name: Add demo site source files and StackBlitz templates
+        run: node scripts/create-demo-file-collections.mjs
+
+      - name: Build Demo site
+        run: npx ng build demo --base-href /angular-signal-generators/
+
+      - name: Add api docs to demo site
+        run: npx typedoc --out dist/demo/browser/api
+
+      # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
+      - name: Make 404 page from Index.
+        run: npx cpy ./dist/demo/browser/index.html ./ --rename 404.html
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-preview-${{ github.event.pull_request.number }}
+          path: ./dist/demo/browser
+          retention-days: 7

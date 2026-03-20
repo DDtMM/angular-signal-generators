@@ -11,8 +11,10 @@ import { CodeBlockComponent } from "../controls/code-block.component";
   </div>
   <h2>Installation</h2>
   <p>
-    Angular Signal Generators is compatible with Angular versions 16 and up.
-    You can install it from npm by running the following:
+    Angular Signal Generators is available on
+    <a href="https://www.npmjs.com/package/@ddtmm/angular-signal-generators" class="link">npm</a>
+    and is compatible with Angular versions 16 and up.
+    You can install it by running the following:
   </p>
   <app-code-block content="npm install @ddtmm/angular-signal-generators" language="plaintext"  name="npm install snippet" />
   <div class="divider"></div>

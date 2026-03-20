@@ -3,7 +3,7 @@ import { Component, effect, ElementRef, inject, viewChild, DOCUMENT } from '@ang
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { mediaQuerySignal } from '@ddtmm/angular-signal-generators';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faLinkedin, faMedium, faNpm } from '@fortawesome/free-brands-svg-icons';
 import { DEMO_CONFIGURATIONS } from './demo-configuration';
 
 @Component({
@@ -92,7 +92,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
         <a class="link link-hover" href="https://github.com/DDtMM/"><fa-icon [icon]="faGithub" [fixedWidth]="true" /> Github</a>
         <a class="link link-hover" href="https://www.linkedin.com/in/dangimenez"><fa-icon [icon]="faLinkedin" [fixedWidth]="true"/> LinkedIn</a>
         <a class="link link-hover" href="https://medium.com/@ddtmm"><fa-icon [icon]="faMedium"[fixedWidth]="true" /> Medium</a>
-        <a class="link link-hover" href="https://stackoverflow.com/users/2497335/daniel-gimenez"><fa-icon [icon]="faStackOverflow" [fixedWidth]="true"/>  Stack Overflow</a>
+        <a class="link link-hover" href="https://www.npmjs.com/package/@ddtmm/angular-signal-generators"><fa-icon [icon]="faNpm" [fixedWidth]="true"/> npm</a>
       </nav>
     </footer>
   </div>
@@ -103,7 +103,7 @@ export class AppComponent {
   readonly faGithub = faGithub;
   readonly faLinkedin = faLinkedin;
   readonly faMedium = faMedium;
-  readonly faStackOverflow = faStackOverflow;
+  readonly faNpm = faNpm;
   readonly demos = DEMO_CONFIGURATIONS;
   readonly signalFactories = DEMO_CONFIGURATIONS.filter(x => x.usages.some(x => x === 'generator' || x === 'writableSignal'))
   readonly utilities = DEMO_CONFIGURATIONS.filter(x => x.usages.some(x => x === 'utility'));
