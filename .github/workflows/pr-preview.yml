@@ -51,7 +51,7 @@ jobs:
       # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
       - name: Make 404 page from Index.
         if: github.event.action != 'closed'
-        run: npx cpy ./dist/demo/browser/index.html ./ --rename 404.html
+        run: npx cpy ./dist/demo/browser/index.html ./dist/demo/browser --rename 404.html
 
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1

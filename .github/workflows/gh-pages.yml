@@ -11,9 +11,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -22,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job
+  # Build and deploy job
   build:
     runs-on: ubuntu-latest
     steps:
@@ -33,9 +31,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
 
       - name: Install Dependencies
         if:
@@ -62,22 +57,11 @@ jobs:
 
       # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
       - name: Make 404 page from Index.
-        run: npx cpy ./dist/demo/browser/index.html ./ --rename 404.html
+        run: npx cpy ./dist/demo/browser/index.html ./dist/demo/browser --rename 404.html
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist/demo/browser
-
-
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/demo/browser
+          # Preserve PR preview directories deployed by pr-preview.yml
+          clean-exclude: pr-preview
