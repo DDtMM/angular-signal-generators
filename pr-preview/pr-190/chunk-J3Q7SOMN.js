@@ -1,0 +1,2 @@
+import{a as p}from"./chunk-UMKXEDDR.js";import{F as o,G as m,H as a,W as i,v as n}from"./chunk-DZHK45N5.js";import"./chunk-DAQOROHW.js";var l=(()=>{class e{static{this.\u0275fac=function(t){return new(t||e)}}static{this.\u0275cmp=n({type:e,selectors:[["app-dummy-page"]],decls:3,vars:0,consts:[["fnName","dummy"]],template:function(t,c){t&1&&(a(0,"app-member-page-header",0),o(1,"p"),i(2,` This is a placeholder
+`),m())},dependencies:[p],encapsulation:2,changeDetection:0})}}return e})();export{l as DummyPageComponent};
