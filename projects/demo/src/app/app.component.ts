@@ -10,55 +10,70 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
     selector: 'app-root',
     imports: [CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, RouterOutlet],
     template: `
-
-  <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur drawer drawer-end">
-    <div class="flex-1">
-      <ul class="menu menu-horizontal font-semibold text-lg tracking-tight normal-case  flex-nowrap py-0 px-1">
-        <li>
-          <a class="text-primary-content pl-1" [routerLink]="['/']">
-            <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-7 w-7 -my-2" />
-            Angular Signal Generators
-          </a>
-        </li>
-        <li><a class="text-primary-content hidden md:grid" routerLink="/getting-started">Getting Started</a></li>
-        <li><a class="text-primary-content hidden md:grid" href="./api/index.html">API Docs</a></li>
-        <li>
-          <a class="text-primary-content hidden md:grid" href="https://github.com/DDtMM/angular-signal-generators">
-            <fa-icon [icon]="faGithub" />
-              Github
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="flex-none md:hidden">
-      <input id="app-nav-drawer-toggle" type="checkbox" class="drawer-toggle" #appNavDrawerToggle />
-      <div class="drawer-content">
-        <label for="app-nav-drawer-toggle" aria-label="Open Navigation" tabindex="0" class="btn btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </label>
-      </div>
-      <div class="drawer-side">
-        <label for="app-nav-drawer-toggle" aria-label="Close Navigation" class="drawer-overlay"></label>
-        <ul tabindex="0" class="menu menu-sm min-h-full bg-base-200 w-52">
-          <li><a routerLink="/" (click)="closeDrawer()">Home</a></li>
-          <li><a routerLink="/getting-started" (click)="closeDrawer()">Getting Started</a></li>
-          <li><a href="./api/index.html" (click)="closeDrawer()">API Docs</a></li>
-          <li>
-            <a href="https://github.com/DDtMM/angular-signal-generators" (click)="closeDrawer()">
-              <fa-icon [icon]="faGithub" />Github
-            </a>
-          </li>
+  <div class="drawer drawer-end">
+    <input id="app-nav-drawer-toggle" type="checkbox" class="drawer-toggle" #appNavDrawerToggle />
+    <div class="drawer-content flex flex-col min-h-screen">
+      <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur">
+        <div class="flex-1">
+          <ul class="menu menu-horizontal font-semibold text-lg tracking-tight normal-case  flex-nowrap py-0 px-1">
+            <li>
+              <a class="text-primary-content pl-1" [routerLink]="['/']">
+                <img src="assets/angular-signal-generators-logo.png" alt="Angular Signal Generators Logo" class="h-7 w-7 -my-2" />
+                Angular Signal Generators
+              </a>
+            </li>
+            <li><a class="text-primary-content hidden md:grid" routerLink="/getting-started">Getting Started</a></li>
+            <li><a class="text-primary-content hidden md:grid" href="./api/index.html">API Docs</a></li>
+            <li>
+              <a class="text-primary-content hidden md:grid" href="https://github.com/DDtMM/angular-signal-generators">
+                <fa-icon [icon]="faGithub" />
+                  Github
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="flex-none md:hidden">
+          <label for="app-nav-drawer-toggle" aria-label="Open Navigation" tabindex="0" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </label>
+        </div>
+      </nav>
+      <div class="w-64 mt-16 top-0 bottom-0 fixed overflow-y-auto y menu menu-sm py-3 bg-base border-base-300 border-r  hidden md:flex">
+        <ul>
           <ng-container *ngTemplateOutlet="demosMenuItems" />
         </ul>
       </div>
+      <div class="pl-0 md:pl-64 w-full flex-1 flex flex-col">
+        <div class="p-3 mb-6">
+          <router-outlet></router-outlet>
+        </div>
+        <footer class="mt-auto footer p-8 bg-neutral text-neutral-content">
+          <nav>
+            <div class="font-semibold">Angular Signal Generators was created by Danny Gimenez</div>
+            <a class="link link-hover" href="https://github.com/DDtMM/"><fa-icon [icon]="faGithub" [fixedWidth]="true" /> Github</a>
+            <a class="link link-hover" href="https://www.linkedin.com/in/dangimenez"><fa-icon [icon]="faLinkedin" [fixedWidth]="true"/> LinkedIn</a>
+            <a class="link link-hover" href="https://medium.com/@ddtmm"><fa-icon [icon]="faMedium" [fixedWidth]="true" /> Medium</a>
+            <a class="link link-hover" href="https://www.npmjs.com/package/@ddtmm/angular-signal-generators"><fa-icon [icon]="faNpm" [fixedWidth]="true"/> npm</a>
+          </nav>
+        </footer>
+      </div>
     </div>
-  </nav>
-  <div class="w-64 mt-16 top-0 bottom-0 fixed overflow-y-auto y menu menu-sm py-3 bg-base border-base-300 border-r  hidden md:flex">
-    <ul>
-      <ng-container *ngTemplateOutlet="demosMenuItems" />
-    </ul>
+    <div class="drawer-side">
+      <label for="app-nav-drawer-toggle" aria-label="Close Navigation" class="drawer-overlay"></label>
+      <ul tabindex="0" class="menu menu-sm min-h-full bg-base-200 w-52">
+        <li><a routerLink="/" (click)="closeDrawer()">Home</a></li>
+        <li><a routerLink="/getting-started" (click)="closeDrawer()">Getting Started</a></li>
+        <li><a href="./api/index.html" (click)="closeDrawer()">API Docs</a></li>
+        <li>
+          <a href="https://github.com/DDtMM/angular-signal-generators" (click)="closeDrawer()">
+            <fa-icon [icon]="faGithub" />Github
+          </a>
+        </li>
+        <ng-container *ngTemplateOutlet="demosMenuItems" />
+      </ul>
+    </div>
   </div>
   <ng-template #demosMenuItems>
     <li class="">
@@ -82,20 +97,6 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
       </ul>
     </li>
   </ng-template>
-  <div class="pl-0 md:pl-64 w-full min-h-screen -mt-16 pt-16 flex flex-col">
-    <div class="p-3 mb-6">
-      <router-outlet></router-outlet>
-    </div>
-    <footer class="mt-auto footer p-8 bg-neutral text-neutral-content">
-      <nav>
-        <div class="font-semibold">Angular Signal Generators was created by Danny Gimenez</div>
-        <a class="link link-hover" href="https://github.com/DDtMM/"><fa-icon [icon]="faGithub" [fixedWidth]="true" /> Github</a>
-        <a class="link link-hover" href="https://www.linkedin.com/in/dangimenez"><fa-icon [icon]="faLinkedin" [fixedWidth]="true"/> LinkedIn</a>
-        <a class="link link-hover" href="https://medium.com/@ddtmm"><fa-icon [icon]="faMedium"[fixedWidth]="true" /> Medium</a>
-        <a class="link link-hover" href="https://www.npmjs.com/package/@ddtmm/angular-signal-generators"><fa-icon [icon]="faNpm" [fixedWidth]="true"/> npm</a>
-      </nav>
-    </footer>
-  </div>
   `
 })
 export class AppComponent {

@@ -2,7 +2,11 @@ name: PR Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
 
 # Allow only one preview build per PR at a time, cancelling any in-progress run
 # when a new one is triggered.
@@ -10,41 +14,48 @@ concurrency:
   group: "pr-preview-${{ github.event.pull_request.number }}"
   cancel-in-progress: true
 
-# Restrict the GITHUB_TOKEN to only the permissions required for this workflow.
+# Permissions needed to deploy to gh-pages branch and comment on PRs.
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
-  build-preview:
+  deploy-preview:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
+        if: github.event.action != 'closed'
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install Dependencies
+        if: github.event.action != 'closed'
         run: npm ci --force --legacy-peer-deps
 
       - name: Add demo site source files and StackBlitz templates
+        if: github.event.action != 'closed'
         run: node scripts/create-demo-file-collections.mjs
 
       - name: Build Demo site
-        run: npx ng build demo --base-href /angular-signal-generators/
+        if: github.event.action != 'closed'
+        run: npx ng build demo --base-href /angular-signal-generators/pr-preview/pr-${{ github.event.pull_request.number }}/
 
       - name: Add api docs to demo site
+        if: github.event.action != 'closed'
         run: npx typedoc --out dist/demo/browser/api
 
       # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
       - name: Make 404 page from Index.
+        if: github.event.action != 'closed'
         run: npx cpy ./dist/demo/browser/index.html ./ --rename 404.html
 
-      - name: Upload preview artifact
-        uses: actions/upload-artifact@v4
+      - name: Deploy PR Preview
+        uses: rossjrw/pr-preview-action@v1
         with:
-          name: pr-preview-${{ github.event.pull_request.number }}
-          path: ./dist/demo/browser
-          retention-days: 7
+          source-dir: dist/demo/browser
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
