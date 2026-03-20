@@ -6,7 +6,6 @@ on:
       - opened
       - synchronize
       - reopened
-      - closed
 
 # Allow only one preview build per PR at a time, cancelling any in-progress run
 # when a new one is triggered.
@@ -14,48 +13,101 @@ concurrency:
   group: "pr-preview-${{ github.event.pull_request.number }}"
   cancel-in-progress: true
 
-# Permissions needed to deploy to gh-pages branch and comment on PRs.
+# Permissions needed to deploy to GitHub Pages and comment on PRs.
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
   pull-requests: write
 
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}pr-preview/pr-${{ github.event.pull_request.number }}/
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
-        if: github.event.action != 'closed'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Install Dependencies
-        if: github.event.action != 'closed'
         run: npm ci --force --legacy-peer-deps
 
       - name: Add demo site source files and StackBlitz templates
-        if: github.event.action != 'closed'
         run: node scripts/create-demo-file-collections.mjs
 
-      - name: Build Demo site
-        if: github.event.action != 'closed'
-        run: npx ng build demo --base-href /angular-signal-generators/pr-preview/pr-${{ github.event.pull_request.number }}/
+      # Build the current main site so the production content stays live
+      # while the preview is deployed (the combined artifact includes both).
+      - name: Build Demo site (main)
+        run: npx ng build demo --base-href /angular-signal-generators/
 
       - name: Add api docs to demo site
-        if: github.event.action != 'closed'
         run: npx typedoc --out dist/demo/browser/api
 
-      # There is no url rewrite on github pages - so we have to copy the index page to 404.html.
-      - name: Make 404 page from Index.
-        if: github.event.action != 'closed'
+      - name: Make 404 page from Index (main)
         run: npx cpy ./dist/demo/browser/index.html ./dist/demo/browser --rename 404.html
 
-      - name: Deploy PR Preview
-        uses: rossjrw/pr-preview-action@v1
+      # Build the PR preview with its own base-href so all asset paths resolve correctly.
+      - name: Build PR Preview
+        run: npx ng build demo --output-path dist/demo/preview --base-href /angular-signal-generators/pr-preview/pr-${{ env.PR_NUMBER }}/
+
+      - name: Make 404 page from Index (preview)
+        run: npx cpy ./dist/demo/preview/browser/index.html ./dist/demo/preview/browser --rename 404.html
+
+      # Place the preview build inside the main build so both are served from one artifact.
+      # The next production deploy (push to main) will not include this directory,
+      # which naturally removes the preview.
+      - name: Add preview to deployment
+        run: |
+          mkdir -p dist/demo/browser/pr-preview
+          mv dist/demo/preview/browser dist/demo/browser/pr-preview/pr-${{ env.PR_NUMBER }}
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          source-dir: dist/demo/browser
-          preview-branch: gh-pages
-          umbrella-dir: pr-preview
+          path: ./dist/demo/browser
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Comment on PR with preview URL
+        uses: actions/github-script@v7
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const previewUrl = `${process.env.PAGE_URL}pr-preview/pr-${prNumber}/`;
+            const body = `🔍 **PR Preview deployed:** ${previewUrl}`;
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const existing = comments.find(c => c.user.login === 'github-actions[bot]' && c.body.includes('PR Preview deployed'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                comment_id: existing.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body,
+              });
+            }
