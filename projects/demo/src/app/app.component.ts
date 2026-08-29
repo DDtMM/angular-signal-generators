@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, ElementRef, inject, viewChild, DOCUMENT } from '@angular/core';
+import { Component, effect, ElementRef, inject, viewChild, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { mediaQuerySignal } from '@ddtmm/angular-signal-generators';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -9,6 +9,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
 @Component({
     selector: 'app-root',
     imports: [CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, RouterOutlet],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
 
   <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur drawer drawer-end">
