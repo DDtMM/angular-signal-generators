@@ -1,11 +1,10 @@
 # Contributing
-Add all new contributions to the latest Angular version branch.  For example if the latest Angular version is 20, add to the 20.x branch.
+Add new contributions to the main development branch. Compatibility with supported Angular versions is verified from the same source tree.
 
 ## Adding new Code
 * Try to follow established patterns.
 * Write tests.  They're easy.  The goal is full coverage.  It won't make the main branch unless *somebody* writes them.
-* It would be cool if you can merge your changes in all the currently supported version branches and test them out. 
-There should be a command in package.json like **patch-signal-generators-project**.
+* Run `npm run test:compat:all` to test the library with Angular 20, 21, and 22. To test one version, run `npm run test:compat -- 20` (or `21`/`22`). Compatibility runs use temporary installations and do not modify the working tree.
 
 ## Documentation Needs Help
 Anybody can write documentation.  Don't be scared.
@@ -18,7 +17,7 @@ Anybody can write documentation.  Don't be scared.
 * To view the latest API changes locally, run `demo:add-current-api-docs`.  This uses typedoc to add docs to *src/api* folder in *src*.
 
 ## Deployment
-* Run test with all active Angular version branches first.
+* Run `npm run test:compat:all` first.
 * Build with `build:signal-generators` command.  This will run tests first.  And then update README with coverage badges.
 * Don't deploy without 100% passing.
 * Create a release when done.

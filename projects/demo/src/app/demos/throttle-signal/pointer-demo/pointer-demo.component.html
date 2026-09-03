@@ -1,0 +1,12 @@
+<div class="h-40 rounded-lg bg-base-200 grid place-items-center cursor-crosshair" (pointermove)="move($event)">
+  <div class="text-center">
+    <div>Move the pointer here</div>
+    <div class="text-sm">Raw: {{$pointer().x}}, {{$pointer().y}}</div>
+    <div class="text-primary font-bold">Throttled: {{$throttled().x}}, {{$throttled().y}}</div>
+  </div>
+</div>
+<div class="mt-4 flex flex-col gap-2">
+  <label for="throttleTime" class="label">Throttle Time: {{$throttleTime()}}ms</label>
+  <input id="throttleTime" class="range range-primary" type="range" min="0" max="2000" step="50"
+    [ngModel]="$throttleTime()" (ngModelChange)="$throttleTime.set($event)" />
+</div>

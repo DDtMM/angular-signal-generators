@@ -1,0 +1,28 @@
+name: Angular Compatibility
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Angular ${{ matrix.angular }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        angular: ["20", "21", "22"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.3"
+
+      - name: Run library tests
+        run: npm run test:compat -- ${{ matrix.angular }}

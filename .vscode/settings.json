@@ -7,5 +7,6 @@
         "fortawesome",
         "Stackblitz",
         "Unlistener"
-    ]
+    ],
+    "js/ts.tsdk.path": "node_modules\\typescript\\lib"
 }

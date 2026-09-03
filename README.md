@@ -15,6 +15,17 @@ Check out the **[demos](https://ddtmm.github.io/angular-signal-generators/)** to
 npm install @ddtmm/angular-signal-generators
 ```
 
+## Compatibility
+
+| Library version | Angular version |
+| --------------- | --------------- |
+| 4.x             | >=20.0.2        |
+| 3.x             | >=19.0.0        |
+| 2.x             | >=17.0.0        |
+| 1.x             | >=16.0.0        |
+
+The complete test suite is run against Angular 20, 21, and 22 for the current 4.x release.
+
 ## Usage
 You can import the signals and utilities from `@ddtmm/angular-signal-generators`.  Like regular signals, the library's signals are used just like ordinary functions. 
 
@@ -76,6 +87,13 @@ Filters values set to a signal to prevent the value from changing:
 If the filter assigned at creation does not pass then the signal does not change. 
 Can be used with guard functions.
 
+### historySignal
+
+Creates a history signal from either a value or a reactive source. A value produces a writable signal; a source
+records observed source values and exposes undo/redo controls. Because sources are observed by an Angular effect,
+multiple synchronous emissions can be coalesced and intermediate values may be skipped. It exposes reactive
+`canUndo` and `canRedo` signals, supports clearing retained history, and can limit the number of values retained.
+
 ### liftSignal
 
 "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.  The lifted methods should be those appropriate for mutating or updating the value.  For example, lifting `Array.push` will add a method called *push* to the signal.  Calling the *push* method will internally call `signal.mutate()` with a function that executes the push.
@@ -111,6 +129,11 @@ Signals that uses a secondary storage system to store values, ideally beyond the
 ### timerSignal
 
 This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
+
+### throttleSignal
+
+Limits how frequently rapid changes are published. It can throttle another reactive source or create a writable
+throttled signal, with configurable leading and trailing emissions. The throttle time can also be a reactive source.
 
 ## Utilities
 

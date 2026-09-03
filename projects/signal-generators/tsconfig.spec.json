@@ -8,8 +8,7 @@
     ]
   },
   "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
+    "**/*.ts"
   ],
   "angularCompilerOptions": {
     "extendedDiagnostics": {

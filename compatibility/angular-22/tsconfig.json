@@ -3,7 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./",
     "ignoreDeprecations": "6.0",
-    "rootDir": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -28,7 +27,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "exclude": [
-    "scripts/**/*.*"
-  ]
+  "exclude": ["scripts/**/*.*"]
 }

@@ -173,7 +173,14 @@ export class TimerInternal {
     else {
       ++this.tickCount;
       this.onTickCallback(this.tickCount);
-      this.lastCompleteTime = Date.now() + this.getRemainingTime();
+      // On the initial tick, runner still refers to timeoutRunner even though
+      // intervalRunner determines when the next tick is due.
+      const nextDueTime = this.intervalRunner?.dueTime ?? this.runner.dueTime;
+      // Preserve normal drift correction, but limit overdue correction to one
+      // upcoming interval so a suspended host cannot replay every missed tick.
+      // nextDueTime is negated because getRemainingTime should be less than or equal to 0.
+      // We call getRemainingTime again because we want any elapsed timer time.
+      this.lastCompleteTime = Date.now() + Math.max(this.getRemainingTime(), -nextDueTime);
       this.runner.onTickComplete();
     }
   }

@@ -1,0 +1,6 @@
+<textarea class="textarea textarea-bordered w-full" rows="4" [ngModel]="$text()" (ngModelChange)="$text.set($event)"></textarea>
+<div class="flex flex-wrap gap-2 mt-3">
+  <button class="btn btn-primary" [disabled]="!$text.canUndo()" (click)="$text.undo()">Undo</button>
+  <button class="btn btn-secondary" [disabled]="!$text.canRedo()" (click)="$text.redo()">Redo</button>
+  <button class="btn" [disabled]="!$text.canUndo() && !$text.canRedo()" (click)="$text.clearHistory()">Clear history</button>
+</div>
