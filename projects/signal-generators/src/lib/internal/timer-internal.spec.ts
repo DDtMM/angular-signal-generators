@@ -48,6 +48,23 @@ describe('timerInternal', () => {
       tickAndAssertTimerValue(timer, [[0, 0], [ 1000, 1 ], [ 500, 2 ], [ 500, 3 ]]);
     }));
 
+    it('limits missed interval replay to the next interval after the host clock advances', fakeAsync(() => {
+      const actualNow = Date.now.bind(Date);
+      let clockOffset = 0;
+      spyOn(Date, 'now').and.callFake(() => actualNow() + clockOffset);
+      const timer = new TimerInternal(1000, 500, { runAtStart: true });
+
+      clockOffset = 10 * 60 * 1000;
+      tick(1000);
+      expect(timer.ticks).toBe(2);
+
+      tick(499);
+      expect(timer.ticks).toBe(2);
+      tick(1);
+      expect(timer.ticks).toBe(3);
+      timer.destroy();
+    }));
+
     it('#get intervalTime returns current intervalTime', testTimer(1000, 500, { runAtStart: true }, (timer) => {
       expect(timer.intervalTime).toBe(500);
     }));

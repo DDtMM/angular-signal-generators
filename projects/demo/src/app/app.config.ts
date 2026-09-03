@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
-import { provideClientHydration } from '@angular/platform-browser';
+import { provideClientHydration, withNoIncrementalHydration } from '@angular/platform-browser';
 import { TitleStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHighlightOptions } from 'ngx-highlightjs';
 import { AppTitleStrategyService } from './app-title-strategy.service';
@@ -19,6 +19,6 @@ export const appConfig: ApplicationConfig = {
           typescript: () => import('highlight.js/lib/languages/typescript')
         },
     }),
-    provideClientHydration()
+    provideClientHydration(withNoIncrementalHydration())
   ]
 };

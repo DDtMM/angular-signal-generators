@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: garden --default, night --prefersdark;
+  themes: corporate --default, business --prefersdark;
 };
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/container-queries";

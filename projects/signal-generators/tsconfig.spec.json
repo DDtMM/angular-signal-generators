@@ -8,7 +8,14 @@
     ]
   },
   "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+    "**/*.ts"
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

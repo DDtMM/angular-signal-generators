@@ -4,6 +4,7 @@ import { DebounceSignalHomeDemoComponent } from './home-demos/debounce-signal-ho
 import { EventSignalHomeDemoComponent } from './home-demos/event-signal-home-demo.component';
 import { FilterSignalHomeDemoComponent } from './home-demos/filter-signal-home-demo.component';
 import { GatedEffectHomeDemoComponent } from './home-demos/gated-effect-home-demo.component';
+import { HistorySignalHomeDemoComponent } from './home-demos/history-signal-home-demo.component';
 import { InspectHomeDemoComponent } from './home-demos/inspect-home-demo.component';
 import { IntersectionSignalHomeDemoComponent } from './home-demos/intersection-signal-home-demo.component';
 import { LiftSignalHomeDemoComponent } from './home-demos/lift-signal-home-demo.component';
@@ -19,6 +20,7 @@ import { SignalToIteratorHomeDemoComponent } from './home-demos/signal-to-iterat
 import { SpringSignalHomeDemoComponent } from './home-demos/spring-signal-home-demo.component';
 import { StorageSignalHomeDemoComponent } from './home-demos/storage-signal-home-demo.component';
 import { TimerSignalHomeDemoComponent } from './home-demos/timer-signal-home-demo.component';
+import { ThrottleSignalHomeDemoComponent } from './home-demos/throttle-signal-home-demo.component';
 import { TweenSignalHomeDemoComponent } from './home-demos/tween-signal-home-demo.component';
 
 /** What type of signals are returned from signal factory functions. */
@@ -106,7 +108,17 @@ export const DEMO_CONFIGURATIONS = [
     route: 'gated-effect',
     sourceUrl: 'utilities/gated-effect.ts',
     usages: ['utility']
-  },  
+  },
+  {
+    homeDemo: HistorySignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}historySignal.html`,
+    fnName: 'historySignal' as const,
+    name: 'historySignal',
+    page: () => import('./content/signal-factories/history-signal-page.component').then(x => x.HistorySignalPageComponent),
+    route: 'history-signal',
+    sourceUrl: 'signals/history-signal.ts',
+    usages: ['generator', 'writableSignal']
+  },
   {
     homeDemo: InspectHomeDemoComponent,
     docUrl: `${DOC_URL_PREFIX}inspect.html`,
@@ -256,6 +268,16 @@ export const DEMO_CONFIGURATIONS = [
     route: 'timer-signal',
     sourceUrl: 'signals/timer-signal.ts',
     usages: ['generator', 'writableSignal'],
+  },
+  {
+    homeDemo: ThrottleSignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}throttleSignal.html`,
+    fnName: 'throttleSignal' as const,
+    name: 'throttleSignal',
+    page: () => import('./content/signal-factories/throttle-signal-page.component').then(x => x.ThrottleSignalPageComponent),
+    route: 'throttle-signal',
+    sourceUrl: 'signals/throttle-signal.ts',
+    usages: ['generator', 'writableSignal']
   },
   {
     homeDemo: TweenSignalHomeDemoComponent,

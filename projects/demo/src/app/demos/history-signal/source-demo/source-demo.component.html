@@ -1,0 +1,10 @@
+<p>Source: <strong>{{ $source() }}</strong> · Recorded value: <strong>{{ $history() }}</strong></p>
+<div class="flex flex-wrap gap-2 mt-3">
+  <button class="btn btn-primary" (click)="emitNext()">Emit next value</button>
+  <button class="btn" (click)="emitThreeSynchronously()">Emit 3 synchronously</button>
+  <button class="btn btn-secondary" [disabled]="!$history.canUndo()" (click)="$history.undo()">Undo recorded value</button>
+  <button class="btn" [disabled]="!$history.canRedo()" (click)="$history.redo()">Redo recorded value</button>
+</div>
+<p class="mt-3 text-sm">
+  The three synchronous writes are observed as one source change, so their intermediate values are skipped.
+</p>

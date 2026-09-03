@@ -13,7 +13,7 @@ import { CodeBlockComponent } from "../controls/code-block.component";
   <p>
     Angular Signal Generators is available on
     <a href="https://www.npmjs.com/package/@ddtmm/angular-signal-generators" class="link">npm</a>
-    and is compatible with Angular versions 16 and up.
+    and the current release is compatible with Angular versions 20.0.2 and up.
     You can install it by running the following:
   </p>
   <app-code-block content="npm install @ddtmm/angular-signal-generators" language="plaintext"  name="npm install snippet" />
@@ -27,10 +27,10 @@ import { CodeBlockComponent } from "../controls/code-block.component";
     </tr>
     </thead>
     <tbody>
-      <tr><td>4.x.x</td><td>&gt;=20.0.2</td></tr>
-      <tr><td>3.x.x</td><td>&gt;=19.0.0 20.0.0-20.0.1</td></tr>
-      <tr><td>2.x.x</td><td>&gt;=17.0.0 ^18.0.0</td></tr>
-      <tr><td>1.x.x</td><td>&gt;=16.0.0 ^17.0.0</td></tr>
+      <tr><td>4.x</td><td>&gt;=20.0.2</td></tr>
+      <tr><td>3.x</td><td>&gt;=19.0.0</td></tr>
+      <tr><td>2.x</td><td>&gt;=17.0.0</td></tr>
+      <tr><td>1.x</td><td>&gt;=16.0.0</td></tr>
     </tbody>
   </table>
   <div class="divider"></div>

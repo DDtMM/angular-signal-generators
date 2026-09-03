@@ -1,0 +1,32 @@
+{
+  "name": "signal-generators-angular-22-compatibility",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": { "test": "ng test signal-generators" },
+  "dependencies": {
+    "@angular/common": "~22.1.0",
+    "@angular/compiler": "~22.1.0",
+    "@angular/core": "~22.1.0",
+    "@angular/forms": "~22.1.0",
+    "@angular/platform-browser": "~22.1.0",
+    "@angular/platform-browser-dynamic": "~22.1.0",
+    "rxjs": "~7.8.2",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "~22.1.0",
+    "@angular/cli": "~22.1.0",
+    "@angular/compiler-cli": "~22.1.0",
+    "@types/jasmine": "~5.1.8",
+    "@types/node": "^22.15.27",
+    "jasmine-core": "~5.8.0",
+    "karma": "~6.4.3",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-mocks": "^14.17.3",
+    "typescript": "~6.0.3"
+  }
+}

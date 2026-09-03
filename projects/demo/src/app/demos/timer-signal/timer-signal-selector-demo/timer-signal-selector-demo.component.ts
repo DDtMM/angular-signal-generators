@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { timerSignal } from '@ddtmm/angular-signal-generators';
 
 @Component({
   selector: 'app-timer-signal-selector-demo',
   templateUrl: './timer-signal-selector-demo.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
 })
 export class TimerSignalSelectorDemoComponent {
