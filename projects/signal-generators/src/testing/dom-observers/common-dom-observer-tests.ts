@@ -10,7 +10,7 @@ import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/te
  */
 export function setupEnsureSignalWorksWhenObserverIsMissing<T>(observerName: string, signalFn: () => Signal<T>, actionFn: () => void) {
   it(`should return an empty signal that doesn't respond to changes if ${observerName} doesn't exist.`, fakeAsync(() => {
-    expect(observerName in globalThis).toBeTrue(); // the observer should exist.
+    expect(observerName in globalThis).toBe(true); // the observer should exist.
     const restoreProperty = replaceGlobalProperty(observerName, undefined);
     const sut = TestBed.runInInjectionContext(() => signalFn());
     const initialValue = sut();

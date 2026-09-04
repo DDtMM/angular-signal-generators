@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 /**
  * An observer with all methods mocked.
  * @typeParam TObserved The observed target's type.
@@ -16,16 +18,21 @@ export class MockObserver<
   /** The last created instance of a MockObserver. */
   static currentInstance?: MockObserver;
 
-  disconnect = jasmine.createSpy('disconnect').and.callFake(() => (this.observed = []));
-  observe = jasmine
-    .createSpy('observe')
-    .and.callFake((target: TObserved, options?: TObserveOptions) => this.observed.push([target, options]));
+  disconnect = vi
+    .fn()
+    .mockName('disconnect')
+    .mockImplementation(() => (this.observed = []));
+  observe = vi
+    .fn()
+    .mockName('observe')
+    .mockImplementation((target: TObserved, options?: TObserveOptions) => this.observed.push([target, options]));
   /** Observed elements and their options. */
   observed: [TObserved, TObserveOptions | undefined][] = [];
-  unobserve = jasmine
-    .createSpy('unobserve')
-    .and.callFake((target: TObserved) => (this.observed = this.observed.filter((x) => x !== target)));
-  takeRecords = jasmine.createSpy('takeRecords');
+  unobserve = vi
+    .fn()
+    .mockName('unobserve')
+    .mockImplementation((target: TObserved) => (this.observed = this.observed.filter((x) => x !== target)));
+  takeRecords = vi.fn().mockName('takeRecords');
 
   /** A realistic delay between a change and the observer creating a notification. */
   observationDelay = 250;
@@ -34,14 +41,17 @@ export class MockObserver<
    * @param callback If set, the callback will be called when simulateObservation is called.
    * @param initOptions Options to pass to the constructor.
    */
-  constructor(public callback?: TCallback, public initOptions?: TInitOptions) {
+  constructor(
+    public callback?: TCallback,
+    public initOptions?: TInitOptions
+  ) {
     this.callback = callback;
     MockObserver.currentInstance = this;
   }
 
   /** Calls the callback passed to the constructor after a delay.  If nothing is observed then does nothing. */
   simulateObservation(response: Parameters<TCallback>[0]) {
-    if (this.observed.filter(x => !!x).length !== 0) {
+    if (this.observed.filter((x) => !!x).length !== 0) {
       setTimeout(() => this.callback?.(response, this), this.observationDelay);
     }
   }
@@ -68,12 +78,7 @@ export class MockResizeObserver extends MockObserver<Element, ResizeObserverOpti
     MockResizeObserver.currentInstance = this;
   }
 }
-export class MockIntersectionObserver extends MockObserver<
-  Element,
-  void,
-  IntersectionObserverInit,
-  IntersectionObserverCallback
-> {
+export class MockIntersectionObserver extends MockObserver<Element, void, IntersectionObserverInit, IntersectionObserverCallback> {
   /** The last created instance of a MockIntersectionObserver. */
   static override currentInstance?: MockIntersectionObserver;
   root: Document | Element | null = null;

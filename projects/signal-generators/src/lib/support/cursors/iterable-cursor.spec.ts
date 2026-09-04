@@ -49,7 +49,7 @@ describe('IterableCursor', () => {
     const sut = new IterableCursor([1, 2, 3], false);
     expect(sut.next(0)).toEqual({ hasValue: true, value: 1 });
   });
-  
+
   it('#next(0) returns first element after reset', () => {
     const sut = new IterableCursor([1, 2, 3], false);
     sut.reset();
@@ -77,7 +77,7 @@ describe('IterableCursor', () => {
   });
 });
 
-function *generatorFromArray<T>(array: T[]): Generator<T> {
+function* generatorFromArray<T>(array: T[]): Generator<T> {
   for (let i = 0; i < array.length; i++) {
     yield array[i];
   }

@@ -1,6 +1,5 @@
 import { ArrayLikeCursor } from './array-like-cursor';
 
-
 describe('ArrayLikeCursor', () => {
   it('#moveTo() will move cursor to the next matching element', () => {
     const sut = new ArrayLikeCursor([1, 2, 3, 2, 5], false);
@@ -48,7 +47,7 @@ describe('ArrayLikeCursor', () => {
     const sut = new ArrayLikeCursor([1, 2, 3], false);
     expect(sut.next(0)).toEqual({ hasValue: true, value: 1 });
   });
-  
+
   it('#next(0) returns first element after reset', () => {
     const sut = new ArrayLikeCursor([1, 2, 3], false);
     sut.reset();
@@ -93,5 +92,4 @@ describe('ArrayLikeCursor', () => {
     expect(sut.next(0)).toEqual({ hasValue: true, value: 'a' });
     expect(sut.next(-2)).toEqual({ hasValue: true, value: 'b' });
   });
-
 });

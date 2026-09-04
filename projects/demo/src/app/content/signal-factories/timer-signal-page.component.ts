@@ -17,6 +17,12 @@ import { TimerSignalSelectorDemoComponent } from "../../demos/timer-signal/timer
   The value of the timer is incremented after every "tick".
 </p>
 <p>
+  Intervals stay aligned to their intended timeline when callback execution is delayed. By default,
+  missed ticks are discarded and the tick count represents callbacks delivered by the timer. Set
+  <code class="inline">missedTickBehavior</code> to <code class="inline">'coalesce'</code> to emit once
+  while advancing the count to its logical position on the elapsed interval timeline.
+</p>
+<p>
   The signal has methods to pause, resume and restart the timer.
   Additionally, there is a <b>state</b> signal that will return the current state of the timer.
 </p>

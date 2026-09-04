@@ -7,7 +7,12 @@ describe('refSignal', () => {
   describe('when initial value is value', () => {
     runComputedAndEffectTests(() => {
       const sut = refSignal(1);
-      return [sut, () => { sut.set(1); }];
+      return [
+        sut,
+        () => {
+          sut.set(1);
+        }
+      ];
     });
 
     it('is the initially the value passed in the constructor', () => {

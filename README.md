@@ -7,7 +7,7 @@ Check out the **[demos](https://ddtmm.github.io/angular-signal-generators/)** to
 
 | Statements                  | Branches                | Functions                 | Lines             |
 | --------------------------- | ----------------------- | ------------------------- | ----------------- |
-| ![Statements](https://img.shields.io/badge/statements-100%25-brightgreen.svg?style=flat) | ![Branches](https://img.shields.io/badge/branches-100%25-brightgreen.svg?style=flat) | ![Functions](https://img.shields.io/badge/functions-100%25-brightgreen.svg?style=flat) | ![Lines](https://img.shields.io/badge/lines-100%25-brightgreen.svg?style=flat) |
+| ![Statements](https://img.shields.io/badge/statements-99.72%25-brightgreen.svg?style=flat) | ![Branches](https://img.shields.io/badge/branches-97.1%25-brightgreen.svg?style=flat) | ![Functions](https://img.shields.io/badge/functions-99.4%25-brightgreen.svg?style=flat) | ![Lines](https://img.shields.io/badge/lines-99.79%25-brightgreen.svg?style=flat) |
 
 ## Installation
 
@@ -128,7 +128,7 @@ Signals that uses a secondary storage system to store values, ideally beyond the
 
 ### timerSignal
 
-This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
+This is very similar to rxjs's *timer* operator. It behaves like `setTimeout` or an interval depending on the parameters passed. The value of the timer is incremented after every tick. Intervals discard missed ticks by default, so the count represents delivered callbacks. Set `missedTickBehavior` to `'coalesce'` to emit once after a delay while advancing the count to its logical position on the interval timeline.
 
 ### throttleSignal
 

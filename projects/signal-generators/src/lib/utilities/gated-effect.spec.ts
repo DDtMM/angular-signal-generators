@@ -3,7 +3,6 @@ import { fakeAsync, TestBed } from '@angular/core/testing';
 import { gatedEffect } from './gated-effect';
 
 describe('gatedEffect', () => {
-
   it('works like a normal effect if no conditions are provided', fakeAsync(() => {
     const $a = signal(1);
     const $b = signal(1);
@@ -74,7 +73,7 @@ describe('gatedEffect', () => {
     const $b = signal(1);
     TestBed.runInInjectionContext(() => gatedEffect(() => $b.set($a() + 1), { until: () => $a() > 3 }));
     TestBed.tick();
-    expect($b()).toBe(2); 
+    expect($b()).toBe(2);
     $a.set(3);
     TestBed.tick();
     expect($b()).toBe(4); // last run

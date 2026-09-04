@@ -1,11 +1,14 @@
 import { isPlatformBrowser } from '@angular/common';
 import { CreateSignalOptions, Injector, PLATFORM_ID, Signal, WritableSignal, signal } from '@angular/core';
-import { TimerInternal, TimerStatus } from '../internal/timer-internal';
+import { MissedTickBehavior, TimerInternal, TimerStatus } from '../internal/timer-internal';
 import { getDestroyRef, getInjector } from '../internal/utilities';
 import { ValueSource, createGetValueFn, watchValueSourceFn } from '../value-source';
 
 /** The state of the timer. */
 export type TimerSignalStatus = 'running' | 'paused' | 'stopped' | 'destroyed';
+
+/** Determines how an interval accounts for ticks missed while its host could not run callbacks. */
+export type TimerSignalMissedTickBehavior = MissedTickBehavior;
 
 /** Options for {@link timerSignal}. */
 export interface TimerSignalOptions<T = number> extends Pick<CreateSignalOptions<T>, 'debugName'> {
@@ -21,6 +24,13 @@ export interface TimerSignalOptions<T = number> extends Pick<CreateSignalOptions
    * If not provided, the tick count (number) is emitted.
    */
   selector?: (tickCount: number) => T;
+  /**
+   * Determines how ticks missed while the host could not run callbacks affect the tick count.
+   * `discard` counts only the callback that is delivered. `coalesce` advances the count to its
+   * logical position on the interval timeline while still delivering only one callback.
+   * @defaultValue 'discard'
+   */
+  missedTickBehavior?: TimerSignalMissedTickBehavior;
 }
 
 /** A readonly signal with methods to affect execution created from {@link timerSignal}. */
@@ -64,6 +74,7 @@ export function timerSignal<T = number>(
   const timer = new TimerInternal(timerTimeFn(), intervalTimeFn?.(), {
     onStatusChange: (internalStatus) => $state.set(transformTimerStatus(internalStatus)),
     onTick: (x) => $output.set(selector(x)),
+    missedTickBehavior: options?.missedTickBehavior,
     runAtStart: !options?.stopped && isPlatformBrowser(injector.get(PLATFORM_ID))
   });
   // setup cleanup actions.

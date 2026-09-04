@@ -6,13 +6,13 @@ import { createFixture } from '../../testing/testing-utilities';
 import { signalToIterator } from './signal-to-iterator';
 
 describe('signalToIterator', () => {
-  runInjectorOptionTest(injector =>  {
+  runInjectorOptionTest((injector) => {
     const source = signal(1);
     const sut = signalToIterator(signal(1), { injector });
     return () => {
       source.set(2);
       sut.next();
-    }
+    };
   });
 
   describe('manual injector context', () => {
@@ -24,13 +24,13 @@ describe('signalToIterator', () => {
       injector = fixture.componentRef.injector;
     });
 
-    it('will emit the current value even without change detection', (done) => {
+    it('will emit the current value even without change detection', async () => {
       const source = signal(1);
       const iterator = signalToIterator(source, { injector });
-      iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })).then(() => done());
+      await expect(iterator.next()).resolves.toEqual({ done: false, value: 1 });
     });
 
-    it('will emit the current value for a late subscriber', (done) => {
+    it('will emit the current value for a late subscriber', async () => {
       const source = autoDetectChangesSignal(signal(1), fixture);
       (async () => {
         const emissions: number[] = [];
@@ -47,37 +47,37 @@ describe('signalToIterator', () => {
           emissions.push(item);
         }
         expect(emissions).toEqual([3, 4]);
-        done();
       })();
       source.set(4);
       fixture.destroy();
     });
 
-    it('will retain changes for later emission', (done) => {
+    it('will retain changes for later emission', async () => {
       const source = autoDetectChangesSignal(signal(1), fixture);
       const iterator = signalToIterator(source, { injector });
       source.set(2);
       source.set(3);
-      Promise.all([
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 })),
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 3 }))
-      ]).then(() => done());
+      await Promise.all([
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 2 })),
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 3 }))
+      ]);
     });
 
-    it('will defer emission until they are received', (done) => {
+    it('will defer emission until they are received', async () => {
       const source = autoDetectChangesSignal(signal(1), fixture);
       const iterator = signalToIterator(source, { injector });
-      Promise.all([
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 })),
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 3 }))
-      ]).then(() => done());
+      const emissions = Promise.all([
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 2 })),
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 3 }))
+      ]);
       source.set(2);
       source.set(3);
+      await emissions;
     });
 
-    it('will work with computed signals', (done) => {
+    it('will work with computed signals', async () => {
       const source = autoDetectChangesSignal(signal(1), fixture);
       const inBetween = computed(() => source() + 1);
       const iterator = signalToIterator(inBetween, { injector });
@@ -87,14 +87,13 @@ describe('signalToIterator', () => {
           emissions.push(item);
         }
         expect(emissions).toEqual([2, 3, 4]);
-        done();
       })();
       source.set(2);
       source.set(3);
       fixture.destroy();
     });
 
-    it('will work with multiple loops as once', (done) => {
+    it('will work with multiple loops as once', async () => {
       const source = autoDetectChangesSignal(signal(1), fixture);
       const testFn = async (iterator: AsyncIterableIterator<number>) => {
         const emissions: number[] = [];
@@ -109,14 +108,14 @@ describe('signalToIterator', () => {
       source.set(2);
       source.set(3);
       fixture.destroy();
-      Promise.all([fn1, fn2]).then(() => done());
+      await Promise.all([fn1, fn2]).then(() => {});
     });
 
     describe('when calling return', () => {
-      it('will stop if iterator.return is called', (done) => {
+      it('will stop if iterator.return is called', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
-        (async () => {
+        const emissionsPromise = (async () => {
           let res: IteratorResult<number>;
           const emissions: number[] = [];
           while (!(res = await iterator.next()).done) {
@@ -124,70 +123,75 @@ describe('signalToIterator', () => {
           }
           expect(emissions).toEqual([1, 2]);
           expect(res.value).toEqual('bye');
-          done();
+          return emissions;
         })();
         source.set(2);
         iterator.return('bye');
         source.set(3); // this should not get emitted
+        await expect(emissionsPromise).resolves.toEqual([1, 2]);
       });
 
-      it('will return done from calls to next that have not been resolved yet', (done) => {
+      it('will return done from calls to next that have not been resolved yet', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
-        Promise.all([
-          iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
-          iterator.next().then(x => expect(x).toEqual({ done: true, value: 'plop' }))
-        ]).then(() => done());
+        const emissions = Promise.all([
+          iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
+          iterator.next().then((x) => expect(x).toEqual({ done: true, value: 'plop' }))
+        ]);
         iterator.return('plop');
+        await emissions;
       });
 
-      it('will return done from calls to next after iterator is already completed', (done) => {
+      it('will return done from calls to next after iterator is already completed', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         source.set(2);
         iterator.return('plop');
-        Promise.all([
-          iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
-          iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 })),
-          iterator.next().then(x => expect(x).toEqual({ done: true, value: 'plop' })),
-          iterator.next().then(x => expect(x).toEqual({ done: true, value: 'plop' }))
-        ]).then(() => done());
+        await Promise.all([
+          iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
+          iterator.next().then((x) => expect(x).toEqual({ done: false, value: 2 })),
+          iterator.next().then((x) => expect(x).toEqual({ done: true, value: 'plop' })),
+          iterator.next().then((x) => expect(x).toEqual({ done: true, value: 'plop' }))
+        ]);
       });
     });
 
     describe('when calling throw', () => {
-      it('will reject waiting calls when iterator is thrown', (done) => {
+      it('will reject waiting calls when iterator is thrown', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
-        Promise.all([
+        await Promise.all([
           iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
-          iterator.next().then(() => fail()).catch((x) => expect(x).toEqual('error')),
-          iterator.throw('error').catch(() => { /* do nothing */ })
-        ]).then(() => done());
+          iterator
+            .next()
+            .then(() => expect.fail())
+            .catch((x) => expect(x).toEqual('error')),
+          iterator.throw('error').catch(() => {})
+        ]);
       });
-      it('will stop and return rejected promise', (done) => {
+      it('will stop and return rejected promise', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
-        (async () => {
+        const emissions: number[] = [];
+        const emissionsPromise = (async () => {
           let res: IteratorResult<number> | undefined;
-          const emissions: number[] = [];
           while (!(res = await iterator.next()).done) {
             emissions.push(res.value);
           }
           expect(emissions).toEqual([1, 2]);
-          done();
-        })();
+          return emissions;
+        })().catch(() => emissions);
         fixture.detectChanges();
         source.set(2);
-        iterator.throw('error').then(() => fail()).catch((x) => expect(x).toBe('error'));
+        await expect(iterator.throw('error')).rejects.toBe('error');
         fixture.detectChanges();
         source.set(3); // this should not get emitted
+        await expect(emissionsPromise).resolves.toEqual([1, 2]);
       });
     });
 
-
     describe('when injector is destroyed', () => {
-      it('will stop emitting once injector is destroyed', (done) => {
+      it('will stop emitting once injector is destroyed', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
         (async () => {
@@ -196,43 +200,43 @@ describe('signalToIterator', () => {
             emissions.push(item);
           }
           expect(emissions).toEqual([1, 2, 3]);
-          done();
         })();
         source.set(2);
         source.set(3);
         fixture.destroy();
         source.set(4);
       });
-      it('will resolve outstanding calls to next when destroyed', (done) => {
+      it('will resolve outstanding calls to next when destroyed', async () => {
         const source = autoDetectChangesSignal(signal(1), fixture);
         const iterator = signalToIterator(source, { injector });
-        Promise.all([
-          iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
-          iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 })),
-          iterator.next().then(x => expect(x).toEqual({ done: true, value: undefined }))
-        ]).then(() => done());
+        const emissions = Promise.all([
+          iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
+          iterator.next().then((x) => expect(x).toEqual({ done: false, value: 2 })),
+          iterator.next().then((x) => expect(x).toEqual({ done: true, value: undefined }))
+        ]);
         source.set(2);
         fixture.destroy();
+        await emissions;
       });
     });
   });
 
   describe('in component injector context', () => {
-    @Component({})
+    @Component({ template: '' })
     class TestComponent {
       source = signal(1);
       iterator = signalToIterator(this.source);
     }
-    it('will work without passing injector', (done) => {
+    it('will work without passing injector', async () => {
       const fixture = TestBed.createComponent(TestComponent);
       const { iterator, source } = fixture.componentInstance;
-      Promise.all([
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 1 })),
-        iterator.next().then(x => expect(x).toEqual({ done: false, value: 2 }))
-      ]).then(() => done());
+      const emissions = Promise.all([
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 1 })),
+        iterator.next().then((x) => expect(x).toEqual({ done: false, value: 2 }))
+      ]);
       source.set(2);
       fixture.detectChanges();
+      await emissions;
     });
   });
 });
-

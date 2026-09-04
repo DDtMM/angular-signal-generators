@@ -13,7 +13,7 @@
     "test": "ng test signal-generators",
     "test:compat": "node scripts/test-angular-compatibility.mjs",
     "test:compat:all": "node scripts/test-angular-compatibility.mjs 20 21 22",
-    "test-for-build": "ng test signal-generators --code-coverage true --watch false",
+    "test-for-build": "ng test signal-generators --coverage true --watch false",
     "generate-coverage-badge": "npx istanbul-badges-readme --coverageDir=\"./coverage/signal-generators\"",
     "lint": "ng lint",
     "serve:ssr:demo": "ng build demo --verbose true --configuration development --watch true & node dist/demo/server/server.mjs"
@@ -40,7 +40,7 @@
     "ngx-highlightjs": "^14.0.0",
     "rxjs": "~7.8.2",
     "tslib": "^2.6.2",
-    "zone.js": "~0.15.0"
+    "zone.js": "^0.16.3"
   },
   "devDependencies": {
     "@angular/build": "^22.1.6",
@@ -50,10 +50,10 @@
     "@tailwindcss/postcss": "^4.0.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/express": "^5.0.0",
-    "@types/jasmine": "~5.1.8",
     "@types/node": "^22.15.27",
     "@typescript-eslint/eslint-plugin": "^8.68.0",
     "@typescript-eslint/parser": "^8.68.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "angular-eslint": "^22.1.0",
     "autoprefixer": "^10.4.19",
     "browser-sync": "^3.0.4",
@@ -63,18 +63,14 @@
     "glob": "^13.0.6",
     "istanbul-badges-readme": "^1.9.0",
     "istanbul-lib-instrument": "^6.0.3",
-    "jasmine-core": "~5.8.0",
-    "karma": "~6.4.3",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "jsdom": "^27.4.0",
     "ng-mocks": "^14.17.3",
     "ng-packagr": "^22.1.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.0",
     "typedoc": "0.28.20",
+    "typescript": "~6.0.3",
     "typescript-eslint": "^8.68.0",
-    "typescript": "~6.0.3"
+    "vitest": "^4.1.11"
   }
 }

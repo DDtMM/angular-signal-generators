@@ -1,22 +1,27 @@
-import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { filterSignal } from './filter-signal';
 
 describe('filterSignal', () => {
-  runDebugNameOptionTest((debugName) => filterSignal<number>(1, x => x < 5, { debugName }));
-  runTypeGuardTests(() => filterSignal<number>(1, x => x < 5));
+  runDebugNameOptionTest((debugName) => filterSignal<number>(1, (x) => x < 5, { debugName }));
+  runTypeGuardTests(() => filterSignal<number>(1, (x) => x < 5));
 
   runDoesNotCauseReevaluationsSimplyWhenNested(
-    () => filterSignal<number>(1, x => x < 5),
+    () => filterSignal<number>(1, (x) => x < 5),
     (sut) => sut.set(4)
   );
 
   runComputedAndEffectTests(() => {
-    const sut = filterSignal<number>(1, x => x < 5);
+    const sut = filterSignal<number>(1, (x) => x < 5);
     return [sut, () => sut.set(2)];
   });
 
   it('filters values based on a boolean condition', () => {
-    const sut = filterSignal<number>(1, x => x < 5);
+    const sut = filterSignal<number>(1, (x) => x < 5);
     expect(sut()).toBe(1);
     sut.set(8);
     expect(sut()).toBe(1);
@@ -25,7 +30,7 @@ describe('filterSignal', () => {
   });
 
   it('uses equalFn when passed to options', () => {
-    const sut = filterSignal<number>(1, x => x < 5, { equal: (a, b) => a % 2 === b % 2 });
+    const sut = filterSignal<number>(1, (x) => x < 5, { equal: (a, b) => a % 2 === b % 2 });
     expect(sut()).toBe(1);
     sut.set(3);
     expect(sut()).toBe(1); // since the are both still odd, the value should not change.
@@ -33,17 +38,17 @@ describe('filterSignal', () => {
     expect(sut()).toBe(4);
   });
 
-  it('doesn\'t miss a value change', () => {
-    const sut = filterSignal<number>(1, x => x < 5);
+  it("doesn't miss a value change", () => {
+    const sut = filterSignal<number>(1, (x) => x < 5);
     expect(sut()).toBe(1);
     sut.set(6);
-    sut.set(4)
+    sut.set(4);
     sut.set(8);
     expect(sut()).toBe(4);
   });
 
   it('filters values when used as a guard', () => {
-    const sut = filterSignal('eric' as const, (x: string): x is 'eric' | 'tim' => (['eric', 'tim']).includes(x));
+    const sut = filterSignal('eric' as const, (x: string): x is 'eric' | 'tim' => ['eric', 'tim'].includes(x));
     expect(sut()).toBe('eric');
     sut.set('joe');
     expect(sut()).toBe('eric');
@@ -56,10 +61,9 @@ describe('filterSignal', () => {
   it('filters values when update is used.', () => {
     const sut = filterSignal({ value: 1 }, (x: { value: number }) => x.value < 5);
     expect(sut()).toEqual({ value: 1 });
-    sut.update(x => ({ ...x, value: 5 }));
+    sut.update((x) => ({ ...x, value: 5 }));
     expect(sut()).toEqual({ value: 1 });
-    sut.update(x => ({ ...x, value: 4 }));
+    sut.update((x) => ({ ...x, value: 4 }));
     expect(sut()).toEqual({ value: 4 });
   });
-
 });

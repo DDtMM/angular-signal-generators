@@ -33,7 +33,7 @@ describe('resourceRefToPromise', () => {
     resourceRefToPromise(resourceRef as unknown as ResourceRef<number | undefined>, injector).catch((error) => (rejection = error));
     flushMicrotasks();
 
-    expect(rejection).toEqual(jasmine.any(Error));
+    expect(rejection).toEqual(expect.any(Error));
     expect((rejection as Error).message).toBe('initial failure');
   }));
 

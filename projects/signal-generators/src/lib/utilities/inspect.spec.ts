@@ -1,16 +1,16 @@
+import type { Mock } from 'vitest';
 import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { setProdMode } from '../../testing/dev-mode-utilities';
-import { replaceGlobalProperty } from '../../testing/testing-utilities';
 import { INSPECT_DEFAULTS, inspect } from './inspect';
 
 const originalDefaults = { ...INSPECT_DEFAULTS };
 
 describe('inspect', () => {
   describe('with mocked global defaults', () => {
-    let reporterSpy: jasmine.Spy;
+    let reporterSpy: Mock;
 
-    beforeEach(() => (reporterSpy = INSPECT_DEFAULTS.reporter = jasmine.createSpy('reporter', INSPECT_DEFAULTS.reporter)));
+    beforeEach(() => (reporterSpy = INSPECT_DEFAULTS.reporter = vi.fn(INSPECT_DEFAULTS.reporter).mockName('reporter')));
     afterEach(() => (INSPECT_DEFAULTS.reporter = originalDefaults.reporter));
 
     it('should log initial value', () =>
@@ -69,7 +69,7 @@ describe('inspect', () => {
     it('should use reporter when provided', () =>
       TestBed.runInInjectionContext(() => {
         const source = signal('hello there');
-        const altReporter = jasmine.createSpy();
+        const altReporter = vi.fn();
         inspect(source, { reporter: altReporter });
         TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledTimes(0);
@@ -78,19 +78,22 @@ describe('inspect', () => {
     it('should ignore any errors', () =>
       TestBed.runInInjectionContext(() => {
         const trap = {
-          get someValue() { throw new Error('someValue will always throw'); }
+          get someValue() {
+            throw new Error('someValue will always throw');
+          }
         };
-        const consoleSpyObj = jasmine.createSpyObj('console', ['error', 'warn']);
-        const restoreConsole = replaceGlobalProperty('console', consoleSpyObj);
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
         inspect([signal({ trap, value: 1 })], { ignoreErrors: true });
         TestBed.tick();
         expect(reporterSpy).toHaveBeenCalledWith([{ trap: undefined, value: 1 } as any]);
-        expect(consoleSpyObj.warn).toHaveBeenCalled();
-        restoreConsole();
+        expect(warnSpy).toHaveBeenCalled();
+        errorSpy.mockRestore();
+        warnSpy.mockRestore();
       }));
     describe('in prod mode', () => {
-      beforeEach(() => (setProdMode(true)));
-      afterEach(() => (setProdMode(false)));
+      beforeEach(() => setProdMode(true));
+      afterEach(() => setProdMode(false));
       it('should do nothing', () => {
         const source = signal('hello there');
         inspect(source);
@@ -118,11 +121,10 @@ describe('inspect', () => {
 
   describe('global defaults', () => {
     it('should logging to console.log', () => {
-      const consoleSpyObj = jasmine.createSpyObj('console', ['log']);
-      const restoreConsole = replaceGlobalProperty('console', consoleSpyObj);
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
       INSPECT_DEFAULTS.reporter('test 1 2 3');
-      expect(consoleSpyObj.log).toHaveBeenCalledWith('test 1 2 3');
-      restoreConsole();
+      expect(logSpy).toHaveBeenCalledWith('test 1 2 3');
+      logSpy.mockRestore();
     });
     it('should not skip first emission', () => {
       expect(INSPECT_DEFAULTS.skipInitial).toBe(false);

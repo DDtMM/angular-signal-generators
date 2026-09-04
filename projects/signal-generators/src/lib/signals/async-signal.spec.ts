@@ -1,28 +1,27 @@
+import type { Mock } from 'vitest';
 import { Injector, runInInjectionContext, signal } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { BehaviorSubject, finalize, Observable, of, startWith, Subject, tap, timer } from 'rxjs';
-import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runInjectorOptionTest,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { createFixture } from '../../testing/testing-utilities';
 import { asyncSignal } from './async-signal';
 
 describe('asyncSignal', () => {
-
   describe('for computed and effects', () => {
-    runComputedAndEffectTests(
-      () => {
-        const sut = asyncSignal(Promise.resolve(1));
-        return [sut, () => sut.set(Promise.resolve(2))];
-      },
-      'from a value'
-    );
-    runComputedAndEffectTests(
-      () => {
-        const source = signal(Promise.resolve(1));
-        const sut = asyncSignal(source);
-        return [sut, () => source.set(Promise.resolve(2))];
-      },
-      'from a signal'
-    );
+    runComputedAndEffectTests(() => {
+      const sut = asyncSignal(Promise.resolve(1));
+      return [sut, () => sut.set(Promise.resolve(2))];
+    }, 'from a value');
+    runComputedAndEffectTests(() => {
+      const source = signal(Promise.resolve(1));
+      const sut = asyncSignal(source);
+      return [sut, () => source.set(Promise.resolve(2))];
+    }, 'from a signal');
     // setupDoesNotCauseReevaluationsSimplyWhenNested can not be tested because nesting this signal will cause an error.
   });
 
@@ -59,7 +58,7 @@ describe('asyncSignal', () => {
     }));
 
     it('uses equal function', () => {
-      const asyncSource = new BehaviorSubject(2)
+      const asyncSource = new BehaviorSubject(2);
       const sut = TestBed.runInInjectionContext(() => asyncSignal(asyncSource, { defaultValue: 1, equal: (a, b) => a % 2 === b % 2 }));
       TestBed.tick();
       expect(sut()).toBe(2);
@@ -68,7 +67,6 @@ describe('asyncSignal', () => {
       asyncSource.next(5);
       expect(sut()).toBe(5);
     });
-
   });
 
   describe('from a ReactiveSource', () => {
@@ -91,16 +89,15 @@ describe('asyncSignal', () => {
       tick();
       expect(sut()).toBe(2);
     }));
-
   });
 
   describe('from a function that is not a signal', () => {
     it('does not throw if using a variable defined after it is created', () => {
       /*
-      * In classes a variable can be defined after the signal is created.
-      * If the variable is initially retrieved then this should throw an error.
-      * So initially the value of the signal should be the default value.
-      */
+       * In classes a variable can be defined after the signal is created.
+       * If the variable is initially retrieved then this should throw an error.
+       * So initially the value of the signal should be the default value.
+       */
       // eslint-disable-next-line prefer-const
       let innerSubject: BehaviorSubject<number>;
       const sut = TestBed.runInInjectionContext(() => asyncSignal(() => innerSubject, { defaultValue: -1 }));
@@ -108,7 +105,7 @@ describe('asyncSignal', () => {
       TestBed.tick();
       expect(sut()).toBe(1);
     });
-  })
+  });
   describe('general execution', () => {
     it('creates a signal that initially returns defaultValue if provided in options', fakeAsync(() => {
       const sut = TestBed.runInInjectionContext(() => asyncSignal(Promise.resolve(1), { defaultValue: -1 }));
@@ -120,8 +117,8 @@ describe('asyncSignal', () => {
     it('create a new subscription when source changes', () => {
       const source1 = new BehaviorSubject(1);
       const source2 = new BehaviorSubject(5);
-      const subscribeSpy1 = spyOn(source1, 'subscribe').and.callThrough();
-      const subscribeSpy2 = spyOn(source2, 'subscribe').and.callThrough();
+      const subscribeSpy1 = vi.spyOn(source1, 'subscribe');
+      const subscribeSpy2 = vi.spyOn(source2, 'subscribe');
       const sut = TestBed.runInInjectionContext(() => asyncSignal(source1, { defaultValue: -1 }));
       TestBed.tick();
       expect(sut()).toBe(1);
@@ -192,7 +189,7 @@ describe('asyncSignal', () => {
   describe('when requireSync is true', () => {
     it('does not resubscribe to an async if the same source is passed again', fakeAsync(() => {
       const source = new BehaviorSubject(1);
-      const subscribeSpy = spyOn(source, 'subscribe').and.callThrough();
+      const subscribeSpy = vi.spyOn(source, 'subscribe');
       const sut = TestBed.runInInjectionContext(() => asyncSignal(source, { requireSync: true }));
       expect(sut()).toBe(1);
       source.next(2);
@@ -208,11 +205,13 @@ describe('asyncSignal', () => {
       const sut = TestBed.runInInjectionContext(() => asyncSignal(source, { requireSync: true }));
       expect(() => sut()).toThrowError('requireSync is true, but no value was returned from asynchronous source.');
     });
-  })
+  });
   describe('async errors', () => {
     it('throws when subscribable async source throws', fakeAsync(() => {
       const obs$ = timer(1000).pipe(
-        tap(() => { throw new Error(); }),
+        tap(() => {
+          throw new Error();
+        }),
         startWith(6)
       );
       const sut = TestBed.runInInjectionContext(() => asyncSignal(obs$));
@@ -254,7 +253,7 @@ describe('asyncSignal', () => {
             throw new Error();
           }
         }),
-        finalize(() => isCleanedUp = true)
+        finalize(() => (isCleanedUp = true))
       );
       const sut = TestBed.runInInjectionContext(() => asyncSignal(obs$));
       tick(250);
@@ -279,18 +278,20 @@ describe('asyncSignal', () => {
       flush();
       asyncSource2.reject('error2');
       flush();
-      expect(() => sut()).toThrowMatching((x) => (x as Error).cause === 'error1');
-
+      expect(() => sut()).toThrow(expect.objectContaining({ cause: 'error1' }));
     }));
   });
 });
 
 /** There will be a native version of this soon. */
-type PromiseWithResolvers<T> = Promise<T> & { resolve: (value: T) => void, reject: (reason?: unknown) => void };
+type PromiseWithResolvers<T> = Promise<T> & {
+  resolve: (value: T) => void;
+  reject: (reason?: unknown) => void;
+};
 /** Creates a promise that can be resolved or rejected externally.  There will be a native version soon */
 function createPromiseWithResolvers<T>(): PromiseWithResolvers<T> {
-  let resolve: (value: T) => void = () => { /* do nothing */ };
-  let reject: (reason?: unknown) => void = () => { /* do nothing */ };
+  let resolve: (value: T) => void = () => {};
+  let reject: (reason?: unknown) => void = () => {};
   const promise = new Promise<T>((res, rej) => {
     resolve = res;
     reject = rej;
@@ -304,8 +305,8 @@ function createPromiseWithResolvers<T>(): PromiseWithResolvers<T> {
  * Returns a spy on the unsubscribe function returned from ANY call to subscribe.
  * So if multiple subscriptions are created, they will all have the same spy returned from this method.
  */
-function spyOnUnsubscribeFromObservableSubscribe<T>(obs$: Observable<T>): jasmine.Spy {
-  const unsubscribeSpy = jasmine.createSpy('unsubscribe', () => { /* do nothing */ });
+function spyOnUnsubscribeFromObservableSubscribe<T>(obs$: Observable<T>): Mock {
+  const unsubscribeSpy = vi.fn(() => {}).mockName('unsubscribe');
 
   obs$.subscribe = (observer) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -314,9 +315,9 @@ function spyOnUnsubscribeFromObservableSubscribe<T>(obs$: Observable<T>): jasmin
     subscription.unsubscribe = () => {
       originalUnsubscribe.call(subscription);
       unsubscribeSpy();
-    }
+    };
     return subscription;
-  }
+  };
 
   return unsubscribeSpy;
 }

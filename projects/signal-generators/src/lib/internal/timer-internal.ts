@@ -1,6 +1,9 @@
 /** The status of the timer. */
 export enum TimerStatus { Destroyed, Paused, Running, Stopped }
 
+/** Determines how an interval accounts for ticks missed while its host could not run callbacks. */
+export type MissedTickBehavior = 'discard' | 'coalesce';
+
 /** Options for the timer */
 export interface TimerInternalOptions {
   /** Callback to when status changes */
@@ -9,6 +12,8 @@ export interface TimerInternalOptions {
   onTick?: (tickCount: number) => void;
   /** If true, will immediately start time. */
   runAtStart?: boolean;
+  /** How ticks missed because callback execution was delayed are reflected in the tick count. */
+  missedTickBehavior?: MissedTickBehavior;
 }
 
 /** Unique properties for the mode the timer is in. */
@@ -27,8 +32,7 @@ export class TimerInternal {
   }
   set intervalTime(value: number) {
     TimerInternal.assertHasIntervalRunner(this);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.updateRunnerDueTime(value, this.intervalRunner!);
+    this.updateIntervalDueTime(value);
   }
 
   /** Gets the number of ticks since start. */
@@ -43,8 +47,10 @@ export class TimerInternal {
 
   /** The runner that is used in intervalMode */
   private readonly intervalRunner?: TimerInternalRunner;
-  /** The time the last tick completed.  Doesn't have to be the actual last time. */
-  private lastCompleteTime = Date.now();
+  /** The absolute time at which the current tick is due. */
+  private nextTickTime = Date.now();
+  /** How missed ticks affect tickCount. */
+  private readonly missedTickBehavior: MissedTickBehavior;
   /** Called when the status changes. */
   private readonly onStatusChangeCallback: (status: TimerStatus) => void;
   /** Called when the timer completes. */
@@ -78,16 +84,18 @@ export class TimerInternal {
 
     if (intervalTime !== undefined) {
       this.intervalRunner = {
-        dueTime: intervalTime,
+        dueTime: Math.max(0, intervalTime),
         onTickComplete: this.tickStart.bind(this)// loop
       };
     }
 
     this.onTickCallback = options?.onTick ?? (() => undefined);
     this.onStatusChangeCallback = options?.onStatusChange ?? (() => undefined);
+    this.missedTickBehavior = options?.missedTickBehavior ?? 'discard';
 
     if (options?.runAtStart) {
       this.setStatus(TimerStatus.Running);
+      this.nextTickTime = Date.now() + this.timeoutRunner.dueTime;
       this.tickStart();
     }
   }
@@ -111,8 +119,7 @@ export class TimerInternal {
   resume(): void {
     if (this.status === TimerStatus.Paused) {
       this.setStatus(TimerStatus.Running);
-      // if duration is adjusted by a signal then this is a problem.
-      this.lastCompleteTime = Date.now() - (this.runner.dueTime - this.remainingTimeAtPause);
+      this.nextTickTime = Date.now() + this.remainingTimeAtPause;
       this.tickStart();
     }
   }
@@ -123,7 +130,7 @@ export class TimerInternal {
       this.setStatus(TimerStatus.Running);
       this.tickCount = 0;
       this.runner = this.timeoutRunner;
-      this.lastCompleteTime = Date.now();
+      this.nextTickTime = Date.now() + this.timeoutRunner.dueTime;
       this.tickStart();
     }
   }
@@ -138,7 +145,7 @@ export class TimerInternal {
 
   /** Determines the remaining time. */
   private getRemainingTime(): number {
-    return this.runner.dueTime - (Date.now() - this.lastCompleteTime);
+    return this.nextTickTime - Date.now();
   }
 
   /** Switch to intervalRunner or set as stopped. */
@@ -171,16 +178,21 @@ export class TimerInternal {
       this.tickStart();
     }
     else {
-      ++this.tickCount;
+      const now = Date.now();
+      const intervalTime = Math.max(0, this.intervalRunner?.dueTime ?? 0);
+      const elapsedTickCount = intervalTime === 0
+        ? 1
+        : Math.floor(Math.max(0, now - this.nextTickTime) / intervalTime) + 1;
+
+      this.tickCount += this.missedTickBehavior === 'coalesce' ? elapsedTickCount : 1;
+      if (this.intervalRunner) {
+        // Keep the interval aligned to its intended timeline. A delayed callback
+        // emits once and the next callback targets the first future boundary.
+        this.nextTickTime = intervalTime === 0
+          ? now
+          : this.nextTickTime + elapsedTickCount * intervalTime;
+      }
       this.onTickCallback(this.tickCount);
-      // On the initial tick, runner still refers to timeoutRunner even though
-      // intervalRunner determines when the next tick is due.
-      const nextDueTime = this.intervalRunner?.dueTime ?? this.runner.dueTime;
-      // Preserve normal drift correction, but limit overdue correction to one
-      // upcoming interval so a suspended host cannot replay every missed tick.
-      // nextDueTime is negated because getRemainingTime should be less than or equal to 0.
-      // We call getRemainingTime again because we want any elapsed timer time.
-      this.lastCompleteTime = Date.now() + Math.max(this.getRemainingTime(), -nextDueTime);
       this.runner.onTickComplete();
     }
   }
@@ -197,8 +209,15 @@ export class TimerInternal {
   private updateRunnerDueTime(dueTime: number, targetRunner: TimerInternalRunner): void {
     const oldTime = targetRunner.dueTime;
     targetRunner.dueTime = dueTime;
-    if (targetRunner === this.runner && this.status === TimerStatus.Running && oldTime > dueTime) {
+    if (targetRunner === this.runner && this.status === TimerStatus.Running) {
+      this.nextTickTime += dueTime - oldTime;
       this.tickStart();
     }
+  }
+
+  /** Updates the interval duration without changing the remaining delay for the pending tick. */
+  private updateIntervalDueTime(dueTime: number): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.intervalRunner!.dueTime = Math.max(0, dueTime);
   }
 }

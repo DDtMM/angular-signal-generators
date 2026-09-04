@@ -30,9 +30,7 @@ export function tickAndAssertValues<T>(selector: () => T, pattern: readonly(read
     results.push(selector());
   }
   const times = pattern.map((x) => x[0]).map((_, i, ary) => `[${i}]: ${ary.slice(0, i + 1).reduce((acc, x) => acc + x)}`);
-  expect(results)
-    .withContext(`At times ${times.join(', ')}`)
-    .toEqual(pattern.map((x) => x[1]));
+  expect(results, `At times ${times.join(', ')}`).toEqual(pattern.map((x) => x[1]));
 }
 
 /**
@@ -63,7 +61,13 @@ export function tickAndRecordValues<T>(selector: () => T, elapsedMsTimes: number
  * ```
  */
 export function replaceGlobalProperty(key: PropertyKey, value: unknown): () => void {
-  const priorValue = (globalThis as Record<PropertyKey, unknown>)[key];
-  Object.defineProperty(globalThis, key, { value });
-  return () => Object.defineProperty(globalThis, key, { value: priorValue });
+  const priorDescriptor = Object.getOwnPropertyDescriptor(globalThis, key);
+  Object.defineProperty(globalThis, key, { configurable: true, value });
+  return () => {
+    if (priorDescriptor) {
+      Object.defineProperty(globalThis, key, priorDescriptor);
+    } else {
+      delete (globalThis as Record<PropertyKey, unknown>)[key];
+    }
+  };
 }
