@@ -190,6 +190,18 @@ describe('timerInternal', () => {
       timer.destroy();
     });
 
+    it('supports a zero-duration interval', fakeAsync(() => {
+      let timer!: TimerInternal;
+      timer = new TimerInternal(1000, 0, {
+        runAtStart: true,
+        onTick: () => timer.destroy()
+      });
+
+      tick(1000);
+      expect(timer.ticks).toBe(1);
+      expect(timer.timerStatus).toBe(TimerStatus.Destroyed);
+    }));
+
     it(
       '#start restarts when status is Running',
       testTimer(1000, 500, { runAtStart: true }, (timer) => {
@@ -240,6 +252,20 @@ describe('timerInternal', () => {
       tickAndAssertTimerValue(timer, [[750, 5]]);
     })
   );
+  it('does nothing when resumed while not paused', () => {
+    const timer = new TimerInternal(1000);
+    timer.resume();
+    expect(timer.timerStatus).toBe(TimerStatus.Stopped);
+    timer.destroy();
+  });
+  it('does not restart after being destroyed', fakeAsync(() => {
+    const timer = new TimerInternal(1000, undefined, { runAtStart: true });
+    timer.destroy();
+    timer.start();
+    tick(1000);
+    expect(timer.ticks).toBe(0);
+    expect(timer.timerStatus).toBe(TimerStatus.Destroyed);
+  }));
   it('calls callback after each tick', fakeAsync(() => {
     const callbackSpy = vi.fn((x: number) => x).mockName('callback');
     const timer = new TimerInternal(1000, 500, { runAtStart: true, onTick: callbackSpy });

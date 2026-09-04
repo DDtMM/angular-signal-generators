@@ -1,4 +1,4 @@
-import { access, cp, mkdtemp, readdir, rm } from 'node:fs/promises';
+import { access, cp, mkdtemp, readFile, readdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve, sep } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -41,6 +41,20 @@ function run(command, args, cwd) {
   });
 }
 
+async function configureTestTarget(temporaryRoot, angularVersion) {
+  const angularConfigPath = join(temporaryRoot, 'angular.json');
+  const angularConfig = JSON.parse(await readFile(angularConfigPath, 'utf8'));
+  const testOptions = angularConfig.projects['signal-generators'].architect.test.options;
+  if (Number(angularVersion) < 22) {
+    delete testOptions.coverage;
+    delete testOptions.coverageExclude;
+    delete testOptions.coverageReporters;
+  }
+  testOptions.setupFiles = ['projects/signal-generators/src/testing/vitest-setup.ts'];
+  await cp(join(compatibilityRoot, 'test-setup.ts'), join(temporaryRoot, testOptions.setupFiles[0]));
+  await writeFile(angularConfigPath, `${JSON.stringify(angularConfig, null, 2)}\n`);
+}
+
 for (const angularVersion of angularVersions) {
   const environmentRoot = join(compatibilityRoot, `angular-${angularVersion}`);
   await access(join(environmentRoot, 'package.json')).catch(() => {
@@ -49,16 +63,19 @@ for (const angularVersion of angularVersions) {
     );
   });
 
-  const temporaryRoot = await mkdtemp(join(tmpdir(), `signal-generators-angular-${angularVersion}-`));
+  // Windows TEMP can use an 8.3 alias. Use the canonical path so Angular's
+  // generated test imports and Vite's resolved paths refer to the same directory.
+  const temporaryRoot = await realpath(await mkdtemp(join(tmpdir(), `signal-generators-angular-${angularVersion}-`)));
   try {
     console.log(`\n=== Testing with Angular ${angularVersion} ===\n`);
     await cp(workspaceRoot, temporaryRoot, { recursive: true, filter: shouldCopy });
     await cp(join(environmentRoot, 'package.json'), join(temporaryRoot, 'package.json'));
     await cp(join(environmentRoot, 'package-lock.json'), join(temporaryRoot, 'package-lock.json'));
     await cp(join(environmentRoot, 'tsconfig.json'), join(temporaryRoot, 'tsconfig.json'));
+    await configureTestTarget(temporaryRoot, angularVersion);
 
     await run('npm', ['ci', '--no-audit', '--no-fund'], temporaryRoot);
-    await run('npm', ['run', 'test', '--', '--watch=false', '--browsers=ChromeHeadless'], temporaryRoot);
+    await run('npm', ['run', 'test', '--', '--watch=false'], temporaryRoot);
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }

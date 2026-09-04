@@ -107,6 +107,14 @@ describe('historySignal', () => {
       expect(sut.undo()).toBe(false);
     });
 
+    it('does not retain history when the limit is zero', () => {
+      const sut = historySignal(1, { limit: 0 });
+      sut.set(2);
+      expect(sut()).toBe(2);
+      expect(sut.canUndo()).toBe(false);
+      expect(sut.undo()).toBe(false);
+    });
+
     it('restores all retained values after reaching the history limit', () => {
       const sut = historySignal(0, { limit: 2 });
       sut.set(1);

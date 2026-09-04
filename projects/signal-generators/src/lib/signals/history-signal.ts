@@ -119,17 +119,23 @@ function createHistorySignal<T>(initialValue: T, options: HistorySignalOptions<T
   };
   $output[setHistoryValueSymbol] = (value: T) => {
     const current = get();
-    if (equal(current, value)) return;
+    if (equal(current, value)) {
+      return;
+    }
     if (limit > 0) {
       past.push(current);
-      if (past.length > limit) past.shift();
+      if (past.length > limit) {
+        past.shift();
+      }
     }
     future.length = 0;
     setCurrent(value);
     updateAvailability();
   };
   $output.undo = () => {
-    if (past.length === 0) return false;
+    if (past.length === 0) {
+      return false;
+    }
     const value = past.pop() as T;
     future.push(get());
     setCurrent(value);
@@ -137,11 +143,11 @@ function createHistorySignal<T>(initialValue: T, options: HistorySignalOptions<T
     return true;
   };
   $output.redo = () => {
-    if (future.length === 0) return false;
-    const value = future.pop() as T;
-    if (limit > 0) {
-      past.push(get());
+    if (future.length === 0) {
+      return false;
     }
+    const value = future.pop() as T;
+    past.push(get());
     setCurrent(value);
     updateAvailability();
     return true;

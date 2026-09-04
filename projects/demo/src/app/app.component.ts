@@ -12,8 +12,8 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
 
-  <nav class="navbar bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur drawer drawer-end">
-    <div class="flex-1">
+  <nav class="navbar flex-nowrap bg-primary sticky top-0 z-40 bg-opacity-90 backdrop-blur">
+    <div class="flex-1 min-w-0">
       <ul class="menu menu-horizontal font-semibold text-lg tracking-tight normal-case  flex-nowrap py-0 px-1">
         <li>
           <a class="text-primary-content pl-1" [routerLink]="['/']">
@@ -31,7 +31,7 @@ import { DEMO_CONFIGURATIONS } from './demo-configuration';
         </li>
       </ul>
     </div>
-    <div class="flex-none md:hidden">
+    <div class="drawer drawer-end w-auto flex-none md:hidden">
       <input id="app-nav-drawer-toggle" type="checkbox" class="drawer-toggle" #appNavDrawerToggle />
       <div class="drawer-content">
         <label for="app-nav-drawer-toggle" aria-label="Open Navigation" tabindex="0" class="btn btn-primary">

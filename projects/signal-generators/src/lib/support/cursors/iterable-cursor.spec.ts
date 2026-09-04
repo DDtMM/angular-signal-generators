@@ -50,6 +50,17 @@ describe('IterableCursor', () => {
     expect(sut.next(0)).toEqual({ hasValue: true, value: 1 });
   });
 
+  it('#next(0) returns the current element when one has already been retrieved', () => {
+    const sut = new IterableCursor([1, 2, 3], false);
+    sut.next();
+    expect(sut.next(0)).toEqual({ hasValue: true, value: 1 });
+  });
+
+  it('#next(0) returns an empty result when the source is empty', () => {
+    const sut = new IterableCursor([], false);
+    expect(sut.next(0)).toEqual({ hasValue: false });
+  });
+
   it('#next(0) returns first element after reset', () => {
     const sut = new IterableCursor([1, 2, 3], false);
     sut.reset();

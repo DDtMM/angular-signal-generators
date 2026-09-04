@@ -60,6 +60,15 @@ describe('domObserverSignalFactory', () => {
     expect(observer.observe).toHaveBeenCalledTimes(2);
   });
 
+  it('should not observe again when set receives the current subject', () => {
+    const observer = new MockObserver();
+    const subject = document.createElement('div');
+    const sut = createObserverSignalForTest(observer, subject);
+    sut.set(subject);
+    expect(observer.disconnect).toHaveBeenCalledTimes(1);
+    expect(observer.observe).toHaveBeenCalledTimes(1);
+  });
+
   it('should update default options when options are passed to set even if observed does not change', () => {
     const observer = new MockObserver();
     const originalElement = document.createElement('div');

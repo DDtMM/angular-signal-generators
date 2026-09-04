@@ -18,15 +18,12 @@
     "@angular/build": "~22.1.0",
     "@angular/cli": "~22.1.0",
     "@angular/compiler-cli": "~22.1.0",
-    "@types/jasmine": "~5.1.8",
     "@types/node": "^22.15.27",
-    "jasmine-core": "~5.8.0",
-    "karma": "~6.4.3",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "jsdom": "^27.4.0",
     "ng-mocks": "^14.17.3",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11",
+    "zone-vitest": "npm:zone.js@~0.16.3"
   }
 }

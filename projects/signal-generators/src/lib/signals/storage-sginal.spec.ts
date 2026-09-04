@@ -56,6 +56,13 @@ describe('storageSignal', () => {
     expect(sut()).toBe(15);
     expect(storage.get('test')).toBe(15);
   });
+  it('does not write to storage when update returns an equal value', () => {
+    const storage = createStorage<number>();
+    const sut = storageSignal(3, 'test', storage);
+    sut.update((x) => x);
+    expect(sut()).toBe(3);
+    expect(storage.get('test')).toBeUndefined();
+  });
   it('#asReadonly returns a signal that reflects the original', () => {
     const storage = createStorage<number>();
     const sut = storageSignal(3, 'test', storage);
