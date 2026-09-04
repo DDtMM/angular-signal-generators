@@ -128,7 +128,7 @@ Signals that uses a secondary storage system to store values, ideally beyond the
 
 ### timerSignal
 
-This is very similar to rxjs's *timer* operator.  It will be have like setTimeout or interval depending on the parameters passed.  The value of the timer is incremented after every "tick".
+This is very similar to rxjs's *timer* operator. It behaves like `setTimeout` or an interval depending on the parameters passed. The value of the timer is incremented after every tick. Intervals discard missed ticks by default, so the count represents delivered callbacks. Set `missedTickBehavior` to `'coalesce'` to emit once after a delay while advancing the count to its logical position on the interval timeline.
 
 ### throttleSignal
 

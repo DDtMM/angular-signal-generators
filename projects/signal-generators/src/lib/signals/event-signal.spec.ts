@@ -113,9 +113,7 @@ describe('eventSignal', () => {
       });
       it('initially returns the initialValue if passed', () => {
         const elem = ngMocks.find('#btn1').nativeElement;
-        const sut = TestBed.runInInjectionContext(() =>
-          eventSignal(elem, 'click', () => 'clicked', { initialValue: 'not clicked' })
-        );
+        const sut = TestBed.runInInjectionContext(() => eventSignal(elem, 'click', () => 'clicked', { initialValue: 'not clicked' }));
         expect(sut()).toBe('not clicked');
       });
       it('listens to the passed element and return event when no selector present', () => {
@@ -134,9 +132,7 @@ describe('eventSignal', () => {
 
     describe('from a signal', () => {
       it('initially returns undefined if no initialValue passed', () => {
-        const sut = TestBed.runInInjectionContext(() =>
-          eventSignal(fixture.componentInstance.$buttonOne, 'click', () => 'clicked')
-        );
+        const sut = TestBed.runInInjectionContext(() => eventSignal(fixture.componentInstance.$buttonOne, 'click', () => 'clicked'));
         expect(sut()).toBe(undefined);
       });
       it('initially returns the initialValue if passed', () => {
@@ -154,7 +150,7 @@ describe('eventSignal', () => {
       });
       it('listens to the signal and map value when selector present', () => {
         const sut = TestBed.runInInjectionContext(() =>
-          eventSignal(fixture.componentInstance.$buttonOne, 'click', (evt: Event) => (evt.target as HTMLElement).innerText)
+          eventSignal(fixture.componentInstance.$buttonOne, 'click', (evt: Event) => (evt.target as HTMLElement).textContent)
         );
         TestBed.tick();
         ngMocks.click('#btn1');
@@ -162,7 +158,7 @@ describe('eventSignal', () => {
       });
       it('listens to the correct element when element changed', () => {
         const sut = TestBed.runInInjectionContext(() =>
-          eventSignal(fixture.componentInstance.$buttonCurrent, 'click', (evt: Event) => (evt.target as HTMLElement).innerText)
+          eventSignal(fixture.componentInstance.$buttonCurrent, 'click', (evt: Event) => (evt.target as HTMLElement).textContent)
         );
         TestBed.tick();
         ngMocks.click('#btn1');

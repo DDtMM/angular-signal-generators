@@ -1,4 +1,9 @@
-import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { replaceGlobalProperty } from '../../testing/testing-utilities';
 import { MapBasedStorage } from '../internal/map-based-storage';
 import { WebObjectStore } from '../internal/web-object-store';
@@ -9,7 +14,12 @@ describe('storageSignal', () => {
   runTypeGuardTests(() => storageSignal(1, 'test', createStorage()));
   runComputedAndEffectTests(() => {
     const sut = storageSignal(1, 'test', createStorage());
-    return [sut, () => { sut.set(2) }];
+    return [
+      sut,
+      () => {
+        sut.set(2);
+      }
+    ];
   });
   runDoesNotCauseReevaluationsSimplyWhenNested(
     () => storageSignal(1, 'test', createStorage()),
@@ -35,16 +45,23 @@ describe('storageSignal', () => {
   it('sets a value in storage when set is called', () => {
     const storage = createStorage();
     const sut = storageSignal(1, 'test', storage);
-    sut.set(21)
+    sut.set(21);
     expect(sut()).toBe(21);
     expect(storage.get('test')).toBe(21);
   });
   it('sets a value in storage when updated is called', () => {
     const storage = createStorage<number>();
     const sut = storageSignal(3, 'test', storage);
-    sut.update(x => x * 5);
+    sut.update((x) => x * 5);
     expect(sut()).toBe(15);
     expect(storage.get('test')).toBe(15);
+  });
+  it('does not write to storage when update returns an equal value', () => {
+    const storage = createStorage<number>();
+    const sut = storageSignal(3, 'test', storage);
+    sut.update((x) => x);
+    expect(sut()).toBe(3);
+    expect(storage.get('test')).toBeUndefined();
   });
   it('#asReadonly returns a signal that reflects the original', () => {
     const storage = createStorage<number>();
@@ -56,7 +73,7 @@ describe('storageSignal', () => {
   });
   it('respects equal function when passed as option', () => {
     const storage = createStorage<number>();
-    const sut = storageSignal(4, 'test', storage, { equal: (a, b) => a % 2 === b % 2});
+    const sut = storageSignal(4, 'test', storage, { equal: (a, b) => a % 2 === b % 2 });
     sut.set(6);
     expect(sut()).toBe(4);
     expect(storage.get('test')).toBe(undefined); // storage isn't set from initial value.

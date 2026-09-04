@@ -1,6 +1,11 @@
 import { signal } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runInjectorOptionTest,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { throttleSignal } from './throttle-signal';
 
 describe('throttleSignal', () => {
@@ -83,7 +88,7 @@ describe('throttleSignal', () => {
       sut.set(2);
       TestBed.tick();
       expect(sut()).toBe(2);
-      sut.update(value => value + 1);
+      sut.update((value) => value + 1);
       TestBed.tick();
       tick(500);
       expect(sut()).toBe(3);

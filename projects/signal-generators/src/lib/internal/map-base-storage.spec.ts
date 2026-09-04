@@ -1,4 +1,4 @@
-import { MapBasedStorage } from "./map-based-storage";
+import { MapBasedStorage } from './map-based-storage';
 
 describe('MapBasedStorage', () => {
   it('should be able to get and retrieve items', () => {
@@ -44,5 +44,4 @@ describe('MapBasedStorage', () => {
     sut.removeItem('key2');
     expect(sut.length).toBe(2);
   });
-
 });

@@ -1,9 +1,14 @@
 import { ElementRef } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { replaceGlobalProperty } from 'projects/signal-generators/src/testing/testing-utilities';
-import { runComputedAndEffectTests, runDebugNameOptionTest, runInjectorOptionTest, runTypeGuardTests } from '../../../testing/common-signal-tests';
-import { setupEnsureSignalWorksWhenObserverIsMissing } from './common-dom-observer-tests.spec';
-import { MockResizeObserver } from './mock-observer.spec';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runInjectorOptionTest,
+  runTypeGuardTests
+} from '../../../testing/common-signal-tests';
+import { setupEnsureSignalWorksWhenObserverIsMissing } from '../../../testing/dom-observers/common-dom-observer-tests';
+import { MockResizeObserver } from '../../../testing/dom-observers/mock-observer';
 import { ResizeSignal, ResizeSignalValue, resizeSignal } from './resize-signal';
 
 describe('resizeSignal', () => {
@@ -19,20 +24,22 @@ describe('resizeSignal', () => {
   runDebugNameOptionTest((debugName) => resizeSignal(document.createElement('div'), { debugName }));
   runInjectorOptionTest((injector) => resizeSignal(document.createElement('div'), { injector }));
   runTypeGuardTests(() => resizeSignal(document.createElement('div')));
-  runComputedAndEffectTests(
-    () => {
-      const sut = resizeSignal(document.createElement('div'));
-      return [sut, () => {
-        MockResizeObserver.currentInstance?.simulateObservation([{ contentRect: { height: Math.random() } }  as ResizeObserverEntry]);
-      }];
-    }
-  );
-  setupEnsureSignalWorksWhenObserverIsMissing('ResizeObserver',
+  runComputedAndEffectTests(() => {
+    const sut = resizeSignal(document.createElement('div'));
+    return [
+      sut,
+      () => {
+        MockResizeObserver.currentInstance?.simulateObservation([{ contentRect: { height: Math.random() } } as ResizeObserverEntry]);
+      }
+    ];
+  });
+  setupEnsureSignalWorksWhenObserverIsMissing(
+    'ResizeObserver',
     () => resizeSignal(document.createElement('div')),
     () => MockResizeObserver.currentInstance?.simulateObservation([{ contentRect: { height: Math.random() } } as ResizeObserverEntry])
   );
 
-  it('should use injection context if injector isn\'t passed on an option.', fakeAsync(() => {
+  it("should use injection context if injector isn't passed on an option.", fakeAsync(() => {
     const sut = TestBed.runInInjectionContext(() => resizeSignal(document.createElement('div')));
     MockResizeObserver.currentInstance?.simulateObservation([{ contentRect: { height: 250 } } as ResizeObserverEntry]);
     flush();
@@ -73,7 +80,7 @@ describe('resizeSignal', () => {
     expect(MockResizeObserver.currentInstance?.observed[0][1]?.box).toBe('border-box');
   });
 
-  it('should use new options when provided with set',() => {
+  it('should use new options when provided with set', () => {
     const sut = TestBed.runInInjectionContext(() => resizeSignal(null, { box: 'border-box' }));
     sut.set(document.createElement('div'), { box: 'content-box' });
     expect(MockResizeObserver.currentInstance?.observed[0][1]?.box).toBe('content-box');
@@ -87,7 +94,7 @@ describe('resizeSignal', () => {
       const el1 = document.createElement('div');
       const el2 = document.createElement('div');
       const sut = TestBed.runInInjectionContext(() => resizeSignal(el1));
-      const mockObserver = MockResizeObserver.currentInstance!
+      const mockObserver = MockResizeObserver.currentInstance!;
       mockObserver.simulateObservation([{ contentRect: { height: 400 } } as ResizeObserverEntry]);
       flush();
       expect(sut()[0]?.contentRect.height).toBe(400);
@@ -98,6 +105,4 @@ describe('resizeSignal', () => {
       expect(sut()[0]?.contentRect.height).toBe(200);
     }));
   });
-
 });
-

@@ -24,17 +24,23 @@
           },
           "defaultConfiguration": "production"
         },
-        "test": {
-          "builder": "@angular/build:karma",
+        "test-build": {
+          "builder": "@angular/build:application",
           "options": {
-            "codeCoverage": true,
-            "codeCoverageExclude": ["projects/signal-generators/src/testing/**/*.*"],
             "tsConfig": "projects/signal-generators/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "karmaConfig": "projects/signal-generators/karma.conf.js"
+            "polyfills": ["zone.js"]
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "coverage": true,
+            "coverageExclude": ["projects/signal-generators/src/testing/**/*.*"],
+            "coverageReporters": ["html", "text-summary", "json-summary"],
+            "buildTarget": "signal-generators:test-build",
+            "tsConfig": "projects/signal-generators/tsconfig.spec.json",
+            "setupFiles": ["projects/signal-generators/src/testing/vitest-setup.ts"],
+            "runner": "vitest"
           }
         },
         "lint": {

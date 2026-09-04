@@ -50,7 +50,12 @@ describe('liftSignal', () => {
     describe('mutators', () => {
       runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), null, ['double']);
-        return [ sut, () => { sut.double(); } ];
+        return [
+          sut,
+          () => {
+            sut.double();
+          }
+        ];
       });
 
       it(`adds methods from a passed ${label} that mutate the value when called`, () => {
@@ -64,7 +69,12 @@ describe('liftSignal', () => {
     describe('updaters', () => {
       runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), ['getQuad']);
-        return [sut, () => { sut.getQuad(); }];
+        return [
+          sut,
+          () => {
+            sut.getQuad();
+          }
+        ];
       });
 
       it(`adds methods from a passed ${label} that update the value when called`, () => {
@@ -82,7 +92,12 @@ describe('liftSignal', () => {
     describe('mutators', () => {
       runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), null, ['push']);
-        return [sut, () => { sut.push(5); }];
+        return [
+          sut,
+          () => {
+            sut.push(5);
+          }
+        ];
       });
 
       it(`adds methods from a passed ${label} that mutate the value when called`, () => {
@@ -100,7 +115,12 @@ describe('liftSignal', () => {
     describe('updaters', () => {
       runComputedAndEffectTests(() => {
         const sut = liftSignal(factory(), ['concat']);
-        return [sut, () => { sut.concat([5]); }];
+        return [
+          sut,
+          () => {
+            sut.concat([5]);
+          }
+        ];
       });
 
       it(`adds methods from a passed ${label} that update the value when called`, () => {

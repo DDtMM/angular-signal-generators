@@ -4,7 +4,6 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { coerceSignal } from './signal-coercion';
 
 describe('coerceSignal', () => {
-
   it('should return the original source if it is a Signal', () => {
     const source = signal(generateValue());
     const coerced = coerceSignal(source);
@@ -15,7 +14,7 @@ describe('coerceSignal', () => {
     const originalValue = generateValue();
     const innerSignal = signal(originalValue);
     const coerced = coerceSignal(() => innerSignal() - 5);
-    it('should return a new signal', () => expect(isSignal(coerced)).toBeTrue());
+    it('should return a new signal', () => expect(isSignal(coerced)).toBe(true));
     it('and that signal should produce the expected value', () => expect(coerced() + 5).toBe(innerSignal()));
     it('and produce expected value when the source signal(s) change', () => {
       innerSignal.set(originalValue - 10);
@@ -26,7 +25,7 @@ describe('coerceSignal', () => {
 
   describe('when passed an observable', () => {
     let injector: Injector;
-    beforeEach(() => injector = TestBed.inject(Injector));
+    beforeEach(() => (injector = TestBed.inject(Injector)));
     describe('and that observable emits immediately', () => {
       it('should return a signal that returns the value of the observable', () => {
         const source = new BehaviorSubject(generateValue());
@@ -34,9 +33,9 @@ describe('coerceSignal', () => {
         expect(coerced()).toBe(source.value);
         source.next(source.value - 10);
         expect(coerced()).toBe(source.value);
-      })
+      });
     });
-    describe('and that observable\'s first emission is deferred', () => {
+    describe("and that observable's first emission is deferred", () => {
       it('should throw if no initial value is passed.', () => {
         const source = new Subject<number>();
         expect(() => coerceSignal(source, { injector })).toThrow();
@@ -56,5 +55,3 @@ describe('coerceSignal', () => {
     return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
   }
 });
-
-

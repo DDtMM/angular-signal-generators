@@ -1,6 +1,12 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runInjectorOptionTest,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { historySignal } from './history-signal';
 
 describe('historySignal', () => {
@@ -22,9 +28,9 @@ describe('historySignal', () => {
       source.set(3);
       TestBed.tick();
       expect(sut()).toBe(3);
-      expect(sut.undo()).toBeTrue();
+      expect(sut.undo()).toBe(true);
       expect(sut()).toBe(2);
-      expect(sut.redo()).toBeTrue();
+      expect(sut.redo()).toBe(true);
       expect(sut()).toBe(3);
     });
 
@@ -42,120 +48,128 @@ describe('historySignal', () => {
   });
 
   describe('when created from a value', () => {
-  runDebugNameOptionTest((debugName) => historySignal(1, { debugName }));
-  runTypeGuardTests(() => historySignal(1));
-  runComputedAndEffectTests(() => {
-    const sut = historySignal(1);
-    return [sut, () => sut.set(2)];
-  });
-  runDoesNotCauseReevaluationsSimplyWhenNested(
-    () => historySignal(1),
-    (sut) => sut.set(2)
-  );
+    runDebugNameOptionTest((debugName) => historySignal(1, { debugName }));
+    runTypeGuardTests(() => historySignal(1));
+    runComputedAndEffectTests(() => {
+      const sut = historySignal(1);
+      return [sut, () => sut.set(2)];
+    });
+    runDoesNotCauseReevaluationsSimplyWhenNested(
+      () => historySignal(1),
+      (sut) => sut.set(2)
+    );
 
-  it('initially returns the initial value with no history', () => {
-    const sut = historySignal(1);
-    expect(sut()).toBe(1);
-    expect(sut.canUndo()).toBeFalse();
-    expect(sut.canRedo()).toBeFalse();
-  });
+    it('initially returns the initial value with no history', () => {
+      const sut = historySignal(1);
+      expect(sut()).toBe(1);
+      expect(sut.canUndo()).toBe(false);
+      expect(sut.canRedo()).toBe(false);
+    });
 
-  it('undoes and redoes set values', () => {
-    const sut = historySignal(1);
-    sut.set(2);
-    sut.set(3);
-    expect(sut.undo()).toBeTrue();
-    expect(sut()).toBe(2);
-    expect(sut.undo()).toBeTrue();
-    expect(sut()).toBe(1);
-    expect(sut.undo()).toBeFalse();
-    expect(sut.redo()).toBeTrue();
-    expect(sut()).toBe(2);
-  });
+    it('undoes and redoes set values', () => {
+      const sut = historySignal(1);
+      sut.set(2);
+      sut.set(3);
+      expect(sut.undo()).toBe(true);
+      expect(sut()).toBe(2);
+      expect(sut.undo()).toBe(true);
+      expect(sut()).toBe(1);
+      expect(sut.undo()).toBe(false);
+      expect(sut.redo()).toBe(true);
+      expect(sut()).toBe(2);
+    });
 
-  it('records update values', () => {
-    const sut = historySignal(2);
-    sut.update(value => value * 3);
-    expect(sut()).toBe(6);
-    sut.undo();
-    expect(sut()).toBe(2);
-  });
+    it('records update values', () => {
+      const sut = historySignal(2);
+      sut.update((value) => value * 3);
+      expect(sut()).toBe(6);
+      sut.undo();
+      expect(sut()).toBe(2);
+    });
 
-  it('clears redo history when a new value is set', () => {
-    const sut = historySignal(1);
-    sut.set(2);
-    sut.undo();
-    sut.set(3);
-    expect(sut.canRedo()).toBeFalse();
-    expect(sut.redo()).toBeFalse();
-  });
+    it('clears redo history when a new value is set', () => {
+      const sut = historySignal(1);
+      sut.set(2);
+      sut.undo();
+      sut.set(3);
+      expect(sut.canRedo()).toBe(false);
+      expect(sut.redo()).toBe(false);
+    });
 
-  it('limits retained history', () => {
-    const sut = historySignal(0, { limit: 2 });
-    sut.set(1);
-    sut.set(2);
-    sut.set(3);
-    sut.undo();
-    sut.undo();
-    expect(sut()).toBe(1);
-    expect(sut.undo()).toBeFalse();
-  });
+    it('limits retained history', () => {
+      const sut = historySignal(0, { limit: 2 });
+      sut.set(1);
+      sut.set(2);
+      sut.set(3);
+      sut.undo();
+      sut.undo();
+      expect(sut()).toBe(1);
+      expect(sut.undo()).toBe(false);
+    });
 
-  it('restores all retained values after reaching the history limit', () => {
-    const sut = historySignal(0, { limit: 2 });
-    sut.set(1);
-    sut.set(2);
-    sut.set(3);
-    sut.undo();
-    sut.undo();
+    it('does not retain history when the limit is zero', () => {
+      const sut = historySignal(1, { limit: 0 });
+      sut.set(2);
+      expect(sut()).toBe(2);
+      expect(sut.canUndo()).toBe(false);
+      expect(sut.undo()).toBe(false);
+    });
 
-    expect(sut.redo()).toBeTrue();
-    expect(sut()).toBe(2);
-    expect(sut.redo()).toBeTrue();
-    expect(sut()).toBe(3);
-    expect(sut.redo()).toBeFalse();
+    it('restores all retained values after reaching the history limit', () => {
+      const sut = historySignal(0, { limit: 2 });
+      sut.set(1);
+      sut.set(2);
+      sut.set(3);
+      sut.undo();
+      sut.undo();
 
-    sut.undo();
-    sut.undo();
-    expect(sut()).toBe(1);
-    expect(sut.undo()).toBeFalse();
-  });
+      expect(sut.redo()).toBe(true);
+      expect(sut()).toBe(2);
+      expect(sut.redo()).toBe(true);
+      expect(sut()).toBe(3);
+      expect(sut.redo()).toBe(false);
 
-  it('does not record equal values', () => {
-    const sut = historySignal(2, { equal: (a, b) => a % 2 === b % 2 });
-    sut.set(4);
-    expect(sut()).toBe(2);
-    expect(sut.canUndo()).toBeFalse();
-    sut.set(3);
-    expect(sut.canUndo()).toBeTrue();
-  });
+      sut.undo();
+      sut.undo();
+      expect(sut()).toBe(1);
+      expect(sut.undo()).toBe(false);
+    });
 
-  it('supports undefined values in history', () => {
-    const sut = historySignal<number | undefined>(undefined);
-    sut.set(1);
-    expect(sut.undo()).toBeTrue();
-    expect(sut()).toBeUndefined();
-  });
+    it('does not record equal values', () => {
+      const sut = historySignal(2, { equal: (a, b) => a % 2 === b % 2 });
+      sut.set(4);
+      expect(sut()).toBe(2);
+      expect(sut.canUndo()).toBe(false);
+      sut.set(3);
+      expect(sut.canUndo()).toBe(true);
+    });
 
-  it('clears history without changing the current value', () => {
-    const sut = historySignal(1);
-    sut.set(2);
-    sut.clearHistory();
-    expect(sut()).toBe(2);
-    expect(sut.canUndo()).toBeFalse();
-    expect(sut.canRedo()).toBeFalse();
-  });
+    it('supports undefined values in history', () => {
+      const sut = historySignal<number | undefined>(undefined);
+      sut.set(1);
+      expect(sut.undo()).toBe(true);
+      expect(sut()).toBeUndefined();
+    });
 
-  it('rejects invalid limits', () => {
-    expect(() => historySignal(1, { limit: -1 })).toThrowError();
-    expect(() => historySignal(1, { limit: 1.5 })).toThrowError();
-  });
+    it('clears history without changing the current value', () => {
+      const sut = historySignal(1);
+      sut.set(2);
+      sut.clearHistory();
+      expect(sut()).toBe(2);
+      expect(sut.canUndo()).toBe(false);
+      expect(sut.canRedo()).toBe(false);
+    });
 
-  it('#asReadonly returns a signal that reflects the original', () => {
-    const sut = historySignal(1);
-    const readonly = sut.asReadonly();
-    sut.set(2);
-    expect(readonly()).toBe(2);
-  });
+    it('rejects invalid limits', () => {
+      expect(() => historySignal(1, { limit: -1 })).toThrowError();
+      expect(() => historySignal(1, { limit: 1.5 })).toThrowError();
+    });
+
+    it('#asReadonly returns a signal that reflects the original', () => {
+      const sut = historySignal(1);
+      const readonly = sut.asReadonly();
+      sut.set(2);
+      expect(readonly()).toBe(2);
+    });
   });
 });

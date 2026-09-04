@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
   runComputedAndEffectTests,
@@ -12,20 +13,22 @@ import { FakeEventListener } from '../../testing/fake-event-listener';
 import { signal } from '@angular/core';
 
 describe('mediaQuerySignal', () => {
-
   describe('with faked matchMedia', () => {
     let restoreMatchMedia: () => void;
-    let matchMediaSpy: jasmine.Spy<typeof globalThis['matchMedia']>;
+    let matchMediaSpy: Mock;
     let fakeMql: FakeMediaQueryList;
     beforeEach(() => {
-      matchMediaSpy = jasmine.createSpy('matchMedia').and.callFake((query) => (fakeMql = new FakeMediaQueryList(query)) as unknown as MediaQueryList);
+      matchMediaSpy = vi
+        .fn()
+        .mockName('matchMedia')
+        .mockImplementation((query) => (fakeMql = new FakeMediaQueryList(query)) as unknown as MediaQueryList);
       restoreMatchMedia = replaceGlobalProperty('matchMedia', matchMediaSpy);
     });
     afterEach(() => restoreMatchMedia());
 
     runComputedAndEffectTests(() => {
       const sut = mediaQuerySignal('(max-width: 600px)');
-      return [sut, () => sut.set('(max-width: 1200px)') ];
+      return [sut, () => sut.set('(max-width: 1200px)')];
     });
     runDoesNotCauseReevaluationsSimplyWhenNested(
       () => mediaQuerySignal('(max-width: 600px)'),
@@ -61,7 +64,7 @@ describe('mediaQuerySignal', () => {
       it('should update its value when the query is changed with update', () => {
         const sut = TestBed.runInInjectionContext(() => mediaQuerySignal('(max-width: 600px)'));
         fakeMql.matches = true;
-        sut.update(x => x.replace('600px', '1600px'))
+        sut.update((x) => x.replace('600px', '1600px'));
         expect(sut()).toEqual({ matches: false, media: '(max-width: 1600px)' });
       });
 
@@ -73,7 +76,6 @@ describe('mediaQuerySignal', () => {
         sut.set('(max-width: 1200px)'); // ignore when signal changes.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
       });
-
     });
 
     describe('from a signal', () => {
@@ -112,7 +114,7 @@ describe('mediaQuerySignal', () => {
       it('should ignore future changes after injection context is destroyed.', () => {
         const fixture = createFixture();
         const $source = signal('(max-width: 600px)');
-        const sut = mediaQuerySignal($source, { injector: fixture.componentRef.injector});
+        const sut = mediaQuerySignal($source, { injector: fixture.componentRef.injector });
         fixture.destroy();
         fakeMql.matches = true; // ignore when event fires.
         expect(sut()).toEqual({ matches: false, media: '(max-width: 600px)' });
@@ -128,7 +130,7 @@ describe('mediaQuerySignal', () => {
     expect(sut()).toEqual({ matches: false, media: 'matchMedia is not supported' });
     sut.set('(max-width: 1200px)');
     expect(sut()).toEqual({ matches: false, media: 'matchMedia is not supported' });
-    sut.update(x => x.replace('1200', '1800'));
+    sut.update((x) => x.replace('1200', '1800'));
     expect(sut()).toEqual({ matches: false, media: 'matchMedia is not supported' });
     sut.destroy();
     expect(sut()).toEqual({ matches: false, media: 'matchMedia is not supported' });
@@ -137,7 +139,10 @@ describe('mediaQuerySignal', () => {
   });
 });
 
-class FakeMediaQueryList extends FakeEventListener<keyof MediaQueryListEventMap, MediaQueryListEventMap> implements Pick<MediaQueryList, 'matches' | 'media'> {
+class FakeMediaQueryList
+  extends FakeEventListener<keyof MediaQueryListEventMap, MediaQueryListEventMap>
+  implements Pick<MediaQueryList, 'matches' | 'media'>
+{
   private _matches = false;
 
   get matches() {
@@ -145,7 +150,7 @@ class FakeMediaQueryList extends FakeEventListener<keyof MediaQueryListEventMap,
   }
   set matches(value: boolean) {
     this._matches = value;
-    const event = new MediaQueryListEvent('change', { matches: value, media: this.media });
+    const event = Object.assign(new Event('change'), { matches: value, media: this.media }) as MediaQueryListEvent;
     this.getOrCreateTypeSet('change').forEach((listener) => listener(event));
   }
   constructor(public readonly media: string) {

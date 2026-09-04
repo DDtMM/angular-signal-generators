@@ -172,14 +172,14 @@ describe('animatedSignalFactory', () => {
         expect(sut()).toBe(5);
       }));
       it('maintains the previous state if a new animation starts before the previous one is finished', fakeAsync(() => {
-        /* 
-        Because state is not immutable spy.toHaveBeenCalledWith will just contain the state of the last call. 
-        So, we keep track of the tickCount in the step function and use that to determine that the state was maintained.
-        */
+        /*
+                Because state is not immutable spy.toHaveBeenCalledWith will just contain the state of the last call.
+                So, we keep track of the tickCount in the step function and use that to determine that the state was maintained.
+                */
         const initialState = { tickCount: 0 };
         let tickCountOuter = 0;
 
-        const stepFn = jasmine.createSpy().and.callFake((state: AnimationState<typeof initialState>, options: TestAnimationOptions) => {
+        const stepFn = vi.fn().mockImplementation((state: AnimationState<typeof initialState>, options: TestAnimationOptions) => {
           state.progress = options.duration > 0 ? Math.min(1, state.timeElapsed / options.duration) : 1;
           state.isDone = state.progress === 1;
           tickCountOuter = ++state.tickCount;
@@ -189,11 +189,10 @@ describe('animatedSignalFactory', () => {
         tick(50);
         const tickCountAtChange = tickCountOuter;
         expect(tickCountAtChange).toBeGreaterThan(0);
-        expect(stepFn).toHaveBeenCalledWith(jasmine.objectContaining({ tickCount: tickCountAtChange }), jasmine.anything());
+        expect(stepFn).toHaveBeenCalledWith(expect.objectContaining({ tickCount: tickCountAtChange }), expect.anything());
         sut.set(9);
         tick(0);
         expect(tickCountOuter).toBe(tickCountAtChange + 1);
-        
       }));
       // fit('updates predictably if for some reason multiple frames occur within the same time interval', fakeAsync(() => {
       //   const sut = TestBed.runInInjectionContext(() => createAnimationSignalForTest(1, { duration: 500 }));
@@ -392,15 +391,15 @@ function createAnimationSignalForTest<TVal, TState extends object>(
 ): typeof source extends ReactiveSource<TVal>
   ? AnimatedSignal<TVal, TestAnimationOptions>
   : WritableAnimatedSignal<TVal, TestAnimationOptions> {
-
   return animatedSignalFactory(
     source,
     signalOptions,
     { duration: 500, delay: 0 },
     initialState ?? { duration: 500 },
-    stepFn ?? ((state, options) => {
-      state.progress = options.duration > 0 ? Math.min(1, state.timeElapsed / options.duration) : 1;
-      state.isDone = state.progress === 1;
-    })
+    stepFn ??
+      ((state, options) => {
+        state.progress = options.duration > 0 ? Math.min(1, state.timeElapsed / options.duration) : 1;
+        state.isDone = state.progress === 1;
+      })
   ) as any; // can't seem to get the types right here.
 }

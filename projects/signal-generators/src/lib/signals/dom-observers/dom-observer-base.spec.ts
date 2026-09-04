@@ -1,43 +1,40 @@
 import { Component, ElementRef, Injector, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
-import { runComputedAndEffectTests, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from 'projects/signal-generators/src/testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runTypeGuardTests
+} from 'projects/signal-generators/src/testing/common-signal-tests';
 import { createFixture } from 'projects/signal-generators/src/testing/testing-utilities';
 import { ValueSource } from '../../value-source';
 import { DomObserverSignal, DomSignalValue, domObserverSignalFactory } from './dom-observer-base';
-import { MockObserver } from './mock-observer.spec';
+import { MockObserver } from '../../../testing/dom-observers/mock-observer';
 import { MutationSignalValue } from './mutation-signal';
-
 
 /** These tests use a common dummy fixture. */
 describe('domObserverSignalFactory', () => {
-
   let fixture: ComponentFixture<unknown>;
 
-  beforeEach(() => fixture = createFixture());
+  beforeEach(() => (fixture = createFixture()));
 
   runTypeGuardTests(() => createObserverSignalForTest(new MockObserver(), document.createElement('div')));
 
   describe('for value source', () => {
-    runComputedAndEffectTests(
-      () => {
-        const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
-        const sut = createObserverSignalForTest(observer, document.createElement('div'));
-        return [sut, () => observer.simulateObservation([Math.random()])];
-      }
-    );
+    runComputedAndEffectTests(() => {
+      const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
+      const sut = createObserverSignalForTest(observer, document.createElement('div'));
+      return [sut, () => observer.simulateObservation([Math.random()])];
+    });
   });
 
   describe('for signal input source', () => {
-    runComputedAndEffectTests(
-      () => {
-        const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
-        const $source = signal(document.createElement('div'));
-        const sut = createObserverSignalForTest(observer, $source);
-        return [sut, () => observer.simulateObservation([Math.random()])];
-      }
-    );
+    runComputedAndEffectTests(() => {
+      const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
+      const $source = signal(document.createElement('div'));
+      const sut = createObserverSignalForTest(observer, $source);
+      return [sut, () => observer.simulateObservation([Math.random()])];
+    });
   });
-
 
   it('should call disconnect when the context it is in is destroyed', () => {
     const observer = new MockObserver();
@@ -61,6 +58,15 @@ describe('domObserverSignalFactory', () => {
     sut.set(document.createElement('div'));
     expect(observer.disconnect).toHaveBeenCalledTimes(2);
     expect(observer.observe).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not observe again when set receives the current subject', () => {
+    const observer = new MockObserver();
+    const subject = document.createElement('div');
+    const sut = createObserverSignalForTest(observer, subject);
+    sut.set(subject);
+    expect(observer.disconnect).toHaveBeenCalledTimes(1);
+    expect(observer.observe).toHaveBeenCalledTimes(1);
   });
 
   it('should update default options when options are passed to set even if observed does not change', () => {
@@ -98,7 +104,6 @@ describe('domObserverSignalFactory', () => {
 
 /** These was created outside the other tests because the function relies on creating its own fixture. */
 describe('domObserverSignalFactory', () => {
-
   runDoesNotCauseReevaluationsSimplyWhenNested(
     () => {
       const observer = new MockObserver<unknown, unknown, unknown, (value?: number[] | undefined) => void>();
@@ -109,7 +114,6 @@ describe('domObserverSignalFactory', () => {
   );
 
   it('should not throw NG0951 (Child query result is required but no value is available) when viewChild.required is used', () => {
-    
     @Component({
       selector: 'app-test',
       template: `<div #testElem>Content</div>`
@@ -124,7 +128,10 @@ describe('domObserverSignalFactory', () => {
   });
 });
 
-function createObserverSignalForTest<D extends MockObserver>(observer: D, source: ValueSource<DomSignalValue<D>>): DomObserverSignal<D, DomSignalValue<D>> {
+function createObserverSignalForTest<D extends MockObserver>(
+  observer: D,
+  source: ValueSource<DomSignalValue<D>>
+): DomObserverSignal<D, DomSignalValue<D>> {
   return domObserverSignalFactory<D, DomSignalValue<D>, Node>(
     (callback) => {
       observer.callback = callback;
@@ -134,10 +141,10 @@ function createObserverSignalForTest<D extends MockObserver>(observer: D, source
     {},
     getNode,
     undefined,
-    TestBed.inject(Injector)) as DomObserverSignal<MutationObserver, Node>;
+    TestBed.inject(Injector)
+  ) as DomObserverSignal<MutationObserver, Node>;
 
   function getNode(value: MutationSignalValue): Node | undefined {
-    return (value != null && 'nativeElement' in value) ? value.nativeElement : value ?? undefined;
+    return value != null && 'nativeElement' in value ? value.nativeElement : (value ?? undefined);
   }
 }
-

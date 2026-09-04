@@ -11,9 +11,7 @@ import {
 import { nestSignal } from './nest-signal';
 import { replaceGlobalProperty } from '../../testing/testing-utilities';
 
-
 describe('nestSignal', () => {
-
   describe('when created as writable signal', () => {
     runDebugNameOptionTest((debugName) => nestSignal({ a: signal(1) }, { debugName }));
     runInjectorOptionTest((injector) => nestSignal({ a: signal(1) }, { injector }));
@@ -22,7 +20,7 @@ describe('nestSignal', () => {
     describe('common tests', () => {
       runComputedAndEffectTests(() => {
         const sut = nestSignal({ a: signal(1) });
-        return [sut, () => sut.set({ a: signal(2) })]
+        return [sut, () => sut.set({ a: signal(2) })];
       });
       runDoesNotCauseReevaluationsSimplyWhenNested(
         () => nestSignal({ a: signal(1) }),
@@ -46,10 +44,10 @@ describe('nestSignal', () => {
     });
 
     it('updates its value from update', () => {
-      const sut = nestSignal([ signal('x'), signal('y') ]);
-      expect(sut()).toEqual([ 'x', 'y' ]);
-      sut.update(x => [ signal('z'), x[1] ]);
-      expect(sut()).toEqual([ 'z', 'y' ]);
+      const sut = nestSignal([signal('x'), signal('y')]);
+      expect(sut()).toEqual(['x', 'y']);
+      sut.update((x) => [signal('z'), x[1]]);
+      expect(sut()).toEqual(['z', 'y']);
     });
 
     it('returns a readonly signal that reflects its value from asReadonly', () => {
@@ -61,16 +59,19 @@ describe('nestSignal', () => {
       sut.set([signal(2)]);
       expect($readonly()).toEqual([2]);
     });
-
-
   });
   describe('ignoreErrors option tests', () => {
     const trap = {
-      get someValue() { throw new Error('someValue will always throw'); }
+      get someValue() {
+        throw new Error('someValue will always throw');
+      }
     };
 
     it('ignores errors when ignoreErrors option is true', () => {
-      const consoleSpyObj = jasmine.createSpyObj('console', ['error', 'warn']);
+      const consoleSpyObj = {
+        error: vi.fn().mockName('console.error'),
+        warn: vi.fn().mockName('console.warn')
+      };
       const restoreConsole = replaceGlobalProperty('console', consoleSpyObj);
       const sut = nestSignal([signal({ trap, value: 1 })], { ignoreErrors: true });
       expect(sut()).toEqual([{ trap: undefined, value: 1 } as any]);
@@ -109,7 +110,7 @@ describe('nestSignal', () => {
       problematicItem['recursive'] = problematicItem;
       const problematicSignal = signal(problematicItem);
       const expected: Record<string, unknown> = { notRecursive: 5 };
-      expected['recursive'] = expected
+      expected['recursive'] = expected;
       const sut = nestSignal(problematicSignal);
       expect(sut()).toEqual(expected);
     });
@@ -137,10 +138,7 @@ describe('nestSignal', () => {
     describe('common tests', () => {
       let $nested: WritableSignal<number>;
       beforeEach(() => ($nested = signal(1)));
-      runComputedAndEffectTests(() => [
-        nestSignal(signal({ a: $nested })),
-        () => $nested.set(Math.random())
-      ]);
+      runComputedAndEffectTests(() => [nestSignal(signal({ a: $nested })), () => $nested.set(Math.random())]);
       runDoesNotCauseReevaluationsSimplyWhenNested(
         () => nestSignal(signal({ a: $nested })),
         () => $nested.set(2)
@@ -228,8 +226,16 @@ describe('nestSignal', () => {
     it('converts an array of primitives to an array of equal values', () => expect(nestSignal([1, 2, 3])()).toEqual([1, 2, 3]));
     it('converts a set to an iterable of equal values', () => expect(nestSignal(new Set([1, 2, 3]))()).toEqual([1, 2, 3]));
     it('converts a map to an array of key value pairs', () => {
-      const value = new Map<string | symbol, number>([['a', 1], ['b', 2], [Symbol.iterator, 3]]);
-      expect(nestSignal(value)()).toEqual([['a', 1], ['b', 2], [Symbol.iterator, 3]]);
+      const value = new Map<string | symbol, number>([
+        ['a', 1],
+        ['b', 2],
+        [Symbol.iterator, 3]
+      ]);
+      expect(nestSignal(value)()).toEqual([
+        ['a', 1],
+        ['b', 2],
+        [Symbol.iterator, 3]
+      ]);
     });
     it('converts a built in primitive to itself', () => {
       const value = 'test';
@@ -248,5 +254,4 @@ describe('nestSignal', () => {
       expect(sut()).toEqual([['z', 'y']]);
     });
   });
-
 });

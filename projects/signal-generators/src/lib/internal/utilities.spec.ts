@@ -50,17 +50,19 @@ describe('getInjector', () => {
 });
 
 describe('hasKey', () => {
-  interface Something { keyX?: number; }
-  it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBeTrue());
-  it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBeFalse());
-  it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBeFalse());
+  interface Something {
+    keyX?: number;
+  }
+  it('returns true if key is in object', () => expect(hasKey({ keyX: 1 }, 'keyX')).toBe(true));
+  it('returns false if key is not in object', () => expect(hasKey<Something>({}, 'keyX')).toBe(false));
+  it('returns false if object is nullish', () => expect(hasKey<Something>(undefined, 'keyX')).toBe(false));
 });
 
 describe('isMethodKey', () => {
   const srcObj = { method: () => 1, notMethod: 1 };
-  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBeTrue());
-  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBeFalse());
-  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBeFalse());
+  it('returns true if key is key of a method', () => expect(isMethodKey(srcObj, 'method')).toBe(true));
+  it('returns false if key is not a key of a method', () => expect(isMethodKey(srcObj, 'notMethod')).toBe(false));
+  it('returns false if object is nullish', () => expect(isMethodKey(undefined, 'notMethod')).toBe(false));
 });
 
 describe('setDebugNameOnNode', () => {
@@ -72,7 +74,7 @@ describe('setDebugNameOnNode', () => {
   });
   it('does not set debugName is defined but NOT in devMode', () => {
     setProdMode(true);
-    const [target]  = createSignal(1);
+    const [target] = createSignal(1);
     target[SIGNAL].debugName = 'UNCHANGED';
     const debugName = `debugName_${Math.random() * Number.MAX_SAFE_INTEGER}`;
     setDebugNameOnNode(target[SIGNAL], debugName);
@@ -80,7 +82,7 @@ describe('setDebugNameOnNode', () => {
     setProdMode(false);
   });
   it('does not set debugName if it is undefined', () => {
-    const [target]  = createSignal(1);
+    const [target] = createSignal(1);
     target[SIGNAL].debugName = 'UNCHANGED';
     setEqualOnNode(target[SIGNAL], undefined);
     expect(target[SIGNAL].debugName).toBe('UNCHANGED');
@@ -88,15 +90,15 @@ describe('setDebugNameOnNode', () => {
 });
 describe('setEqualOnNode', () => {
   it('sets equal from options if options.equal is defined', () => {
-    const [target]  = createSignal(1);
+    const [target] = createSignal(1);
     const equalFn = (x: number, y: number) => x === y;
     setEqualOnNode(target[SIGNAL], equalFn);
     expect(target[SIGNAL].equal).toBe(equalFn);
   });
   it('does not set equal on a node if equalFn is undefined', () => {
-    const [target]  = createSignal(1);
+    const [target] = createSignal(1);
     const expectedEqual = target[SIGNAL].equal;
     setEqualOnNode(target[SIGNAL], undefined);
     expect(target[SIGNAL].equal).toBe(expectedEqual);
   });
-})
+});

@@ -1,10 +1,15 @@
 import { signal } from '@angular/core';
-import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runInjectorOptionTest, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runInjectorOptionTest,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { ERR_BOUNDS_EXCEEDED, ERR_ELEMENT_NOT_PRESENT, ERR_INVALID_SOURCE, ERR_NO_ELEMENTS, sequenceSignal } from './sequence-signal';
 import { Cursor } from '../support/cursors/cursor';
 
 describe('sequenceSignal', () => {
-
   describe('when array passed as first parameter', () => {
     /** A common source of values usable in each test. */
     let sequenceItems: number[];
@@ -16,7 +21,12 @@ describe('sequenceSignal', () => {
     runTypeGuardTests(() => sequenceSignal(sequenceItems));
     runComputedAndEffectTests(() => {
       const sut = sequenceSignal(sequenceItems);
-      return [sut, () => { sut.next() }];
+      return [
+        sut,
+        () => {
+          sut.next();
+        }
+      ];
     });
     runDoesNotCauseReevaluationsSimplyWhenNested(
       () => sequenceSignal(sequenceItems),
@@ -33,7 +43,7 @@ describe('sequenceSignal', () => {
       expect(sut()).toEqual('b');
     });
     it('will work with iterables', () => {
-      function *generator(): Generator<string> {
+      function* generator(): Generator<string> {
         yield 'cow';
         yield 'duck';
       }
@@ -111,13 +121,11 @@ describe('sequenceSignal', () => {
     });
     it('#update will throw if passed value is not present in sequence', () => {
       const sequence = sequenceSignal(sequenceItems, { disableAutoReset: true });
-      expect(() => sequence.update(x => x * -1)).toThrowError(ERR_ELEMENT_NOT_PRESENT);
+      expect(() => sequence.update((x) => x * -1)).toThrowError(ERR_ELEMENT_NOT_PRESENT);
     });
-
   });
 
   describe('when signal passed as first parameter', () => {
-
     /** A common source of values usable in each test. */
     let sequenceItems: number[];
     beforeEach(() => {
@@ -130,7 +138,13 @@ describe('sequenceSignal', () => {
     runComputedAndEffectTests(() => {
       const source = signal(sequenceItems);
       const sut = sequenceSignal(source);
-      return [sut, () => { source.set([3 + Math.random()]); sut.next(); }]; // only calling next will change the value
+      return [
+        sut,
+        () => {
+          source.set([3 + Math.random()]);
+          sut.next();
+        }
+      ]; // only calling next will change the value
     });
 
     runDoesNotCauseReevaluationsSimplyWhenNested(
@@ -138,7 +152,7 @@ describe('sequenceSignal', () => {
         const source = signal(sequenceItems);
         const sut = sequenceSignal(source);
         // this is a rig to pass back the source so an emission can be triggered.
-        return Object.assign(sut, { triggerChange: () => source.set([ 3 + Math.random() ])});
+        return Object.assign(sut, { triggerChange: () => source.set([3 + Math.random()]) });
       },
       (sut) => {
         sut.triggerChange();
@@ -176,7 +190,7 @@ describe('sequenceSignal', () => {
     const cursor: Cursor<string> = {
       moveTo: (value) => ({ hasValue: true, value: value }),
       next: () => ({ hasValue: true, value: 'X' }),
-      reset: () => undefined,
+      reset: () => undefined
     };
     expect(sequenceSignal(cursor)).toBeTruthy();
   });

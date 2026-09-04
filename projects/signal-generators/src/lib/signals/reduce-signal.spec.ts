@@ -1,4 +1,9 @@
-import { runComputedAndEffectTests, runDebugNameOptionTest, runDoesNotCauseReevaluationsSimplyWhenNested, runTypeGuardTests } from '../../testing/common-signal-tests';
+import {
+  runComputedAndEffectTests,
+  runDebugNameOptionTest,
+  runDoesNotCauseReevaluationsSimplyWhenNested,
+  runTypeGuardTests
+} from '../../testing/common-signal-tests';
 import { reduceSignal } from './reduce-signal';
 
 describe('reduceSignal', () => {
@@ -6,7 +11,12 @@ describe('reduceSignal', () => {
   runTypeGuardTests(() => reduceSignal(1, (p, c) => p + c));
   runComputedAndEffectTests(() => {
     const sut = reduceSignal(1, (p, c) => p + c);
-    return [sut, () => { sut.set(1) }];
+    return [
+      sut,
+      () => {
+        sut.set(1);
+      }
+    ];
   });
   runDoesNotCauseReevaluationsSimplyWhenNested(
     () => reduceSignal(1, (p, c) => p + c),
@@ -25,12 +35,12 @@ describe('reduceSignal', () => {
   });
   it('uses reducer with argument passed to set', () => {
     const sut = reduceSignal(1, (p, c) => p + c);
-    sut.set(1)
+    sut.set(1);
     expect(sut()).toBe(2);
   });
   it('uses results with result of updateFn argument passed to update', () => {
     const sut = reduceSignal(1, (p, c) => p + c);
-    sut.update(x => x + 3)
+    sut.update((x) => x + 3);
     expect(sut()).toBe(5);
   });
   it('#asReadonly returns a signal that reflects the original', () => {
