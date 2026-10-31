@@ -16,6 +16,7 @@ import { FromStringLiteralDemoComponent } from '../../demos/event-signal/from-st
     FromStringLiteralDemoComponent
 ],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="eventSignal" />
 <p>
   Uses Angular's <a href="https://angular.dev/api/core/Renderer2" class="link">Renderer2</a> service to listen to events from DOM elements.
@@ -34,6 +35,7 @@ import { FromStringLiteralDemoComponent } from '../../demos/event-signal/from-st
     <app-from-string-literal-demo />
   </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

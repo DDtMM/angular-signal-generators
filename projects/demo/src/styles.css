@@ -36,12 +36,18 @@
   }
 
   .doc-header {
-    @apply -mx-3 -my-3 mb-3 py-2 px-3 bg-secondary text-secondary-content shadow-sm;
+    @apply mb-6 border-b border-base-300 pt-3 pb-5 text-base-content;
     h1 {
-      @apply p-0 m-0 text-xl leading-8 text-secondary-content;
+      @apply p-0 m-0 text-3xl sm:text-4xl font-semibold tracking-tight leading-tight text-base-content;
     }
   }
 }
+@layer components {
+  .doc-content {
+    @apply prose dark:prose-invert w-full;
+  }
+}
+
 code.hljs {
   @apply px-4 py-2;
 }

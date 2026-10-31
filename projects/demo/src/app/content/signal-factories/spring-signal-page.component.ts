@@ -17,6 +17,7 @@ import { MultipleSpringNumbersDemoComponent } from '../../demos/spring-signal/mu
     ],
     template: `
 <!-- for some reason the API docs come out with -1 at the end -->
+<article class="doc-content">
 <app-member-page-header fnName="springSignal" />
 <p>
   The <i>springSignal</i> and <i><a routerLink="/tween-signal" class="link">tweenSignal</a></i> functions are heavily inspired by Svelte's <i>motion</i> functions.
@@ -50,6 +51,7 @@ import { MultipleSpringNumbersDemoComponent } from '../../demos/spring-signal/mu
     <app-multiple-spring-numbers-demo />
   </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

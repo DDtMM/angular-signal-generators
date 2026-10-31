@@ -7,6 +7,7 @@ import { MathDemoComponent } from '../../demos/map-signal/math-demo/math-demo.co
     selector: 'app-map-signal-page',
     imports: [DemoHostComponent, MathDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="mapSignal" />
 <p>
   This creates a signal whose input value is automatically mapped to an output value.
@@ -20,6 +21,7 @@ import { MathDemoComponent } from '../../demos/map-signal/math-demo/math-demo.co
 <app-demo-host name="A Writable Mapped Signal and Map from other Signals" pattern="map-signal/math-demo/">
   <app-math-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

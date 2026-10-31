@@ -9,6 +9,7 @@ import { ChildElementDemoComponent } from '../../demos/mutation-signal/child-ele
     selector: 'app-mutation-signal-page',
     imports: [DemoHostComponent, MutationSignalDemoComponent, ChildElementDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="mutationSignal" />
 <p>
   Uses MutationObserver to observe changes to elements passed to the signal.
@@ -28,6 +29,7 @@ import { ChildElementDemoComponent } from '../../demos/mutation-signal/child-ele
 <app-demo-host name="Detecting when a child element exists" pattern="mutation-signal/child-element-demo/">
   <app-child-element-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

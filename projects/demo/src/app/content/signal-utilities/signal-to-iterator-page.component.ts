@@ -8,6 +8,7 @@ import { MemberPageHeaderComponent } from '../../controls/member-page-header.com
   imports: [CodeBlockComponent, MemberPageHeaderComponent],
   template: `
 <!-- for some reason the API docs come out with -1 at the end -->
+<article class="doc-content">
 <app-member-page-header fnName="signalToIterator" />
 <p>
   This converts a signal into an AsyncIterator.
@@ -26,6 +27,7 @@ for await (const item of signalToIterator(source, {{ '{' }} injector: this.injec
 const source = signal('next');
   </app-code-block>
 </div>
+</article>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

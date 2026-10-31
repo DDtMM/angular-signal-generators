@@ -9,6 +9,7 @@ import { InspectComponentSignalsDemoComponent } from '../../demos/inspect/inspec
     selector: 'app-inspect-page',
     imports: [AltReporterDemoComponent, BasicDemoComponent, DemoHostComponent, MemberPageHeaderComponent, InspectComponentSignalsDemoComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="inspect"/>
 <p>
 Reports the latest state of a subject by resolving all the values deeply contained within by using <a href="./nestSignal">nestSignal</a>.
@@ -43,6 +44,7 @@ The Subject can be anything, but to be effective it should be a signal, an objec
   <app-inspect-component-signals-demo />
 </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

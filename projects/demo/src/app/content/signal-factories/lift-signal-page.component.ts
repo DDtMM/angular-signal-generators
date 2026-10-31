@@ -9,6 +9,7 @@ import { ArrayDemoComponent } from '../../demos/lift-signal/array-demo/array-dem
     selector: 'app-lift-signal-page',
     imports: [ArrayDemoComponent, DemoHostComponent, FaIconComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="liftSignal"/>
 <p>
   "Lifts" methods from a signal's value to the signal itself just by passing a tuple of method names.
@@ -17,7 +18,7 @@ import { ArrayDemoComponent } from '../../demos/lift-signal/array-demo/array-dem
   Calling the <i>push</i> method will internally call <b>signal.update()</b>
   with a function that executes the push and returns the updated signal.
 </p>
-<div role="alert" class="alert alert-warning mb-3">
+<div role="alert" class="not-prose alert alert-warning mb-3">
   <fa-icon [icon]="faTriangleExclamation" />
   <div>
     <div> <b>Warning</b></div>
@@ -36,7 +37,7 @@ import { ArrayDemoComponent } from '../../demos/lift-signal/array-demo/array-dem
   </p>
   <app-array-demo />
 </app-demo-host>
-
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

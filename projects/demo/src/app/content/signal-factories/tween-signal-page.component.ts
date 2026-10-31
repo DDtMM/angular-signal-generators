@@ -19,6 +19,7 @@ import { SimpleTweenDemoComponent } from '../../demos/tween-signal/simple-tween-
     ],
     template: `
 <!-- for some reason the API docs come out with -1 at the end -->
+<article class="doc-content">
 <app-member-page-header fnName="tweenSignal" />
 <p>
   The <i>tweenSignal</i> and <i><a routerLink="/spring-signal" class="link">springSignal</a></i> functions are heavily inspired by Svelte's <i>motion</i> functions.
@@ -64,6 +65,7 @@ import { SimpleTweenDemoComponent } from '../../demos/tween-signal/simple-tween-
     <app-interpolation-demo />
   </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

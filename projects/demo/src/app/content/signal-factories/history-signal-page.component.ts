@@ -8,6 +8,7 @@ import { SourceDemoComponent } from '../../demos/history-signal/source-demo/sour
   selector: 'app-history-signal-page',
   imports: [DemoHostComponent, EditorDemoComponent, MemberPageHeaderComponent, SourceDemoComponent],
   template: `
+<article class="doc-content">
 <app-member-page-header fnName="historySignal" />
 <p>
   Pass a value to create a writable signal, or pass a signal to record its observed values. Use <code class="inline">undo</code> and
@@ -26,6 +27,7 @@ import { SourceDemoComponent } from '../../demos/history-signal/source-demo/sour
     <app-history-source-demo />
   </app-demo-host>
 </div>
+</article>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

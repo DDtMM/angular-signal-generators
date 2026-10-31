@@ -14,9 +14,10 @@ interface DemoHostSourceFile extends SourceFile {
 /** Renders a demo with sources.  The demo component should be passed as content. */
 @Component({
     selector: 'app-demo-host',
+    host: { class: 'not-prose block min-w-0 my-6' },
     imports: [CodeBlockComponent, CommonModule, FontAwesomeModule, HighlightModule],
     template: `
-  <div class="flex flex-row gap-3">
+  <div class="flex flex-row flex-wrap items-center gap-3">
     <div class="mb-1 text-xl text-secondary">{{$name()}}</div>
     <button type="button" class="btn btn-secondary btn-outline btn-sm" (click)="openProject()" title="Open in StackBlitz">
       <img class="m-0 w-4" alt="Open in StackBlitz" src="assets/stackblitz-icon.svg"/>

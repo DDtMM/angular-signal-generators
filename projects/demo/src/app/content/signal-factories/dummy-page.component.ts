@@ -7,10 +7,12 @@ import { MemberPageHeaderComponent } from '../../controls/member-page-header.com
   selector: 'app-dummy-page',
   imports: [MemberPageHeaderComponent],
   template: `
+<article class="doc-content">
 <app-member-page-header fnName="dummy" />
 <p>
   This is a placeholder
 </p>
+</article>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

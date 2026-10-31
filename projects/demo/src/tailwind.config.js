@@ -5,7 +5,12 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: '100ch', // add required value here
+            maxWidth: '48rem',
+            p: { paddingBottom: '0' },
+            h1: { paddingTop: '0' },
+            h2: { paddingTop: '0' },
+            h3: { paddingTop: '0' },
+            code: { display: 'inline' },
           }
         }
       }

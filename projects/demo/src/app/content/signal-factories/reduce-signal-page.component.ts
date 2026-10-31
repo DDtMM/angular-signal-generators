@@ -7,6 +7,7 @@ import { SearchHistoryDemoComponent } from '../../demos/reduce-signal/search-his
     selector: 'app-reduce-signal-page',
     imports: [DemoHostComponent, SearchHistoryDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="reduceSignal" />
 <p>
   Creates a signal similar to <code class="inline">Array.reduce</code> or Rxjs's <code class="inline">scan</code> operator. When
@@ -16,6 +17,7 @@ import { SearchHistoryDemoComponent } from '../../demos/reduce-signal/search-his
 <app-demo-host name="Using Reduce Signal for Change History" pattern="reduce-signal/search-history-demo/">
   <app-search-history-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
