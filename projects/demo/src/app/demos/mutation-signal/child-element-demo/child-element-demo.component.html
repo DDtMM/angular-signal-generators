@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-3">
+  <div class="flex flex-row gap-3 items-center">
+    <button type="button" class="btn btn-primary self-start" (click)="$showElement.set(!$showElement())">
+      {{$showElement() ? 'Remove child element' : 'Add child element'}}
+    </button>
+    <div role="status">
+      @if ($childElement(); as child) {
+        Found child element: {{child.tagName.toLowerCase()}}
+      } @else {
+        Child element is absent.
+      }
+    </div>
+  </div>
+  <div #targetEl class="border border-solid rounded p-3 flex flex-row items-center">
+    <div>Observed container</div>
+    <div class="px-3">
+      @if ($showElement()) {
+        <span data-observed-child class="badge badge-secondary">Tracked child element</span>
+      }
+    </div>
+  </div>
+
+</div>
