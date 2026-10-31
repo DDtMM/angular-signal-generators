@@ -9,6 +9,7 @@ import { IndirectDemoComponent } from '../../demos/debounce-signal/indirect-demo
     selector: 'app-debounce-signal-page',
     imports: [DirectDemoComponent, IndirectDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="debounceSignal" />
 <p>
 This is very similar to rxjs's <i>debounce</i> operator.
@@ -23,6 +24,7 @@ and one where it has a <i>set</i> and <i>update</i> method and the change of the
     <app-indirect-demo />
   </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

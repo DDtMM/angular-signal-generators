@@ -7,6 +7,7 @@ import { FilterTextDemoComponent } from '../../demos/filter-signal/filter-text-d
     selector: 'app-filter-signal-page',
     imports: [DemoHostComponent, FilterTextDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="filterSignal" />
 <p>
   Filters values set to this signal directly upon the result of a filter function.
@@ -15,6 +16,7 @@ import { FilterTextDemoComponent } from '../../demos/filter-signal/filter-text-d
 <app-demo-host name="Simple Input Filter" pattern="filter-signal/filter-text-demo/">
   <app-filter-text-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

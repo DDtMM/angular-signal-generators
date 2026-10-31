@@ -7,6 +7,7 @@ import { CustomerDemoComponent } from '../../demos/async-signal/customer-demo/cu
     selector: 'app-async-signal-page',
     imports: [CustomerDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="asyncSignal" />
 <p>
   "Flattens" a source of promises or observables to a signal of result values, switching to the new source as soon as it
@@ -29,6 +30,7 @@ import { CustomerDemoComponent } from '../../demos/async-signal/customer-demo/cu
   hiddenPattern="service\\.ts">
   <app-customer-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

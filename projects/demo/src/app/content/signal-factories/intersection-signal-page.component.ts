@@ -8,6 +8,7 @@ import { IntersectionSignalDemoComponent } from '../../demos/intersection-signal
     selector: 'app-intersection-signal-page',
     imports: [DemoHostComponent, IntersectionSignalDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="intersectionSignal" />
 <p>
   Uses IntersectionObserver to observe changes to elements passed to the signal.
@@ -20,6 +21,7 @@ import { IntersectionSignalDemoComponent } from '../../demos/intersection-signal
 <app-demo-host name="Observing when an element is visible on an ancestor" pattern="intersection-signal/intersection-signal-demo/">
   <app-intersection-signal-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

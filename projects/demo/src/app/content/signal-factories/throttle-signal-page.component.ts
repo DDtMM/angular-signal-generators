@@ -8,6 +8,7 @@ import { SignalSourceDemoComponent } from '../../demos/throttle-signal/signal-so
   selector: 'app-throttle-signal-page',
   imports: [DemoHostComponent, MemberPageHeaderComponent, PointerDemoComponent, SignalSourceDemoComponent],
   template: `
+<article class="doc-content">
 <app-member-page-header fnName="throttleSignal" />
 <p>
   Limits how frequently changes are published. It accepts either a reactive source or an initial value,
@@ -20,6 +21,7 @@ import { SignalSourceDemoComponent } from '../../demos/throttle-signal/signal-so
 <app-demo-host name="Throttle a source signal" pattern="throttle-signal/signal-source-demo/">
   <app-throttle-signal-source-demo />
 </app-demo-host>
+</article>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -8,6 +8,7 @@ import { MediaQuerySignalDemoComponent } from '../../demos/media-query-signal/me
     selector: 'app-media-query-signal-page',
     imports: [DemoHostComponent, MemberPageHeaderComponent, MediaQuerySignalDemoComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="mediaQuerySignal" />
 <p>
   Takes a media query, and updates its value whenever the state of that query being matched changes.
@@ -23,6 +24,7 @@ import { MediaQuerySignalDemoComponent } from '../../demos/media-query-signal/me
 <app-demo-host name="Observing when an element is visible on an ancestor" pattern="media-query-signal/media-query-signal-demo/">
   <app-media-query-signal-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

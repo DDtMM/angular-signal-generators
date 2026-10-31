@@ -7,6 +7,7 @@ import { MemberPageHeaderComponent } from '../../controls/member-page-header.com
     selector: 'app-gated-effect-page',
     imports: [MemberPageHeaderComponent, CodeBlockComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="gatedEffect"/>
 <div class="flex flex-col gap-3">
   <div>
@@ -47,6 +48,7 @@ gatedEffect(() => logMissingRequiredData()),
     </app-code-block>
   </div>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

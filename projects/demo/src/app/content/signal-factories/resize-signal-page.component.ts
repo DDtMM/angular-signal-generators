@@ -8,6 +8,7 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
     selector: 'app-resize-signal-page',
     imports: [DemoHostComponent, ResizeSignalDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="resizeSignal" />
 <p>
   Uses ResizeObserver to observe changes to elements passed to the signal.
@@ -20,6 +21,7 @@ import { DemoHostComponent } from '../../controls/demo-host.component';
 <app-demo-host name="Observing size changes" pattern="resize-signal/resize-signal-demo/">
   <app-resize-signal-demo />
 </app-demo-host>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

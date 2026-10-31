@@ -7,6 +7,7 @@ import { BasicDemoComponent } from '../../demos/nest-signal/basic-demo/basic-dem
     selector: 'app-nest-signal-page',
     imports: [BasicDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="nestSignal"/>
 <p>
   Takes a value that contains one or more nested signals and emits their resolved values.
@@ -18,6 +19,7 @@ import { BasicDemoComponent } from '../../demos/nest-signal/basic-demo/basic-dem
   <app-basic-demo />
 </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

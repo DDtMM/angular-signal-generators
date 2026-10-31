@@ -8,6 +8,7 @@ import { CustomStorageDemoComponent } from '../../demos/storage-signal/custom-st
     selector: 'app-storage-signal-page',
     imports: [BuiltInStorageDemoComponent, CustomStorageDemoComponent, DemoHostComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="storageSignal" />
 <p>
 A signal that uses a secondary storage system to store values, ideally beyond the lifetime of the application.
@@ -27,6 +28,7 @@ but two built-in implementations exist: <b>localStorageSignal</b> and <b>session
     <app-custom-storage-demo />
   </app-demo-host>
 </div>
+</article>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

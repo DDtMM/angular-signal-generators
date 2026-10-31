@@ -7,6 +7,7 @@ import { FakeResourceDemoComponent } from '../../demos/resource-ref-to-promise/f
   selector: 'app-resource-ref-to-promise-page',
   imports: [DemoHostComponent, FakeResourceDemoComponent, MemberPageHeaderComponent],
   template: `
+<article class="doc-content">
 <app-member-page-header fnName="resourceRefToPromise" />
 <p>
   Converts a resource reference into a promise that resolves when loading completes, or rejects if the resource errors.
@@ -21,6 +22,7 @@ import { FakeResourceDemoComponent } from '../../demos/resource-ref-to-promise/f
   </p>
   <app-fake-resource-demo />
 </app-demo-host>
+</article>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -10,6 +10,7 @@ import { ChoicesDemoComponent } from '../../demos/sequence-signal/choices-demo/c
     selector: 'app-timer-signal-page',
     imports: [ChoicesDemoComponent, DemoHostComponent, FibonacciDemoComponent, ToggleDemoComponent, MemberPageHeaderComponent],
     template: `
+<article class="doc-content">
 <app-member-page-header fnName="sequenceSignal" />
 <p>
   This accepts a sequence of values, and moves to the next value after every call to next.
@@ -39,7 +40,8 @@ import { ChoicesDemoComponent } from '../../demos/sequence-signal/choices-demo/c
     <app-choices-demo />
   </app-demo-host>
 </div>
-`,
+</article>
+  `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SequenceSignalPageComponent { }

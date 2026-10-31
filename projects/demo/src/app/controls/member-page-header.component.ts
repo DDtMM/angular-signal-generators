@@ -7,33 +7,38 @@ import { SignalTypeBadgeComponent } from './signal-type-badge.component';
 
 @Component({
     selector: 'app-member-page-header',
+    host: { class: 'not-prose block' },
     imports: [FontAwesomeModule, SignalTypeBadgeComponent],
     template: `
-<div class="flex flex-row items-center gap-3 doc-header">
+<header class="doc-header">
   @if($demoConfig(); as demoConfig) {
-    <h1>{{demoConfig.name}}</h1>
-    <div class="flex flex-row gap-1">
-      @for (type of demoConfig.usages; track type) {
-        <app-signal-type-badge [type]="type" />
-      }
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+      <h1 class="min-w-0 max-w-full [overflow-wrap:anywhere]">{{demoConfig.name}}</h1>
+      <div class="flex flex-row gap-1">
+        @for (type of demoConfig.usages; track type) {
+          <app-signal-type-badge [type]="type" />
+        }
+      </div>
     </div>
-    <div class="ml-auto flex flex-row flex-wrap justify-end  gap-2">
+    @if (demoConfig.docUrl || demoConfig.sourceUrl) {
+    <nav aria-label="Documentation resources" class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
       @if (demoConfig.docUrl) {
-        <a class="btn  btn-info btn-xs sm:btn-sm" [href]="demoConfig.docUrl" title="View API Docs">
-          <fa-icon  [icon]="faFile" /> API
+        <a class="link link-hover inline-flex items-center gap-2 text-base-content/70 hover:text-base-content"
+          [href]="demoConfig.docUrl">
+          <fa-icon [icon]="faFile" /> API reference
         </a>
       }
       @if (demoConfig.sourceUrl) {
-        <a class="btn  btn-info btn-xs sm:btn-sm"
+        <a class="link link-hover inline-flex items-center gap-2 text-base-content/70 hover:text-base-content"
           [href]="'https://github.com/DDtMM/angular-signal-generators/blob/main/projects/signal-generators/src/lib/' + demoConfig.sourceUrl"
-          title="View Source" target="_blank">
-          <fa-icon  [icon]="faCode" />
-          Source
+          target="_blank" rel="noopener noreferrer">
+          <fa-icon [icon]="faCode" /> View source
         </a>
       }
-    </div>
+    </nav>
+    }
   }
-</div>
+</header>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

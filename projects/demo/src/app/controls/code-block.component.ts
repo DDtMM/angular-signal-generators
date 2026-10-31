@@ -5,7 +5,7 @@ import { CopyButtonComponent } from './copy-button.component';
 /** Renders a demo with sources.  The demo component should be passed as content. */
 @Component({
   selector: 'app-code-block',
-  host: { class: 'block relative  whitespace-pre-wrap w-full overflow-auto' },
+  host: { class: 'not-prose block relative whitespace-pre-wrap w-full overflow-auto' },
   imports: [CopyButtonComponent, HighlightModule],
   template: `
   @if($showCopy()) {
