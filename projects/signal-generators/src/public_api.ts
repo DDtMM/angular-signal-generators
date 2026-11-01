@@ -16,6 +16,8 @@ export * from './lib/signals/lift-signal';
 export * from './lib/signals/map-signal';
 export * from './lib/signals/media-query-signal';
 export * from './lib/signals/nest-signal';
+export * from './lib/signals/online-signal';
+export * from './lib/signals/page-visible-signal';
 export * from './lib/signals/reduce-signal';
 export * from './lib/signals/sequence-signal';
 export * from './lib/signals/storage-signal';
