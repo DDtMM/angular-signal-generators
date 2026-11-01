@@ -112,6 +112,14 @@ Takes a media query, and updates its value whenever the state of that query bein
 Creates a signal whose value changes after any nested signal's value updates no matter how deep the signal is nested.
 It's value will be an object where every signal is replaced with its emitted value.
 
+### onlineSignal
+
+Reports the browser's online status as a readonly signal by listening to online and offline events.
+
+### pageVisibleSignal
+
+Reports page visibility as a readonly signal by listening to `visibilitychange`.  Returns undefined in contexts where page visibility api isn't present.
+
 ### reduceSignal
 
 Creates a signal similar to `Array.reduce` or Rxjs's `scan` operator, using a reducer function to create a new value from the current and prior values.

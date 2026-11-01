@@ -12,6 +12,8 @@ import { MapSignalHomeDemoComponent } from './home-demos/map-signal-home-demo.co
 import { MediaQuerySignalHomeDemoComponent } from './home-demos/media-query-signal-home-demo.component';
 import { MutationSignalHomeDemoComponent } from './home-demos/mutation-signal-home-demo.component';
 import { NestSignalHomeDemoComponent } from './home-demos/nest-signal-home-demo.component';
+import { OnlineSignalHomeDemoComponent } from './home-demos/online-signal-home-demo.component';
+import { PageVisibleSignalHomeDemoComponent } from './home-demos/page-visible-signal-home-demo.component';
 import { ReduceSignalHomeDemoComponent } from './home-demos/reduce-signal-home-demo.component';
 import { ResourceRefToPromiseHomeDemoComponent } from './home-demos/resource-ref-to-promise-home-demo.component';
 import { ResizeSignalHomeDemoComponent } from './home-demos/resize-signal-home-demo.component';
@@ -188,6 +190,26 @@ export const DEMO_CONFIGURATIONS = [
     route: 'nest-signal',
     sourceUrl: 'signals/nest-signal.ts',
     usages: ['generator', 'writableSignal']
+  },
+  {
+    homeDemo: OnlineSignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}onlineSignal.html`,
+    fnName: 'onlineSignal' as const,
+    name: 'onlineSignal',
+    page: () => import('./content/signal-factories/online-signal-page.component').then(x => x.OnlineSignalPageComponent),
+    route: 'online-signal',
+    sourceUrl: 'signals/online-signal.ts',
+    usages: ['generator']
+  },
+  {
+    homeDemo: PageVisibleSignalHomeDemoComponent,
+    docUrl: `${DOC_URL_PREFIX}pageVisibleSignal.html`,
+    fnName: 'pageVisibleSignal' as const,
+    name: 'pageVisibleSignal',
+    page: () => import('./content/signal-factories/page-visible-signal-page.component').then(x => x.PageVisibleSignalPageComponent),
+    route: 'page-visible-signal',
+    sourceUrl: 'signals/page-visible-signal.ts',
+    usages: ['generator']
   },
   {
     homeDemo: ReduceSignalHomeDemoComponent,

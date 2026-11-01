@@ -1,0 +1,12 @@
+<div class="flex flex-col gap-3">
+  <div role="status" class="rounded border border-base-300 p-3">
+    @switch ($online()) {
+      @case (true) { Browser status: Online (true) }
+      @case (false) { Browser status: Offline (false) }
+      @default { Browser status: Unknown (undefined) }
+    }
+  </div>
+  <p>
+    Go offline by disabling wifi or using developer tools to see the status change.
+  </p>
+</div>
